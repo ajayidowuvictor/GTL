@@ -35,8 +35,9 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 .wallet .lbl{font:500 12px/1 var(--display);letter-spacing:.22em;color:#cdbf9f}
 .wallet .amt{font:700 34px/1.05 var(--display);letter-spacing:.02em;font-variant-numeric:tabular-nums}
 .tools{top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 16px);display:flex;flex-direction:column;align-items:flex-end;gap:6px;z-index:9}
-#qbtn,#snd{pointer-events:auto;background:rgba(20,17,15,.72);color:var(--paper);border:2px solid rgba(246,236,217,.55);border-radius:6px;font:700 15px/1 var(--display);letter-spacing:.14em;padding:8px 12px;min-width:92px}
-#qbtn:active,#snd:active{background:var(--danfo);color:var(--ink)}
+#qbtn,#snd,#clk{pointer-events:auto;background:rgba(20,17,15,.72);color:var(--paper);border:2px solid rgba(246,236,217,.55);border-radius:6px;font:700 15px/1 var(--display);letter-spacing:.14em;padding:8px 12px;min-width:92px}
+#snd,#clk{font-size:13px;padding:6px 10px;min-width:92px}
+#qbtn:active,#snd:active,#clk:active{background:var(--danfo);color:var(--ink)}
 #fps{font:500 13px/1 var(--display);letter-spacing:.1em;background:rgba(20,17,15,.6);padding:4px 8px;font-variant-numeric:tabular-nums}
 #hint{left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);width:max-content;max-width:calc(100% - 260px);text-align:center;font-size:13px;line-height:1.35;background:rgba(20,17,15,.7);padding:8px 12px;border-radius:6px;transition:opacity .8s}
 #hint.off{opacity:0}
@@ -73,7 +74,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #gas{right:calc(env(safe-area-inset-right,0px) + 26px);bottom:calc(env(safe-area-inset-bottom,0px) + 34px);width:96px;height:96px;border-radius:50%;background:#7ed17a}
 #brk{right:calc(env(safe-area-inset-right,0px) + 136px);bottom:calc(env(safe-area-inset-bottom,0px) + 34px);width:76px;height:76px;border-radius:50%;background:#e0584c;font-size:17px}
 #act{right:calc(env(safe-area-inset-right,0px) + 22px);bottom:calc(env(safe-area-inset-bottom,0px) + 140px);min-width:104px;height:54px;border-radius:8px;background:var(--paper);padding:0 14px}
-#horn{right:calc(env(safe-area-inset-right,0px) + 22px);bottom:calc(env(safe-area-inset-bottom,0px) + 204px);min-width:104px;height:46px;border-radius:8px;background:var(--danfo);padding:0 14px;font-size:19px}
+#horn{right:calc(env(safe-area-inset-right,0px) + 136px);bottom:calc(env(safe-area-inset-bottom,0px) + 140px);min-width:104px;height:46px;border-radius:8px;background:var(--danfo);padding:0 14px;font-size:19px}
 #horn.on{filter:brightness(1.25);transform:scale(.96)}
 #gas.on,#brk.on{transform:scale(.94);filter:brightness(1.25)}
 #act:active{background:var(--danfo)}
@@ -97,7 +98,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <button id="horn" type="button" hidden>HORN</button>
 
 <div class="hud wallet"><span class="lbl">CASH</span><span class="amt" id="cash">&#8358;2,500</span></div>
-<div class="hud tools"><button id="qbtn" type="button">LOW</button><button id="snd" type="button">SOUND ON</button><span id="fps">GTL 0.1</span></div>
+<div class="hud tools"><button id="qbtn" type="button">LOW</button><button id="snd" type="button">SOUND ON</button><button id="clk" type="button">2:30 PM</button><span id="fps">GTL 0.1</span></div>
 <div class="hud" id="hint">Left thumb moves. Right thumb looks. Walk to Mama Nkechi (yellow arrow) and tap TALK.</div>
 <div class="hud" id="toast"></div>
 <div class="hud" id="obj" hidden><span class="t" id="objTitle">JOB</span><span class="d" id="objDist">0 m</span><span class="d" id="objTime" hidden></span></div>
@@ -110,7 +111,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
     <h1>Grand Theft Lagos</h1>
     <div class="stripe"></div>
     <div class="ver">GTL 0.3 &middot; Mainland test block</div>
-    <p>Build 6: traffic, people on the pavements and sound. Mind the danfos. Your cash and job are saved on this phone.</p>
+    <p>Build 7: a full day and night in Lagos, with street lights and headlights. Tap the clock to skip 3 hours.</p>
     <ul>
       <li><b>MOVE</b> &nbsp;drag with your left thumb</li>
       <li><b>LOOK</b> &nbsp;swipe with your right thumb</li>
@@ -129,7 +130,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.3 b6';
+var VERSION='GTL 0.3 b7';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -149,7 +150,7 @@ var scene=new THREE.Scene();
 scene.background=new THREE.Color(HAZE);
 scene.fog=new THREE.Fog(HAZE,30,100);
 var camera=new THREE.PerspectiveCamera(60,1,0.3,200);
-scene.add(new THREE.HemisphereLight(0xfff1d6,0x7a5a3a,0.72));
+var hemi=new THREE.HemisphereLight(0xfff1d6,0x7a5a3a,0.72);scene.add(hemi);
 var sun=new THREE.DirectionalLight(0xfff0cf,0.62);
 sun.position.set(-45,40,32);
 scene.add(sun);scene.add(sun.target);
@@ -1361,9 +1362,69 @@ function start(){
   setTimeout(function(){hint.classList.add('off');},8000);
 }
 $('play').addEventListener('click',start);
+
+/* ------------------------------------------------------------ day and night */
+function glowTex(){
+  var c=document.createElement('canvas');c.width=c.height=64;var g=c.getContext('2d');
+  var gr=g.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,'rgba(255,240,190,1)');gr.addColorStop(0.35,'rgba(255,214,130,0.55)');gr.addColorStop(1,'rgba(255,200,100,0)');
+  g.fillStyle=gr;g.fillRect(0,0,64,64);
+  return new THREE.CanvasTexture(c);
+}
+var gTex=glowTex();
+var lampSprites=[],lampPools=[];
+[-60,-36,-12,14,40,62].forEach(function(lx){
+  var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:gTex,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));
+  sp.scale.set(3.6,3.6,1);sp.position.set(lx,5.65,4.1);scene.add(sp);lampSprites.push(sp);
+  var pl=new THREE.Mesh(new THREE.CircleGeometry(7,20),new THREE.MeshBasicMaterial({map:gTex,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));
+  pl.rotation.x=-Math.PI/2;pl.position.set(lx,0.21,3.2);scene.add(pl);lampPools.push(pl);
+});
+var beamMat=new THREE.MeshBasicMaterial({color:0xfff0c0,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,fog:false});
+var beamGeo=new THREE.ConeGeometry(1.5,9,10,1,true);beamGeo.translate(0,-4.5,0);
+var beamMeshes=[];
+function addBeams(grp,xs,y,z){
+  xs.forEach(function(x){var m=new THREE.Mesh(beamGeo,beamMat);m.rotation.x=-Math.PI/2;m.position.set(x,y,z);m.visible=false;grp.add(m);beamMeshes.push(m);});
+}
+addBeams(carRoot,[-0.62,0.62],0.72,2.2);
+traffic.forEach(function(v){
+  if(v.r>1.5)addBeams(v.grp,[-0.65,0.65],0.8,2.55);else if(v.r>1)addBeams(v.grp,[-0.62,0.62],0.72,2.2);else addBeams(v.grp,[0],0.95,0.75);
+});
+function K(h,haze,tint,hs,hg,hi,sc,si,glow){return {h:h,haze:new THREE.Color(haze),tint:new THREE.Color(tint),hs:new THREE.Color(hs),hg:new THREE.Color(hg),hi:hi,sc:new THREE.Color(sc),si:si,glow:glow};}
+var DAY_KEYS=[
+  K(0,'#141b30','#2b3a66',0x7488c0,0x20243a,0.55,0x8fa0d8,0.18,1),
+  K(5,'#141b30','#2b3a66',0x7488c0,0x20243a,0.55,0x8fa0d8,0.18,1),
+  K(6.3,'#e0b8a0','#e6bfb8',0xe8c8b8,0x6a5040,0.6,0xffc090,0.4,0.45),
+  K(8,'#e6d3ae','#ffffff',0xfff1d6,0x7a5a3a,0.72,0xfff0cf,0.62,0),
+  K(16,'#e6d3ae','#ffffff',0xfff1d6,0x7a5a3a,0.72,0xfff0cf,0.62,0),
+  K(18,'#f0c090','#ffd9b0',0xffd9a0,0x7a5a3a,0.66,0xffb06a,0.56,0.12),
+  K(19.3,'#b88a8f','#c08c94',0xc9a0a8,0x4a3a42,0.52,0xff8a70,0.3,0.8),
+  K(20.6,'#141b30','#2b3a66',0x7488c0,0x20243a,0.55,0x8fa0d8,0.18,1),
+  K(24,'#141b30','#2b3a66',0x7488c0,0x20243a,0.55,0x8fa0d8,0.18,1)
+];
+var gameHour=14.5,lastClk='',tmpC=new THREE.Color();
+function dayUpdate(dt){
+  gameHour=(gameHour+dt/25)%24;
+  var i=0;while(i<DAY_KEYS.length-2&&gameHour>=DAY_KEYS[i+1].h)i++;
+  var a=DAY_KEYS[i],b=DAY_KEYS[i+1],f=(gameHour-a.h)/(b.h-a.h);f=f*f*(3-2*f);
+  tmpC.copy(a.haze).lerp(b.haze,f);scene.fog.color.copy(tmpC);scene.background.copy(tmpC);
+  sky.material.color.copy(a.tint).lerp(b.tint,f);
+  clouds.children[0].material.color.copy(sky.material.color).lerp(tmpC.set(0xffffff),0.35);
+  hemi.color.copy(a.hs).lerp(b.hs,f);hemi.groundColor.copy(a.hg).lerp(b.hg,f);hemi.intensity=a.hi+(b.hi-a.hi)*f;
+  sun.color.copy(a.sc).lerp(b.sc,f);sun.intensity=a.si+(b.si-a.si)*f;
+  var glow=a.glow+(b.glow-a.glow)*f,on=glow>0.03;
+  for(var l=0;l<lampSprites.length;l++){lampSprites[l].visible=on;lampPools[l].visible=on;if(on){lampSprites[l].material.opacity=glow;lampPools[l].material.opacity=glow*0.32;}}
+  beamMat.opacity=glow*0.17;
+  for(var m=0;m<beamMeshes.length;m++)beamMeshes[m].visible=on;
+  var hh=Math.floor(gameHour),mm=Math.floor((gameHour-hh)*60/10)*10,h12=hh%12===0?12:hh%12;
+  var txt=h12+':'+(mm<10?'0':'')+mm+(hh<12?' AM':' PM');
+  if(txt!==lastClk){lastClk=txt;clkBtn.textContent=txt;}
+}
+var clkBtn=$('clk');
+clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
+
 /* ------------------------------------------------------------------ loop */
 function update(dt){
-  npcsUpdate(dt);checkMission(dt);trafficUpdate(dt);walkersUpdate(dt);audioUpdate(dt);
+  npcsUpdate(dt);checkMission(dt);trafficUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
