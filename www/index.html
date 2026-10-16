@@ -35,13 +35,13 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 .wallet .lbl{font:500 12px/1 var(--display);letter-spacing:.22em;color:#cdbf9f}
 .wallet .amt{font:700 34px/1.05 var(--display);letter-spacing:.02em;font-variant-numeric:tabular-nums}
 .tools{top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 16px);display:flex;flex-direction:column;align-items:flex-end;gap:6px;z-index:9}
-#qbtn,#snd,#clk{pointer-events:auto;background:rgba(20,17,15,.72);color:var(--paper);border:2px solid rgba(246,236,217,.55);border-radius:6px;font:700 15px/1 var(--display);letter-spacing:.14em;padding:8px 12px;min-width:92px}
-#snd,#clk{font-size:13px;padding:6px 10px;min-width:92px}
-#qbtn:active,#snd:active,#clk:active{background:var(--danfo);color:var(--ink)}
+#menuBtn,#qbtn,#snd,#clk{pointer-events:auto;background:rgba(20,17,15,.72);color:var(--paper);border:2px solid rgba(246,236,217,.55);border-radius:6px;font:700 15px/1 var(--display);letter-spacing:.14em;padding:8px 12px;min-width:92px}
+#menuBtn,#snd,#clk{font-size:13px;padding:6px 10px;min-width:92px}
+#menuBtn:active,#qbtn:active,#snd:active,#clk:active{background:var(--danfo);color:var(--ink)}
 #fps{font:500 13px/1 var(--display);letter-spacing:.1em;background:rgba(20,17,15,.6);padding:4px 8px;font-variant-numeric:tabular-nums}
 #hint{left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);width:max-content;max-width:calc(100% - 260px);text-align:center;font-size:13px;line-height:1.35;background:rgba(20,17,15,.7);padding:8px 12px;border-radius:6px;transition:opacity .8s}
 #hint.off{opacity:0}
-#toast{left:50%;top:calc(env(safe-area-inset-top,0px) + 124px);transform:translateX(-50%);background:var(--danfo);color:var(--ink);font:700 15px/1.2 var(--display);letter-spacing:.06em;padding:8px 14px;opacity:0;transition:opacity .3s;text-align:center;max-width:80%}
+#toast{left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translateX(-50%);background:var(--danfo);color:var(--ink);font:700 15px/1.2 var(--display);letter-spacing:.06em;padding:8px 14px;opacity:0;transition:opacity .3s;text-align:center;max-width:80%}
 #toast.show{opacity:1}
 
 #splash{position:fixed;inset:0;z-index:20;display:flex;align-items:center;padding-block:24px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));background:linear-gradient(90deg,rgba(20,17,15,.92) 0%,rgba(20,17,15,.8) 50%,rgba(20,17,15,.2) 100%);overflow:auto;touch-action:pan-y}
@@ -58,7 +58,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #play:active{transform:translate(3px,3px);box-shadow:2px 2px 0 rgba(0,0,0,.55)}
 .card .note{font-size:12.5px;color:#bfb293}
 
-#obj{max-width:calc(50vw - 84px);top:calc(env(safe-area-inset-top,0px) + 84px);left:calc(env(safe-area-inset-left,0px) + 16px);background:rgba(20,17,15,.72);border-left:6px solid #7ed17a;padding:5px 12px;display:flex;flex-direction:column}
+#obj{top:calc(env(safe-area-inset-top,0px) + 84px);left:calc(env(safe-area-inset-left,0px) + 16px);background:rgba(20,17,15,.72);border-left:6px solid #7ed17a;padding:5px 12px;display:flex;flex-direction:column}
 #obj .t{font:500 12px/1.1 var(--display);letter-spacing:.2em;color:#cdbf9f}
 #obj .d.late{color:#ff8a7a}
 #obj .d{font:700 22px/1.1 var(--display);letter-spacing:.04em;font-variant-numeric:tabular-nums}
@@ -70,8 +70,17 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #dlgBtns button{background:var(--danfo);color:var(--ink);border:3px solid #000;font:700 18px/1 var(--display);letter-spacing:.1em;padding:10px 18px;border-radius:0}
 #dlgBtns button:last-child:not(:first-child){background:var(--paper)}
 #reset{margin-top:12px;background:none;border:0;color:#bfb293;font:13px/1 inherit;text-decoration:underline;padding:6px 0}
-#map{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:50%;transform:translateX(-50%);width:96px;height:96px;border:3px solid rgba(246,236,217,.6);border-radius:8px;z-index:7;background:#000;opacity:.92;touch-action:none}
-#map.big{top:50%;transform:translate(-50%,-50%);width:min(300px,78vh);height:min(300px,78vh);z-index:11;opacity:1}
+#menu{position:fixed;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;gap:22px;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:rgba(14,12,10,.9);box-sizing:border-box;touch-action:none}
+#menu[hidden]{display:none}
+#menu .mapbox{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+#menu .mapbox span{font:700 13px/1 var(--display);letter-spacing:.2em;color:#cdbf9f}
+#map{width:min(300px,70vh);height:min(300px,70vh);max-width:44vw;max-height:44vw;border:3px solid rgba(246,236,217,.6);border-radius:8px;background:#000}
+#menu .col{display:flex;flex-direction:column;gap:9px;width:min(260px,44vw);min-width:0}
+#menu .col h2{margin:0 0 2px;font:700 30px/1 var(--display);letter-spacing:.12em;color:var(--danfo)}
+#menu button{width:100%;min-width:0;background:rgba(246,236,217,.1);color:var(--paper);border:2px solid rgba(246,236,217,.55);border-radius:6px;font:700 17px/1 var(--display);letter-spacing:.12em;padding:12px 14px;text-align:left}
+#menu button:active{background:var(--danfo);color:var(--ink)}
+#menu #resume{background:var(--danfo);color:var(--ink);border-color:#000;text-align:center;font-size:20px}
+#menu .sm{font-size:12px;line-height:1.35;color:#bfb293;margin:2px 0 0}
 #gas,#brk,#act{position:fixed;z-index:8;border:4px solid var(--ink);color:var(--ink);font:700 22px/1 var(--display);letter-spacing:.1em;touch-action:none;padding:0;box-shadow:0 0 0 3px rgba(246,236,217,.55)}
 #gas{right:calc(env(safe-area-inset-right,0px) + 26px);bottom:calc(env(safe-area-inset-bottom,0px) + 34px);width:96px;height:96px;border-radius:50%;background:#7ed17a}
 #brk{right:calc(env(safe-area-inset-right,0px) + 136px);bottom:calc(env(safe-area-inset-bottom,0px) + 34px);width:76px;height:76px;border-radius:50%;background:#e0584c;font-size:17px}
@@ -100,13 +109,23 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <button id="horn" type="button" hidden>HORN</button>
 
 <div class="hud wallet"><span class="lbl">CASH</span><span class="amt" id="cash">&#8358;2,500</span></div>
-<div class="hud tools"><button id="qbtn" type="button">LOW</button><button id="snd" type="button">SOUND ON</button><button id="clk" type="button">2:30 PM</button><span id="fps">GTL 0.1</span></div>
+<div class="hud tools"><button id="menuBtn" type="button">MENU</button><button id="clk" type="button">2:30 PM</button><span id="fps">GTL 0.1</span></div>
 <div class="hud" id="hint">Left thumb moves. Right thumb looks. Walk to Mama Nkechi (yellow arrow) and tap TALK.</div>
 <div class="hud" id="toast"></div>
 <div class="hud" id="obj" hidden><span class="t" id="objTitle">JOB</span><span class="d" id="objDist">0 m</span><span class="d" id="objTime" hidden></span></div>
 <div class="hud" id="speed" hidden><span id="kmh">0</span> <small>KM/H</small></div>
 
-<canvas id="map" width="256" height="256" hidden></canvas>
+<div id="menu" hidden>
+  <div class="mapbox"><span>MAP</span><canvas id="map" width="256" height="256"></canvas></div>
+  <div class="col">
+    <h2>PAUSED</h2>
+    <button id="resume" type="button">RESUME</button>
+    <button id="qbtn" type="button">LOW</button>
+    <button id="snd" type="button">SOUND ON</button>
+    <button id="mreset" type="button">RESET PROGRESS</button>
+    <p class="sm">Quality: tap to change. White arrow is you, green square is the car, yellow ring is the job.</p>
+  </div>
+</div>
 <div id="dlg" hidden><div id="dlgName"></div><p id="dlgText"></p><div id="dlgBtns"></div></div>
 
 <div id="splash">
@@ -114,7 +133,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
     <h1>Grand Theft Lagos</h1>
     <div class="stripe"></div>
     <div class="ver">GTL 0.4 &middot; Mainland test block</div>
-    <p>Build 8: a map in the top middle (tap it to enlarge) and two new jobs for Mama Nkechi, including a city-wide sprint.</p>
+    <p>Build 9: the map, quality and sound now live in the MENU button, which pauses the game. Two new jobs for Mama Nkechi.</p>
     <ul>
       <li><b>MOVE</b> &nbsp;drag with your left thumb</li>
       <li><b>LOOK</b> &nbsp;swipe with your right thumb</li>
@@ -133,7 +152,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.4 b8';
+var VERSION='GTL 0.4 b9';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -1438,7 +1457,7 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 
 /* ------------------------------------------------------------ map */
 npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';
-var MAPS=256,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=false,mapT=0;
+var MAPS=256,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
 mapBG.width=mapBG.height=MAPS;
 function MX(x){return (x+66)/132*MAPS;}
 (function(){
@@ -1453,10 +1472,8 @@ function MX(x){return (x+66)/132*MAPS;}
     if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MX(q.minZ),Math.max(2,w/132*MAPS),Math.max(2,d/132*MAPS));
   }
 })();
-mapC.addEventListener('click',function(){mapBig=!mapBig;mapC.classList.toggle('big',mapBig);});
 function mapUpdate(dt){
-  mapC.hidden=!started;
-  mapT+=dt;if(mapT<0.06||!started)return;mapT=0;
+  mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
   g.drawImage(mapBG,0,0);
   g.fillStyle='#1b1b1b';
@@ -1482,9 +1499,31 @@ function mapUpdate(dt){
   g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText('N',MAPS/2,16);g.fillText('N',MAPS/2,16);
 }
 
+
+/* ------------------------------------------------------------ menu / pause */
+var paused=false,menuEl=$('menu'),resetArm=false;
+function openMenu(){
+  if(!started||paused)return;
+  paused=true;menuEl.hidden=false;
+  stick.id=null;stick.x=0;stick.y=0;look.id=null;placeStick();setDriveUI();
+  if(AC&&eng){var t=AC.currentTime;eng.g.gain.setTargetAtTime(0,t,0.05);hornG.gain.setTargetAtTime(0,t,0.05);}
+  resetArm=false;$('mreset').textContent='RESET PROGRESS';
+  mapT=1;mapUpdate(0);
+}
+function closeMenu(){paused=false;menuEl.hidden=true;}
+$('menuBtn').addEventListener('click',openMenu);
+$('resume').addEventListener('click',closeMenu);
+$('mreset').addEventListener('click',function(){
+  if(!resetArm){resetArm=true;this.textContent='TAP AGAIN TO CONFIRM';return;}
+  resetArm=false;
+  cash=2500;jobIdx=0;jobActive=false;jobStage=0;timerOn=false;try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+  setCash();updateMissionVisuals();this.textContent='PROGRESS RESET';
+});
+window.addEventListener('keydown',function(e){if(e.code==='Escape'||e.code==='KeyP'){if(paused)closeMenu();else openMenu();}});
+
 /* ------------------------------------------------------------------ loop */
 function update(dt){
-  npcsUpdate(dt);checkMission(dt);trafficUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);mapUpdate(dt);
+  npcsUpdate(dt);checkMission(dt);trafficUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
@@ -1544,7 +1583,8 @@ function loop(t){
   requestAnimationFrame(loop);
   var raw=(t-last)/1000;last=t;if(!(raw>0))return;
   var dt=Math.min(raw,0.05);elapsed+=dt;
-  update(dt);updateCamera(dt);
+  if(paused)mapUpdate(dt);else update(dt);
+  updateCamera(dt);
   renderer.render(scene,camera);
   fpsAcc+=raw;fpsFrames++;
   if(fpsAcc>=1){
