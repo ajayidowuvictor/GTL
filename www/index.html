@@ -38,7 +38,11 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #menuBtn,#qbtn,#snd,#clk{pointer-events:auto;background:rgba(20,17,15,.72);color:var(--paper);border:2px solid rgba(246,236,217,.55);border-radius:6px;font:700 15px/1 var(--display);letter-spacing:.14em;padding:8px 12px;min-width:92px}
 #menuBtn,#snd,#clk{font-size:13px;padding:6px 10px;min-width:92px}
 #menuBtn:active,#qbtn:active,#snd:active,#clk:active{background:var(--danfo);color:var(--ink)}
-#fps{font:500 13px/1 var(--display);letter-spacing:.1em;background:rgba(20,17,15,.6);padding:4px 8px;font-variant-numeric:tabular-nums}
+#fps{font-variant-numeric:tabular-nums;text-align:center;opacity:.8}
+#heat{top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);background:rgba(20,17,15,.78);border-bottom:4px solid #d33;padding:6px 14px;display:flex;flex-direction:row;align-items:center;gap:10px;font:700 20px/1 var(--display);letter-spacing:.12em;color:#ff6a5a}
+#heat .hb{display:block;width:70px;height:5px;background:rgba(246,236,217,.25)}
+#heat .hb i{display:block;height:100%;width:0;background:#4d8cff}
+#heat[hidden]{display:none}
 #hint{left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);width:max-content;max-width:calc(100% - 260px);text-align:center;font-size:13px;line-height:1.35;background:rgba(20,17,15,.7);padding:8px 12px;border-radius:6px;transition:opacity .8s}
 #hint.off{opacity:0}
 #toast{left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translateX(-50%);background:var(--danfo);color:var(--ink);font:700 15px/1.2 var(--display);letter-spacing:.06em;padding:8px 14px;opacity:0;transition:opacity .3s;text-align:center;max-width:80%}
@@ -120,10 +124,11 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <button id="horn" type="button" hidden>HORN</button>
 
 <div class="hud wallet"><span class="lbl">CASH</span><span class="amt" id="cash">&#8358;2,500</span></div>
-<div class="hud tools"><button id="menuBtn" type="button">MENU</button><button id="clk" type="button">2:30 PM</button><span id="fps">GTL 0.1</span></div>
+<div class="hud tools"><button id="menuBtn" type="button">MENU</button><button id="clk" type="button">2:30 PM</button></div>
 <div class="hud" id="hint">Left thumb moves. Right thumb looks. Walk to Mama Nkechi (yellow arrow) and tap TALK.</div>
 <div class="hud" id="toast"></div>
 <div class="hud" id="obj" hidden><span class="t" id="objTitle">JOB</span><span class="d" id="objDist">0 m</span><span class="d" id="objTime" hidden></span></div>
+<div class="hud" id="heat" hidden><span id="heatStars">★☆☆</span><span class="hb"><i id="heatBar"></i></span></div>
 <div class="hud" id="speed" hidden><span id="kmh">0</span> <small>KM/H</small></div>
 
 <div id="menu" hidden>
@@ -137,7 +142,10 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
       <div class="g2"><button id="snd" type="button">SOUND ON</button><button id="radio" type="button">RADIO: OFF</button></div>
       <div class="lab">DISPLAY</div>
       <div class="g2"><button id="qbtn" type="button">LOW</button><button id="lookb" type="button">LOOK: NORMAL</button><button id="wthb" type="button" class="wide">WEATHER: AUTO</button></div>
-      <p class="sm">The radio plays while you drive.</p>
+      <div class="lab">GAME</div>
+      <div class="g2"><button id="fareb" type="button">FARES: ON</button><button id="copb" type="button">POLICE: ON</button></div>
+      <p class="sm">The radio plays while you drive. Fares: drive with no job active and passengers appear.</p>
+      <p class="sm" id="fps">GTL</p>
     </div>
     <div class="pan" id="panPro" hidden>
       <div class="stats" id="stats"></div>
@@ -152,8 +160,8 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
   <div class="card">
     <h1>Grand Theft Lagos</h1>
     <div class="stripe"></div>
-    <div class="ver">GTL 0.6 &middot; Mainland, lagoon and the Island</div>
-    <p>Build 14: cross the bridge to the new Island district with a beach, hotel and mall, three more jobs and a Chapter 2 ending. Kunle now sells a danfo, a keke and an okada.</p>
+    <div class="ver">GTL 0.6 &middot; Mainland, Island and the Task Force</div>
+    <p>Build 15: the Task Force now chases you if you crash into traffic, taxi fares give you endless income, and reaching 100% makes you a Lagos Legend.</p>
     <ul>
       <li><b>MOVE</b> &nbsp;drag with your left thumb</li>
       <li><b>LOOK</b> &nbsp;swipe with your right thumb</li>
@@ -173,7 +181,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.6 b14';
+var VERSION='GTL 0.6 b15';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -1002,6 +1010,7 @@ function collideCar(){
         for(var q=-1;q<=1;q+=2){
           var tx=tv.x+tf*tv.r*q,tz=tv.z+tg*tv.r*q,ex=px-tx,ez=pz-tz,e2=ex*ex+ez*ez,lim=CR+1.0;
           if(e2<lim*lim&&e2>1e-6){
+            trafficHit=1;
             var ed=Math.sqrt(e2),eux=ex/ed,euz=ez/ed,epen=lim-ed;
             car.x+=eux*epen;car.z+=euz*epen;px+=eux*epen;pz+=euz*epen;
             hit=Math.max(hit,Math.abs(eux*fx+euz*fz));
@@ -1025,7 +1034,8 @@ function driveUpdate(dt,ctl){
   car.h-=(s/(1.9+CHL*0.4))*Math.tan(car.steer)*dt;
   car.x+=Math.sin(car.h)*s*dt;car.z+=Math.cos(car.h)*s*dt;
   car.speed=s;
-  var hit=collideCar();
+  trafficHit=0;var hit=collideCar();
+  if(trafficHit&&Math.abs(s)>8)onCrash();
   if(hit>0.05)car.speed*=1-0.5*hit*hit;
   car.spin+=car.speed*dt/0.34;
   if(car.spin>6.2832||car.spin<-6.2832)car.spin%=6.2832;
@@ -1275,11 +1285,11 @@ var JOBS=[
    toast:'NEW JOB: TWO SHORES. Use the car!'}
 ];
 var jobIdx=0,jobActive=false,jobStage=0,timerOn=false,timerLeft=0,lastObj=-1,SAVE_KEY='gtl_save_v1';
-var got=[],ups={eng:0,tyre:0,paint:0},stat={earned:0,played:0},endSeen=0;
+var got=[],ups={eng:0,tyre:0,paint:0},stat={earned:0,played:0,busts:0,escapes:0,fares:0},endSeen=0;
 function curJob(){return JOBS[jobIdx]||null;}
 function setCash(){cashEl.textContent=money(cash);}
 function gotStr(){var o='';for(var i=0;i<got.length;i++)o+=got[i]?'1':'0';return o;}
-function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:3,cash:cash,job:jobIdx,active:jobActive?1:0,stage:jobStage,got:gotStr(),eng:ups.eng,tyre:ups.tyre,paint:ups.paint,earned:stat.earned,played:Math.round(stat.played),end:endSeen|0,veh:vehKind,own:owned.join(',')}));}catch(e){}}
+function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:3,cash:cash,job:jobIdx,active:jobActive?1:0,stage:jobStage,got:gotStr(),eng:ups.eng,tyre:ups.tyre,paint:ups.paint,earned:stat.earned,played:Math.round(stat.played),end:endSeen|0,veh:vehKind,own:owned.join(','),bust:stat.busts|0,esc:stat.escapes|0,fares:stat.fares|0}));}catch(e){}}
 function loadGame(){
   try{
     var d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
@@ -1291,7 +1301,7 @@ function loadGame(){
       if(d.v===3){
         var gs=String(d.got||'');for(var gi=0;gi<gs.length;gi++)got[gi]=gs.charAt(gi)==='1'?1:0;
         ups.eng=Math.max(0,Math.min(2,d.eng|0));ups.tyre=Math.max(0,Math.min(2,d.tyre|0));ups.paint=Math.max(0,Math.min(5,d.paint|0));
-        stat.earned=Math.max(0,d.earned|0);stat.played=Math.max(0,d.played|0);endSeen=d.end|0;
+        stat.earned=Math.max(0,d.earned|0);stat.played=Math.max(0,d.played|0);endSeen=d.end|0;stat.busts=d.bust|0;stat.escapes=d.esc|0;stat.fares=d.fares|0;
         if(d.own){owned=String(d.own).split(',').filter(function(k){return !!VEHS[k];});}
         if(owned.indexOf('sedan')<0)owned.unshift('sedan');
         vehKind=(VEHS[d.veh]&&owned.indexOf(d.veh)>=0)?d.veh:'sedan';
@@ -1311,12 +1321,14 @@ ring.rotation.x=Math.PI/2;ring.position.set(-56,0.2,2);scene.add(ring);
 var npcArrow=new THREE.Mesh(new THREE.ConeGeometry(0.3,0.65,4),new THREE.MeshBasicMaterial({color:0xf2b705}));
 npcArrow.rotation.x=Math.PI;scene.add(npcArrow);
 function updateMissionVisuals(){
-  var cj=curJob(),st=(jobActive&&cj)?cj.stages[jobStage]:null;
+  var cj=curJob(),st=(jobActive&&cj)?cj.stages[jobStage]:null,isFare=false;
+  if(!st&&typeof fare==='object'&&fare.st){st={x:fare.x,z:fare.z,label:fare.st===1?'PICK UP THE PASSENGER':'DROP OFF THE PASSENGER'};isFare=true;}
   beam.visible=ring.visible=!!st;
-  if(st){beam.position.set(st.x,30,st.z);ring.position.set(st.x,0.2,st.z);objTitle.textContent='JOB: '+st.label;}
+  beam.material.color.setHex(isFare?0x3ee07a:0xf2b705);ring.material.color.setHex(isFare?0x3ee07a:0xf2b705);
+  if(st){beam.position.set(st.x,30,st.z);ring.position.set(st.x,0.2,st.z);objTitle.textContent=(isFare?'FARE: ':'JOB: ')+st.label;}
   npcArrow.visible=(!jobActive&&!!cj);
   objEl.hidden=!st;lastObj=-1;
-  var timed=!!(st&&timerOn);objTime.hidden=!timed;
+  var timed=!!(st&&(timerOn||(isFare&&fare.st===2)));objTime.hidden=!timed;
 }
 function openDlg(name,text,btns){
   talking=true;dlgName.textContent=name;dlgText.textContent=text;dlgBtns.innerHTML='';
@@ -1407,7 +1419,7 @@ makeNPC({x:5.1,z:16.2,yaw:-Math.PI/2,skin:'#7a4a2e',skin2:'#6a3e26',low:'#d9731a
     var cj=curJob();
     if(!cj)openDlg('MAMA NKECHI',"You don do every job I get, my pikin! Kunle dey the workshop west of the market if you wan tune your car, and some people don drop cash around town and on the island. Check if you fit find all "+NB+". More work coming soon!",[{label:'OK'}]);
     else if(jobActive)openDlg('MAMA NKECHI',cj.remind,[{label:'OK'}]);
-    else openDlg('MAMA NKECHI',(jobIdx>0?'':'')+cj.offer,[{label:"I'LL DO IT",fn:function(){jobActive=true;jobStage=0;timerOn=false;saveGame();updateMissionVisuals();toast(cj.toast);}},{label:'LATER'}]);
+    else openDlg('MAMA NKECHI',(jobIdx>0?'':'')+cj.offer,[{label:"I'LL DO IT",fn:function(){cancelFare();jobActive=true;jobStage=0;timerOn=false;saveGame();updateMissionVisuals();toast(cj.toast);}},{label:'LATER'}]);
   }});
 makeNPC({x:-56,z:6.3,yaw:Math.PI,skin:'#5a3520',skin2:'#4a2b1a',low:'#ece7d6',low2:'#cfc7a8',top:'#ece7d6',head:'cap',hc:'#7a1f1f',
   talk:function(){
@@ -1453,7 +1465,7 @@ function switchVeh(k){
 function buyVeh(k){
   var V=VEHS[k];
   if(cash<V.price){buzz();vehMenu('E no reach! You need '+money(V.price)+'.');return;}
-  cash-=V.price;setCash();owned.push(k);switchVeh(k);
+  cash-=V.price;setCash();owned.push(k);switchVeh(k);checkLegend();
 }
 function shopMenu(msg){
   var btns=[];
@@ -1730,7 +1742,7 @@ function walkersUpdate(dt){
 
 loadGame();setCash();updateMissionVisuals();
 function resetAll(){
-  cash=2500;jobIdx=0;jobActive=false;jobStage=0;timerOn=false;got=[];ups.eng=0;ups.tyre=0;ups.paint=0;stat.earned=0;stat.played=0;endSeen=0;
+  cash=2500;jobIdx=0;jobActive=false;jobStage=0;timerOn=false;got=[];ups.eng=0;ups.tyre=0;ups.paint=0;stat.earned=0;stat.played=0;stat.busts=0;stat.escapes=0;stat.fares=0;endSeen=0;copsOff();cancelFare();
   try{localStorage.removeItem(SAVE_KEY);}catch(e){}
   owned=['sedan'];setVehicle('sedan');bundlesRefresh();setCash();updateMissionVisuals();
 }
@@ -1871,7 +1883,7 @@ var NB=BPOS.length,bundles=[];
 function foundCount(){var n=0;for(var i=0;i<NB;i++)if(got[i])n++;return n;}
 function updateStats(){
   var el=$('stats');el.innerHTML='';
-  [['JOBS DONE',Math.min(jobIdx,JOBS.length)+' / '+JOBS.length],['HIDDEN CASH',foundCount()+' / '+NB],['EARNED',money(stat.earned)],['PLAYED',fmtTime(stat.played)]].forEach(function(r){
+  [['COMPLETION',completion()+'%'],['JOBS DONE',Math.min(jobIdx,JOBS.length)+' / '+JOBS.length],['HIDDEN CASH',foundCount()+' / '+NB],['FARES DONE',String(stat.fares|0)],['BUSTED / ESCAPED',(stat.busts|0)+' / '+(stat.escapes|0)],['EARNED',money(stat.earned)],['PLAYED',fmtTime(stat.played)]].forEach(function(r){
     var d=document.createElement('div'),a=document.createElement('span'),b=document.createElement('b');a.textContent=r[0];b.textContent=r[1];d.appendChild(a);d.appendChild(b);el.appendChild(d);
   });
 }
@@ -1884,8 +1896,10 @@ $('tabSet').addEventListener('click',function(){showTab(false);});
 $('tabPro').addEventListener('click',function(){showTab(true);});
 function showEnd(){
   if(talking||paused){setTimeout(showEnd,2000);return;}
-  var two=endSeen>=2;
-  openDlg(two?'CHAPTER 2 COMPLETE':'CHAPTER 1 COMPLETE',(two?"Oga, you don conquer Atlantic Island and the whole of Lagos! ":"Una try well well! You finish every job on the mainland and across the lagoon. ")+"Time played: "+fmtTime(stat.played)+". Cash earned: "+money(stat.earned)+". Hidden cash found: "+foundCount()+" of "+NB+". "+(two?"The whole city is yours to explore, upgrade and race through. More is coming!":"Mama Nkechi has more work, this time across the bridge on Atlantic Island."),[{label:'KEEP EXPLORING'}]);
+  var lv=endSeen>=3?3:(endSeen>=2?2:1),tail="Time played: "+fmtTime(stat.played)+". Cash earned: "+money(stat.earned)+". Hidden cash found: "+foundCount()+" of "+NB+". ";
+  if(lv===3)openDlg('LAGOS LEGEND',"100%! Every job done, every naira of hidden cash found, every ride in your garage and ten happy passengers. Oga, Lagos has a new legend and na you. "+tail+"The city is yours. Keep driving, keep earning, and keep dodging the Task Force!",[{label:'KEEP EXPLORING'}]);
+  else if(lv===2)openDlg('CHAPTER 2 COMPLETE',"Oga, you don conquer Atlantic Island and the whole of Lagos! "+tail+"Reach 100% to become a Lagos Legend: find all the cash, own every ride and finish ten taxi fares.",[{label:'KEEP EXPLORING'}]);
+  else openDlg('CHAPTER 1 COMPLETE',"Una try well well! You finish every job on the mainland and across the lagoon. "+tail+"Mama Nkechi has more work, this time across the bridge on Atlantic Island.",[{label:'KEEP EXPLORING'}]);
 }
 (function(){
   var gm=new GB();
@@ -1916,8 +1930,8 @@ function collectBundle(i){
   got[i]=1;bundles[i].visible=false;
   var amt=500+(i%4)*250;cash+=amt;stat.earned+=amt;
   var n=foundCount();
-  if(n>=NB){cash+=25000;stat.earned+=25000;setCash();saveGame();chime();setTimeout(chime,500);toast('ALL '+NB+' FOUND!  +'+money(amt)+' and a ₦25,000 bonus!');return;}
-  setCash();saveGame();chime();toast('FOUND CASH  +'+money(amt)+'   ('+n+'/'+NB+')');
+  if(n>=NB){cash+=25000;stat.earned+=25000;setCash();saveGame();chime();setTimeout(chime,500);checkLegend();toast('ALL '+NB+' FOUND!  +'+money(amt)+' and a ₦25,000 bonus!');return;}
+  setCash();saveGame();chime();toast('FOUND CASH  +'+money(amt)+'   ('+n+'/'+NB+')');checkLegend();
 }
 
 /* ------------------------------------------------------------ weather */
@@ -2055,6 +2069,240 @@ function boatsUpdate(dt){
 
 /* ------------------------------------------------------------ menu / pause */
 var paused=false,menuEl=$('menu'),resetArm=false;
+
+/* ------------------------------------------------------------ task force (police), fares, completion */
+var heat=0,heatCool=0,bustMeter=0,loseT=0,patrols=[],sirenO=null,sirenG=null,sirenT=0,trafficHit=0,copsOn=true,farePref=true;
+try{copsOn=localStorage.getItem('gtl_cops')!=='off';farePref=localStorage.getItem('gtl_fare')!=='off';}catch(e){}
+
+var heatEl=$('heat'),heatStars=$('heatStars'),heatBar=$('heatBar');
+var NAVC=2,NAVW=Math.ceil((XMAX-XMIN)/NAVC)+1,NAVH=Math.ceil(2*LIM/NAVC)+1,navBlock=null,navDist=new Int16Array(NAVW*NAVH),navQ=new Int32Array(NAVW*NAVH),navT=0;
+function navBuild(){
+  navBlock=new Uint8Array(NAVW*NAVH);var R=2.0;
+  for(var si=0;si<solids.length;si++){
+    var s=solids[si],i0=Math.max(0,Math.floor((s.minX-R-XMIN)/NAVC)),i1=Math.min(NAVW-1,Math.ceil((s.maxX+R-XMIN)/NAVC)),j0=Math.max(0,Math.floor((s.minZ-R+LIM)/NAVC)),j1=Math.min(NAVH-1,Math.ceil((s.maxZ+R+LIM)/NAVC));
+    for(var j=j0;j<=j1;j++)for(var i=i0;i<=i1;i++){
+      var cx=XMIN+i*NAVC,cz=-LIM+j*NAVC,dx=Math.max(s.minX-cx,0,cx-s.maxX),dz=Math.max(s.minZ-cz,0,cz-s.maxZ);
+      if(dx*dx+dz*dz<R*R)navBlock[j*NAVW+i]=1;
+    }
+  }
+  for(var k=0;k<NAVW;k++){navBlock[k]=1;navBlock[(NAVH-1)*NAVW+k]=1;}
+  for(var m=0;m<NAVH;m++){navBlock[m*NAVW]=1;navBlock[m*NAVW+NAVW-1]=1;}
+}
+function navCell(x,z){
+  var i=Math.max(0,Math.min(NAVW-1,Math.round((x-XMIN)/NAVC))),j=Math.max(0,Math.min(NAVH-1,Math.round((z+LIM)/NAVC)));return j*NAVW+i;
+}
+function navFlow(tx,tz){
+  if(!navBlock)navBuild();
+  navDist.fill(-1);
+  var c=navCell(tx,tz),h=0,t=0;navDist[c]=0;navQ[t++]=c;
+  while(h<t){
+    var cur=navQ[h++],ci=cur%NAVW,cj=(cur/NAVW)|0,cd=navDist[cur];
+    for(var dj=-1;dj<=1;dj++)for(var di=-1;di<=1;di++){
+      if(!di&&!dj)continue;
+      var ni=ci+di,nj=cj+dj;if(ni<0||nj<0||ni>=NAVW||nj>=NAVH)continue;
+      var n=nj*NAVW+ni;if(navDist[n]!==-1||navBlock[n])continue;
+      if(di&&dj&&(navBlock[cj*NAVW+ni]||navBlock[nj*NAVW+ci]))continue;
+      navDist[n]=cd+1;navQ[t++]=n;
+    }
+  }
+}
+/* next waypoint for something at (x,z): follows the flow downhill for a few cells */
+function navTarget(x,z){
+  var c=navCell(x,z),ci=c%NAVW,cj=(c/NAVW)|0,cur=navDist[c]<0?32000:navDist[c],moved=false;
+  for(var k=0;k<3;k++){
+    var bi=ci,bj=cj,bd=cur;
+    for(var dj=-1;dj<=1;dj++)for(var di=-1;di<=1;di++){
+      if(!di&&!dj)continue;
+      var ni=ci+di,nj=cj+dj;if(ni<0||nj<0||ni>=NAVW||nj>=NAVH)continue;
+      var dv=navDist[nj*NAVW+ni];if(dv>=0&&dv<bd){bd=dv;bi=ni;bj=nj;}
+    }
+    if(bi===ci&&bj===cj)break;
+    ci=bi;cj=bj;cur=bd;moved=true;
+  }
+  return moved?[XMIN+ci*NAVC,-LIM+cj*NAVC]:null;
+}
+function buildPatrol(){
+  var g=new THREE.Group();g.add(buildSedan('#ececec'));
+  var band=new THREE.Mesh(new THREE.BoxGeometry(1.88,0.14,2.4),new THREE.MeshBasicMaterial({color:0x1a3a8a}));band.position.set(0,0.66,0);g.add(band);
+  var bm=new THREE.MeshBasicMaterial({color:0x3366ff}),rm=new THREE.MeshBasicMaterial({color:0xff2a2a});
+  var bl=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.18,0.32),bm);bl.position.set(-0.32,1.5,-0.3);g.add(bl);
+  var rl=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.18,0.32),rm);rl.position.set(0.32,1.5,-0.3);g.add(rl);
+  g.userData={bm:bm,rm:rm};scene.add(g);return g;
+}
+function spawnPatrol(){
+  var px=driving?car.x:player.x,pz=driving?car.z:player.z,best=null,bd=-1;
+  for(var a=0;a<14;a++){
+    var k=(Math.random()*LANES.length)|0,L=LANES[k],p=Math.random()*300,x=L.x+Math.sin(L.h)*p,z=L.z+Math.cos(L.h)*p;
+    if(x<XMIN+4||x>XMAX-4||Math.abs(z)>LIM-4)continue;
+    var d=Math.hypot(x-px,z-pz);
+    if(d>55&&d<135){best={x:x,z:z,h:L.h};break;}
+    if(d>bd&&d<170){bd=d;best={x:x,z:z,h:L.h};}
+  }
+  if(!best){var L0=LANES[0];best={x:Math.max(XMIN+6,Math.min(XMAX-6,px-60)),z:L0.z,h:L0.h};}
+  patrols.push({g:buildPatrol(),x:best.x,z:best.z,h:best.h,speed:6,stuck:0,rev:0});
+}
+function clearPatrols(){patrols.forEach(function(p){scene.remove(p.g);});patrols=[];}
+function showHeat(){
+  if(!heatEl)return;
+  heatEl.hidden=heat<=0;
+  if(heat>0){heatStars.textContent=('★★★'.slice(0,heat)+'☆☆☆').slice(0,3);heatBar.style.width=Math.round(bustMeter*100)+'%';}
+}
+function onCrash(){
+  if(!copsOn||heatCool>0||!started)return;
+  heatCool=2.2;loseT=0;
+  var was=heat;heat=Math.min(3,heat+1);
+  if(heat!==was){buzz();toast(was===0?'TASK FORCE ALERTED! Get away or pay the fine':'WANTED LEVEL '+heat+'!');}
+  showHeat();
+}
+function bust(){
+  var fine=Math.min(cash,500+heat*1500);
+  cash-=fine;stat.busts++;setCash();
+  heat=0;bustMeter=0;loseT=0;clearPatrols();showHeat();
+  if(driving){car.speed=0;exitCar();}
+  buzz();toast('BUSTED! Fine '+money(fine)+'. Drive safe, oga!');saveGame();
+}
+function lostCops(){
+  heat=0;bustMeter=0;loseT=0;clearPatrols();showHeat();stat.escapes++;
+  chime();toast('LOST THEM! The Task Force gave up');saveGame();
+}
+function copsOff(){heat=0;bustMeter=0;loseT=0;clearPatrols();showHeat();}
+function patrolsUpdate(dt){
+  if(heatCool>0)heatCool-=dt;
+  if(!patrols.length&&heat<=0){if(sirenG&&AC)sirenG.gain.setTargetAtTime(0,AC.currentTime,0.1);return;}
+  if(!copsOn){copsOff();return;}
+  sirenT+=dt;
+  var px=driving?car.x:player.x,pz=driving?car.z:player.z,pspd=driving?Math.abs(car.speed):player.speed;
+  while(patrols.length<heat)spawnPatrol();
+  navT-=dt;if(navT<=0){navT=0.4;navFlow(px,pz);}
+  var fl=(Math.floor(sirenT*6)%2===0),minD=1e9,top=15+heat*1.6,touching=false;
+  for(var i=0;i<patrols.length;i++){
+    var p=patrols[i],dx=px-p.x,dz=pz-p.z,d=Math.hypot(dx,dz);
+    if(d<minD)minD=d;
+    var want=Math.atan2(dx,dz);
+    if(d>11){var wp=navTarget(p.x,p.z);if(wp)want=Math.atan2(wp[0]-p.x,wp[1]-p.z);}
+    if(p.rev>0){
+      p.rev-=dt;p.h=turnToward(p.h,want+0.9,dt*1.6);p.speed+=(-4-p.speed)*Math.min(1,dt*3);
+    }else{
+      var ad=Math.abs(((want-p.h+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI);
+      var tgt=d>14?top:Math.max(0,d*0.95-2);
+      if(d<14&&pspd>tgt)tgt=Math.min(top,pspd+1);
+      if(ad>1.0)tgt*=0.4;else if(ad>0.5)tgt*=0.72;
+      p.h=turnToward(p.h,want,dt*(1.1+Math.min(2.4,0.16*Math.abs(p.speed)+0.4)));
+      p.speed+=(tgt-p.speed)*Math.min(1,dt*(tgt<p.speed?4:1.2));
+    }
+    var fx=Math.sin(p.h),fz=Math.cos(p.h),nx=p.x+fx*p.speed*dt,nz=p.z+fz*p.speed*dt,bumped=false;
+    for(var pass=0;pass<2;pass++){
+      for(var o=-1;o<=1;o+=2){
+        var cx=nx+fx*o*1.0,cz=nz+fz*o*1.0;
+        for(var si=0;si<solids.length;si++){
+          var s=solids[si];
+          if(cx<s.minX-1.5||cx>s.maxX+1.5||cz<s.minZ-1.5||cz>s.maxZ+1.5)continue;
+          var qx=Math.max(s.minX,Math.min(cx,s.maxX)),qz=Math.max(s.minZ,Math.min(cz,s.maxZ)),ex=cx-qx,ez=cz-qz,e2=ex*ex+ez*ez;
+          if(e2<1.1*1.1){
+            if(e2>1e-6){var ed=Math.sqrt(e2),pen=1.1-ed;nx+=ex/ed*pen;nz+=ez/ed*pen;cx+=ex/ed*pen;cz+=ez/ed*pen;}
+            else{nx-=fx*0.1;nz-=fz*0.1;}
+            bumped=true;
+          }
+        }
+      }
+    }
+    for(var ti=0;ti<traffic.length;ti++){
+      var tv=traffic[ti];if(Math.abs(tv.x-nx)>6||Math.abs(tv.z-nz)>6)continue;
+      var tf=Math.sin(tv.h),tg=Math.cos(tv.h);
+      for(var q=-1;q<=1;q+=2){
+        var tx=tv.x+tf*tv.r*q,tz=tv.z+tg*tv.r*q,ex2=nx-tx,ez2=nz-tz,e22=ex2*ex2+ez2*ez2,lim=tv.r+1.3;
+        if(e22<lim*lim&&e22>1e-6){var ed2=Math.sqrt(e22),pn=lim-ed2;nx+=ex2/ed2*pn;nz+=ez2/ed2*pn;bumped=true;}
+      }
+    }
+    if(driving){
+      var cd=carDist(nx,nz);
+      if(cd<1.5){
+        var vx=nx-car.x,vz=nz-car.z,vd=Math.hypot(vx,vz)||1,push=(1.5-cd);nx+=vx/vd*push;nz+=vz/vd*push;
+        p.speed*=0.85;touching=true;if(car.speed>0)car.speed*=Math.max(0,1-1.4*dt);
+      }
+    }
+    p.x=Math.max(XMIN+1.5,Math.min(XMAX-1.5,nx));p.z=Math.max(-LIM+1.5,Math.min(LIM-1.5,nz));
+    if(bumped){p.speed*=0.8;p.stuck+=dt;}else p.stuck=Math.max(0,p.stuck-dt*0.5);
+    if(p.stuck>0.9){p.rev=1.0;p.stuck=0;p.stuckN=(p.stuckN||0)+1;}
+    if(p.stuckN>=4){scene.remove(p.g);patrols.splice(i,1);i--;continue;}
+    if(d>170){scene.remove(p.g);patrols.splice(i,1);i--;continue;}
+    p.g.position.set(p.x,0,p.z);p.g.rotation.y=p.h;
+    p.g.userData.bm.color.setHex(fl?0x3366ff:0x0a1030);p.g.userData.rm.color.setHex(fl?0x2a0a0a:0xff2a2a);
+  }
+  if(!talking){
+    var near=touching||(minD<5.5&&(driving?pspd<7:minD<5));
+    bustMeter=Math.max(0,Math.min(1,bustMeter+(near?dt/2.4:-dt/2)));
+    if(bustMeter>=1){bust();return;}
+    if(minD>40)loseT+=dt;else loseT=Math.max(0,loseT-dt*2);
+    if(loseT>7){lostCops();return;}
+  }
+  showHeat();
+  if(AC&&audioOn){
+    if(!sirenO){
+      try{sirenO=AC.createOscillator();sirenG=AC.createGain();sirenO.type='square';sirenG.gain.value=0;sirenO.connect(sirenG);sirenG.connect(master);sirenO.start();}catch(e){sirenO=null;}
+    }
+    if(sirenO){sirenO.frequency.setTargetAtTime(760+330*Math.sin(sirenT*5.2),AC.currentTime,0.03);sirenG.gain.setTargetAtTime(0.028*Math.max(0,1-minD/130),AC.currentTime,0.1);}
+  }
+}
+
+/* taxi fares */
+var FSPOTS=[[-56,2],[56,2],[0,-55],[0,55],[95,-27],[96,2],[2,15.5],[-30,2],[28,2],[76,2],[0,-30],[0,30],[226,7.5],[205,40],[131,2]];
+var fare={st:0,x:0,z:0,wait:0,t:0,tot:1,pay:0,from:null},fareIdle=0,FARE_GAP=14,lastFd=-1;
+function pickSpot(fx,fz,mn,mx){
+  var c=[];for(var i=0;i<FSPOTS.length;i++){var d=Math.hypot(FSPOTS[i][0]-fx,FSPOTS[i][1]-fz);if(d>=mn&&d<=mx)c.push(FSPOTS[i]);}
+  if(!c.length)for(var j=0;j<FSPOTS.length;j++){var d2=Math.hypot(FSPOTS[j][0]-fx,FSPOTS[j][1]-fz);if(d2>=20)c.push(FSPOTS[j]);}
+  return c[(Math.random()*c.length)|0]||FSPOTS[0];
+}
+function cancelFare(){if(fare.st){fare.st=0;fareIdle=-8;updateMissionVisuals();}}
+function offerFare(){
+  var s=pickSpot(car.x,car.z,35,150);
+  fare.st=1;fare.x=s[0];fare.z=s[1];fare.wait=80;fare.from=s;fareIdle=0;
+  updateMissionVisuals();blip();toast('PASSENGER WAITING! Follow the green light');
+}
+function boardFare(){
+  var s=pickSpot(fare.x,fare.z,55,260),d=Math.hypot(s[0]-fare.x,s[1]-fare.z);
+  fare.st=2;fare.x=s[0];fare.z=s[1];fare.tot=fare.t=Math.round(22+d/6.2);fare.pay=Math.round((500+d*22)/50)*50;
+  updateMissionVisuals();blip();toast('PASSENGER ABOARD! '+Math.round(fare.t)+' seconds. Take them to the green light');
+}
+function fareUpdate(dt){
+  if(!started||talking)return;
+  if(jobActive){if(fare.st)cancelFare();return;}
+  if(fare.st===0){
+    if(driving&&farePref&&jobIdx>=2){fareIdle+=dt;if(fareIdle>=FARE_GAP)offerFare();}
+    return;
+  }
+  var px=driving?car.x:player.x,pz=driving?car.z:player.z,d=Math.hypot(px-fare.x,pz-fare.z),m=Math.round(d);
+  if(m!==lastFd){lastFd=m;objDist.textContent=m+' m';}
+  if(fare.st===1){
+    fare.wait-=dt;
+    if(fare.wait<=0){cancelFare();toast('Passenger don waka go. No wahala');}
+    else if(driving&&d<3.6)boardFare();
+  }else{
+    fare.t-=dt;
+    var tl=Math.max(0,Math.ceil(fare.t));objTime.textContent='TIME '+tl+' s';objTime.classList.toggle('late',tl<=8);
+    if(fare.t<=0){cancelFare();buzz();toast('TOO SLOW! Passenger jumped out. No pay');}
+    else if(!driving){cancelFare();toast('Passenger left because you got out');}
+    else if(d<3.6){
+      var tip=fare.t>fare.tot*0.55?Math.round(fare.pay*0.5/50)*50:(fare.t>fare.tot*0.3?Math.round(fare.pay*0.25/50)*50:0),pay=fare.pay+tip;
+      cash+=pay;stat.earned+=pay;stat.fares++;setCash();chime();
+      toast('FARE DONE!  +'+money(pay)+(tip?'  (tip '+money(tip)+')':''));
+      fare.st=0;fareIdle=-4;updateMissionVisuals();saveGame();checkLegend();
+    }
+  }
+}
+function completion(){
+  var jobs=Math.min(jobIdx,JOBS.length),cashN=foundCount(),veh=Math.max(0,owned.length-1),fr=Math.min(10,stat.fares|0);
+  return Math.floor(100*(jobs+cashN+veh+fr)/(JOBS.length+NB+3+10));
+}
+function checkLegend(){
+  if(endSeen<3&&completion()>=100){endSeen=3;saveGame();setTimeout(showEnd,3600);}
+}
+
+var fareB=$('fareb'),copB=$('copb');
+function showToggles(){fareB.textContent='FARES: '+(farePref?'ON':'OFF');copB.textContent='POLICE: '+(copsOn?'ON':'OFF');fareB.classList.toggle('on',farePref);copB.classList.toggle('on',copsOn);}
+fareB.addEventListener('click',function(){farePref=!farePref;if(!farePref)cancelFare();try{localStorage.setItem('gtl_fare',farePref?'on':'off');}catch(e){}showToggles();});
+copB.addEventListener('click',function(){copsOn=!copsOn;if(!copsOn)copsOff();try{localStorage.setItem('gtl_cops',copsOn?'on':'off');}catch(e){}showToggles();});
+showToggles();
 function openMenu(){
   if(!started||paused)return;
   paused=true;menuEl.hidden=false;
@@ -2076,7 +2324,7 @@ window.addEventListener('keydown',function(e){if(e.code==='Escape'||e.code==='Ke
 
 /* ------------------------------------------------------------------ loop */
 function update(dt){
-  npcsUpdate(dt);checkMission(dt);trafficUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);statTick(dt);
+  npcsUpdate(dt);checkMission(dt);fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);statTick(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
