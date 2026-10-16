@@ -495,7 +495,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b27';
+var VERSION='GTL 0.9 b28';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -561,10 +561,13 @@ function bkt(name,cx,cz){var k=name+'|'+Math.floor(cx/CHK)+'|'+Math.floor(cz/CHK
 var UB=new THREE.BoxGeometry(1,1,1).toNonIndexed();
 var UC=new THREE.CylinderGeometry(0.5,0.5,1,8).toNonIndexed();
 var UI=new THREE.IcosahedronGeometry(0.5,1);
+var UI0=new THREE.IcosahedronGeometry(0.5,0);
+var UC6=new THREE.CylinderGeometry(0.5,0.5,1,6).toNonIndexed(),UC4=new THREE.CylinderGeometry(0.5,0.5,1,4).toNonIndexed();
 var parentM=null,M=new THREE.Matrix4(),MM=new THREE.Matrix4(),NM=new THREE.Matrix3();
 var V=new THREE.Vector3(),Q=new THREE.Quaternion(),E=new THREE.Euler(),S=new THREE.Vector3(),PV=new THREE.Vector3(),CO=new THREE.Color();
 var jseed=11;
 function jrnd(){jseed=(jseed*16807)%2147483647;return (jseed-1)/2147483646;}
+var PV2=new THREE.Vector3();
 function put(g,color){
   var m=M;if(parentM){MM.multiplyMatrices(parentM,M);m=MM;}
   NM.getNormalMatrix(m);CO.set(color);
@@ -574,6 +577,14 @@ function put(g,color){
   var jit=1+(jrnd()-0.5)*0.09;
   var pa=g.attributes.position,na=g.attributes.normal;
   for(var i=0;i<pa.count;i++){
+    if(i%3===0){
+      /* skip faces that point straight down and rest on the ground: nobody can ever see them */
+      V.fromBufferAttribute(na,i).applyMatrix3(NM).normalize();
+      if(V.y<-0.9){
+        var y0=PV2.fromBufferAttribute(pa,i).applyMatrix4(m).y,y1=PV2.fromBufferAttribute(pa,i+1).applyMatrix4(m).y,y2=PV2.fromBufferAttribute(pa,i+2).applyMatrix4(m).y;
+        if(y0<0.22&&y1<0.22&&y2<0.22){i+=2;continue;}
+      }
+    }
     V.fromBufferAttribute(pa,i).applyMatrix4(m);B.P.push(V.x,V.y,V.z);
     var vx=V.x,vy=V.y,vz=V.z;
     V.fromBufferAttribute(na,i).applyMatrix3(NM).normalize();B.N.push(V.x,V.y,V.z);
@@ -587,8 +598,8 @@ function put(g,color){
 }
 function setM(x,y,z,sx,sy,sz,rx,ry,rz){E.set(rx||0,ry||0,rz||0);Q.setFromEuler(E);PV.set(x,y,z);S.set(sx,sy,sz);M.compose(PV,Q,S);}
 function box(x,y,z,w,h,d,color,ry,rx,rz){setM(x,y,z,w,h,d,rx,ry,rz);put(UB,color);}
-function cyl(x,y,z,dx,h,dz,color,rx,ry,rz){setM(x,y,z,dx,h,dz,rx,ry,rz);put(UC,color);}
-function lump(x,y,z,sx,sy,sz,color){setM(x,y,z,sx,sy,sz,0,0,0);put(UI,color);}
+function cyl(x,y,z,dx,h,dz,color,rx,ry,rz){setM(x,y,z,dx,h,dz,rx,ry,rz);var dd=dx>dz?dx:dz;put(dd<0.16?UC4:(dd<0.45?UC6:UC),color);}
+function lump(x,y,z,sx,sy,sz,color){setM(x,y,z,sx,sy,sz,0,0,0);put(Math.max(sx,sy,sz)<1.0?UI0:UI,color);}
 function geo(g,x,y,z,sx,sy,sz,rx,ry,rz,color){setM(x,y,z,sx,sy,sz,rx,ry,rz);put(g.index?g.toNonIndexed():g,color);}
 function frame(px,pz,ang,fn){
   var t=new THREE.Matrix4().makeTranslation(px,0,pz);
@@ -644,6 +655,12 @@ var solids=[];
 function solid(x,z,w,d,h){solids.push({minX:x-w/2,maxX:x+w/2,minZ:z-d/2,maxZ:z+d/2,h:h});}
 
 /* shop and street signs: one small canvas texture each */
+var SIGNS=[],signT=0;
+function signsCull(dt){
+  signT-=dt;if(signT>0)return;signT=0.35;
+  var px=driving?car.x:player.x,pz=driving?car.z:player.z;
+  for(var i=0;i<SIGNS.length;i++){var m=SIGNS[i],dx=m.position.x-px,dz=m.position.z-pz;m.visible=dx*dx+dz*dz<6400;}
+}
 function addSign(text,bg,fg,x,y,z,ang,w,h){
   var c=document.createElement('canvas');c.width=512;c.height=Math.max(64,Math.round(512*h/w));
   var g=c.getContext('2d');
@@ -655,7 +672,7 @@ function addSign(text,bg,fg,x,y,z,ang,w,h){
   g.fillText(text,c.width/2,c.height/2+2);
   var tex=new THREE.CanvasTexture(c);
   var mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex,toneMapped:false}));
-  mesh.position.set(x,y,z);mesh.rotation.y=ang;scene.add(mesh);
+  mesh.position.set(x,y,z);mesh.rotation.y=ang;scene.add(mesh);SIGNS.push(mesh);
 }
 var FACE={N:Math.PI,S:0,E:Math.PI/2,W:-Math.PI/2};
 function frontPoint(o){
@@ -2884,6 +2901,7 @@ var DAY_KEYS=[
 ];
 var gameHour=14.5,lastClk='',tmpC=new THREE.Color();
 function dayUpdate(dt){
+  signsCull(dt);
   gameHour=(gameHour+dt/25)%24;
   var i=0;while(i<DAY_KEYS.length-2&&gameHour>=DAY_KEYS[i+1].h)i++;
   var a=DAY_KEYS[i],b=DAY_KEYS[i+1],f=(gameHour-a.h)/(b.h-a.h);f=f*f*(3-2*f);
