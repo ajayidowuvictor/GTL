@@ -82,27 +82,8 @@ jobs:
 
       - name: Force the Gradle debug build to sign with our committed key
         run: |
-          GRADLE=android/app/build.gradle
-          python3 - <<'PY'
-          import re
-          p='android/app/build.gradle'
-          s=open(p).read()
-          block = '''
-    signingConfigs {
-        debug {
-            storeFile file('../../debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
-    }
-'''
-          assert 'storeFile file(' not in s
-          s=re.sub(r'(^android\s*\{)', lambda m: m.group(1)+block, s, count=1, flags=re.M)
-          assert "debug.keystore" in s
-          open(p,'w').write(s)
-          PY
-          sed -n 1,30p "$GRADLE"
+          python3 tools/patch_signing.py
+          sed -n 1,30p android/app/build.gradle
 
       - name: Build debug APK
         working-directory: android
