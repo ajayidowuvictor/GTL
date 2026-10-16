@@ -41,7 +41,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #fps{font:500 13px/1 var(--display);letter-spacing:.1em;background:rgba(20,17,15,.6);padding:4px 8px;font-variant-numeric:tabular-nums}
 #hint{left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);width:max-content;max-width:calc(100% - 260px);text-align:center;font-size:13px;line-height:1.35;background:rgba(20,17,15,.7);padding:8px 12px;border-radius:6px;transition:opacity .8s}
 #hint.off{opacity:0}
-#toast{left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translateX(-50%);background:var(--danfo);color:var(--ink);font:700 15px/1.2 var(--display);letter-spacing:.06em;padding:8px 14px;opacity:0;transition:opacity .3s;text-align:center;max-width:80%}
+#toast{left:50%;top:calc(env(safe-area-inset-top,0px) + 124px);transform:translateX(-50%);background:var(--danfo);color:var(--ink);font:700 15px/1.2 var(--display);letter-spacing:.06em;padding:8px 14px;opacity:0;transition:opacity .3s;text-align:center;max-width:80%}
 #toast.show{opacity:1}
 
 #splash{position:fixed;inset:0;z-index:20;display:flex;align-items:center;padding-block:24px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));background:linear-gradient(90deg,rgba(20,17,15,.92) 0%,rgba(20,17,15,.8) 50%,rgba(20,17,15,.2) 100%);overflow:auto;touch-action:pan-y}
@@ -58,7 +58,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #play:active{transform:translate(3px,3px);box-shadow:2px 2px 0 rgba(0,0,0,.55)}
 .card .note{font-size:12.5px;color:#bfb293}
 
-#obj{top:calc(env(safe-area-inset-top,0px) + 84px);left:calc(env(safe-area-inset-left,0px) + 16px);background:rgba(20,17,15,.72);border-left:6px solid #7ed17a;padding:5px 12px;display:flex;flex-direction:column}
+#obj{max-width:calc(50vw - 84px);top:calc(env(safe-area-inset-top,0px) + 84px);left:calc(env(safe-area-inset-left,0px) + 16px);background:rgba(20,17,15,.72);border-left:6px solid #7ed17a;padding:5px 12px;display:flex;flex-direction:column}
 #obj .t{font:500 12px/1.1 var(--display);letter-spacing:.2em;color:#cdbf9f}
 #obj .d.late{color:#ff8a7a}
 #obj .d{font:700 22px/1.1 var(--display);letter-spacing:.04em;font-variant-numeric:tabular-nums}
@@ -70,6 +70,8 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #dlgBtns button{background:var(--danfo);color:var(--ink);border:3px solid #000;font:700 18px/1 var(--display);letter-spacing:.1em;padding:10px 18px;border-radius:0}
 #dlgBtns button:last-child:not(:first-child){background:var(--paper)}
 #reset{margin-top:12px;background:none;border:0;color:#bfb293;font:13px/1 inherit;text-decoration:underline;padding:6px 0}
+#map{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:50%;transform:translateX(-50%);width:96px;height:96px;border:3px solid rgba(246,236,217,.6);border-radius:8px;z-index:7;background:#000;opacity:.92;touch-action:none}
+#map.big{top:50%;transform:translate(-50%,-50%);width:min(300px,78vh);height:min(300px,78vh);z-index:11;opacity:1}
 #gas,#brk,#act{position:fixed;z-index:8;border:4px solid var(--ink);color:var(--ink);font:700 22px/1 var(--display);letter-spacing:.1em;touch-action:none;padding:0;box-shadow:0 0 0 3px rgba(246,236,217,.55)}
 #gas{right:calc(env(safe-area-inset-right,0px) + 26px);bottom:calc(env(safe-area-inset-bottom,0px) + 34px);width:96px;height:96px;border-radius:50%;background:#7ed17a}
 #brk{right:calc(env(safe-area-inset-right,0px) + 136px);bottom:calc(env(safe-area-inset-bottom,0px) + 34px);width:76px;height:76px;border-radius:50%;background:#e0584c;font-size:17px}
@@ -104,14 +106,15 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <div class="hud" id="obj" hidden><span class="t" id="objTitle">JOB</span><span class="d" id="objDist">0 m</span><span class="d" id="objTime" hidden></span></div>
 <div class="hud" id="speed" hidden><span id="kmh">0</span> <small>KM/H</small></div>
 
+<canvas id="map" width="256" height="256" hidden></canvas>
 <div id="dlg" hidden><div id="dlgName"></div><p id="dlgText"></p><div id="dlgBtns"></div></div>
 
 <div id="splash">
   <div class="card">
     <h1>Grand Theft Lagos</h1>
     <div class="stripe"></div>
-    <div class="ver">GTL 0.3 &middot; Mainland test block</div>
-    <p>Build 7: a full day and night in Lagos, with street lights and headlights. Tap the clock to skip 3 hours.</p>
+    <div class="ver">GTL 0.4 &middot; Mainland test block</div>
+    <p>Build 8: a map in the top middle (tap it to enlarge) and two new jobs for Mama Nkechi, including a city-wide sprint.</p>
     <ul>
       <li><b>MOVE</b> &nbsp;drag with your left thumb</li>
       <li><b>LOOK</b> &nbsp;swipe with your right thumb</li>
@@ -130,7 +133,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.3 b7';
+var VERSION='GTL 0.4 b8';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -978,7 +981,17 @@ var JOBS=[
    stages:[{x:56,z:2,label:'COLLECT THE PARCEL FROM TOLA'},{x:-56,z:2,label:'RUSH IT TO MALLAM SULE'}],
    offer:"Now I get one rush job. Tola has a parcel for Mallam Sule and Sule needs it fast. Collect it from Tola in the east, then bring it to Sule in the west. The clock starts when you pick it up: 28 seconds! ₦6,000, plus ₦1,000 if you are quick.",
    remind:"Collect the parcel from Tola in the east, then rush it to Mallam Sule in the west. The clock starts when you pick it up!",
-   toast:'NEW JOB: rush order. The clock starts at the pickup'}
+   toast:'NEW JOB: rush order. The clock starts at the pickup'},
+  {title:'SUPPLY RUN',reward:5000,
+   stages:[{x:0,z:-55,label:'COLLECT THE CRATES AT THE NORTH END'},{x:56,z:2,label:'TAKE THE CRATES TO TOLA'}],
+   offer:"Una don dey show me pepper for market! Crates of tomatoes dey wait at the north end of the cross road, past the junction. Pick them up and carry them to Tola in the east. \u20A65,000 for you.",
+   remind:"The crates dey the north end of the cross road. After you collect them, carry them to Tola in the east.",
+   toast:'NEW JOB: supply run, north then east'},
+  {title:'CITY SPRINT',reward:10000,bonus:2000,bonusLeft:8,timer:{stage:1,secs:32},
+   stages:[{x:56,z:2,label:'COLLECT THE CARGO FROM TOLA'},{x:0,z:-55,label:'SPRINT TO THE NORTH END'},{x:-56,z:2,label:'FINISH AT MALLAM SULE'}],
+   offer:"The big one! Collect cargo from Tola in the east, rush it to the north end, then finish with Mallam Sule in the west. The clock starts at the pickup and you get 32 seconds. Running no go reach, you must use the car! \u20A610,000, and \u20A62,000 more if you finish with 8 seconds to spare.",
+   remind:"Cargo from Tola in the east, then the north end, then Mallam Sule in the west. 32 seconds from the pickup. Use the car!",
+   toast:'NEW JOB: city sprint. Use the car!'}
 ];
 var jobIdx=0,jobActive=false,jobStage=0,timerOn=false,timerLeft=0,lastObj=-1,SAVE_KEY='gtl_save_v1';
 function curJob(){return JOBS[jobIdx]||null;}
@@ -1086,7 +1099,7 @@ function checkMission(dt){
   if(d<3.4){
     jobStage++;
     if(jobStage>=cj.stages.length){
-      var bonus=(cj.bonus&&timerOn&&timerLeft>10)?cj.bonus:0,pay=cj.reward+bonus;
+      var bonus=(cj.bonus&&timerOn&&timerLeft>(cj.bonusLeft||10))?cj.bonus:0,pay=cj.reward+bonus;
       timerOn=false;jobActive=false;jobStage=0;jobIdx++;cash+=pay;setCash();saveGame();updateMissionVisuals();
       chime();toast("DELIVERED!  +₦"+String(pay).replace(/\B(?=(\d{3})+(?!\d))/g,',')+(bonus?'  (speed bonus)':''));
     }else{
@@ -1422,9 +1435,56 @@ function dayUpdate(dt){
 var clkBtn=$('clk');
 clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 
+
+/* ------------------------------------------------------------ map */
+npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';
+var MAPS=256,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=false,mapT=0;
+mapBG.width=mapBG.height=MAPS;
+function MX(x){return (x+66)/132*MAPS;}
+(function(){
+  var g=mapBG.getContext('2d');
+  g.fillStyle='#8f6542';g.fillRect(0,0,MAPS,MAPS);
+  g.fillStyle='#4a4d52';g.fillRect(0,MX(-5),MAPS,MX(5)-MX(-5));g.fillRect(MX(-4),0,MX(4)-MX(-4),MAPS);
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);
+  g.beginPath();g.moveTo(0,MX(0));g.lineTo(MAPS,MX(0));g.moveTo(MX(0),0);g.lineTo(MX(0),MAPS);g.stroke();g.setLineDash([]);
+  g.fillStyle='#c9b08a';
+  for(var i=0;i<solids.length;i++){
+    var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MX(q.minZ),Math.max(2,w/132*MAPS),Math.max(2,d/132*MAPS));
+  }
+})();
+mapC.addEventListener('click',function(){mapBig=!mapBig;mapC.classList.toggle('big',mapBig);});
+function mapUpdate(dt){
+  mapC.hidden=!started;
+  mapT+=dt;if(mapT<0.06||!started)return;mapT=0;
+  var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
+  g.drawImage(mapBG,0,0);
+  g.fillStyle='#1b1b1b';
+  for(i=0;i<traffic.length;i++)g.fillRect(MX(traffic[i].x)-3,MX(traffic[i].z)-3,6,6);
+  g.font='bold 14px sans-serif';g.textAlign='center';
+  for(i=0;i<npcs.length;i++){
+    var n=npcs[i],offer=(i===0&&!jobActive&&!!cj);
+    g.fillStyle=offer?'#f2b705':'#f1efe6';g.beginPath();g.arc(MX(n.x),MX(n.z),offer?6:4.5,0,6.283);g.fill();
+    if(mapBig){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(n.label,MX(n.x),MX(n.z)-10);g.fillText(n.label,MX(n.x),MX(n.z)-10);}
+  }
+  if(!driving){
+    g.fillStyle='#2f7d4f';g.strokeStyle='#fff';g.lineWidth=2;g.fillRect(MX(car.x)-5,MX(car.z)-5,10,10);g.strokeRect(MX(car.x)-5,MX(car.z)-5,10,10);
+    if(mapBig){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText('CAR',MX(car.x),MX(car.z)-10);g.fillText('CAR',MX(car.x),MX(car.z)-10);}
+  }
+  if(jobActive&&cj){
+    var st=cj.stages[jobStage],pr=6+3*Math.sin(elapsed*5);
+    g.strokeStyle='#f2b705';g.lineWidth=3;g.beginPath();g.arc(MX(st.x),MX(st.z),pr,0,6.283);g.stroke();
+    g.fillStyle='#f2b705';g.beginPath();g.arc(MX(st.x),MX(st.z),3,0,6.283);g.fill();
+  }
+  var ax=MX(px),az=MX(pz),sy=Math.sin(yaw),cy=Math.cos(yaw);
+  g.fillStyle='#ffffff';g.strokeStyle='#000';g.lineWidth=2;
+  g.beginPath();g.moveTo(ax+sy*11,az+cy*11);g.lineTo(ax-sy*6+cy*7,az-cy*6-sy*7);g.lineTo(ax-sy*6-cy*7,az-cy*6+sy*7);g.closePath();g.fill();g.stroke();
+  g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText('N',MAPS/2,16);g.fillText('N',MAPS/2,16);
+}
+
 /* ------------------------------------------------------------------ loop */
 function update(dt){
-  npcsUpdate(dt);checkMission(dt);trafficUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);
+  npcsUpdate(dt);checkMission(dt);trafficUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);mapUpdate(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
