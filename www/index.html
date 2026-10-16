@@ -152,7 +152,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.5 b10';
+var VERSION='GTL 0.5 b11';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -569,7 +569,8 @@ for(var sk=0;sk<80;sk++){
   var kx=(rnd()-0.5)*300,kz=(rnd()-0.5)*300;
   if(Math.abs(kx)<86&&Math.abs(kz)<86)continue;
   if(Math.abs(kx)<12||Math.abs(kz)<12)continue;
-  box(kx,0,kz,6+rnd()*10,0,6+rnd()*10,'#999');
+  if(kx>94)continue;
+  box(kx,0.02,kz,6+rnd()*10,0.04,6+rnd()*10,'#8f8f8f');
 }
 for(var sk2=0;sk2<80;sk2++){
   var qx=(rnd()-0.5)*300,qz=(rnd()-0.5)*300;
