@@ -446,7 +446,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
     <h1>Grand Theft Lagos</h1>
     <div class="stripe"></div>
     <div class="ver">GTL 0.7 &middot; Your phone: NairaPay, stays and flights</div>
-    <p>Build 18: a full phone with a new NairaPay wallet. Send money to friends or other banks, buy airtime, data, power and TV, lock fixed savings, claim daily bonuses, and book rides, hotel stays and flights.</p>
+    <p>Build 19: driving and animation. Cars now drift and slide, bounce and lean, burn rubber with tyre smoke and skid marks, and the camera chases with speed. People breathe, lean into turns, kick up dust when running, and wave when you come near.</p>
     <ul>
       <li><b>MOVE</b> &nbsp;drag with your left thumb</li>
       <li><b>LOOK</b> &nbsp;swipe with your right thumb</li>
@@ -467,7 +467,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.7 b18';
+var VERSION='GTL 0.8 b19';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -1038,6 +1038,7 @@ world.receiveShadow=true;world.castShadow=true;world.frustumCulled=false;scene.a
 
 /* --------------------------------------------------------------- player */
 var player={x:4.8,z:12.2,y:0,yaw:Math.PI,speed:0,phase:0,dirx:0,dirz:-1};
+var pAnim={yaw:Math.PI,speed:0,lean:0,fwd:0};
 var blob=null;
 /* player: smooth low-poly figure from the character sheet (black rugby shirt with white bands, black cargo pants, white sneakers) */
 var SKIN='#6b4026',SKIN2='#5a3520',BLK='#17171b',WHT='#f1efe6',PNT='#1e1e22',SOLE='#d6d3c8',HAIR='#0d0d0d';
@@ -1150,9 +1151,9 @@ blob.rotation.x=-Math.PI/2;blob.position.y=0.075;scene.add(blob);
 
 /* ---------------------------------------------------------------- the car */
 var CHW=0.92,CHL=2.2,CR=1.05,CMAX=21,ACCEL=8,GRIP=1;
-var car={x:-4.6,z:11,h:0,speed:0,steer:0,spin:0};
+var car={x:-4.6,z:11,h:0,speed:0,steer:0,spin:0,lat:0,pit:0,pitV:0,rol:0,rolV:0,yawRate:0,accel:0,bob:0,brk:false};
 var driving=false,usedCar=false,_cx=0,_cz=0;
-var carRoot=new THREE.Group();scene.add(carRoot);
+var carRoot=new THREE.Group();carRoot.rotation.order='YXZ';scene.add(carRoot);
 var carFront=[],carSpin=[],vehKind='sedan',owned=['sedan'],playerBeams=[],beamsReady=false;
 var VEHS={
   sedan:{name:'SEDAN',price:0,chw:0.92,chl:2.2,cr:1.05,cmax:21,acc:8,grip:1,blen:4.7,bwid:2.1,beams:[[-0.62,0.72,2.2],[0.62,0.72,2.2]]},
@@ -1260,11 +1261,73 @@ buildVehicleModel('sedan');
 var arrow=new THREE.Mesh(new THREE.ConeGeometry(0.42,0.9,4),new THREE.MeshBasicMaterial({color:0xf2b705}));
 arrow.rotation.x=Math.PI;scene.add(arrow);
 function setCarPose(){
-  carRoot.position.set(car.x,0,car.z);carRoot.rotation.y=car.h;carRoot.rotation.z=(vehKind==='okada')?car.steer*Math.min(1,Math.abs(car.speed)/9)*0.8:0;
+  var lean=(vehKind==='okada')?car.steer*Math.min(1,Math.abs(car.speed)/9)*0.8+car.rol*0.5:car.rol;
+  carRoot.position.set(car.x,car.bob,car.z);carRoot.rotation.set(car.pit,car.h,lean,'YXZ');
   for(var i=0;i<carFront.length;i++)carFront[i].rotation.y=-car.steer;
   for(var j=0;j<carSpin.length;j++)carSpin[j].rotation.x=car.spin;
 }
 setCarPose();
+
+/* ---------------------------------------------------------- effects: tyre smoke, dust, skid marks */
+var puffTex=(function(){
+  var c=document.createElement('canvas');c.width=c.height=64;var g=c.getContext('2d');
+  var gr=g.createRadialGradient(32,32,2,32,32,32);gr.addColorStop(0,'rgba(255,255,255,0.95)');gr.addColorStop(0.5,'rgba(255,255,255,0.45)');gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=gr;g.fillRect(0,0,64,64);return new THREE.CanvasTexture(c);
+})();
+var PUFFN=30,puffs=[],puffI=0,camShake=0,camSnap=true;
+(function(){
+  for(var i=0;i<PUFFN;i++){
+    var m=new THREE.SpriteMaterial({map:puffTex,transparent:true,opacity:0,depthWrite:false,color:0xdddddd});
+    var sp=new THREE.Sprite(m);sp.visible=false;scene.add(sp);
+    puffs.push({s:sp,t:0,life:1,vx:0,vy:0,vz:0,sz:1,op:0.4});
+  }
+})();
+function emitPuff(x,y,z,vx,vy,vz,sz,life,op,col){
+  var n=tier==='low'?20:PUFFN,p=puffs[puffI%n];puffI=(puffI+1)%n;
+  p.s.position.set(x,y,z);p.vx=vx;p.vy=vy;p.vz=vz;p.sz=sz;p.life=life;p.op=op;p.t=0;p.s.material.color.setHex(col||0xdddddd);
+  p.s.scale.setScalar(sz*0.6);p.s.material.opacity=0;p.s.visible=true;
+}
+var SKN=160,skidI=0,skidMesh=new THREE.InstancedMesh(new THREE.PlaneGeometry(0.2,0.85),new THREE.MeshBasicMaterial({color:0x121212,transparent:true,opacity:0.42,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}),SKN);
+var _m4=new THREE.Matrix4(),_q=new THREE.Quaternion(),_qf=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),-Math.PI/2),_qy=new THREE.Quaternion(),_v3=new THREE.Vector3(),_sc=new THREE.Vector3(1,1,1),_sc0=new THREE.Vector3(0,0,0),_up=new THREE.Vector3(0,1,0);
+(function(){_m4.compose(_v3.set(0,-5,0),_q.identity(),_sc0);for(var i=0;i<SKN;i++)skidMesh.setMatrixAt(i,_m4);skidMesh.frustumCulled=false;scene.add(skidMesh);})();
+function skidMark(x,z,ang){
+  _qy.setFromAxisAngle(_up,ang);_q.copy(_qy).multiply(_qf);_v3.set(x,0.05,z);_m4.compose(_v3,_q,_sc);
+  skidMesh.setMatrixAt(skidI,_m4);skidI=(skidI+1)%SKN;skidMesh.instanceMatrix.needsUpdate=true;
+}
+function clearSkids(){_m4.compose(_v3.set(0,-5,0),_q.identity(),_sc0);for(var i=0;i<SKN;i++)skidMesh.setMatrixAt(i,_m4);skidMesh.instanceMatrix.needsUpdate=true;}
+var skidAcc=0,puffAcc=0,skidAmt=0,footAcc=0,launchAcc=0;
+function fxUpdate(dt){
+  for(var i=0;i<puffs.length;i++){
+    var p=puffs[i];if(!p.s.visible)continue;
+    p.t+=dt;if(p.t>=p.life){p.s.visible=false;continue;}
+    var k=p.t/p.life,ps=p.s.position;
+    ps.x+=p.vx*dt;ps.y+=p.vy*dt;ps.z+=p.vz*dt;p.vy*=1-dt*1.2;p.vx*=1-dt*1.5;p.vz*=1-dt*1.5;
+    p.s.scale.setScalar(p.sz*(0.6+1.5*k));
+    p.s.material.opacity=p.op*(1-k)*(k<0.12?k/0.12:1);
+  }
+  if(!driving){skidAmt+=(0-skidAmt)*Math.min(1,dt*10);return;}
+  var sp=car.speed,lat=car.lat,fx=Math.sin(car.h),fz=Math.cos(car.h),rx=fz,rz=-fx;
+  var slide=Math.abs(lat)>1.7&&Math.abs(sp)>3,sk=slide?Math.min(1,(Math.abs(lat)-1.7)/4):0;
+  if(car.brk&&sp>9)sk=Math.max(sk,0.5);
+  skidAmt+=(sk-skidAmt)*Math.min(1,dt*12);
+  var wl=-CHL*0.62,wx=CHW>0.6?[-CHW*0.95,CHW*0.95]:[0];
+  if(sk>0.15){
+    skidAcc+=Math.hypot(sp,lat)*dt;
+    if(skidAcc>0.5){
+      skidAcc=0;var ang=car.h+Math.atan2(lat,sp);
+      for(var w=0;w<wx.length;w++)skidMark(car.x+fx*wl+rx*wx[w],car.z+fz*wl+rz*wx[w],ang);
+    }
+    puffAcc+=dt*(tier==='low'?8:15)*(0.4+sk);
+    while(puffAcc>=1){
+      puffAcc-=1;var wi=wx.length>1?(Math.random()<0.5?0:1):0;
+      emitPuff(car.x+fx*wl+rx*wx[wi],0.25,car.z+fz*wl+rz*wx[wi],(Math.random()-0.5)*0.8-fx*sp*0.1,0.5+Math.random()*0.5,(Math.random()-0.5)*0.8-fz*sp*0.1,1.1+sk*0.9,0.9+sk*0.4,0.18+0.3*sk,0xe4e0d8);
+    }
+  }else puffAcc=0;
+  /* wheelspin puffs when pulling away hard */
+  if(lastThr&&sp>0.3&&sp<3.2&&vehKind!=='okada'){
+    launchAcc+=dt;if(launchAcc>0.09){launchAcc=0;emitPuff(car.x+fx*wl,0.2,car.z+fz*wl,(Math.random()-0.5)*0.6,0.4,(Math.random()-0.5)*0.6,0.7,0.55,0.26,0xd8d2c4);}
+  }
+}
 /* distance from a point to the car body (0 when touching) */
 function carDist(px,pz){
   var fx=Math.sin(car.h),fz=Math.cos(car.h),dx=px-car.x,dz=pz-car.z;
@@ -1323,21 +1386,48 @@ function collideCar(){
   return hit;
 }
 function driveUpdate(dt,ctl){
-  var s=car.speed;
+  var s=car.speed,l=car.lat,s0=s;
   if(ctl.gas){s+=(s<0?14:ACCEL*(1-Math.max(0,s)/CMAX))*dt;}
   else if(ctl.brake){if(s>0.4)s-=16*dt;else s=Math.max(-5,s-5*dt);}
   else if(s!==0){var dr=(1.8+0.012*s*s)*dt;s=Math.abs(s)<=dr?0:s-(s>0?dr:-dr);}
   s=Math.max(-5,Math.min(CMAX,s));
   var maxSt=0.62*GRIP/(1+Math.abs(s)*0.09);
   car.steer+=(ctl.steer*maxSt-car.steer)*Math.min(1,dt*8);
-  car.h-=(s/(1.9+CHL*0.4))*Math.tan(car.steer)*dt;
-  car.x+=Math.sin(car.h)*s*dt;car.z+=Math.cos(car.h)*s*dt;
-  car.speed=s;
+  /* grip: tyres hold the sideways speed down; braking hard in a turn or flooring it on a corner lets the back slide */
+  var k=8*GRIP*(1-0.28*rainAmt),drift=ctl.brake&&s>7&&Math.abs(car.steer)>0.08;
+  if(drift)k=1.7*GRIP;
+  else if(ctl.gas&&s>13&&Math.abs(ctl.steer)>0.8)k*=0.5;
+  car.brk=ctl.brake&&s>7;
+  var yaw=-(s/(1.9+CHL*0.4))*Math.tan(car.steer)*(drift?1.3:1);
+  var dh=yaw*dt;car.yawRate+=(yaw-car.yawRate)*Math.min(1,dt*10);
+  car.h+=dh;
+  var cd=Math.cos(dh),sd=Math.sin(dh),s2=s*cd+l*sd;l=-s*sd+l*cd;s=s2;
+  var l1=l*Math.exp(-k*dt);if(s>0)s+=Math.abs(l-l1)*0.25;l=l1;
+  if(Math.abs(l)<0.02)l=0;
+  car.x+=(Math.sin(car.h)*s+Math.cos(car.h)*l)*dt;car.z+=(Math.cos(car.h)*s-Math.sin(car.h)*l)*dt;
+  car.speed=s;car.lat=l;
   trafficHit=0;var hit=collideCar();
-  if(trafficHit&&Math.abs(s)>8)onCrash();
-  if(hit>0.05)car.speed*=1-0.5*hit*hit;
+  var tot=Math.hypot(s,l);
+  if(trafficHit&&tot>8)onCrash();
+  if(hit>0.05){car.speed*=1-0.5*hit*hit;car.lat*=1-0.6*hit*hit;}
+  if(hit>0.35&&tot>6){crashFx(tot);}
   car.spin+=car.speed*dt/0.34;
   if(car.spin>6.2832||car.spin<-6.2832)car.spin%=6.2832;
+  /* body springs: nose dips under braking, lifts under power, leans out in turns */
+  var acc=dt>0?(s-s0)/dt:0;car.accel+=(acc-car.accel)*Math.min(1,dt*10);
+  var pT=Math.max(-0.08,Math.min(0.1,-car.accel*0.0052)),rT=Math.max(-0.12,Math.min(0.12,s*car.yawRate*0.0036));
+  if(vehKind==='okada')pT=Math.max(-0.2,Math.min(0.06,-car.accel*0.012));
+  car.pitV+=((pT-car.pit)*95-car.pitV*11)*dt;car.pit+=car.pitV*dt;
+  car.rolV+=((rT-car.rol)*95-car.rolV*11)*dt;car.rol+=car.rolV*dt;
+  var sa=Math.min(1,Math.abs(s)/12);
+  car.bob=Math.sin(elapsed*48)*0.0045*sa+Math.sin(elapsed*23)*0.0025;
+}
+function crashFx(tot){
+  camShake=Math.max(camShake,Math.min(0.45,tot*0.022));
+  car.pitV+=Math.min(1.2,tot*0.05);car.rolV+=(Math.random()-0.5)*Math.min(1,tot*0.05);
+  var fx=Math.sin(car.h),fz=Math.cos(car.h),hl=car.speed>=0?CHL:-CHL;
+  for(var i=0;i<5;i++)emitPuff(car.x+fx*hl+(Math.random()-0.5)*1.4,0.5,car.z+fz*hl+(Math.random()-0.5)*1.4,(Math.random()-0.5)*3,1.2+Math.random(),(Math.random()-0.5)*3,0.9,0.7,0.5,0x9a948a);
+  tone(90,0.25,'sawtooth',0.1,0);tone(60,0.3,'square',0.08,0.03);
 }
 function freeSpot(px,pz){
   if(px<XMIN||px>XMAX||Math.abs(pz)>LIM)return false;
@@ -1441,7 +1531,7 @@ function setDriveUI(){
   running=false;runBtn.classList.remove('on');
 }
 function enterCar(){
-  driving=true;usedCar=true;player.speed=0;car.speed=0;car.steer=0;
+  driving=true;usedCar=true;player.speed=0;car.speed=0;car.steer=0;car.lat=0;car.pit=car.rol=car.pitV=car.rolV=0;camSnap=true;
   root.visible=false;blob.visible=false;arrow.visible=false;
   setDriveUI();hint.classList.add('off');
   toast('GAS to go, BRAKE to stop or reverse. Left thumb steers.');
@@ -1452,7 +1542,7 @@ function exitCar(){
   var sd=CHW+0.9,sl=CHL+1.2,c=[[rx*sd,rz*sd],[-rx*sd,-rz*sd],[fx*sl,fz*sl],[-fx*sl,-fz*sl]];
   var px=car.x+c[0][0],pz=car.z+c[0][1];
   for(var i=0;i<c.length;i++){var qx=car.x+c[i][0],qz=car.z+c[i][1];if(freeSpot(qx,qz)){px=qx;pz=qz;break;}}
-  driving=false;car.speed=0;car.steer=0;
+  driving=false;car.speed=0;car.steer=0;car.lat=0;car.pit=car.rol=car.pitV=car.rolV=car.bob=0;
   player.x=px;player.z=pz;player.speed=0;player.yaw=car.h;
   root.visible=true;blob.visible=true;
   setDriveUI();setCarPose();
@@ -1653,9 +1743,6 @@ function makeNPC(o){
   g.add(SPH,0,1.70,0.108,0.04,0.05,0.04,0,0,0,sk);
   g.add(SPH,0,1.655,0.1,0.06,0.022,0.03,0,0,0,'#5a2e24');
   [-1,1].forEach(function(sd){
-    g.add(cylG(0.06,0.052,0.3),sd*0.29,1.25,0,1,1,1,0,0,sd*0.06,o.top);
-    g.add(cylG(0.05,0.043,0.3),sd*0.315,0.97,0,1,1,1,0,0,sd*0.06,sk);
-    g.add(SPH,sd*0.33,0.8,0,0.09,0.12,0.08,0,0,0,sk);
     g.add(SPH,sd*0.042,1.735,0.098,0.034,0.022,0.02,0,0,0,'#e8e0d0');
     g.add(SPH,sd*0.042,1.735,0.107,0.017,0.017,0.012,0,0,0,'#120a06');
     g.add(BOXG,sd*0.044,1.763,0.101,0.05,0.011,0.016,0,0,sd*0.12,'#0d0d0d');
@@ -1668,11 +1755,18 @@ function makeNPC(o){
     g.add(cylG(0.202,0.202,0.03),0,1.84,0,1,1,1,0,0,0,'#d9c27a');
   }
   var grp=new THREE.Group(),m=g.mesh();grp.add(m);
+  var arms=[-1,1].map(function(sd){
+    var a=new GB();
+    a.add(cylG(0.06,0.052,0.3),sd*0.02,-0.2,0,1,1,1,0,0,sd*0.06,o.top);
+    a.add(cylG(0.05,0.043,0.3),sd*0.045,-0.48,0,1,1,1,0,0,sd*0.06,sk);
+    a.add(SPH,sd*0.06,-0.65,0,0.09,0.12,0.08,0,0,0,sk);
+    var ag=new THREE.Group();ag.position.set(sd*0.27,1.45,0);ag.add(a.mesh());grp.add(ag);return ag;
+  });
   grp.position.set(o.x,0,o.z);grp.rotation.y=o.yaw;scene.add(grp);
   var bl=new THREE.Mesh(new THREE.CircleGeometry(0.42,14),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.3}));
   bl.rotation.x=-Math.PI/2;bl.position.set(o.x,0.075,o.z);scene.add(bl);
   solid(o.x,o.z,0.7,0.7,2);
-  var n={x:o.x,z:o.z,baseYaw:o.yaw,grp:grp,body:m,bl:bl,talk:o.talk};
+  var n={x:o.x,z:o.z,baseYaw:o.yaw,grp:grp,body:m,bl:bl,talk:o.talk,aL:arms[0],aR:arms[1],wave:0,seen:false,cd:0,ph:Math.random()*6};
   npcs.push(n);return n;
 }
 function npcsUpdate(dt){
@@ -1680,7 +1774,19 @@ function npcsUpdate(dt){
   for(var i=0;i<npcs.length;i++){
     var n=npcs[i],dx=px-n.x,dz=pz-n.z,near=(dx*dx+dz*dz)<49,vis=(dx*dx+dz*dz)<cullR2;n.grp.visible=vis;n.bl.visible=vis;
     n.grp.rotation.y=turnToward(n.grp.rotation.y,near?Math.atan2(dx,dz):n.baseYaw,dt*5);
-    n.body.scale.y=1+Math.sin(elapsed*2+n.x)*0.006;
+    var br=Math.sin(elapsed*1.9+n.ph);
+    n.body.scale.y=1+br*0.006;
+    if(!vis)continue;
+    var close=(dx*dx+dz*dz)<110;
+    if(n.cd>0)n.cd-=dt;
+    if(close&&!n.seen&&n.cd<=0&&!talking){n.wave=2.4;n.cd=14;}
+    n.seen=close;
+    var wv=n.wave>0;if(wv)n.wave-=dt;
+    n.aR.rotation.z+=((wv?2.55+Math.sin(elapsed*10)*0.32:0.06+br*0.02)-n.aR.rotation.z)*Math.min(1,dt*9);
+    n.aR.rotation.x+=((wv?0.1:0.02*br)-n.aR.rotation.x)*Math.min(1,dt*9);
+    n.aL.rotation.z+=((near?-0.1:-0.06)-n.aL.rotation.z)*Math.min(1,dt*6);
+    n.aL.rotation.x=0.025*br;
+    n.body.rotation.z=Math.sin(elapsed*0.5+n.ph)*0.012;
   }
   if(npcArrow.visible){npcArrow.position.set(npcs[0].x,2.7+Math.sin(elapsed*3)*0.12,npcs[0].z);npcArrow.rotation.y+=dt*2;}
   if(beam.visible){ring.rotation.z+=dt*0.8;}
@@ -1758,7 +1864,7 @@ function vehMenu(msg){
   openDlg('KUNLE AUTO WORKS',(msg?msg+'  ':'')+"Your ride now: "+VEHS[vehKind].name+". The danfo is big and steady, the keke is small and nimble, the okada is the fastest and slips through traffic. Upgrades carry over to any ride. You get "+money(cash)+".",btns);
 }
 function switchVeh(k){
-  setVehicle(k);car.x=-46;car.z=8.2;car.h=Math.PI/2;car.speed=0;car.steer=0;setCarPose();saveGame();chime();
+  setVehicle(k);car.x=-46;car.z=8.2;car.h=Math.PI/2;car.speed=0;car.steer=0;car.lat=0;setCarPose();saveGame();chime();
   vehMenu('Done! Your '+VEHS[k].name+' is parked outside the workshop.');
 }
 function buyVeh(k){
@@ -1808,7 +1914,7 @@ addSign('CAR UPGRADES','#2f6fb1','#ffffff',-48.4,2.75,19.4,Math.PI/2,2.9,0.62);
 })();
 
 /* ------------------------------------------------------------ sound */
-var AC=null,master=null,eng=null,hornG=null,audioOn=true,noiseBuf=null,rainG=null,radioG=null;
+var skidG=null,skidF=null,AC=null,master=null,eng=null,hornG=null,audioOn=true,noiseBuf=null,rainG=null,radioG=null;
 try{audioOn=localStorage.getItem('gtl_sound')!=='off';}catch(e){}
 function initAudio(){
   try{
@@ -1826,6 +1932,8 @@ function initAudio(){
     var rs=AC.createBufferSource();rs.buffer=nb;rs.loop=true;var rf=AC.createBiquadFilter();rf.type='bandpass';rf.frequency.value=2400;rf.Q.value=0.4;
     rainG=AC.createGain();rainG.gain.value=0;rs.connect(rf);rf.connect(rainG);rainG.connect(master);rs.start();
     radioG=AC.createGain();radioG.gain.value=0.55;radioG.connect(master);
+    var ss=AC.createBufferSource();ss.buffer=nb;ss.loop=true;var sf=AC.createBiquadFilter();sf.type='bandpass';sf.frequency.value=1700;sf.Q.value=4;
+    skidG=AC.createGain();skidG.gain.value=0;ss.connect(sf);sf.connect(skidG);skidG.connect(master);ss.start();skidF=sf;
   }catch(e){AC=null;eng=null;hornG=null;}
 }
 function tone(freq,dur,type,vol,delay){
@@ -1851,6 +1959,7 @@ function audioUpdate(dt){
   hornG.gain.setTargetAtTime(hh?0.06:0,t,0.02);
   hornBtn.classList.toggle('on',!!hornHeld);
   if(rainG)rainG.gain.setTargetAtTime(audioOn?0.085*rainAmt:0,t,0.4);
+  if(skidG){skidG.gain.setTargetAtTime(on?0.075*Math.min(1,skidAmt*1.6):0,t,0.04);skidF.frequency.setTargetAtTime(1300+Math.min(1,sp/20)*900,t,0.1);}
   var want=((radioOn&&driving)||clubNear)&&started&&audioOn;
   if(radioG)radioG.gain.setTargetAtTime(driving?0.55:Math.max(0.06,0.55*(1-clubD/26)),t,0.3);
   if(want&&!radio.timer)radioStart();else if(!want&&radio.timer)radioStop();
@@ -3857,7 +3966,7 @@ window.addEventListener('keydown',function(e){
 
 /* ------------------------------------------------------------------ loop */
 function update(dt){
-  npcsUpdate(dt);checkMission(dt);fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);statTick(dt);
+  npcsUpdate(dt);checkMission(dt);fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);statTick(dt);fxUpdate(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
@@ -3882,31 +3991,54 @@ function update(dt){
   var amt=Math.min(1,player.speed/3.2),runAmt=Math.max(0,Math.min(1,(player.speed-3.4)/3));
   player.phase+=player.speed*dt*1.9;
   var sw=Math.sin(player.phase)*amt*(0.75+0.35*runAmt),as=0.7+0.4*runAmt;
+  /* idle life: breathing, weight shift, a slow look-around; lean into turns and with acceleration */
+  var idle=1-Math.min(1,amt*3),tr=dt>0?((player.yaw-pAnim.yaw+Math.PI*3)%(Math.PI*2)-Math.PI)/dt:0,pa=dt>0?(player.speed-pAnim.speed)/dt:0;
+  pAnim.yaw=player.yaw;pAnim.speed=player.speed;
+  pAnim.lean+=(Math.max(-0.2,Math.min(0.2,-tr*0.022))*Math.min(1,amt*1.5)-pAnim.lean)*Math.min(1,dt*8);
+  pAnim.fwd+=(Math.max(-0.14,Math.min(0.14,pa*0.012))-pAnim.fwd)*Math.min(1,dt*6);
+  var br=Math.sin(elapsed*1.9);
   legL.rotation.x=sw;legR.rotation.x=-sw;
-  armL.rotation.x=-sw*as;armR.rotation.x=sw*as;
+  armL.rotation.x=-sw*as+idle*(0.03+br*0.025);armR.rotation.x=sw*as+idle*(0.03-br*0.025);
+  armL.rotation.z=-0.07-idle*(0.03+br*0.012);armR.rotation.z=0.07+idle*(0.03+br*0.012);
   body.position.y=Math.abs(Math.cos(player.phase))*0.035*amt;
-  body.rotation.x=0.06*amt+0.1*runAmt;
-  body.rotation.z=Math.sin(player.phase)*0.02*amt;
+  body.rotation.x=0.06*amt+0.1*runAmt+pAnim.fwd;
+  body.rotation.z=Math.sin(player.phase)*0.02*amt+pAnim.lean+idle*Math.sin(elapsed*0.55)*0.018;
+  body.rotation.y=Math.sin(player.phase)*0.07*amt+idle*Math.sin(elapsed*0.31)*0.09;
+  body.scale.y=1+idle*br*0.005;
+  if(runAmt>0.5){footAcc+=dt;if(footAcc>0.2){footAcc=0;emitPuff(player.x-player.dirx*0.4+(Math.random()-0.5)*0.3,0.1,player.z-player.dirz*0.4+(Math.random()-0.5)*0.3,-player.dirx*0.5,0.35,-player.dirz*0.5,0.5,0.55,0.22,0xb9a98a);}}
   root.position.set(player.x,0,player.z);root.rotation.y=player.yaw;
   blob.position.x=player.x;blob.position.z=player.z;
 }
+var camTX=0,camTZ=0,camSpd=0,camFov=60;
 function updateCamera(dt){
   if(!started)camYaw+=dt*0.14;
-  var tx=player.x,ty=player.y+1.45,tz=player.z;
+  var tx=player.x,ty=player.y+1.45,tz=player.z,spd=0;
   if(driving){
-    tx=car.x;ty=1.3;tz=car.z;
+    spd=Math.abs(car.speed);camSpd+=(spd-camSpd)*Math.min(1,dt*2);
+    if(camSnap||Math.hypot(camTX-car.x,camTZ-car.z)>9){camTX=car.x;camTZ=car.z;camSnap=false;}
+    else{var kk=Math.min(1,dt*(15-camSpd*0.35));camTX+=(car.x-camTX)*kk;camTZ+=(car.z-camTZ)*kk;}
+    tx=camTX;tz=camTZ;ty=1.3+camSpd*0.012;
     if(look.id===null){
-      if(Math.abs(car.speed)>0.5)camYaw=turnToward(camYaw,car.h+Math.PI,dt*2.2);
+      if(spd>0.5){
+        var sa=spd>2?Math.atan2(car.lat,car.speed):0;
+        camYaw=turnToward(camYaw,car.h+Math.PI+sa*0.45,dt*(2.0+Math.min(1,camSpd/12)*0.8));
+      }
       camPitch+=(0.27-camPitch)*Math.min(1,dt*1.5);
     }
-  }
-  camDist+=((driving?8.4+(CHL-2.2)*1.3:6.2)-camDist)*Math.min(1,dt*3);
+  }else{camSnap=true;camSpd+=(0-camSpd)*Math.min(1,dt*3);}
+  camDist+=((driving?8.4+(CHL-2.2)*1.3+camSpd*0.075:6.2)-camDist)*Math.min(1,dt*3);
+  var fovT=60+camSpd*0.48;camFov+=(fovT-camFov)*Math.min(1,dt*3);
+  if(Math.abs(camera.fov-camFov)>0.08){camera.fov=camFov;camera.updateProjectionMatrix();}
   var cp=Math.cos(camPitch),sp=Math.sin(camPitch);
   var dx=Math.sin(camYaw)*cp,dy=sp,dz=Math.cos(camYaw)*cp;
   var f=1;
   for(;f>0.2;f-=0.08){if(!inSolid(tx+dx*camDist*f,ty+dy*camDist*f,tz+dz*camDist*f,0.3))break;}
   var d=camDist*f;
-  camera.position.set(tx+dx*d,Math.max(0.5,ty+dy*d),tz+dz*d);
+  var sh=camShake+(driving&&camSpd>17?(camSpd-17)*0.004:0);
+  camShake=Math.max(0,camShake-dt*1.6);
+  var ox=0,oy=0,oz=0;
+  if(sh>0.001){ox=(Math.random()-0.5)*sh;oy=(Math.random()-0.5)*sh;oz=(Math.random()-0.5)*sh;}
+  camera.position.set(tx+dx*d+ox,Math.max(0.5,ty+dy*d+oy),tz+dz*d+oz);
   camera.lookAt(tx,ty,tz);
   sky.position.copy(camera.position);rainMesh.position.copy(camera.position);
   clouds.position.set(camera.position.x,0,camera.position.z);clouds.rotation.y+=dt*0.004;
