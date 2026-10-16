@@ -1,0 +1,12 @@
+{
+  "name": "grand-theft-lagos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GTL - Grand Theft Lagos (Android build of the browser game)",
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "three": "0.128.0"
+  }
+}
