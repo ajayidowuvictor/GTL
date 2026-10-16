@@ -198,6 +198,27 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #phone .pb.red{background:#3a1d1d;color:#ff9488}
 #phone .pb.sm{width:auto;padding:8px 14px;font-size:12.5px;border-radius:10px}
 #phone .pb:disabled{opacity:.38}
+#phone .fxc{background:var(--pcard);border-radius:13px;padding:10px 11px;display:flex;flex-direction:column;gap:7px}
+#phone .fxc b{font:600 13.5px/1.2 var(--ui)}#phone .fxc span{font:11.5px/1.3 var(--ui);color:var(--pmut)}
+#phone .odds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+#phone .od{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;border:0;border-radius:10px;background:var(--pcard2);color:var(--ptxt);min-width:0}
+#phone .od i{font:600 9.5px/1 var(--ui);font-style:normal;color:var(--pmut);letter-spacing:.08em}
+#phone .od b{font:700 15px/1 var(--ui);font-variant-numeric:tabular-nums}
+#phone .od.on{background:var(--pacc);color:#1a1405}#phone .od.on i{color:#4a3a05}
+#phone .od.won{outline:2px solid var(--pgrn)}
+#phone .od:disabled{opacity:.4}
+#phone .chips{display:flex;flex-wrap:wrap;gap:6px}
+#phone .chip{border:0;border-radius:18px;padding:8px 12px;background:var(--pcard2);color:var(--ptxt);font:600 12.5px/1 var(--ui)}
+#phone .chip.on{background:var(--pacc);color:#1a1405}
+#phone .crbig{background:var(--pcard);border-radius:16px;padding:20px 12px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+#phone .crbig b{font:800 44px/1 var(--ui);font-variant-numeric:tabular-nums}
+#phone .crbig span{font:12px/1.4 var(--ui);color:var(--pmut)}
+#phone .crbig.run b,#phone .crbig.ok b{color:var(--pgrn)}#phone .crbig.bad b{color:var(--pred)}
+#phone .hc{font:700 11px/1 var(--ui);font-style:normal;padding:5px 8px;border-radius:12px;background:var(--pcard2)}
+#phone .hc.hi{color:var(--pgrn)}#phone .hc.lo{color:var(--pred)}
+#phone .lotg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+#phone .ln{border:0;border-radius:10px;padding:10px 0;background:var(--pcard2);color:var(--ptxt);font:700 13px/1 var(--ui)}
+#phone .ln.on{background:var(--pacc);color:#1a1405}
 #phone .pbrow{display:flex;gap:8px;flex-wrap:wrap}
 #phone .pbrow>.pb{flex:1 1 120px}
 .psect{font:700 11px/1 var(--ui);letter-spacing:.12em;text-transform:uppercase;color:var(--pmut);padding:6px 2px 0}
@@ -474,7 +495,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b22';
+var VERSION='GTL 0.9 b23';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -1796,6 +1817,7 @@ function driveUpdate(dt,ctl){
   car.bob=Math.sin(elapsed*48)*0.0045*sa+Math.sin(elapsed*23)*0.0025;
 }
 function crashFx(tot){
+  if(tot>8)gigHit();
   camShake=Math.max(camShake,Math.min(0.45,tot*0.022));
   car.pitV+=Math.min(1.2,tot*0.05);car.rolV+=(Math.random()-0.5)*Math.min(1,tot*0.05);
   var fx=Math.sin(car.h),fz=Math.cos(car.h),hl=car.speed>=0?CHL:-CHL;
@@ -2083,14 +2105,16 @@ ring.rotation.x=Math.PI/2;ring.position.set(-56,0.2,2);scene.add(ring);
 var npcArrow=new THREE.Mesh(new THREE.ConeGeometry(0.3,0.65,4),new THREE.MeshBasicMaterial({color:0xf2b705}));
 npcArrow.rotation.x=Math.PI;scene.add(npcArrow);
 function updateMissionVisuals(){
-  var cj=curJob(),st=(jobActive&&cj)?cj.stages[jobStage]:null,isFare=false;
+  var cj=curJob(),st=(jobActive&&cj)?cj.stages[jobStage]:null,isFare=false,isGig=false;
+  if(!st&&gig&&gig.stages[gig.st]){var gs=gig.stages[gig.st];st={x:gs.x,z:gs.z,label:gs.label};isGig=true;}
   if(!st&&typeof fare==='object'&&fare.st){st={x:fare.x,z:fare.z,label:fare.st===1?'PICK UP THE PASSENGER':'DROP OFF THE PASSENGER'};isFare=true;}
   beam.visible=ring.visible=!!st;
-  beam.material.color.setHex(isFare?0x3ee07a:0xf2b705);ring.material.color.setHex(isFare?0x3ee07a:0xf2b705);
-  if(st){beam.position.set(st.x,30,st.z);ring.position.set(st.x,0.2,st.z);objTitle.textContent=(isFare?'FARE: ':'JOB: ')+st.label;}
-  npcArrow.visible=(!jobActive&&!!cj);
+  var col=isGig?(GIGDEF[gig.id].ill?0xff4b3a:0x3aa0ff):(isFare?0x3ee07a:0xf2b705);
+  beam.material.color.setHex(col);ring.material.color.setHex(col);
+  if(st){beam.position.set(st.x,30,st.z);ring.position.set(st.x,0.2,st.z);objTitle.textContent=(isGig?'GIG: ':(isFare?'FARE: ':'JOB: '))+st.label;}
+  npcArrow.visible=(!jobActive&&!!cj&&!gig);
   objEl.hidden=!st;lastObj=-1;
-  var timed=!!(st&&(timerOn||(isFare&&fare.st===2)));objTime.hidden=!timed;
+  var timed=!!(st&&(timerOn||isGig||(isFare&&fare.st===2)));objTime.hidden=!timed;
 }
 function openDlg(name,text,btns){
   talking=true;dlgName.textContent=name;dlgText.textContent=text;dlgBtns.innerHTML='';
@@ -2173,7 +2197,7 @@ makeNPC({x:5.1,z:16.2,yaw:-Math.PI/2,skin:'#7a4a2e',skin2:'#6a3e26',low:'#d9731a
     var cj=curJob();
     if(!cj)openDlg('MAMA NKECHI',"You don do every job I get, my pikin! Kunle dey the workshop west of the market if you wan tune your car, and some people don drop cash around town and on the island. Check if you fit find all "+NB+". More work coming soon!",[{label:'OK'}]);
     else if(jobActive)openDlg('MAMA NKECHI',cj.remind,[{label:'OK'}]);
-    else openDlg('MAMA NKECHI',(jobIdx>0?'':'')+cj.offer,[{label:"I'LL DO IT",fn:function(){cancelFare();jobActive=true;jobStage=0;timerOn=false;saveGame();updateMissionVisuals();toast(cj.toast);}},{label:'LATER'}]);
+    else openDlg('MAMA NKECHI',(jobIdx>0?'':'')+cj.offer,[{label:"I'LL DO IT",fn:function(){if(gig){toast('Finish your gig first');return;}cancelFare();jobActive=true;jobStage=0;timerOn=false;saveGame();updateMissionVisuals();toast(cj.toast);}},{label:'LATER'}]);
   }});
 makeNPC({x:-56,z:6.3,yaw:Math.PI,skin:'#5a3520',skin2:'#4a2b1a',low:'#ece7d6',low2:'#cfc7a8',top:'#ece7d6',head:'cap',hc:'#7a1f1f',
   talk:function(){
@@ -2458,6 +2482,7 @@ function walkersUpdate(dt){
 
 loadGame();setCash();updateMissionVisuals();
 function resetAll(){
+  gig=null;if(typeof crashStop==='function'){crashStop();CRASH.run=0;}
   cash=2500;jobIdx=0;jobActive=false;jobStage=0;timerOn=false;got=[];ups.eng=0;ups.tyre=0;ups.paint=0;stat.earned=0;stat.played=0;stat.busts=0;stat.escapes=0;stat.fares=0;endSeen=0;copsOff();cancelFare();lifeReset();
   try{localStorage.removeItem(SAVE_KEY);}catch(e){}
   owned=['sedan'];setVehicle('sedan');bundlesRefresh();setCash();updateMissionVisuals();
@@ -2874,6 +2899,7 @@ function onCrash(){
 function bust(){
   var fine=Math.min(cash,500+heat*1500);
   cash-=fine;stat.busts++;setCash();
+  if(gig)gigAbort('',false);
   heat=0;bustMeter=0;loseT=0;clearPatrols();showHeat();
   if(driving){car.speed=0;exitCar();}
   buzz();toast('BUSTED! Fine '+money(fine)+'. Drive safe, oga!');saveGame();
@@ -2983,7 +3009,7 @@ function boardFare(){
 }
 function fareUpdate(dt){
   if(!started||talking)return;
-  if(jobActive){if(fare.st)cancelFare();return;}
+  if(jobActive||gig){if(fare.st)cancelFare();return;}
   if(fare.st===0){
     if(driving&&farePref&&jobIdx>=2){fareIdle+=dt;if(fareIdle>=FARE_GAP)offerFare();}
     return;
@@ -3052,7 +3078,7 @@ var LMULT=[1,1.4,2];
 var GOVS=[null,{n:'GOV. BELLO',d:'Rent is 25% cheaper'},{n:'GOV. ADEYEMI',d:'Shifts and fares pay 15% more'},{n:'GOV. OKAFOR',d:'Food is 20% cheaper'}];
 var APPR={shirt:[['BLACK','#17171b'],['RED','#b3261e'],['GREEN','#2f7d4f'],['BLUE','#2b5a9a'],['YELLOW','#e0b020']],skin:[['DEEP','#6b4026','#5a3520'],['DARK','#4a2a18','#3c2012'],['MEDIUM','#8a5a3a','#774a2e'],['LIGHT','#b07a52','#9a6842']]};
 var life=null,creating=false,lastGH=gameHour,dq=[],warnT={},chatCd={},shift=null,lifeSpeed=1,clubNear=false,clubD=99,needAcc=0,lookCur={shirt:'#17171b',skin:'#6b4026',skin2:'#5a3520'};
-function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0};}
+function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
 function lifeInit(sv){
   life=lifeDefault();
   if(sv&&sv.L&&sv.L.l){
@@ -3235,7 +3261,7 @@ function shiftPay(ck){
 }
 function startShift(ck){
   var c=CARS[ck];
-  if(jobActive||fare.st){toast('Finish your job first');return;}
+  if(jobActive||fare.st||gig){toast('Finish your job first');return;}
   if(!c.ok()){toast('Locked: '+c.req);return;}
   if(need.energy<15){toast('You are too tired to work. Sleep first');return;}
   if(need.hunger<8){toast('You are too hungry to work. Eat first');return;}
@@ -3419,7 +3445,7 @@ function acctOf(key){return ('00000'+(hashStr('acct'+key)%100000)).slice(-5)+('0
 function myAcct(){if(!life.acct){var s='22';for(var i=0;i<8;i++)s+=(Math.random()*10|0);life.acct=s;}return life.acct;}
 function stamp(){return 'Day '+life.day+' · '+clockText();}
 function logTx(l,a){if(!life)return;life.tx.unshift({l:l,a:a,t:stamp(),d:life.day,c:catOf(l,a)});if(life.tx.length>120)life.tx.length=120;}
-function senderName(f){return f==='pay'?'NairaPay':(f==='quick'?'Alhaji Quick-Cash':(NK[f]?nice(NK[f].name):nice(f)));}
+function senderName(f){return f==='pay'?'NairaPay':(f==='bet'?'LuckyBet':f==='quick'?'Alhaji Quick-Cash':(NK[f]?nice(NK[f].name):nice(f)));}
 function avatar(f,sz){
   var a=pEl('div','av'+(sz?' '+sz:''));
   if(f==='pay'){a.style.background='linear-gradient(135deg,#2fbf71,#1f8a4c)';a.textContent='₦';}
@@ -3428,7 +3454,7 @@ function avatar(f,sz){
 }
 function phBlock(){
   if(driving)return 'Get out of your car first';
-  if(jobActive||fare.st||shift)return 'Finish what you are doing first';
+  if(jobActive||fare.st||shift||gig)return 'Finish what you are doing first';
   if(heat>0)return 'The Task Force is after you!';
   return '';
 }
@@ -3481,6 +3507,8 @@ var APPS=[
   {id:'stay',n:'Stays',c:['#8a6ae8','#4a2fb0'],ic:'<path d="M3 19V6M3 14h18v5M21 14v-2.5A2.5 2.5 0 0 0 18.5 9H11v5"/><circle cx="7" cy="11" r="1.6"/>',fn:function(){appHotel();}},
   {id:'fly',n:'Flights',c:['#3a9ae8','#1b4f9a'],ic:'<path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>',fn:function(){appFly();}},
   {id:'jobs',n:'Jobs',c:['#e8803a','#b04a10'],ic:'<rect x="3" y="7" width="18" height="12" rx="2"/><path d="M9 7V5h6v2M3 13h18"/>',fn:function(){appJobs();}},
+  {id:'gigs',n:'Gigs',c:['#2f8fd8','#16508a'],ic:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',fn:function(){appGigs();}},
+  {id:'bet',n:'LuckyBet',c:['#a8c818','#4a7a10'],ic:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M15 9h.01M12 12h.01M9 15h.01M15 15h.01"/>',fn:function(){appBet();}},
   {id:'vit',n:'Vitals',c:['#e8586a','#a82040'],ic:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',fn:function(){appVit();}},
   {id:'home',n:'Home',c:['#2fa0b0','#176a78'],ic:'<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',fn:function(){appHome();}},
   {id:'set',n:'Settings',c:['#6a7280','#3a404a'],ic:'<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',fn:function(){appSet();}}
@@ -3594,8 +3622,10 @@ var IC={send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',bank:'<path d="M3 10l
   grow:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',shop:'<path d="M4 9l1-5h14l1 5M4 9v11h16V9M4 9a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0A2.7 2.7 0 0 0 20 9M10 20v-6h4v6"/>',more:'<path d="M5 5h5v5H5zM14 5h5v5h-5zM5 14h5v5H5zM14 14h5v5h-5z"/>',
   home:'<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8h14v-8M8 8a2.5 2.5 0 1 1 4-2.5M16 8a2.5 2.5 0 1 0-4-2.5"/>',card:'<rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M3 10h18"/>',me:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/>',
   bell:'<path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/>',plus:'<path d="M12 5v14M5 12h14"/>',check:'<path d="M5 13l4 4 10-10"/>'};
-var CATS={transfer:['Transfers',IC.send,'#00a862'],bill:['Bills and airtime',IC.air,'#7a5ae0'],loan:['Loans',IC.loan,'#e0803a'],save:['Savings',IC.safe,'#2f7fe0'],income:['Earnings',IC.grow,'#00a862'],bonus:['Bonuses',IC.gift,'#d0488f'],ride:['Rides',IC.send,'#c98a00'],stay:['Hotel stays',IC.home,'#8a6ae8'],travel:['Flights',IC.send,'#1b4f9a'],business:['Business',IC.shop,'#b04a10'],other:['Other',IC.more,'#76867e']};
+var CATS={transfer:['Transfers',IC.send,'#00a862'],bill:['Bills and airtime',IC.air,'#7a5ae0'],loan:['Loans',IC.loan,'#e0803a'],save:['Savings',IC.safe,'#2f7fe0'],income:['Earnings',IC.grow,'#00a862'],bonus:['Bonuses',IC.gift,'#d0488f'],ride:['Rides',IC.send,'#c98a00'],stay:['Hotel stays',IC.home,'#8a6ae8'],travel:['Flights',IC.send,'#1b4f9a'],business:['Business',IC.shop,'#b04a10'],bet:['LuckyBet',IC.more,'#8a5ae8'],other:['Other',IC.more,'#76867e']};
 function catOf(l,a){
+  if(/^LuckyBet/.test(l))return 'bet';
+  if(/^Gig:/.test(l))return 'income';
   if(/^(To|From) /.test(l))return 'transfer';
   if(/loan/i.test(l))return 'loan';
   if(/Invest|Withdrawn|savings/i.test(l))return 'save';
@@ -4181,6 +4211,512 @@ function appSet(){phPush('Settings',function(b){
   pKV(b,[['Number','0803 '+('0000000'+(hashStr('ph'+myAcct())%10000000)).slice(-7)],['NairaPay account',myAcct()],['Software',VERSION],['Trips taken',String(life.trips||0)]]);
 });}
 
+/* ============================================================ b20: GIGS (legal day work and illegal street hustles) */
+var gig=null;
+var GIGDEF={
+  chop:{n:'ChopNow Delivery',ill:false,car:false,pay:'₦1,800 to 4,500',desc:'Collect a hot order and rush it to the customer before it goes cold. Walk, run or drive. Faster delivery means a tip.',fx:{energy:-7,hunger:-3,hygiene:-4,fun:-3,bladder:-3}},
+  danfo:{n:'Danfo Conductor',ill:false,car:true,pay:'₦6,000 to 9,500',desc:'Drive your own DANFO round four bus stops. Passengers pay at every stop and tip when you drive smooth. Bumps cost you.',fx:{energy:-10,hunger:-5,hygiene:-4,fun:-5,bladder:-4}},
+  patrol:{n:'Night Security Patrol',ill:false,car:false,pay:'₦5,500 to 7,500',desc:'Walk four checkpoints round the area between 7 PM and 5 AM. Quiet, steady money for the night owl.',fx:{energy:-14,hunger:-6,hygiene:-3,fun:-8,bladder:-5}},
+  race:{n:'Street Race',ill:true,car:true,pay:'wins ₦9,000 to 13,000',desc:'Entry fee ₦2,000. Hit all five checkpoints before the clock runs out. The Task Force may show up halfway. Lose and the fee is gone.',fx:{energy:-8,hunger:-4,hygiene:-2,fun:6,bladder:-3}},
+  smuggle:{n:'Contraband Run',ill:true,car:true,pay:'₦14,000 to 24,000',desc:'Pick up crates, then drive them across town with the Task Force on your tail. Three hard bumps ruin the crates. Get busted and you pay the fine.',fx:{energy:-10,hunger:-4,hygiene:-3,fun:2,bladder:-4}},
+  hawk:{n:'Bootleg Hawking',ill:true,car:false,pay:'₦8,000 and up',desc:'Sell bootleg goods on three street corners on foot. Stand your ground while you sell, even when the police show up. Run and you earn nothing more.',fx:{energy:-12,hunger:-6,hygiene:-6,fun:-2,bladder:-4}}
+};
+var GORDER=['chop','danfo','patrol','race','smuggle','hawk'];
+var GRANK=['ROOKIE','PRO','BOSS'],GMULT=[1,1.25,1.6];
+var RACEC=[[56,2],[0,-55],[-56,2],[0,55],[28,2]];
+function ggInit(){if(!life)return;if(!life.gg||typeof life.gg!=='object')life.gg={c:{},earn:0,ill:0};if(!life.gg.c||typeof life.gg.c!=='object')life.gg.c={};}
+function gigCount(id){ggInit();return life.gg.c[id]||0;}
+function gigRank(id){var n=gigCount(id);return n>=8?2:(n>=3?1:0);}
+function gigMult(id){return GMULT[gigRank(id)]*(GIGDEF[id].ill?1:moodMult());}
+function gpos(){return driving?[car.x,car.z]:[player.x,player.z];}
+function gpick(fx,fz,mn,mx){
+  var c=[],i,s,d;
+  for(i=0;i<FSPOTS.length;i++){s=FSPOTS[i];if(s[0]>115)continue;d=Math.hypot(s[0]-fx,s[1]-fz);if(d>=mn&&d<=mx)c.push(s);}
+  if(!c.length)for(i=0;i<FSPOTS.length;i++){s=FSPOTS[i];if(s[0]>115)continue;if(Math.hypot(s[0]-fx,s[1]-fz)>=mn*0.5)c.push(s);}
+  return c[(Math.random()*c.length)|0]||FSPOTS[0];
+}
+function gfar(fx,fz){var best=FSPOTS[0],bd=-1;for(var i=0;i<FSPOTS.length;i++){var s=FSPOTS[i];if(s[0]>115)continue;var d=Math.hypot(s[0]-fx,s[1]-fz);if(d>bd){bd=d;best=s;}}return best;}
+function gchain(p,n,mn,mx){
+  var out=[],cx=p[0],cz=p[1],used=[];
+  for(var i=0;i<n;i++){
+    var s=gpick(cx,cz,mn,mx),tries=0;
+    while(used.indexOf(s)>=0&&tries<8){s=gpick(cx,cz,mn,mx);tries++;}
+    used.push(s);out.push({x:s[0],z:s[1]});cx=s[0];cz=s[1];
+  }
+  return out;
+}
+function pathLen(p,pts){var L=0,cx=p[0],cz=p[1];pts.forEach(function(q){L+=Math.hypot(q.x-cx,q.z-cz);cx=q.x;cz=q.z;});return L;}
+function gigBlock(id){
+  var D=GIGDEF[id];
+  if(!started||!life||!life.made)return 'Start the game first';
+  if(gig)return 'You are already on a gig';
+  if(jobActive)return "Finish Mama Nkechi's job first";
+  if(shift)return 'Finish your shift first';
+  var p=gpos();if(p[0]>115)return 'Gigs run on the mainland. Take a ride back first';
+  if(need.energy<15)return 'You are too tired. Sleep first';
+  if(need.hunger<8)return 'You are too hungry. Eat first';
+  if(heat>0)return 'The Task Force is after you!';
+  if(id==='danfo'&&!(driving&&vehKind==='danfo'))return owned.indexOf('danfo')<0?"Buy a DANFO at Kunle's workshop first":'Get in your DANFO first';
+  if(D.car&&id!=='danfo'&&!driving)return 'Get in a vehicle first (car, keke or okada)';
+  if((id==='patrol'||id==='hawk')&&driving)return 'Park and get out. This one is on foot';
+  if(id==='patrol'&&!(gameHour>=19||gameHour<5))return 'Night patrol runs 7 PM to 5 AM';
+  if(id==='race'&&cash<2000)return 'The entry fee is ₦2,000';
+  return '';
+}
+function setHeat(n,msg){
+  if(!copsOn)return;
+  var was=heat;heat=Math.max(heat,n);heatCool=3;loseT=0;showHeat();
+  if(heat!==was){buzz();toast(msg||'TASK FORCE ALERTED!');}
+}
+function gigSetTime(secs){gig.tot=gig.t=Math.max(20,secs);}
+function gigStart(id){
+  var why=gigBlock(id);if(why){toast(why);buzz();return false;}
+  cancelFare();
+  var D=GIGDEF[id],p=gpos(),st=[],g={id:id,st:0,stages:st,t:0,tot:0,pay:0,hits:0,stand:0,hitCd:0,earned:0,lastM:-1,d0:0};
+  gig=g;
+  if(id==='chop'){
+    var a=gpick(p[0],p[1],10,75);
+    st.push({x:a[0],z:a[1],label:'PICK UP THE ORDER'});
+    gigSetTime(24+Math.hypot(a[0]-p[0],a[1]-p[1])/(driving?7:3.2));
+    toast('ORDER IN! Collect it at the blue light');
+  }else if(id==='danfo'){
+    var s4=gchain(p,4,28,95);s4.forEach(function(s,i){s.label='BUS STOP '+(i+1)+'/4';});g.stages=st=s4;
+    gigSetTime(38+pathLen(p,s4)/(CMAX*0.42));
+    toast('DANFO RUN! Four stops. Drive smooth');
+  }else if(id==='patrol'){
+    var s4b=gchain(p,4,15,80);s4b.forEach(function(s,i){s.label='CHECKPOINT '+(i+1)+'/4';});g.stages=st=s4b;
+    gigSetTime(45+pathLen(p,s4b)/2.7);
+    toast('NIGHT PATROL! Walk to each checkpoint');
+  }else if(id==='race'){
+    var bi=0,bd=1e9;RACEC.forEach(function(c,i){var d=Math.hypot(c[0]-p[0],c[1]-p[1]);if(d<bd){bd=d;bi=i;}});
+    for(var i=0;i<5;i++){var c=RACEC[(bi+i)%5];st.push({x:c[0],z:c[1],label:'CHECKPOINT '+(i+1)+'/5',r:5.6});}
+    gigSetTime(14+pathLen(p,st)/(CMAX*0.6));
+    cash-=2000;setCash();logTx('Gig: Race entry fee',-2000);
+    toast('GO GO GO! Hit all five checkpoints');
+  }else if(id==='smuggle'){
+    var a2=gpick(p[0],p[1],25,130);
+    st.push({x:a2[0],z:a2[1],label:'COLLECT THE CRATES'});
+    gigSetTime(30+Math.hypot(a2[0]-p[0],a2[1]-p[1])/(CMAX*0.5));
+    toast('CONTRABAND RUN! Collect the crates at the red light');
+  }else if(id==='hawk'){
+    var s3=gchain(p,3,15,85);s3.forEach(function(s,i){s.label='SELL AT CORNER '+(i+1)+'/3';s.r=3.6;});g.stages=st=s3;
+    gigSetTime(60+pathLen(p,s3)/2.8+3*7);
+    toast('HAWKING! Stand in the red ring until the goods sell out');
+  }
+  g.d0=0;gigVis();return true;
+}
+function gigVis(){updateMissionVisuals();}
+function gigStageR(s){return s.r||(driving?3.6:3.1);}
+function gigUpdate(dt){
+  if(!gig||!started||talking)return;
+  var g=gig,D=GIGDEF[g.id];
+  if(D.car&&!driving){gigAbort('You left the vehicle. Gig over.',true);return;}
+  if((g.id==='patrol'||g.id==='hawk')&&driving){gigAbort('You drove off. Gig over.',true);return;}
+  if(jobActive||shift){gigAbort('Gig cancelled',true);return;}
+  if(g.hitCd>0)g.hitCd-=dt;
+  g.t-=dt;
+  var tl=Math.max(0,Math.ceil(g.t));objTime.textContent='TIME '+tl+' s';objTime.classList.toggle('late',tl<=8);
+  if(g.t<=0){gigTimeout();return;}
+  var s=g.stages[g.st];if(!s)return;
+  var p=gpos(),d=Math.hypot(p[0]-s.x,p[1]-s.z),r=gigStageR(s),m=Math.round(d);
+  if(g.id==='hawk'){
+    if(d<r){g.stand+=dt;objDist.textContent='SELLING '+Math.min(100,Math.round(100*g.stand/7))+'%';g.lastM=-1;if(g.stand>=7){g.stand=0;gigReach();}}
+    else{g.stand=Math.max(0,g.stand-dt*0.6);if(m!==g.lastM){g.lastM=m;objDist.textContent=m+' m';}}
+    return;
+  }
+  if(m!==g.lastM){g.lastM=m;objDist.textContent=m+' m';}
+  if(d<r)gigReach();
+}
+function gigReach(){
+  var g=gig,id=g.id,s=g.stages[g.st],mult=gigMult(id),p=gpos(),n;
+  g.lastM=-1;
+  if(id==='chop'){
+    if(g.st===0){
+      var b=gpick(s.x,s.z,45,140),d=Math.hypot(b[0]-s.x,b[1]-s.z);
+      g.stages.push({x:b[0],z:b[1],label:'DELIVER THE FOOD'});g.st=1;
+      gigSetTime(20+d/(driving?7:3.3));g.pay=Math.round((1200+d*18)/50)*50;
+      blip();toast('ORDER COLLECTED! '+Math.round(g.t)+' seconds. Go!');gigVis();
+    }else{
+      var tip=g.t>g.tot*0.5?Math.round(g.pay*0.5/50)*50:(g.t>g.tot*0.25?Math.round(g.pay*0.2/50)*50:0);
+      gigWin(Math.round((g.pay+tip)*mult/50)*50,tip?'  (tip '+money(tip)+')':'');
+    }
+  }else if(id==='danfo'){
+    n=Math.round(1400*mult/50)*50;g.earned+=n;addCash(n);logTx('Gig: Danfo fare',n);chime();
+    g.st++;
+    if(g.st>=g.stages.length){
+      var bonus=Math.max(0,2400-g.hits*800);gigWin(Math.round(bonus*mult/50)*50,'  (bonus for a smooth ride)',true);
+    }else{toast('Passengers paid '+money(n)+'. Next stop!');gigVis();}
+  }else if(id==='patrol'){
+    g.st++;blip();
+    if(g.st>=g.stages.length){
+      var tb=g.t>g.tot*0.35?1500:0;gigWin(Math.round((5500+tb)*mult/50)*50,tb?'  (quick patrol bonus)':'');
+    }else{toast('Checkpoint clear. Keep going');gigVis();}
+  }else if(id==='race'){
+    g.st++;blip();
+    if(g.st===2&&Math.random()<0.7)setHeat(1,'The Task Force spotted the race! Finish or lose them');
+    if(g.st>=g.stages.length){
+      var frac=Math.max(0,Math.min(1,g.t/g.tot));
+      gigWin(Math.round((9000+4000*frac)*mult/50)*50,'  (pot '+money(Math.round((9000+4000*frac)*mult/50)*50)+')');
+    }else{toast('Checkpoint '+g.st+'/5!');gigVis();}
+  }else if(id==='smuggle'){
+    if(g.st===0){
+      var f=gfar(s.x,s.z),dd=Math.hypot(f[0]-s.x,f[1]-s.z);
+      g.stages.push({x:f[0],z:f[1],label:'DELIVER THE CRATES'});g.st=1;g.d0=dd;
+      gigSetTime(28+dd/(CMAX*0.5));g.fragile=true;
+      setHeat(2,'CRATES LOADED! The Task Force is on to you');blip();gigVis();
+    }else{
+      var tb2=g.t>g.tot*0.4?0.15:0;
+      gigWin(Math.round((14000+g.d0*35)*(1+tb2)*mult/50)*50,tb2?'  (speed bonus)':'');
+    }
+  }else if(id==='hawk'){
+    n=Math.round(2200*mult/50)*50;g.earned+=n;addCash(n);logTx('Gig: Bootleg sales',n);chime();
+    g.st++;
+    if(g.st===1)setHeat(1,'POLICE! Keep selling or run');
+    if(g.st>=g.stages.length)gigWin(Math.round(1500*mult/50)*50,'  (sold out bonus)',true);
+    else{toast('Sold out here! '+money(n)+'. Next corner');gigVis();}
+  }
+}
+function gigWin(pay,extra,partial){
+  var g=gig,D=GIGDEF[g.id];gig=null;
+  if(D.ill&&!copsOn)pay=Math.round(pay*0.5/50)*50;
+  ggInit();life.gg.c[g.id]=(life.gg.c[g.id]||0)+1;
+  var before=gigRankOf(life.gg.c[g.id]-1),after=gigRankOf(life.gg.c[g.id]);
+  var total=pay+(partial?g.earned:0);
+  if(pay>0){addCash(pay);logTx('Gig: '+D.n,pay);}
+  life.gg.earn+=total;if(D.ill)life.gg.ill++;
+  applyFx(D.fx);
+  chime();
+  toast('GIG DONE!  +'+money(total)+(extra||'')+(after>before?'   PROMOTED to '+GRANK[after]+'!':''));
+  saveGame();gigVis();objTime.hidden=true;checkLegend();
+  if(D.ill&&Math.random()<0.5)pushMsg('pay','Credit alert: '+money(pay)+' from a cash deposit. Keep a low profile, oga.');
+}
+function gigRankOf(n){return n>=8?2:(n>=3?1:0);}
+function gigTimeout(){
+  var g=gig,D=GIGDEF[g.id];
+  if(g.id==='danfo'||g.id==='hawk'){
+    if(g.earned>0){ggInit();life.gg.earn+=g.earned;gig=null;buzz();toast('TIME UP! You kept '+money(g.earned));applyFx(D.fx);saveGame();gigVis();objTime.hidden=true;return;}
+  }
+  gigAbort('TOO SLOW! Gig failed',true);
+}
+function gigAbort(msg,loud){
+  var g=gig;if(!g)return;gig=null;
+  var D=GIGDEF[g.id];
+  if(g.id==='smuggle'&&g.st>=1&&msg&&msg.indexOf('RUINED')>=0){var lose=Math.min(cash,3000);if(lose>0){cash-=lose;setCash();logTx('Gig: Lost crates',-lose);msg+=' The boss took '+money(lose)+'.';}}
+  applyFx({energy:-4,fun:-4});
+  if(msg){buzz();toast(msg);}
+  saveGame();gigVis();objTime.hidden=true;
+}
+function gigHit(){
+  if(!gig||gig.hitCd>0)return;
+  gig.hitCd=1.3;gig.hits++;
+  if(gig.id==='smuggle'&&gig.fragile){
+    if(gig.hits>=3)gigAbort('CRATES RUINED! You crashed too many times.',true);
+    else{buzz();toast('Crates cracked! '+(3-gig.hits)+' more hard bump'+(3-gig.hits===1?'':'s')+' and they are ruined');}
+  }else if(gig.id==='danfo'){buzz();toast('Passengers complain! Smooth bonus drops');}
+}
+/* ---------- Gigs app */
+function gigDetail(id){
+  var D=GIGDEF[id];
+  phPush(D.n,function(b){
+    pNote(b,D.desc);
+    var why=gigBlock(id);
+    pKV(b,[['Type',D.ill?'ILLEGAL':'Legal'],['Pays',D.pay],['Your rank',GRANK[gigRank(id)]+' (x'+GMULT[gigRank(id)].toFixed(2)+' pay)'],['Done',String(gigCount(id))]]);
+    if(D.ill)pNote(b,copsOn?'The Task Force will chase you. If you are busted you pay a fine and the gig ends.':'Police is OFF in Settings, so illegal pay is halved.',D.ill&&copsOn?'bad':'');
+    if(why)pNote(b,why,'bad');
+    var bt=pBtn(b,why?'NOT AVAILABLE':'START GIG',function(){if(gigStart(id))closePhone();},D.ill?'red':'grn');if(why)bt.disabled=true;
+  });
+}
+function appGigs(){phPush('Gigs',function(b){
+  ggInit();
+  if(gig){
+    var D0=GIGDEF[gig.id];
+    pSect(b,'On a gig now');
+    pRow(b,D0.n,gig.stages[gig.st]?gig.stages[gig.st].label:'',Math.max(0,Math.ceil(gig.t))+'s',null,pLead('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',D0.ill?'#a82a20':'#1f6fb0'),'a');
+    pBtn(b,'CANCEL GIG',function(){gigAbort('Gig cancelled',true);phRefresh();},'red');
+  }
+  var tot=0;GORDER.forEach(function(k){tot+=life.gg.c[k]||0;});
+  pKV(b,[['Gigs done',String(tot)],['Earned from gigs',money(life.gg.earn)],['Illegal runs',String(life.gg.ill)]]);
+  pSect(b,'Day gigs · legal');
+  GORDER.forEach(function(id){
+    var D=GIGDEF[id];if(D.ill)return;
+    var why=gig?'':gigBlock(id);
+    pRow(b,D.n,why?why:(GRANK[gigRank(id)]+' · '+gigCount(id)+' done'),D.pay.replace(/ to .*$/,'+'),function(){gigDetail(id);},pLead('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',why?'#3a404a':'#1f6fb0'),why?'':'a');
+  });
+  pSect(b,'Street hustles · illegal');
+  pNote(b,copsOn?'Big money, but the Task Force will come for you.':'Police is OFF in Settings, so illegal pay is halved.','bad');
+  GORDER.forEach(function(id){
+    var D=GIGDEF[id];if(!D.ill)return;
+    var why=gig?'':gigBlock(id);
+    pRow(b,D.n,why?why:(GRANK[gigRank(id)]+' · '+gigCount(id)+' done'),D.pay.replace(/ to .*$/,'+').replace('wins ',''),function(){gigDetail(id);},pLead('<path d="M12 3l9 16H3zM12 10v4M12 17h.01"/>',why?'#3a404a':'#a82a20'),why?'':'r');
+  });
+});}
+
+/* ============================================================ b20: LUCKYBET (game money only) */
+var TEAMS=['Lagoon Stars','Mainland United','Island FC','Eko Rovers','Bar Beach Lions','Third Mainland FC','Ikoyi Royals','Surulere Sharks','Oshodi Eagles','Lekki Falcons','Yaba Titans','Apapa Dockers'];
+var KICK=[14,16,18,20],gmKey=-1,SLIP={legs:[],stake:1000},STAKES=[500,1000,2000,5000,10000];
+function gmInit(){
+  if(!life)return;
+  var g=life.gm;
+  if(!g||typeof g!=='object')g=life.gm={};
+  if(g.day===undefined)g.day=0;
+  ['fx','bets','lotto'].forEach(function(k){if(!g[k]||g[k].constructor!==Array)g[k]=[];});
+  ['net','wag','cool','bid'].forEach(function(k){if(typeof g[k]!=='number'||!isFinite(g[k]))g[k]=0;});
+  if(g.last===undefined)g.last=null;
+}
+function pmf(l,k){var p=Math.exp(-l);for(var i=1;i<=k;i++)p*=l/i;return p;}
+function fxProbs(lh,la){var H=0,D=0,A=0,i,j;for(i=0;i<=8;i++)for(j=0;j<=8;j++){var p=pmf(lh,i)*pmf(la,j);if(i>j)H+=p;else if(i===j)D+=p;else A+=p;}var s=H+D+A;return [H/s,D/s,A/s];}
+function poisGoals(l){var L=Math.exp(-l),k=0,p=1;do{k++;p*=Math.random();}while(p>L&&k<12);return k-1;}
+function genFixtures(){
+  var g=life.gm;
+  g.fx=g.fx.filter(function(f){return f.day>=life.day-2;});
+  var pool=TEAMS.slice();
+  for(var i=0;i<4;i++){
+    var h=pool.splice((Math.random()*pool.length)|0,1)[0],a=pool.splice((Math.random()*pool.length)|0,1)[0];
+    var lh=1.0+Math.random()*1.3,la=0.7+Math.random()*1.2,pr=fxProbs(lh,la);
+    var od=pr.map(function(p){return Math.max(1.12,Math.round(0.9/p*100)/100);});
+    g.fx.push({id:'f'+life.day+'_'+i,day:life.day,k:KICK[i],h:h,a:a,lh:lh,la:la,od:od,res:null});
+  }
+  g.day=life.day;SLIP.legs=[];
+}
+function fxById(id){var g=life.gm;for(var i=0;i<g.fx.length;i++)if(g.fx[i].id===id)return g.fx[i];return null;}
+function fxOut(f){return f.res[0]>f.res[1]?'H':(f.res[0]===f.res[1]?'D':'A');}
+function fxOpen(f){return !f.res&&f.day===life.day&&gameHour<f.k;}
+function kickTxt(k){return (k>12?k-12:k)+' '+(k>=12?'PM':'AM');}
+function gmCash(delta,label){
+  cash+=delta;setCash();logTx(label,delta);
+  var g=life.gm;g.net+=delta;if(delta<0)g.wag-=delta;
+}
+function gmBlock(stake){
+  gmInit();var g=life.gm;
+  if(g.cool>life.day)return 'You are cooling off until day '+g.cool+'. Betting is paused.';
+  if(stake>cash)return 'E no reach. You have '+money(cash)+'.';
+  return '';
+}
+function gmMood(delta){
+  if(delta>=3000)gain('fun',6);else if(delta<=-5000)gain('fun',-6);
+}
+function gmTick(){
+  if(!life||!life.made||creating)return;
+  var key=life.day*100+(gameHour|0);if(key===gmKey)return;gmKey=key;
+  gmInit();var g=life.gm,i,j;
+  /* results */
+  g.fx.forEach(function(f){
+    if(f.res)return;
+    if(life.day>f.day||(life.day===f.day&&gameHour>=f.k+2))f.res=[poisGoals(f.lh),poisGoals(f.la)];
+  });
+  /* settle slips */
+  g.bets.forEach(function(bt){
+    if(bt.st)return;
+    var lost=false,all=true;
+    bt.legs.forEach(function(l){var f=fxById(l.fid);if(!f||!f.res){all=false;return;}if(fxOut(f)!==l.sel)lost=true;});
+    if(lost){bt.st=2;pushMsg('bet','Your '+money(bt.stake)+' slip lost. Better luck next time.');gmMood(-bt.stake);}
+    else if(all){
+      var prod=1;bt.legs.forEach(function(l){prod*=l.od;});
+      var w=Math.min(2000000,Math.floor(bt.stake*prod));bt.st=1;bt.win=w;
+      gmCash(w,'LuckyBet: Football win');gmMood(w);chime();
+      pushMsg('bet','WINNER! Your '+money(bt.stake)+' slip paid '+money(w)+'. Credit alert sent to your wallet.');
+    }
+  });
+  g.bets=g.bets.slice(-30);
+  /* lotto draw at 8 PM */
+  var due=g.lotto.filter(function(t){return !t.done&&(life.day>t.day||(life.day===t.day&&gameHour>=20));});
+  if(due.length){
+    var nums=[];while(nums.length<5){var n=1+((Math.random()*30)|0);if(nums.indexOf(n)<0)nums.push(n);}
+    nums.sort(function(a,b){return a-b;});g.last={day:life.day,n:nums};
+    var win=0,best=0;
+    due.forEach(function(t){
+      var m=0;t.n.forEach(function(x){if(nums.indexOf(x)>=0)m++;});t.done=1;t.m=m;
+      var pz=[0,0,400,2500,40000,1500000][m];t.win=pz;win+=pz;best=Math.max(best,m);
+    });
+    if(win>0){gmCash(win,'LuckyBet: Lotto win');gmMood(win);chime();}
+    pushMsg('bet','Lotto draw: '+nums.join(' · ')+'. '+(win>0?'You matched up to '+best+' and won '+money(win)+'!':'No luck this time.'));
+  }
+  g.lotto=g.lotto.filter(function(t){return !t.done||t.day>=life.day-3;}).slice(-20);
+  if(g.day!==life.day)genFixtures();
+  if(life.gm.fx.length===0)genFixtures();
+}
+/* ---------- screens */
+var BETIC='<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M15 9h.01M12 12h.01M9 15h.01M15 15h.01"/>';
+function appBet(){
+  gmInit();if(!life.gm.fx.length||life.gm.day!==life.day)genFixtures();
+  phPush('LuckyBet',function(b){
+    var g=life.gm,open=g.bets.filter(function(x){return !x.st;}).length+g.lotto.filter(function(x){return !x.done;}).length;
+    pKV(b,[['Wallet',money(cash)],['Open slips and tickets',String(open)],['Net result',(g.net>=0?'+':'-')+money(Math.abs(g.net))]]);
+    if(g.cool>life.day)pNote(b,'You are cooling off until day '+g.cool+'. Betting is paused.','bad');
+    else if(g.net<=-15000){
+      pNote(b,'You are down '+money(-g.net)+'. Take a break?','bad');
+      pBtn(b,'COOL OFF FOR A DAY',function(){g.cool=life.day+1;saveGame();phRefresh();},'sec');
+    }
+    pSect(b,'Games');
+    pRow(b,'Football','4 matches today. Pick the result, build a slip',null,function(){appBetFoot();},pLead('<circle cx="12" cy="12" r="9"/><path d="M12 8l3.5 2.5-1.3 4h-4.4l-1.3-4zM12 3v5M20 9l-4.5 1.5M18 18l-3.8-3.5M6 18l3.8-3.5M4 9l4.5 1.5"/>','#2a7a4a'));
+    pRow(b,'Crash','Watch the multiplier climb. Cash out before it crashes',null,function(){appBetCrash();},pLead('<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>','#a82a20'));
+    pRow(b,'Lotto','Pick 5 of 30. Draw every day at 8 PM. Ticket ₦200',null,function(){appBetLotto();},pLead('<circle cx="12" cy="12" r="9"/><path d="M9 10h6M9 14h6"/>','#8a5ae8'));
+    pRow(b,'My slips','Football slips and lotto tickets',open?String(open)+' open':null,function(){appBetMine();},pLead('<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/>','#3a404a'),'a');
+    pNote(b,'Game money only. In real life betting is risky and the house wins in the long run. Never bet what you cannot lose.');
+  });
+}
+function slipOdds(){var p=1;SLIP.legs.forEach(function(l){p*=l.od;});return p;}
+function appBetFoot(){
+  phPush('Football',function(b){
+    var g=life.gm,list=g.fx.filter(function(f){return f.day===life.day;});
+    pNote(b,'Today · Day '+life.day+'. Tap an odd to add it to your slip (up to 4 matches, odds multiply).');
+    list.forEach(function(f){
+      var c=pAdd(b,pEl('div','fxc'));
+      c.appendChild(pEl('b','',f.h+' v '+f.a));
+      var st=f.res?('Full time '+f.res[0]+' - '+f.res[1]):(gameHour>=f.k?'Live now':'Kick-off '+kickTxt(f.k));
+      c.appendChild(pEl('span','',st));
+      var od=pAdd(c,pEl('div','odds'));
+      ['H','D','A'].forEach(function(sel,i){
+        var bt=pEl('button','od',''),on=SLIP.legs.some(function(l){return l.fid===f.id&&l.sel===sel;});
+        bt.type='button';bt.innerHTML='<i>'+(sel==='H'?'HOME':(sel==='D'?'DRAW':'AWAY'))+'</i><b>'+f.od[i].toFixed(2)+'</b>';
+        if(on)bt.classList.add('on');
+        if(f.res&&fxOut(f)===sel)bt.classList.add('won');
+        if(!fxOpen(f))bt.disabled=true;
+        bt.addEventListener('click',function(){
+          tap();var k=-1;SLIP.legs.forEach(function(l,ix){if(l.fid===f.id)k=ix;});
+          if(k>=0&&SLIP.legs[k].sel===sel)SLIP.legs.splice(k,1);
+          else if(k>=0)SLIP.legs[k]={fid:f.id,sel:sel,od:f.od[i],t:f.h+' v '+f.a};
+          else if(SLIP.legs.length<4)SLIP.legs.push({fid:f.id,sel:sel,od:f.od[i],t:f.h+' v '+f.a});
+          phRefresh();
+        });
+        od.appendChild(bt);
+      });
+    });
+    pSect(b,'Your slip');
+    if(!SLIP.legs.length)pNote(b,'Nothing selected yet.');
+    else{
+      SLIP.legs.forEach(function(l){pRow(b,l.t,({H:'Home win',D:'Draw',A:'Away win'})[l.sel],l.od.toFixed(2),null,null,'a');});
+      var chips=pAdd(b,pEl('div','chips'));
+      STAKES.forEach(function(s){var c=pEl('button','chip'+(SLIP.stake===s?' on':''),money(s));c.type='button';c.addEventListener('click',function(){tap();SLIP.stake=s;phRefresh();});chips.appendChild(c);});
+      var tot=slipOdds(),win=Math.min(2000000,Math.floor(SLIP.stake*tot));
+      pKV(b,[['Total odds',tot.toFixed(2)],['Stake',money(SLIP.stake)],['Possible win',money(win)]]);
+      var why=gmBlock(SLIP.stake);
+      if(why)pNote(b,why,'bad');
+      var bt=pBtn(b,'PLACE BET '+money(SLIP.stake),function(){placeSlip();},'grn');if(why)bt.disabled=true;
+      pBtn(b,'CLEAR SLIP',function(){SLIP.legs=[];phRefresh();},'sec');
+    }
+  });
+}
+function placeSlip(){
+  var why=gmBlock(SLIP.stake);if(why)return;
+  var stillOpen=SLIP.legs.every(function(l){var f=fxById(l.fid);return f&&fxOpen(f);});
+  if(!stillOpen){SLIP.legs=SLIP.legs.filter(function(l){var f=fxById(l.fid);return f&&fxOpen(f);});phRefresh();return;}
+  var g=life.gm,bt={id:++g.bid,day:life.day,stake:SLIP.stake,st:0,legs:SLIP.legs.map(function(l){return {fid:l.fid,sel:l.sel,od:l.od,t:l.t};})};
+  g.bets.push(bt);gmCash(-SLIP.stake,'LuckyBet: Football stake');
+  var tot=slipOdds();SLIP.legs=[];saveGame();chime();
+  phReplace('Bet placed',function(b){
+    var d=pAdd(b,pEl('div','crbig ok'));d.appendChild(pEl('b','','BET PLACED'));d.appendChild(pEl('span','',bt.legs.length+' selection'+(bt.legs.length===1?'':'s')+' · odds '+tot.toFixed(2)));
+    pKV(b,[['Stake',money(bt.stake)],['Possible win',money(Math.min(2000000,Math.floor(bt.stake*tot)))]]);
+    pNote(b,'Results come in two hours after kick-off. You will get a message.');
+    pBtn(b,'BACK TO FOOTBALL',function(){phPop();});
+  });
+}
+function appBetMine(){
+  phPush('My slips',function(b){
+    var g=life.gm,any=false;
+    g.bets.slice().reverse().forEach(function(bt){
+      any=true;var prod=1;bt.legs.forEach(function(l){prod*=l.od;});
+      var sub=bt.legs.map(function(l){return l.t+' ('+l.sel+')';}).join(', ');
+      pRow(b,'Slip '+money(bt.stake)+' · odds '+prod.toFixed(2),sub,bt.st===1?'WON '+money(bt.win):(bt.st===2?'LOST':'OPEN'),null,null,bt.st===1?'g':(bt.st===2?'r':'a'));
+    });
+    g.lotto.slice().reverse().forEach(function(t){
+      any=true;
+      pRow(b,'Lotto · '+t.n.join(' '),'Draw day '+t.day+', 8 PM',t.done?(t.win?'WON '+money(t.win):'LOST ('+t.m+')'):'OPEN',null,null,t.done?(t.win?'g':'r'):'a');
+    });
+    if(g.last)pNote(b,'Last lotto draw (day '+g.last.day+'): '+g.last.n.join(' · '));
+    if(!any)pNote(b,'No slips yet.');
+  });
+}
+/* ---------- crash */
+var CRASH={run:0,t0:0,m:1,cp:1,stake:1000,tm:null,hist:[],msg:'',kind:'',eM:null,eB:null,eS:null};
+function crashStop(){if(CRASH.tm){clearInterval(CRASH.tm);CRASH.tm=null;}}
+function crashOnScreen(){var t=PH.stack[PH.stack.length-1];return PH.open&&t&&t.t==='Crash';}
+function crashPay(){return Math.floor(CRASH.stake*CRASH.m);}
+function crashStart(){
+  var why=gmBlock(CRASH.stake);if(why||CRASH.run)return;
+  gmCash(-CRASH.stake,'LuckyBet: Crash stake');
+  CRASH.cp=Math.max(1,Math.min(500,0.96/(1-Math.random())));
+  CRASH.run=1;CRASH.t0=Date.now();CRASH.m=1;CRASH.msg='';CRASH.kind='';
+  crashStop();CRASH.tm=setInterval(crashTick,50);
+  if(CRASH.cp<=1.0001)crashTick();
+  saveGame();phRefresh();
+}
+function crashTick(){
+  if(!CRASH.run){crashStop();return;}
+  var t=(Date.now()-CRASH.t0)/1000;CRASH.m=Math.exp(0.09*t);
+  if(CRASH.m>=CRASH.cp){crashBoom();return;}
+  if(!crashOnScreen()){crashOut(true);return;}
+  if(CRASH.eM){CRASH.eM.textContent=CRASH.m.toFixed(2)+'x';}
+  if(CRASH.eB){CRASH.eB.textContent='CASH OUT '+money(crashPay());}
+  var st=Math.floor(CRASH.m*10);if(st!==CRASH.lastT){CRASH.lastT=st;tone(380+Math.min(900,CRASH.m*70),0.03,'square',0.025,0);}
+}
+function crashBoom(){
+  crashStop();CRASH.run=0;CRASH.m=CRASH.cp;
+  CRASH.hist.push(CRASH.cp);if(CRASH.hist.length>10)CRASH.hist.shift();
+  CRASH.msg='CRASHED at '+CRASH.cp.toFixed(2)+'x. You lost '+money(CRASH.stake)+'.';CRASH.kind='bad';
+  buzz();vib([40,30,40]);gmMood(-CRASH.stake);saveGame();phRefresh();
+}
+function crashOut(silent){
+  if(!CRASH.run)return;
+  crashStop();CRASH.run=0;
+  var w=crashPay();gmCash(w,'LuckyBet: Crash win');
+  CRASH.hist.push(CRASH.cp);if(CRASH.hist.length>10)CRASH.hist.shift();
+  CRASH.msg='Cashed out at '+CRASH.m.toFixed(2)+'x for '+money(w)+'. It would have crashed at '+CRASH.cp.toFixed(2)+'x.';CRASH.kind=w>=CRASH.stake?'ok':'bad';
+  if(w>CRASH.stake){chime();gmMood(w-CRASH.stake);}else gmMood(w-CRASH.stake);
+  saveGame();if(PH.open)phRefresh();
+}
+function appBetCrash(){
+  phPush('Crash',function(b){
+    var d=pAdd(b,pEl('div','crbig'+(CRASH.run?' run':(CRASH.kind?' '+CRASH.kind:''))));
+    var m=pAdd(d,pEl('b','',(CRASH.run?CRASH.m:(CRASH.kind==='bad'&&CRASH.msg.indexOf('CRASHED')===0?CRASH.cp:1)).toFixed(2)+'x'));
+    CRASH.eM=m;
+    d.appendChild(pEl('span','',CRASH.run?'Cash out before it crashes!':(CRASH.msg||'Place a bet and watch the multiplier climb.')));
+    var h=pAdd(b,pEl('div','chips'));
+    CRASH.hist.slice().reverse().forEach(function(x){h.appendChild(pEl('i','hc '+(x<2?'lo':'hi'),x.toFixed(2)+'x'));});
+    if(!CRASH.run){
+      var chips=pAdd(b,pEl('div','chips'));
+      STAKES.forEach(function(s){var c=pEl('button','chip'+(CRASH.stake===s?' on':''),money(s));c.type='button';c.addEventListener('click',function(){tap();CRASH.stake=s;phRefresh();});chips.appendChild(c);});
+      var why=gmBlock(CRASH.stake);if(why)pNote(b,why,'bad');
+      var bt=pBtn(b,'BET '+money(CRASH.stake),function(){crashStart();},'grn');if(why)bt.disabled=true;CRASH.eB=null;
+      pNote(b,'The multiplier grows every moment. If it crashes before you cash out, the stake is lost.');
+    }else{
+      CRASH.eB=pBtn(b,'CASH OUT '+money(crashPay()),function(){crashOut();},'');
+      CRASH.eB.style.fontSize='17px';CRASH.eB.style.padding='16px 14px';
+    }
+  });
+}
+/* ---------- lotto */
+var LOTT={sel:[]};
+function lottoNext(){return gameHour>=20?'Tomorrow, 8 PM':'Today, 8 PM';}
+function appBetLotto(){
+  phPush('Lotto',function(b){
+    var g=life.gm;
+    pNote(b,'Pick 5 numbers from 1 to 30. Next draw: '+lottoNext()+'. Match 2 wins ₦400, 3 wins ₦2,500, 4 wins ₦40,000, all 5 wins ₦1,500,000.');
+    if(g.last)pNote(b,'Last draw (day '+g.last.day+'): '+g.last.n.join(' · '));
+    var grid=pAdd(b,pEl('div','lotg'));
+    for(var n=1;n<=30;n++){(function(n){
+      var c=pEl('button','ln'+(LOTT.sel.indexOf(n)>=0?' on':''),String(n));c.type='button';
+      c.addEventListener('click',function(){tap();var i=LOTT.sel.indexOf(n);if(i>=0)LOTT.sel.splice(i,1);else if(LOTT.sel.length<5)LOTT.sel.push(n);phRefresh();});
+      grid.appendChild(c);
+    })(n);}
+    var row=pAdd(b,pEl('div','pbrow'));
+    pBtn(row,'QUICK PICK',function(){var s=[];while(s.length<5){var x=1+((Math.random()*30)|0);if(s.indexOf(x)<0)s.push(x);}LOTT.sel=s;phRefresh();},'sec');
+    pBtn(row,'CLEAR',function(){LOTT.sel=[];phRefresh();},'sec');
+    var why=gmBlock(200);if(why)pNote(b,why,'bad');
+    var bt=pBtn(b,'BUY TICKET ₦200',function(){
+      if(LOTT.sel.length!==5||gmBlock(200))return;
+      var day=gameHour>=20?life.day+1:life.day;
+      g.lotto.push({day:day,n:LOTT.sel.slice().sort(function(a,c){return a-c;}),done:0});
+      gmCash(-200,'LuckyBet: Lotto ticket');LOTT.sel=[];saveGame();chime();
+      phReplace('Ticket bought',function(bb){
+        var d=pAdd(bb,pEl('div','crbig ok'));d.appendChild(pEl('b','','GOOD LUCK'));d.appendChild(pEl('span','','Draw: '+(day===life.day?'today':'tomorrow')+' at 8 PM. You will get a message.'));
+        pBtn(bb,'DONE',function(){phPop();});
+      });
+    },'grn');
+    if(why||LOTT.sel.length!==5)bt.disabled=true;
+  });
+}
+
 /* ---------- the people */
 function addPerson(key,o,d){
   var n=makeNPC(o);n.label=d.label;d.npc=n;d.name=d.name;NK[key]=d;
@@ -4288,7 +4824,7 @@ function perfFrame(raw){
 function perfEnd(){
   perf.on=false;perfHud.hidden=true;
   var best='low',i;
-  for(i=1;i<perf.res.length;i++){if(perf.res[i].fps>=30&&perf.res[i].low>=22)best=perf.res[i].t;else break;}
+  for(i=1;i<perf.res.length;i++){if(perf.res[i].fps>=50&&perf.res[i].low>=35)best=perf.res[i].t;else break;}
   var L=[VERSION+' · PERFORMANCE TEST','GPU: '+gpuName(),'Screen: '+window.innerWidth+'x'+window.innerHeight+' · pixel ratio '+(window.devicePixelRatio||1).toFixed(1)];
   perf.res.forEach(function(r){L.push(TIERS[r.t].label+': '+Math.round(r.fps)+' FPS (worst '+Math.round(r.low)+') · '+Math.round(r.calls)+' calls · '+Math.round(r.tris/1000)+'k tris');});
   L.push('Best for this phone: '+TIERS[best].label+' (now selected)');
@@ -4323,7 +4859,7 @@ window.addEventListener('keydown',function(e){
 
 /* ------------------------------------------------------------------ loop */
 function update(dt){
-  npcsUpdate(dt);checkMission(dt);fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);statTick(dt);fxUpdate(dt);
+  npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);statTick(dt);fxUpdate(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
