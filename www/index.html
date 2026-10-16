@@ -74,8 +74,8 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #menu[hidden]{display:none}
 #menu .mapbox{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
 #menu .mapbox span{font:700 13px/1 var(--display);letter-spacing:.2em;color:#cdbf9f}
-#map{width:min(300px,70vh);height:min(300px,70vh);max-width:44vw;max-height:44vw;border:3px solid rgba(246,236,217,.6);border-radius:8px;background:#000}
-#menu .col{display:flex;flex-direction:column;gap:9px;width:min(260px,44vw);min-width:0}
+#map{width:min(400px,54vw);height:auto;max-height:72vh;border:3px solid rgba(246,236,217,.6);border-radius:8px;background:#000}
+#menu .col{display:flex;flex-direction:column;gap:9px;width:min(230px,32vw);min-width:0}
 #menu .col h2{margin:0 0 2px;font:700 30px/1 var(--display);letter-spacing:.12em;color:var(--danfo)}
 #menu button{width:100%;min-width:0;background:rgba(246,236,217,.1);color:var(--paper);border:2px solid rgba(246,236,217,.55);border-radius:6px;font:700 17px/1 var(--display);letter-spacing:.12em;padding:12px 14px;text-align:left}
 #menu button:active{background:var(--danfo);color:var(--ink)}
@@ -116,7 +116,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <div class="hud" id="speed" hidden><span id="kmh">0</span> <small>KM/H</small></div>
 
 <div id="menu" hidden>
-  <div class="mapbox"><span>MAP</span><canvas id="map" width="256" height="256"></canvas></div>
+  <div class="mapbox"><span>MAP</span><canvas id="map" width="404" height="264"></canvas></div>
   <div class="col">
     <h2>PAUSED</h2>
     <button id="resume" type="button">RESUME</button>
@@ -132,8 +132,8 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
   <div class="card">
     <h1>Grand Theft Lagos</h1>
     <div class="stripe"></div>
-    <div class="ver">GTL 0.4 &middot; Mainland test block</div>
-    <p>Build 9: the map, quality and sound now live in the MENU button, which pauses the game. Two new jobs for Mama Nkechi.</p>
+    <div class="ver">GTL 0.5 &middot; Mainland test block</div>
+    <p>Build 10: the road now runs east across Lagoon Bridge, with a market, a jetty and boats. Two new jobs.</p>
     <ul>
       <li><b>MOVE</b> &nbsp;drag with your left thumb</li>
       <li><b>LOOK</b> &nbsp;swipe with your right thumb</li>
@@ -152,7 +152,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.4 b9';
+var VERSION='GTL 0.5 b10';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -423,7 +423,9 @@ function okada(x,z,ry){
 }
 
 /* ---- ground, roads, markings ---- */
-box(0,-0.1,0,700,0.2,700,'#b07a52');
+box(-125,-0.1,0,450,0.2,700,'#b07a52');
+box(225,-0.1,-230,250,0.2,240,'#b07a52');
+box(225,-0.1,230,250,0.2,240,'#b07a52');
 for(var gp=0;gp<16;gp++){
   var gx=(rnd()-0.5)*130,gz=(rnd()-0.5)*130;
   if(Math.abs(gx)<8||Math.abs(gz)<9)continue;
@@ -452,8 +454,8 @@ function barrier(bx,bz,alongZ){
   if(alongZ){box(bx,0.6,bz-len/2,0.3,1.2,0.3,'#555');box(bx,0.6,bz+len/2,0.3,1.2,0.3,'#555');solid(bx,bz,0.6,len+0.4,1.3);}
   else{box(bx-len/2,0.6,bz,0.3,1.2,0.3,'#555');box(bx+len/2,0.6,bz,0.3,1.2,0.3,'#555');solid(bx,bz,len+0.4,0.6,1.3);}
 }
-barrier(67.5,0,true);barrier(-67.5,0,true);barrier(0,67.5,false);barrier(0,-67.5,false);
-addSign('ROAD WORKS AHEAD','#f2b705','#141414',67.2,1.9,0,-Math.PI/2,3.4,0.9);
+barrier(137.5,0,true);barrier(-67.5,0,true);barrier(0,67.5,false);barrier(0,-67.5,false);
+addSign('ROAD WORKS AHEAD','#f2b705','#141414',137.2,1.9,0,-Math.PI/2,3.4,0.9);
 addSign('ROAD WORKS AHEAD','#f2b705','#141414',-67.2,1.9,0,Math.PI/2,3.4,0.9);
 addSign('ROAD WORKS AHEAD','#f2b705','#141414',0,1.9,67.2,Math.PI,3.4,0.9);
 addSign('ROAD WORKS AHEAD','#f2b705','#141414',0,1.9,-67.2,0,3.4,0.9);
@@ -544,7 +546,8 @@ palm(-8.5,-30);palm(-62,-60);tree(-30,-50);tree(-46,-52);palm(-14,-56);palm(-64,
 
 /* ---- street furniture and greenery ---- */
 function lamp(lx,lz,ry){frame(lx,lz,ry,function(){cyl(0,3,0,0.14,6,0.14,'#3a3d40');box(0.7,5.9,0,1.6,0.1,0.1,'#3a3d40');box(1.4,5.8,0,0.5,0.12,0.25,'#fff3c4');});}
-[-60,-36,-12,14,40,62].forEach(function(lx){lamp(lx,5.5,Math.PI/2);});
+var LAMPX=[-60,-36,-12,14,40,62,76,88,104,112,128];
+LAMPX.forEach(function(lx){lamp(lx,5.5,Math.PI/2);});
 function umbrella(ux,uz,col,gi){
   box(ux,0.5,uz,1.1,0.08,0.7,'#8a6a45');box(ux-0.45,0.25,uz,0.08,0.5,0.6,'#6b4f33');box(ux+0.45,0.25,uz,0.08,0.5,0.6,'#6b4f33');
   box(ux-0.3,0.66,uz,0.4,0.25,0.4,GOODS[gi%6]);box(ux+0.25,0.64,uz,0.4,0.2,0.4,GOODS[(gi+3)%6]);
@@ -575,6 +578,55 @@ for(var sk2=0;sk2<80;sk2++){
   var bh=4+rnd()*16;
   box(qx,bh/2,qz,6+rnd()*10,bh,6+rnd()*10,SKY[sk2%5]);
 }
+
+
+/* ---- EAST DISTRICT: Eko market, toll gate, Lagoon Bridge ---- */
+var shopsEN=[
+  {x:73,name:'LAGOON FISH MART',wall:'#d9e6ea',roof:'#2f6fb1',bg:'#2f6fb1',fg:'#ffffff',aw:'#2f6fb1'},
+  {x:81,name:'EKO SUYA SPOT',wall:'#e8c9a0',roof:'#7a3b2a',bg:'#7a1f1f',fg:'#f6ecd9',aw:'#c1352d'},
+  {x:89,name:'SEA BREEZE BUKA',wall:'#f0d27a',roof:'#6b4a3a',bg:'#1f8a4c',fg:'#ffffff',aw:'#1f8a4c'}
+];
+shopsEN.forEach(function(s){building({kind:'shop',face:'S',x:s.x,z:-11,w:7.2,d:6,h:4,wall:s.wall,roof:s.roof,signBg:s.bg,signFg:s.fg,awning:s.aw,name:s.name});});
+var shopsES=[
+  {x:73,name:'TOP SPOT GADGETS',wall:'#bcd0e6',roof:'#555b61',bg:'#141414',fg:'#f2b705',aw:'#f2b705'},
+  {x:81,name:'ADE TAILORING',wall:'#e7a6b3',roof:'#6b4a3a',bg:'#7a2e65',fg:'#ffffff',aw:'#7a2e65'},
+  {x:89,name:'NEPA REPAIR SHOP',wall:'#8fc4b3',roof:'#7b8187',bg:'#c1352d',fg:'#ffffff',aw:'#2f6fb1'}
+];
+shopsES.forEach(function(s){building({kind:'shop',face:'N',x:s.x,z:11,w:7.2,d:6,h:4,wall:s.wall,roof:s.roof,signBg:s.bg,signFg:s.fg,awning:s.aw,name:s.name});});
+var esi=20;
+[-24,-30,24,30].forEach(function(rz){for(var i=0;i<7;i++){stall(70+3.6*i,rz,esi);esi++;}});
+building({kind:'multi',face:'N',x:84,z:44,w:20,d:9,h:9.6,floors:3,balcony:true,wall:'#e0b9a0',roof:'#555b61'});
+building({kind:'multi',face:'S',x:84,z:-44,w:20,d:9,h:6.4,floors:2,balcony:true,wall:'#b8d0c8',roof:'#555b61'});
+palm(70,-18);palm(94,-18);palm(70,18);palm(95,18);tree(94,52);palm(96,-52);tree(70,56);palm(70,-56);
+/* toll gate */
+[-8.2,8.2].forEach(function(gz){box(98,3.5,gz,1.0,7,1.0,'#d8cdb5');solid(98,gz,1.1,1.1,7);});
+box(98,6.9,0,1.2,2.0,17.4,'#0f3d2a');
+addSign('LAGOON BRIDGE','#0f3d2a','#f6ecd9',97.3,6.9,0,-Math.PI/2,12,1.7);
+addSign('LAGOON BRIDGE','#0f3d2a','#f6ecd9',98.7,6.9,0,Math.PI/2,12,1.7);
+/* the lagoon: water sits below the quay, the bridge crosses it */
+box(225,-1.6,0,250,0.2,220,'#2f7fa8');
+for(var wv=0;wv<30;wv++){var wz=-100+rnd()*200;if(Math.abs(wz)<9)continue;box(104+rnd()*130,-1.49,wz,3+rnd()*5,0.02,0.25,'#6fb3d0');}
+box(99.8,-0.8,-58.6,0.4,1.8,102.8,'#7d7468');box(99.8,-0.8,58.6,0.4,1.8,102.8,'#7d7468');
+solid(225,-70.65,250,78.7,0.5);solid(225,-18,250,21.4,0.5);
+solid(225,58.65,250,102.7,0.5);
+/* bridge deck, piers, rails */
+box(118.5,-0.4,0,38,0.7,14.4,'#8d8f90');
+[104,113,122,131].forEach(function(px){[-4.5,4.5].forEach(function(pz){box(px,-1.0,pz,1.4,1.9,1.4,'#7d7468');});});
+[-7.0,7.0].forEach(function(rz){
+  box(118.5,0.75,rz,38,0.12,0.16,'#e8e4da');box(118.5,0.45,rz,38,0.08,0.12,'#cfcac0');
+  for(var rx=100.5;rx<=137;rx+=2.5)box(rx,0.5,rz,0.14,0.64,0.14,'#e8e4da');
+  solid(118.5,rz,38,0.5,1.2);
+});
+[-7.0,7.0].forEach(function(pz){box(120,14,pz,1.3,28,1.3,'#e8e4da');box(120,28.2,pz,1.7,0.5,1.7,'#c1352d');solid(120,pz,1.5,1.5,28);});
+box(120,24,0,1.0,1.2,14.6,'#e8e4da');box(120,13,0,1.0,1.0,14.6,'#e8e4da');
+[-1,1].forEach(function(sd){[4,8,12,16].forEach(function(d,i){
+  var yt=12+i*4,dy=yt-0.4,L=Math.hypot(d,dy),ang=-sd*Math.atan2(dy,d);
+  [-7.0,7.0].forEach(function(cz){box(120+sd*d/2,0.4+dy/2,cz,L,0.1,0.1,'#e8e4da',0,0,ang);});
+});});
+/* jetty */
+box(105,-0.05,-30,12,0.15,2.4,'#8a6a45');
+for(var jx=101;jx<=110;jx+=3){[-1.0,1.0].forEach(function(jz){box(jx,-0.9,-30+jz,0.25,1.7,0.25,'#6b4f33');});}
+solid(112,-30,1,2.8,0.5);
 
 var worldGeo=new THREE.BufferGeometry();
 worldGeo.setAttribute('position',new THREE.Float32BufferAttribute(P,3));
@@ -797,7 +849,7 @@ function collideCar(){
     }
   }
   var L=LIM-1.3;
-  car.x=Math.max(-L,Math.min(L,car.x));car.z=Math.max(-L,Math.min(L,car.z));
+  car.x=Math.max(XMIN+1.3,Math.min(XMAX-1.3,car.x));car.z=Math.max(-L,Math.min(L,car.z));
   return hit;
 }
 function driveUpdate(dt,ctl){
@@ -817,7 +869,7 @@ function driveUpdate(dt,ctl){
   if(car.spin>6.2832||car.spin<-6.2832)car.spin%=6.2832;
 }
 function freeSpot(px,pz){
-  if(Math.abs(px)>LIM||Math.abs(pz)>LIM)return false;
+  if(px<XMIN||px>XMAX||Math.abs(pz)>LIM)return false;
   for(var i=0;i<solids.length;i++){
     var s=solids[i],cx=Math.max(s.minX,Math.min(px,s.maxX)),cz=Math.max(s.minZ,Math.min(pz,s.maxZ));
     if((px-cx)*(px-cx)+(pz-cz)*(pz-cz)<(PR+0.05)*(PR+0.05))return false;
@@ -826,7 +878,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38;
+var LIM=66,PR=0.38,XMIN=-66,XMAX=136;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -843,7 +895,7 @@ function collide(px,pz){
     }
     if(!driving){carPush(px,pz);px=_cx;pz=_cz;trafficPush(px,pz);px=_cx;pz=_cz;}
   }
-  px=Math.max(-LIM,Math.min(LIM,px));pz=Math.max(-LIM,Math.min(LIM,pz));
+  px=Math.max(XMIN,Math.min(XMAX,px));pz=Math.max(-LIM,Math.min(LIM,pz));
   player.x=px;player.z=pz;
 }
 function inSolid(px,py,pz,m){
@@ -1010,7 +1062,17 @@ var JOBS=[
    stages:[{x:56,z:2,label:'COLLECT THE CARGO FROM TOLA'},{x:0,z:-55,label:'SPRINT TO THE NORTH END'},{x:-56,z:2,label:'FINISH AT MALLAM SULE'}],
    offer:"The big one! Collect cargo from Tola in the east, rush it to the north end, then finish with Mallam Sule in the west. The clock starts at the pickup and you get 32 seconds. Running no go reach, you must use the car! \u20A610,000, and \u20A62,000 more if you finish with 8 seconds to spare.",
    remind:"Cargo from Tola in the east, then the north end, then Mallam Sule in the west. 32 seconds from the pickup. Use the car!",
-   toast:'NEW JOB: city sprint. Use the car!'}
+   toast:'NEW JOB: city sprint. Use the car!'},
+  {title:'LAGOON FISH RUN',reward:7000,
+   stages:[{x:95,z:-27,label:'COLLECT THE FISH FROM BABA DELE'},{x:2,z:15.5,label:'TAKE THE FISH TO MAMA NKECHI'}],
+   offer:"Fresh fish don land at the lagoon! Go east past the big bridge sign, to Baba Dele at the jetty by the market. Collect the fish and bring am come my stall before e spoil. \u20A67,000 for you.",
+   remind:"Baba Dele dey the jetty, east of here by the market. Bring the fish back to my stall fast!",
+   toast:'NEW JOB: fish from the lagoon jetty'},
+  {title:'BRIDGE SPRINT',reward:12000,bonus:3000,bonusLeft:6,timer:{stage:1,secs:22},
+   stages:[{x:96,z:2,label:'COLLECT THE PACKAGE AT THE TOLL GATE'},{x:131,z:2,label:'RACE ACROSS LAGOON BRIDGE'},{x:2,z:15.5,label:'RUSH BACK TO MAMA NKECHI'}],
+   offer:"Last one for now, and na the hardest. Collect a package at the toll gate, race across Lagoon Bridge, then rush back to me. The clock starts at the toll gate and you get only 22 seconds. Running no go reach. \u20A612,000, and \u20A63,000 more if you have 6 seconds to spare.",
+   remind:"Toll gate, then the far end of Lagoon Bridge, then back to me. 22 seconds from the pickup. Use the car!",
+   toast:'NEW JOB: bridge sprint. Use the car!'}
 ];
 var jobIdx=0,jobActive=false,jobStage=0,timerOn=false,timerLeft=0,lastObj=-1,SAVE_KEY='gtl_save_v1';
 function curJob(){return JOBS[jobIdx]||null;}
@@ -1149,6 +1211,12 @@ makeNPC({x:56,z:6.3,yaw:Math.PI,skin:'#6b4026',skin2:'#5a3520',low:'#2b5a9a',low
     else if(jobIdx===2&&jobActive&&jobStage===0)openDlg('TOLA',"Step into the yellow circle and the parcel is yours. Sule is waiting, so move fast!",[{label:'OK'}]);
     else openDlg('TOLA',"Business is slow on this side of the block, but the pure water keeps selling. Mama Nkechi sends me good customers.",[{label:'OK'}]);
   }});
+makeNPC({x:97.5,z:-30,yaw:-Math.PI/2,skin:'#5a3520',skin2:'#4a2b1a',low:'#2b4a6a',low2:'#1f3550',top:'#d9c27a',head:'cap',hc:'#d9c27a',
+  talk:function(){
+    if(jobIdx===5&&jobActive&&jobStage===0)openDlg('BABA DELE',"Fresh from the lagoon this morning! Step into the yellow circle and the fish is yours.",[{label:'OK'}]);
+    else if(jobIdx===5&&jobActive)openDlg('BABA DELE',"Carry the fish go Mama Nkechi quick, before e spoil!",[{label:'OK'}]);
+    else openDlg('BABA DELE',"The lagoon dey give us plenty fish. Mama Nkechi buys the best of it. Mind the boats when you cross the bridge!",[{label:'OK'}]);
+  }});
 (function(){
   var t=new GB();
   t.add(BOXG,0,0.8,0,1.3,0.08,0.8,0,0,0,'#8a5a33');
@@ -1262,7 +1330,7 @@ function buildOkada(){
 }
 var LANES=[
   {x:-63,z:2.5,h:Math.PI/2,speed:9},
-  {x:63,z:-2.5,h:-Math.PI/2,speed:8},
+  {x:133,z:-2.5,h:-Math.PI/2,speed:8},
   {x:-2,z:-63,h:0,speed:7},
   {x:2,z:63,h:Math.PI,speed:8.5}
 ];
@@ -1277,6 +1345,7 @@ addVeh('danfo',0,14);addVeh('sedan',0,78,'#c9c9c9');
 addVeh('sedan',1,26,'#8e2f2f');addVeh('okada',1,92);
 addVeh('okada',2,42);addVeh('danfo',2,100);
 addVeh('sedan',3,56,'#2f4f8e');addVeh('danfo',3,18);
+addVeh('sedan',0,150,'#e0c040');addVeh('danfo',1,20);
 /* distance from vehicle v to something ahead of it in its own path (Infinity when clear) */
 function aheadOf(v,px,pz,rad){
   var f1=Math.sin(v.h),f2=Math.cos(v.h),rx=px-v.x,rz=pz-v.z,a=rx*f1+rz*f2,lat=rx*f2-rz*f1;
@@ -1302,7 +1371,7 @@ function trafficUpdate(dt){
     if(v.speed<0.05)v.speed=0;
     var L=LANES[v.lane],f1=Math.sin(v.h),f2=Math.cos(v.h);
     v.x+=f1*v.speed*dt;v.z+=f2*v.speed*dt;
-    if(Math.abs(v.x)>64||Math.abs(v.z)>64){
+    if(v.x<-64||v.x>134||Math.abs(v.z)>64){
       v.x=L.x;v.z=L.z;v.speed=v.max;
       var clear=true;
       for(var k=0;k<traffic.length;k++)if(k!==i&&Math.hypot(traffic[k].x-v.x,traffic[k].z-v.z)<14)clear=false;
@@ -1356,7 +1425,7 @@ var WP=[
   {shirt:'#7a1f1f',pants:'#2a2a30',skin:'#5a3520',hair:'#0d0d0d',shoe:'#2a2a2e'},
   {shirt:'#8a8f98',pants:'#26324a',skin:'#8a5a38',hair:'#0d0d0d',shoe:'#d6d3c8'}
 ];
-var ROUTES=[[[-50,5.8],[-10,5.8]],[[10,-5.8],[55,-5.8]],[[10,5.8],[50,5.8]],[[-55,-5.8],[-10,-5.8]],[[4.8,24],[4.8,56]],[[-4.8,10],[-4.8,56]],[[4.8,-10],[4.8,-50]],[[-4.8,-12],[-4.8,-55]]];
+var ROUTES=[[[-50,5.8],[-10,5.8]],[[10,-5.8],[55,-5.8]],[[10,5.8],[50,5.8]],[[-55,-5.8],[-10,-5.8]],[[4.8,24],[4.8,56]],[[-4.8,10],[-4.8,56]],[[4.8,-10],[4.8,-50]],[[-4.8,-12],[-4.8,-55]],[[72,5.8],[96,5.8]],[[96,-5.8],[72,-5.8]]];
 ROUTES.forEach(function(r,i){var o=WP[i%WP.length],t=Math.random();makeWalker({shirt:o.shirt,pants:o.pants,skin:o.skin,hair:o.hair,shoe:o.shoe,a:[r[0][0]+(r[1][0]-r[0][0])*t,r[0][1]+(r[1][1]-r[0][1])*t],b:r[i%2?0:1],sp:1.1+Math.random()*0.7});
   var w=walkers[walkers.length-1];w.ax=r[0][0];w.az=r[0][1];w.bx=r[1][0];w.bz=r[1][1];});
 function walkersUpdate(dt){
@@ -1405,7 +1474,7 @@ function glowTex(){
 }
 var gTex=glowTex();
 var lampSprites=[],lampPools=[];
-[-60,-36,-12,14,40,62].forEach(function(lx){
+LAMPX.forEach(function(lx){
   var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:gTex,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));
   sp.scale.set(3.6,3.6,1);sp.position.set(lx,5.65,4.1);scene.add(sp);lampSprites.push(sp);
   var pl=new THREE.Mesh(new THREE.CircleGeometry(7,20),new THREE.MeshBasicMaterial({map:gTex,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));
@@ -1456,49 +1525,75 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 
 
 /* ------------------------------------------------------------ map */
-npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';
-var MAPS=256,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
-mapBG.width=mapBG.height=MAPS;
-function MX(x){return (x+66)/132*MAPS;}
+npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';npcs[3].label='DELE';
+var MW=404,MH=264,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
+mapBG.width=MW;mapBG.height=MH;
+function MX(x){return (x-XMIN)/(XMAX-XMIN)*MW;}
+function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 (function(){
   var g=mapBG.getContext('2d');
-  g.fillStyle='#8f6542';g.fillRect(0,0,MAPS,MAPS);
-  g.fillStyle='#4a4d52';g.fillRect(0,MX(-5),MAPS,MX(5)-MX(-5));g.fillRect(MX(-4),0,MX(4)-MX(-4),MAPS);
+  g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
+  g.fillStyle='#2f7fa8';g.fillRect(MX(100),0,MW-MX(100),MH);
+  g.fillStyle='#8d8f90';g.fillRect(MX(99.5),MZ(-7.2),MX(137.5)-MX(99.5),MZ(7.2)-MZ(-7.2));
+  g.fillStyle='#4a4d52';g.fillRect(0,MZ(-5),MX(137.5),MZ(5)-MZ(-5));g.fillRect(MX(-4),0,MX(4)-MX(-4),MH);
   g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);
-  g.beginPath();g.moveTo(0,MX(0));g.lineTo(MAPS,MX(0));g.moveTo(MX(0),0);g.lineTo(MX(0),MAPS);g.stroke();g.setLineDash([]);
+  g.beginPath();g.moveTo(0,MZ(0));g.lineTo(MX(137.5),MZ(0));g.moveTo(MX(0),0);g.lineTo(MX(0),MH);g.stroke();g.setLineDash([]);
   g.fillStyle='#c9b08a';
   for(var i=0;i<solids.length;i++){
     var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
-    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MX(q.minZ),Math.max(2,w/132*MAPS),Math.max(2,d/132*MAPS));
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(XMAX-XMIN)*MW),Math.max(2,d/(2*LIM)*MH));
   }
 })();
+function mapLabel(g,t,x,y){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(t,x,y);g.fillText(t,x,y);}
 function mapUpdate(dt){
   mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
   g.drawImage(mapBG,0,0);
   g.fillStyle='#1b1b1b';
-  for(i=0;i<traffic.length;i++)g.fillRect(MX(traffic[i].x)-3,MX(traffic[i].z)-3,6,6);
-  g.font='bold 14px sans-serif';g.textAlign='center';
+  for(i=0;i<traffic.length;i++)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
+  g.font='bold 13px sans-serif';g.textAlign='center';
   for(i=0;i<npcs.length;i++){
     var n=npcs[i],offer=(i===0&&!jobActive&&!!cj);
-    g.fillStyle=offer?'#f2b705':'#f1efe6';g.beginPath();g.arc(MX(n.x),MX(n.z),offer?6:4.5,0,6.283);g.fill();
-    if(mapBig){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(n.label,MX(n.x),MX(n.z)-10);g.fillText(n.label,MX(n.x),MX(n.z)-10);}
+    g.fillStyle=offer?'#f2b705':'#f1efe6';g.beginPath();g.arc(MX(n.x),MZ(n.z),offer?6:4.5,0,6.283);g.fill();
+    mapLabel(g,n.label,MX(n.x),MZ(n.z)-9);
   }
   if(!driving){
-    g.fillStyle='#2f7d4f';g.strokeStyle='#fff';g.lineWidth=2;g.fillRect(MX(car.x)-5,MX(car.z)-5,10,10);g.strokeRect(MX(car.x)-5,MX(car.z)-5,10,10);
-    if(mapBig){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText('CAR',MX(car.x),MX(car.z)-10);g.fillText('CAR',MX(car.x),MX(car.z)-10);}
+    g.fillStyle='#2f7d4f';g.strokeStyle='#fff';g.lineWidth=2;g.fillRect(MX(car.x)-5,MZ(car.z)-5,10,10);g.strokeRect(MX(car.x)-5,MZ(car.z)-5,10,10);
+    mapLabel(g,'CAR',MX(car.x),MZ(car.z)-9);
   }
   if(jobActive&&cj){
     var st=cj.stages[jobStage],pr=6+3*Math.sin(elapsed*5);
-    g.strokeStyle='#f2b705';g.lineWidth=3;g.beginPath();g.arc(MX(st.x),MX(st.z),pr,0,6.283);g.stroke();
-    g.fillStyle='#f2b705';g.beginPath();g.arc(MX(st.x),MX(st.z),3,0,6.283);g.fill();
+    g.strokeStyle='#f2b705';g.lineWidth=3;g.beginPath();g.arc(MX(st.x),MZ(st.z),pr,0,6.283);g.stroke();
+    g.fillStyle='#f2b705';g.beginPath();g.arc(MX(st.x),MZ(st.z),3,0,6.283);g.fill();
   }
-  var ax=MX(px),az=MX(pz),sy=Math.sin(yaw),cy=Math.cos(yaw);
+  var ax=MX(px),az=MZ(pz),sy=Math.sin(yaw),cy=Math.cos(yaw);
   g.fillStyle='#ffffff';g.strokeStyle='#000';g.lineWidth=2;
   g.beginPath();g.moveTo(ax+sy*11,az+cy*11);g.lineTo(ax-sy*6+cy*7,az-cy*6-sy*7);g.lineTo(ax-sy*6-cy*7,az-cy*6+sy*7);g.closePath();g.fill();g.stroke();
-  g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText('N',MAPS/2,16);g.fillText('N',MAPS/2,16);
+  mapLabel(g,'N',MW/2,16);
 }
 
+/* ------------------------------------------------------------ boats on the lagoon */
+var boats=[];
+function buildBoat(){
+  var b=new GB();
+  b.add(BOXG,0,-1.25,0,4.8,0.55,1.5,0,0,0,'#7a4a2e');b.add(BOXG,0,-0.95,0,4.2,0.12,1.2,0,0,0,'#a87b4f');
+  b.add(BOXG,-1.0,-0.5,0,1.3,0.9,1.0,0,0,0,'#e8e4da');b.add(BOXG,0.3,-0.15,0,0.1,1.6,0.1,0,0,0,'#555');
+  b.add(BOXG,0.65,0.35,0,0.8,0.5,0.03,0,0,0,'#c1352d');b.add(BOXG,2.45,-1.05,0,0.5,0.4,0.9,0,0,0.5,'#7a4a2e');
+  return b.mesh();
+}
+[[-45,130,1,1.6],[42,235,-1,1.2],[-82,170,1,2.0],[78,125,-1,1.5]].forEach(function(o){
+  var gp=new THREE.Group();gp.add(buildBoat());scene.add(gp);
+  boats.push({g:gp,x:o[1],z:o[0],dir:o[2],sp:o[3]});
+});
+[[106,-33.4,0.1],[110,-26.7,-0.15]].forEach(function(o){var gp=new THREE.Group();gp.add(buildBoat());gp.position.set(o[0],0,o[1]);gp.rotation.y=o[2];scene.add(gp);});
+function boatsUpdate(dt){
+  for(var i=0;i<boats.length;i++){
+    var b=boats[i];b.x+=b.dir*b.sp*dt;
+    if(b.x>245)b.dir=-1;else if(b.x<115)b.dir=1;
+    b.g.position.set(b.x,Math.sin(elapsed*1.4+i)*0.05,b.z);
+    b.g.rotation.y=b.dir>0?0:Math.PI;b.g.rotation.z=Math.sin(elapsed*1.1+i*2)*0.03;
+  }
+}
 
 /* ------------------------------------------------------------ menu / pause */
 var paused=false,menuEl=$('menu'),resetArm=false;
@@ -1523,7 +1618,7 @@ window.addEventListener('keydown',function(e){if(e.code==='Escape'||e.code==='Ke
 
 /* ------------------------------------------------------------------ loop */
 function update(dt){
-  npcsUpdate(dt);checkMission(dt);trafficUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);
+  npcsUpdate(dt);checkMission(dt);trafficUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
