@@ -96,7 +96,24 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #speed{left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translateX(-50%);background:rgba(20,17,15,.72);border-bottom:5px solid var(--danfo);padding:4px 16px;font:700 34px/1 var(--display);letter-spacing:.04em;font-variant-numeric:tabular-nums;text-align:center}
 #speed small{font-size:14px;letter-spacing:.14em;color:#cdbf9f}
 
-#menu .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#menu .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+#menu .phtabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+#menu .phtabs button{font-size:11px;padding:8px 1px;letter-spacing:.02em;background:transparent;text-align:center}
+#menu .phtabs button.on{background:var(--danfo);color:var(--ink);border-color:#000}
+#phBody{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+#phBody .ph{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font:500 12px/1.25 var(--display);letter-spacing:.12em;color:#cdbf9f;border-bottom:1px solid rgba(246,236,217,.18);padding-bottom:5px}
+#phBody .ph b{font:700 14px/1.2 var(--display);letter-spacing:.03em;color:var(--paper);text-align:right}
+#phBody .nb{display:grid;grid-template-columns:78px 1fr 30px;gap:8px;align-items:center;font:500 12px/1 var(--display);letter-spacing:.12em;color:#cdbf9f}
+#phBody .nb i{display:block;height:9px;background:rgba(246,236,217,.2)}
+#phBody .nb u{display:block;height:100%;background:#4cb26e;text-decoration:none}
+#phBody .nb u.mid{background:#e0b020}#phBody .nb u.lo{background:#d33}
+#phBody .nb b{font:700 13px/1 var(--display);color:var(--paper);text-align:right}
+#phBody>button{font-size:13px;padding:9px 8px;letter-spacing:.08em}
+#needs{top:calc(env(safe-area-inset-top,0px) + 92px);right:calc(env(safe-area-inset-right,0px) + 16px);display:flex;flex-direction:column;align-items:flex-end;gap:4px;z-index:6;font:700 12px/1 var(--display);letter-spacing:.1em}
+#needs[hidden]{display:none}
+#needs span{background:rgba(20,17,15,.78);color:#ffcf6a;padding:4px 8px;border-right:4px solid #e0b020}
+#needs span.crit{color:#ff6a5a;border-right-color:#d33}
+#vig{position:fixed;inset:0;pointer-events:none;z-index:6;opacity:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 35%,rgba(0,0,0,.75) 100%);transition:opacity .6s}
 #menu .tabs button{font-size:13px;padding:9px 6px;text-align:center;letter-spacing:.1em;background:transparent}
 #menu .tabs button.on,#menu .g2 button.on{background:var(--danfo);color:var(--ink);border-color:#000}
 #menu .lab{font:700 11px/1 var(--display);letter-spacing:.22em;color:#cdbf9f;margin:4px 0 -2px}
@@ -128,6 +145,8 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <div class="hud" id="hint">Left thumb moves. Right thumb looks. Walk to Mama Nkechi (yellow arrow) and tap TALK.</div>
 <div class="hud" id="toast"></div>
 <div class="hud" id="obj" hidden><span class="t" id="objTitle">JOB</span><span class="d" id="objDist">0 m</span><span class="d" id="objTime" hidden></span></div>
+<div class="hud" id="needs" hidden></div>
+<div id="vig"></div>
 <div class="hud" id="heat" hidden><span id="heatStars">★☆☆</span><span class="hb"><i id="heatBar"></i></span></div>
 <div class="hud" id="speed" hidden><span id="kmh">0</span> <small>KM/H</small></div>
 
@@ -136,7 +155,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
   <div class="col">
     <h2>PAUSED</h2>
     <button id="resume" type="button">RESUME</button>
-    <div class="tabs"><button id="tabSet" type="button" class="on">SETTINGS</button><button id="tabPro" type="button">PROGRESS</button></div>
+    <div class="tabs"><button id="tabSet" type="button" class="on">SETTINGS</button><button id="tabPro" type="button">PROGRESS</button><button id="tabPh" type="button">PHONE</button></div>
     <div class="pan" id="panSet">
       <div class="lab">AUDIO</div>
       <div class="g2"><button id="snd" type="button">SOUND ON</button><button id="radio" type="button">RADIO: OFF</button></div>
@@ -146,6 +165,10 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
       <div class="g2"><button id="fareb" type="button">FARES: ON</button><button id="copb" type="button">POLICE: ON</button></div>
       <p class="sm">The radio plays while you drive. Fares: drive with no job active and passengers appear.</p>
       <p class="sm" id="fps">GTL</p>
+    </div>
+    <div class="pan" id="panPh" hidden>
+      <div class="phtabs" id="phTabs"><button type="button" data-t="needs">NEEDS</button><button type="button" data-t="work">WORK</button><button type="button" data-t="bank">BANK</button><button type="button" data-t="home">HOME</button><button type="button" data-t="go">TRIP</button></div>
+      <div id="phBody"></div>
     </div>
     <div class="pan" id="panPro" hidden>
       <div class="stats" id="stats"></div>
@@ -160,8 +183,8 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
   <div class="card">
     <h1>Grand Theft Lagos</h1>
     <div class="stripe"></div>
-    <div class="ver">GTL 0.6 &middot; Mainland, Island and the Task Force</div>
-    <p>Build 15: the Task Force now chases you if you crash into traffic, taxi fares give you endless income, and reaching 100% makes you a Lagos Legend.</p>
+    <div class="ver">GTL 0.6 &middot; Lagos Life: needs, homes and careers</div>
+    <p>Build 16: live a real Lagos life. Choose Nepo, Lapo or Hustler, then eat, sleep, wash and have fun, rent or buy a home, work shifts and climb careers, use your phone for jobs and bank, invest, and vote for a governor.</p>
     <ul>
       <li><b>MOVE</b> &nbsp;drag with your left thumb</li>
       <li><b>LOOK</b> &nbsp;swipe with your right thumb</li>
@@ -169,7 +192,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
       <li><b>TALK</b> &nbsp;tap TALK when you stand near a person</li>
       <li><b>HORN</b> &nbsp;hold the HORN button while driving</li>
       <li><b>DRIVE</b> &nbsp;tap ENTER beside the car, hold GAS, steer with the left thumb</li>
-      <li><b>MENU</b> &nbsp;radio, weather, map and progress</li>
+      <li><b>MENU</b> &nbsp;your PHONE (needs, work, bank, home, trips), map, radio and settings</li>
     </ul>
     <button id="play" type="button">PLAY</button><br><button id="reset" type="button">Reset my progress</button>
     <p class="note">Landscape feels best. On a computer use W A S D, Shift and the mouse.</p>
@@ -181,7 +204,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.6 b15';
+var VERSION='GTL 0.6 b16';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -729,6 +752,19 @@ for(var ik=0;ik<18;ik++){
 }
 barrier(251.5,0,true);
 addSign('ROAD WORKS AHEAD','#f2b705','#141414',251.1,1.9,0,-Math.PI/2,3.4,0.9);
+
+/* ---- LIFE STRIP: homes, food, bath house, clinic and barber along the north pavement; club and flats elsewhere ---- */
+[
+  {x:-58,name:'YELLOW HOUSE ROOMS',wall:'#f2d36b',roof:'#6b4a3a',bg:'#2b2b30',fg:'#f2d36b',aw:'#c1352d'},
+  {x:-50,name:'AMALA CORNER',wall:'#e9a15a',roof:'#6b4a3a',bg:'#7a1f1f',fg:'#f6ecd9',aw:'#2f7d4f'},
+  {x:-42,name:'BATH HOUSE',wall:'#cfe3ea',roof:'#4b6a7a',bg:'#1c4a6a',fg:'#ffffff',aw:'#2b5a9a'},
+  {x:-34,name:'ST MERCY CLINIC',wall:'#f0f3f2',roof:'#7b8187',bg:'#1f8a4c',fg:'#ffffff',aw:'#1f8a4c'},
+  {x:-26,name:'SHARP CUTS',wall:'#cbb6e0',roof:'#4a3a5a',bg:'#3a2a5a',fg:'#f6ecd9',aw:'#7a2e65'}
+].forEach(function(s){building({kind:'shop',face:'S',x:s.x,z:-11,w:7.2,d:6,h:4,wall:s.wall,roof:s.roof,signBg:s.bg,signFg:s.fg,awning:s.aw,name:s.name});});
+building({kind:'shop',face:'S',x:187,z:-11,w:10,d:7,h:5,wall:'#2a2338',roof:'#1a1a22',signBg:'#120c1e',signFg:'#ff4fd8',awning:'#7a2e65',name:'CLUB AURA'});
+var heights={kind:'multi',face:'S',x:-8,z:-28,w:16,d:10,h:16,floors:4,balcony:true,wall:'#e8d9bf',roof:'#555b61'};
+building(heights);
+signOnFace(heights,'LAGOS HEIGHTS FLATS','#2b3a66','#f2e3b0',4.6,11,1.3,0,0.25);
 
 var worldGeo=new THREE.BufferGeometry();
 worldGeo.setAttribute('position',new THREE.Float32BufferAttribute(P,3));
@@ -1285,16 +1321,16 @@ var JOBS=[
    toast:'NEW JOB: TWO SHORES. Use the car!'}
 ];
 var jobIdx=0,jobActive=false,jobStage=0,timerOn=false,timerLeft=0,lastObj=-1,SAVE_KEY='gtl_save_v1';
-var got=[],ups={eng:0,tyre:0,paint:0},stat={earned:0,played:0,busts:0,escapes:0,fares:0},endSeen=0;
+var lifeSave=null,got=[],ups={eng:0,tyre:0,paint:0},stat={earned:0,played:0,busts:0,escapes:0,fares:0},endSeen=0;
 function curJob(){return JOBS[jobIdx]||null;}
 function setCash(){cashEl.textContent=money(cash);}
 function gotStr(){var o='';for(var i=0;i<got.length;i++)o+=got[i]?'1':'0';return o;}
-function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:3,cash:cash,job:jobIdx,active:jobActive?1:0,stage:jobStage,got:gotStr(),eng:ups.eng,tyre:ups.tyre,paint:ups.paint,earned:stat.earned,played:Math.round(stat.played),end:endSeen|0,veh:vehKind,own:owned.join(','),bust:stat.busts|0,esc:stat.escapes|0,fares:stat.fares|0}));}catch(e){}}
+function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:3,cash:cash,job:jobIdx,active:jobActive?1:0,stage:jobStage,got:gotStr(),eng:ups.eng,tyre:ups.tyre,paint:ups.paint,earned:stat.earned,played:Math.round(stat.played),end:endSeen|0,veh:vehKind,own:owned.join(','),bust:stat.busts|0,esc:stat.escapes|0,fares:stat.fares|0,L:lifeSnap()}));}catch(e){}}
 function loadGame(){
   try{
     var d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
     if(d&&typeof d.cash==='number'&&isFinite(d.cash)){
-      cash=Math.max(0,Math.floor(d.cash));
+      cash=Math.max(0,Math.floor(d.cash));lifeSave=d;
       if(d.v===2||d.v===3){
         jobIdx=Math.max(0,Math.min(JOBS.length,d.job|0));jobActive=!!d.active&&jobIdx<JOBS.length;jobStage=jobActive?Math.max(0,d.stage|0):0;
       }else{var m=d.m|0;jobIdx=m>=2?1:0;jobActive=(m===1);jobStage=0;}
@@ -1552,7 +1588,8 @@ function audioUpdate(dt){
   hornG.gain.setTargetAtTime(hh?0.06:0,t,0.02);
   hornBtn.classList.toggle('on',!!hornHeld);
   if(rainG)rainG.gain.setTargetAtTime(audioOn?0.085*rainAmt:0,t,0.4);
-  var want=radioOn&&driving&&started&&audioOn;
+  var want=((radioOn&&driving)||clubNear)&&started&&audioOn;
+  if(radioG)radioG.gain.setTargetAtTime(driving?0.55:Math.max(0.06,0.55*(1-clubD/26)),t,0.3);
   if(want&&!radio.timer)radioStart();else if(!want&&radio.timer)radioStop();
 }
 var sndBtn=$('snd');
@@ -1742,7 +1779,7 @@ function walkersUpdate(dt){
 
 loadGame();setCash();updateMissionVisuals();
 function resetAll(){
-  cash=2500;jobIdx=0;jobActive=false;jobStage=0;timerOn=false;got=[];ups.eng=0;ups.tyre=0;ups.paint=0;stat.earned=0;stat.played=0;stat.busts=0;stat.escapes=0;stat.fares=0;endSeen=0;copsOff();cancelFare();
+  cash=2500;jobIdx=0;jobActive=false;jobStage=0;timerOn=false;got=[];ups.eng=0;ups.tyre=0;ups.paint=0;stat.earned=0;stat.played=0;stat.busts=0;stat.escapes=0;stat.fares=0;endSeen=0;copsOff();cancelFare();lifeReset();
   try{localStorage.removeItem(SAVE_KEY);}catch(e){}
   owned=['sedan'];setVehicle('sedan');bundlesRefresh();setCash();updateMissionVisuals();
 }
@@ -1857,7 +1894,7 @@ function mapUpdate(dt){
   for(i=0;i<npcs.length;i++){
     var n=npcs[i],offer=(i===0&&!jobActive&&!!cj);
     g.fillStyle=offer?'#f2b705':'#f1efe6';g.beginPath();g.arc(MX(n.x),MZ(n.z),offer?6:4.5,0,6.283);g.fill();
-    mapLabel(g,n.label,MX(n.x),MZ(n.z)-9);
+    if(n.label)mapLabel(g,n.label,MX(n.x),MZ(n.z)-9);
   }
   if(!driving){
     g.fillStyle='#2f7d4f';g.strokeStyle='#fff';g.lineWidth=2;g.fillRect(MX(car.x)-5,MZ(car.z)-5,10,10);g.strokeRect(MX(car.x)-5,MZ(car.z)-5,10,10);
@@ -1883,17 +1920,19 @@ var NB=BPOS.length,bundles=[];
 function foundCount(){var n=0;for(var i=0;i<NB;i++)if(got[i])n++;return n;}
 function updateStats(){
   var el=$('stats');el.innerHTML='';
-  [['COMPLETION',completion()+'%'],['JOBS DONE',Math.min(jobIdx,JOBS.length)+' / '+JOBS.length],['HIDDEN CASH',foundCount()+' / '+NB],['FARES DONE',String(stat.fares|0)],['BUSTED / ESCAPED',(stat.busts|0)+' / '+(stat.escapes|0)],['EARNED',money(stat.earned)],['PLAYED',fmtTime(stat.played)]].forEach(function(r){
+  [['COMPLETION',completion()+'%'],['JOBS DONE',Math.min(jobIdx,JOBS.length)+' / '+JOBS.length],['HIDDEN CASH',foundCount()+' / '+NB],['DAY',life?String(life.day):'1'],['MOOD',Math.round(mood())+'%'],['FARES DONE',String(stat.fares|0)],['BUSTED / ESCAPED',(stat.busts|0)+' / '+(stat.escapes|0)],['EARNED',money(stat.earned)],['PLAYED',fmtTime(stat.played)]].forEach(function(r){
     var d=document.createElement('div'),a=document.createElement('span'),b=document.createElement('b');a.textContent=r[0];b.textContent=r[1];d.appendChild(a);d.appendChild(b);el.appendChild(d);
   });
 }
-function showTab(pro){
-  $('panSet').hidden=pro;$('panPro').hidden=!pro;
-  $('tabSet').classList.toggle('on',!pro);$('tabPro').classList.toggle('on',pro);
-  if(pro)updateStats();
+function showTab(t){
+  if(t===false)t='set';if(t===true)t='pro';
+  $('panSet').hidden=t!=='set';$('panPro').hidden=t!=='pro';$('panPh').hidden=t!=='ph';
+  $('tabSet').classList.toggle('on',t==='set');$('tabPro').classList.toggle('on',t==='pro');$('tabPh').classList.toggle('on',t==='ph');
+  if(t==='pro')updateStats();if(t==='ph')phoneRender();
 }
-$('tabSet').addEventListener('click',function(){showTab(false);});
-$('tabPro').addEventListener('click',function(){showTab(true);});
+$('tabSet').addEventListener('click',function(){showTab('set');});
+$('tabPro').addEventListener('click',function(){showTab('pro');});
+$('tabPh').addEventListener('click',function(){showTab('ph');});
 function showEnd(){
   if(talking||paused){setTimeout(showEnd,2000);return;}
   var lv=endSeen>=3?3:(endSeen>=2?2:1),tail="Time played: "+fmtTime(stat.played)+". Cash earned: "+money(stat.earned)+". Hidden cash found: "+foundCount()+" of "+NB+". ";
@@ -2283,7 +2322,7 @@ function fareUpdate(dt){
     if(fare.t<=0){cancelFare();buzz();toast('TOO SLOW! Passenger jumped out. No pay');}
     else if(!driving){cancelFare();toast('Passenger left because you got out');}
     else if(d<3.6){
-      var tip=fare.t>fare.tot*0.55?Math.round(fare.pay*0.5/50)*50:(fare.t>fare.tot*0.3?Math.round(fare.pay*0.25/50)*50:0),pay=fare.pay+tip;
+      var tip=fare.t>fare.tot*0.55?Math.round(fare.pay*0.5/50)*50:(fare.t>fare.tot*0.3?Math.round(fare.pay*0.25/50)*50:0),pay=Math.round((fare.pay+tip)*moodMult()/50)*50;
       cash+=pay;stat.earned+=pay;stat.fares++;setCash();chime();
       toast('FARE DONE!  +'+money(pay)+(tip?'  (tip '+money(tip)+')':''));
       fare.st=0;fareIdle=-4;updateMissionVisuals();saveGame();checkLegend();
@@ -2303,6 +2342,509 @@ function showToggles(){fareB.textContent='FARES: '+(farePref?'ON':'OFF');copB.te
 fareB.addEventListener('click',function(){farePref=!farePref;if(!farePref)cancelFare();try{localStorage.setItem('gtl_fare',farePref?'on':'off');}catch(e){}showToggles();});
 copB.addEventListener('click',function(){copsOn=!copsOn;if(!copsOn)copsOff();try{localStorage.setItem('gtl_cops',copsOn?'on':'off');}catch(e){}showToggles();});
 showToggles();
+/* ============================================================ LIFE: needs, homes, careers, bank, events, elections */
+var NEEDS=['hunger','energy','hygiene','bladder','fun','social'];
+var NDEC={hunger:0.0667,energy:0.0417,hygiene:0.0333,bladder:0.0833,fun:0.0556,social:0.037};
+var NLAB={hunger:'HUNGER',energy:'ENERGY',hygiene:'HYGIENE',bladder:'BLADDER',fun:'FUN',social:'SOCIAL'};
+var need={hunger:85,energy:90,hygiene:85,bladder:85,fun:70,social:60};
+var HOMES={
+  room:{name:'YELLOW HOUSE ROOM',rent:2500,buy:150000,door:'landlady'},
+  flat:{name:'LAGOS HEIGHTS FLAT',rent:8000,buy:450000,door:'doorman'},
+  pent:{name:'SAPPHIRE PENTHOUSE',rent:22000,buy:1500000,door:'concierge'}
+};
+var HORDER=['room','flat','pent'];
+var BIZ=[
+  {id:'kiosk',name:'PURE WATER KIOSK',price:30000,inc:4500},
+  {id:'mart',name:'MINI-MART',price:90000,inc:15000},
+  {id:'flats',name:'RENTAL FLATS',price:250000,inc:45000},
+  {id:'wing',name:'HOTEL WING',price:800000,inc:150000}
+];
+var FURN={bed:{name:'BED',p:[6000,15000]},tv:{name:'TV',p:[8000,20000]},fridge:{name:'FRIDGE',p:[7000,14000]}};
+var CARS={
+  stall:{name:'STALL ASSISTANT',key:'mama',pay:1800,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-8,hygiene:-4,fun:-6,bladder:-4}},
+  water:{name:'PURE WATER SELLER',key:'tola',pay:2000,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-8,hygiene:-5,fun:-6,bladder:-4}},
+  fish:{name:'FISH HAND',key:'dele',pay:2400,secs:30,req:'Finish the Lagoon Fish Run',ok:function(){return jobIdx>=6;},cost:{energy:-14,hunger:-9,hygiene:-10,fun:-6,bladder:-4}},
+  auto:{name:'AUTO APPRENTICE',key:'kunle',pay:3200,secs:30,req:'Finish 3 errands for Mama',ok:function(){return jobIdx>=3;},cost:{energy:-14,hunger:-8,hygiene:-12,fun:-7,bladder:-4}},
+  mall:{name:'MALL SALES ASSISTANT',key:'ronke',pay:4000,secs:30,req:'Finish the Mall Delivery',ok:function(){return jobIdx>=12;},cost:{energy:-13,hunger:-8,hygiene:-3,fun:-6,bladder:-5}},
+  hotel:{name:'HOTEL PORTER',key:'okon',pay:5000,secs:30,req:'Finish the Beach Run',ok:function(){return jobIdx>=13;},cost:{energy:-15,hunger:-9,hygiene:-4,fun:-7,bladder:-5}}
+};
+var CORDER=['stall','water','fish','auto','mall','hotel'];
+var LRANK=['TRAINEE','STAFF','SUPERVISOR'];
+var LMULT=[1,1.4,2];
+var GOVS=[null,{n:'GOV. BELLO',d:'Rent is 25% cheaper'},{n:'GOV. ADEYEMI',d:'Shifts and fares pay 15% more'},{n:'GOV. OKAFOR',d:'Food is 20% cheaper'}];
+var APPR={shirt:[['BLACK','#17171b'],['RED','#b3261e'],['GREEN','#2f7d4f'],['BLUE','#2b5a9a'],['YELLOW','#e0b020']],skin:[['DEEP','#6b4026','#5a3520'],['DARK','#4a2a18','#3c2012'],['MEDIUM','#8a5a3a','#774a2e'],['LIGHT','#b07a52','#9a6842']]};
+var life=null,creating=false,lastGH=gameHour,dq=[],warnT={},chatCd={},shift=null,lifeSpeed=1,clubNear=false,clubD=99,needAcc=0,lookCur={shirt:'#17171b',skin:'#6b4026',skin2:'#5a3520'};
+function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1};}
+function lifeInit(sv){
+  life=lifeDefault();
+  if(sv&&sv.L&&sv.L.l){
+    var l=sv.L.l,k;
+    for(k in life)if(l[k]!==undefined)life[k]=l[k];
+    if(sv.L.n)for(var i=0;i<NEEDS.length;i++){var v=sv.L.n[NEEDS[i]];if(typeof v==='number'&&isFinite(v))need[NEEDS[i]]=Math.max(0,Math.min(100,v));}
+    life.made=1;
+  }else if(sv){life.made=1;life.home='room';life.nextPay=life.day+3;}
+  if(!life.own||life.own.constructor!==Array)life.own=[];
+  if(!life.biz||life.biz.constructor!==Array)life.biz=[];
+  applyLook();
+}
+function lifeSnap(){if(!life)return null;var n={};for(var i=0;i<NEEDS.length;i++)n[NEEDS[i]]=Math.round(need[NEEDS[i]]*10)/10;return {n:n,l:life};}
+function lifeReset(){
+  life=lifeDefault();for(var i=0;i<NEEDS.length;i++)need[NEEDS[i]]=85;need.fun=70;need.social=60;need.energy=90;
+  shift=null;dq=[];lookCur={shirt:APPR.shirt[0][1],skin:APPR.skin[0][1],skin2:APPR.skin[0][2]};
+  recolorTo(APPR.shirt[0][1],APPR.skin[0][1],APPR.skin[0][2]);
+}
+/* ---------- helpers */
+function cl(v){return Math.max(0,Math.min(100,v));}
+function gain(k,v){need[k]=cl(need[k]+v);}
+function applyFx(fx){for(var k in fx)if(need[k]!==undefined)gain(k,fx[k]);}
+function mood(){var s=0;for(var i=0;i<NEEDS.length;i++)s+=need[NEEDS[i]];return s/NEEDS.length;}
+function moodMult(){var m=mood(),x=m>=70?1.1:(m>=40?1:(m>=20?0.85:0.7));if(life&&life.gov===2)x*=1.15;return x;}
+function isOpen(a,b){return a<b?(gameHour>=a&&gameHour<b):(gameHour>=a||gameHour<b);}
+function frLevel(key){return Math.min(5,Math.floor(((life&&life.fr[key])||0)/3));}
+function disc(key){return 1-0.1*Math.min(2,Math.floor(frLevel(key)/2));}
+function r50(v){return Math.max(50,Math.round(v/50)*50);}
+function foodPrice(b,key){return r50(b*(life.gov===3?0.8:1)*disc(key));}
+function svcPrice(b,key){return r50(b*disc(key));}
+function hearts(key){var n=frLevel(key),s='';for(var i=0;i<5;i++)s+=i<n?'★':'☆';return s;}
+function rentOf(id){return r50(HOMES[id].rent*(life.gov===1?0.75:1));}
+function advanceHours(h){gameHour=(gameHour+h)%24;}
+function qdlg(name,text,btns){dq.push([name,text,btns]);}
+function bump(){setCash();saveGame();}
+function addCash(v){cash+=v;stat.earned+=v;setCash();}
+function giveFriend(key,p){life.fr[key]=Math.min(15,(life.fr[key]||0)+p);}
+/* ---------- looks */
+function recolorMesh(m,fromHex,toHex,maxY){
+  var ca=m.geometry&&m.geometry.attributes.color;if(!ca)return;
+  var pa=m.geometry.attributes.position,a=ca.array,f=new THREE.Color(fromHex),t=new THREE.Color(toHex);
+  for(var i=0;i<ca.count;i++){
+    var k=i*3;
+    if(Math.abs(a[k]-f.r)<0.004&&Math.abs(a[k+1]-f.g)<0.004&&Math.abs(a[k+2]-f.b)<0.004&&(maxY===undefined||pa.getY(i)<maxY)){a[k]=t.r;a[k+1]=t.g;a[k+2]=t.b;}
+  }
+  ca.needsUpdate=true;
+}
+function recolorTo(shirt,skin,skin2){
+  body.traverse(function(o){
+    if(!o.isMesh)return;
+    var isTorso=(o.parent===body);
+    recolorMesh(o,lookCur.shirt,shirt,isTorso?1.58:undefined);
+    recolorMesh(o,lookCur.skin,skin);recolorMesh(o,lookCur.skin2,skin2);
+  });
+  lookCur.shirt=shirt;lookCur.skin=skin;lookCur.skin2=skin2;
+}
+function applyLook(){
+  var sh=APPR.shirt[life.look[0]]||APPR.shirt[0],sk=APPR.skin[life.look[1]]||APPR.skin[0];
+  recolorTo(sh[1],sk[1],sk[2]);
+}
+/* ---------- character creation */
+function startCreation(){
+  creating=true;
+  openDlg('WELCOME TO LAGOS',"How you wan start your Lagos life? NEPO: rich family. N200,000 and a flat at Lagos Heights. LAPO: you owe Alhaji Quick-Cash N60,000, you get N5,000 and no house. HUSTLER: N2,500 and a rented room at Yellow House.",[
+    {label:'NEPO',fn:function(){pickBg('nepo');}},{label:'LAPO',fn:function(){pickBg('lapo');}},{label:'HUSTLER',fn:function(){pickBg('hustler');}}]);
+}
+function pickBg(b){
+  life.bg=b;life.day=1;life.nextPay=4;life.loan=0;life.home='';life.own=[];life.arrears=0;
+  if(b==='nepo'){cash=200000;life.home='flat';}
+  else if(b==='lapo'){cash=5000;life.loan=60000;}
+  else{cash=2500;life.home='room';}
+  setCash();
+  var btns=APPR.shirt.map(function(s,i){return {label:s[0],fn:function(){life.look[0]=i;pickSkin();}};});
+  openDlg('YOUR LOOK','Pick the colour of your rugby shirt.',btns);
+}
+function pickSkin(){
+  var btns=APPR.skin.map(function(s,i){return {label:s[0],fn:function(){life.look[1]=i;applyLook();finishCreation();}};});
+  openDlg('YOUR LOOK','And your skin tone.',btns);
+}
+function finishCreation(){
+  life.made=1;creating=false;saveGame();
+  var extra=life.bg==='lapo'?' Alhaji Quick-Cash wants his money, so earn first and watch your loan in your PHONE (menu).':(life.bg==='nepo'?' Your flat at Lagos Heights is ready.':' Your room at Yellow House is ready.');
+  toast('Welcome to Lagos!'+extra);
+}
+/* ---------- needs, day roll, passing out */
+function warn(k,msg){var t=elapsed;if(!warnT[k]||t-warnT[k]>75){warnT[k]=t;toast(msg);}}
+function accident(){need.bladder=60;gain('hygiene',-30);gain('fun',-20);buzz();toast('OH NO! You could not hold it. Find a toilet next time');}
+function doorOf(id){var k=HOMES[id].door;return NK[k]&&NK[k].npc;}
+function passOut(){
+  var fee=Math.min(cash,2500);cash-=fee;setCash();
+  need.energy=45;gain('hunger',-15);advanceHours(7);
+  if(driving){car.speed=0;exitCar();}
+  var nr=life.home?doorOf(life.home):NK.nurse.npc;
+  player.x=nr.x+1.6;player.z=nr.z+1.6;player.speed=0;
+  if(!freeSpot(player.x,player.z)){player.x=nr.x-1.6;player.z=nr.z+1.6;}
+  qdlg('YOU COLLAPSED','You passed out from exhaustion and slept for hours. '+(life.home?'Somebody carried you to your door. ':'Nurse Ada patched you up. ')+'Fee: '+money(fee)+'. Rest properly next time!',[{label:'OK'}]);
+  saveGame();
+}
+function newDay(){
+  life.day++;
+  if(life.day>=life.nextPay){life.nextPay+=3;payday();}
+}
+function lifeUpdate(dt){
+  if(!life||!started)return;
+  if(!life.made&&!creating&&!talking&&!paused){startCreation();return;}
+  if(creating)return;
+  if(!talking&&dq.length&&!paused){var d=dq.shift();openDlg(d[0],d[1],d[2]);return;}
+  if(talking)return;
+  var gh=gameHour;if(gh<lastGH-6)newDay();lastGH=gameHour;
+  for(var i=0;i<NEEDS.length;i++){var k=NEEDS[i];need[k]=Math.max(0,need[k]-NDEC[k]*dt*(k==='hunger'&&driving?0.7:1));}
+  if(need.bladder<=0)accident();
+  if(need.energy<=0)passOut();
+  var w=need.hunger<20?'hunger':(need.energy<20?'energy':(need.bladder<20?'bladder':(need.hygiene<20?'hygiene':(need.fun<15?'fun':(need.social<15?'social':'')))));
+  if(w)warn(w,({hunger:'You are very hungry. Eat something',energy:'You are exhausted. Sleep soon',bladder:'You need a toilet urgently',hygiene:'You smell. Take a bath',fun:'You are bored. Have some fun',social:'You feel lonely. Chat with someone'})[w]);
+  lifeSpeed=need.energy<15?0.8:(need.hunger<10?0.9:1);
+  needAcc+=dt;if(needAcc>0.5){needAcc=0;needHud();}
+  vigEl.style.opacity=need.energy<25?String(Math.min(0.55,(25-need.energy)/25*0.6)):'0';
+  // club music
+  var cn=NK.club&&NK.club.npc;
+  if(cn){var cx=driving?car.x:player.x,cz=driving?car.z:player.z;clubD=Math.hypot(cx-cn.x,cz-cn.z);clubNear=clubD<26&&isOpen(20,4);}
+}
+var needEl=$('needs'),vigEl=$('vig');
+function needHud(){
+  var s='';
+  for(var i=0;i<NEEDS.length;i++){var k=NEEDS[i],v=need[k];if(v<35)s+='<span class="'+(v<15?'crit':'')+'">'+NLAB[k]+' '+Math.round(v)+'</span>';}
+  if(s!==needEl.dataset.s){needEl.dataset.s=s;needEl.innerHTML=s;needEl.hidden=!s;}
+}
+/* ---------- services (food, bath, clinic, barber, club...) */
+var NK={};
+function chatLine(key){var l=NK[key].chat||['How far?'];return l[(Math.random()*l.length)|0];}
+function hub(key,msg){
+  var d=NK[key],btns=[];
+  if(d.orig)btns.push({label:d.origLabel,fn:d.orig});
+  if(d.items&&d.items.length)btns.push({label:d.svcLabel,fn:function(){svcMenu(key);}});
+  if(d.career)btns.push({label:'WORK A SHIFT',fn:function(){startShift(d.career);}});
+  if(d.homeId)btns.push({label:'HOME',fn:function(){doorMenu(d.homeId);}});
+  if(d.friend!==false){btns.push({label:'CHAT',fn:function(){chat(key);}});btns.push({label:'HANG OUT '+money(svcPrice(600,key)),fn:function(){hang(key);}});}
+  btns.push({label:'BYE'});
+  openDlg(d.name+'   '+(d.friend===false?'':hearts(key)),msg||d.greet,btns);
+}
+function chat(key){
+  var t=elapsed;
+  if(chatCd[key]&&t-chatCd[key]<90){hub(key,"We just talked, my friend. Come back in a bit.");return;}
+  chatCd[key]=t;gain('social',14);gain('fun',3);giveFriend(key,1);saveGame();
+  hub(key,chatLine(key));
+}
+function hang(key){
+  var c=svcPrice(600,key);
+  if(cash<c){buzz();hub(key,'E no reach. Hang out costs '+money(c)+'.');return;}
+  cash-=c;setCash();gain('fun',30);gain('social',35);gain('bladder',-8);giveFriend(key,2);advanceHours(1);saveGame();chime();
+  hub(key,'Great time together! Friendship grows.  '+(NK[key].hangMsg||''));
+}
+function svcMenu(key,msg){
+  var d=NK[key],btns=[],open=true;
+  if(d.hours&&!isOpen(d.hours[0],d.hours[1]))open=false;
+  if(!open){hub(key,d.closed||'We are closed right now.');return;}
+  d.items.forEach(function(it){
+    var price=it.food?foodPrice(it.c,key):svcPrice(it.c,key);
+    if(it.h&&!isOpen(it.h[0],it.h[1]))return;
+    btns.push({label:it.l+' '+money(price),fn:function(){
+      if(cash<price){buzz();svcMenu(key,'E no reach! You need '+money(price)+'.');return;}
+      cash-=price;setCash();applyFx(it.fx);if(it.t)advanceHours(it.t);saveGame();chime();
+      svcMenu(key,it.msg);
+    }});
+  });
+  btns.push({label:'BACK',fn:function(){hub(key);}});
+  openDlg(d.name,(msg?msg+'  ':'')+(d.menuText||'What you want?')+'  You get '+money(cash)+'.',btns);
+}
+/* ---------- shifts */
+function levelOf(ck){var n=life.car[ck]||0;return n>=10?2:(n>=4?1:0);}
+function shiftPay(ck){
+  var c=CARS[ck];
+  return r50(c.pay*LMULT[levelOf(ck)]*moodMult()*(1+0.1*Math.floor(frLevel(c.key)/2)));
+}
+function startShift(ck){
+  var c=CARS[ck];
+  if(jobActive||fare.st){toast('Finish your job first');return;}
+  if(!c.ok()){toast('Locked: '+c.req);return;}
+  if(need.energy<15){toast('You are too tired to work. Sleep first');return;}
+  if(need.hunger<8){toast('You are too hungry to work. Eat first');return;}
+  shift={key:ck,t:0,total:c.secs,npc:NK[c.key].npc};
+  beam.visible=ring.visible=false;
+  toast('SHIFT STARTED. Stay near '+NK[c.key].name+' for '+c.secs+' seconds');
+}
+function endShift(ok){
+  var s=shift;shift=null;
+  if(ok){
+    var c=CARS[s.key],pay=shiftPay(s.key),before=levelOf(s.key);
+    addCash(pay);applyFx(c.cost);giveFriend(c.key,1);
+    life.car[s.key]=(life.car[s.key]||0)+1;
+    var after=levelOf(s.key);
+    chime();toast('SHIFT DONE!  +'+money(pay)+(after>before?'   PROMOTED to '+LRANK[after]+'!':''));saveGame();
+  }
+  updateMissionVisuals();
+}
+function shiftUpdate(dt){
+  if(!shift||!started||talking)return;
+  var px=driving?car.x:player.x,pz=driving?car.z:player.z;
+  if(driving||Math.hypot(px-shift.npc.x,pz-shift.npc.z)>8){endShift(false);toast('SHIFT CANCELLED. You left your post');return;}
+  if(jobActive){endShift(false);return;}
+  shift.t+=dt;
+  objEl.hidden=false;objTitle.textContent='WORKING: '+CARS[shift.key].name;
+  objDist.textContent=Math.round(100*shift.t/shift.total)+'%';
+  objTime.hidden=false;objTime.textContent='PAY '+money(shiftPay(shift.key));objTime.classList.remove('late');
+  if(shift.t>=shift.total)endShift(true);
+}
+/* ---------- homes */
+function doorMenu(id,msg){
+  var H=HOMES[id],btns=[],rent=rentOf(id),owned=life.own.indexOf(id)>=0;
+  if(life.home===id){openHome();return;}
+  if(owned)btns.push({label:'MOVE IN (yours)',fn:function(){life.home=id;life.arrears=0;saveGame();toast('You moved into '+H.name);openHome();}});
+  else{
+    btns.push({label:'RENT '+money(rent)+' / 3 DAYS',fn:function(){
+      if(cash<rent){buzz();doorMenu(id,'E no reach. First payment is '+money(rent)+'.');return;}
+      cash-=rent;setCash();life.home=id;life.arrears=0;
+      saveGame();chime();toast('You rented '+H.name+'. Rent is due every 3 days');openHome();
+    }});
+    btns.push({label:'BUY '+money(H.buy),fn:function(){
+      if(cash<H.buy){buzz();doorMenu(id,'E no reach. The price is '+money(H.buy)+'.');return;}
+      cash-=H.buy;setCash();life.own.push(id);life.home=id;life.arrears=0;saveGame();chime();toast('You bought '+H.name+'! No more rent');openHome();
+    }});
+  }
+  btns.push({label:'LEAVE'});
+  openDlg(H.name,(msg?msg+'  ':'')+(life.home&&life.home!==id?'You live at '+HOMES[life.home].name+'. ':'')+'Rent '+money(rent)+' every 3 days, or buy it for '+money(H.buy)+'. You get '+money(cash)+'.',btns);
+}
+function bedGain(){return 70+15*life.furn.bed;}
+function openHome(msg){
+  var id=life.home,H=HOMES[id];
+  openDlg(H.name,(msg?msg+'  ':'')+'Home sweet home. Bed '+life.furn.bed+'/2, TV '+life.furn.tv+'/2, fridge '+life.furn.fridge+'/2. Time '+clockText()+'.',[
+    {label:'SLEEP',fn:function(){homeSleep();}},
+    {label:'FRESH UP',fn:function(){gain('hygiene',100);gain('bladder',100);chime();openHome('You showered and used the toilet. Fresh!');}},
+    {label:'RELAX',fn:function(){homeRelax();}},
+    {label:'KITCHEN',fn:function(){homeCook();}},
+    {label:'FURNISH',fn:function(){furnMenu();}},
+    {label:'LEAVE'}
+  ]);
+}
+function clockText(){var hh=Math.floor(gameHour),mm=Math.floor((gameHour-hh)*60/10)*10,h12=hh%12===0?12:hh%12;return h12+':'+(mm<10?'0':'')+mm+(hh<12?' AM':' PM');}
+function homeSleep(){
+  if(need.energy>85){openHome('You are not sleepy yet.');return;}
+  gain('energy',bedGain());gain('hunger',-20);gain('bladder',-35);gain('hygiene',-8);
+  if(gameHour<7)gameHour=7;else gameHour=7;
+  chime();saveGame();
+  openHome('You slept until '+clockText()+' and feel rested.');
+}
+function homeRelax(){
+  if(life.furn.tv<1){gain('energy',6);gain('fun',6);advanceHours(0.5);openHome('You rested on the couch. Buy a TV to relax better.');return;}
+  gain('fun',35+15*life.furn.tv);gain('energy',-2);advanceHours(1);openHome('You watched TV for an hour. Nice!');
+}
+function homeCook(){
+  if(life.furn.fridge<1){openHome('You have no fridge. Buy one under FURNISH.');return;}
+  var c=r50(400*(life.gov===3?0.8:1));
+  if(cash<c){buzz();openHome('Groceries cost '+money(c)+'. You no get am.');return;}
+  cash-=c;setCash();gain('hunger',60+10*life.furn.fridge);gain('bladder',-5);advanceHours(0.5);saveGame();openHome('You cooked a proper meal for '+money(c)+'.');
+}
+function furnMenu(msg){
+  var btns=[];
+  ['bed','tv','fridge'].forEach(function(k){
+    var lv=life.furn[k];
+    if(lv<2){var p=FURN[k].p[lv];btns.push({label:FURN[k].name+' '+money(p),fn:function(){
+      if(cash<p){buzz();furnMenu('E no reach! '+money(p)+' needed.');return;}
+      cash-=p;setCash();life.furn[k]++;saveGame();chime();furnMenu('Upgraded your '+FURN[k].name+'!');
+    }});}
+  });
+  btns.push({label:'BACK',fn:function(){openHome();}});
+  openDlg('FURNITURE',(msg?msg+'  ':'')+'Better bed gives better sleep, TV gives more fun, fridge lets you cook cheap meals. You get '+money(cash)+'.',btns);
+}
+/* ---------- payday, events, elections */
+function payday(){
+  var L=[],bi=0,i;
+  life.biz.forEach(function(id){for(var j=0;j<BIZ.length;j++)if(BIZ[j].id===id)bi+=BIZ[j].inc;});
+  if(bi){addCash(bi);L.push('Businesses +'+money(bi));}
+  if(life.inv>0){var d=Math.round(life.inv*(-0.1+Math.random()*0.27));life.inv+=d;L.push('Investments '+(d>=0?'+':'-')+money(Math.abs(d)));}
+  if(life.loan>0){
+    var it=Math.round(life.loan*0.08);life.loan+=it;life.late++;L.push('Loan interest +'+money(it)+' (you owe '+money(life.loan)+')');
+    if(life.late>=4&&cash>0){var seize=Math.min(cash,Math.round(life.loan*0.25));cash-=seize;life.loan-=seize;L.push("Alhaji's boys collected "+money(seize));}
+  }else life.late=0;
+  if(life.home&&life.own.indexOf(life.home)<0){
+    var r=rentOf(life.home);
+    if(cash>=r){cash-=r;life.arrears=0;L.push('Rent -'+money(r));}
+    else{life.arrears++;L.push('RENT UNPAID ('+life.arrears+'/2 warnings)');if(life.arrears>=2){L.push('You were EVICTED from '+HOMES[life.home].name);life.home='';life.arrears=0;}}
+  }
+  var ev=randomEvent();if(ev)L.push(ev);
+  setCash();saveGame();
+  qdlg('PAYDAY REPORT',(L.length?L.join('.  ')+'.':'A quiet payday.')+'  Next payday in 3 days.',[{label:'OK'}]);
+  if(life.day>=life.elNext)startElection();
+}
+function randomEvent(){
+  if(Math.random()>0.6)return '';
+  var e=(Math.random()*9)|0;
+  switch(e){
+    case 0:if(!life.home)return '';var b=Math.min(cash,2500);cash-=b;return 'NEPA bill -'+money(b);
+    case 1:addCash(8000);return 'Aunty abroad sent you +'+money(8000);
+    case 2:if(Math.random()>0.2)return '';addCash(12000);return 'You won a raffle! +'+money(12000);
+    case 3:var t=Math.min(cash,1500);cash-=t;return 'Pothole flat tyre -'+money(t);
+    case 4:var w=Math.min(cash,6000);cash-=w;gain('social',40);gain('fun',25);return 'You attended a wedding (asoebi) -'+money(w)+' but had fun';
+    case 5:var h=Math.min(cash,3000);cash-=h;gain('social',20);return 'A relative begged you for money -'+money(h);
+    case 6:gain('hunger',-45);gain('energy',-25);return 'Food poisoning! You feel awful';
+    case 7:if(driving||cash<8000)return '';var p=Math.min(Math.round(cash*0.1),6000);cash-=p;return 'A pickpocket got you for '+money(p);
+    default:gain('fun',30);gain('social',25);return 'Street carnival! Everyone is happy';
+  }
+}
+function startElection(){
+  life.vote=-1;
+  var mk=function(i){return {label:GOVS[i].n.replace('GOV. ',''),fn:function(){electionResult(i);}};};
+  qdlg('ELECTION DAY',"Lagos is voting for a governor! BELLO: rent 25% cheaper. ADEYEMI: shifts and fares pay 15% more. OKAFOR: food 20% cheaper. Pick your candidate.",[mk(1),mk(2),mk(3),{label:'SKIP',fn:function(){electionResult(0);}}]);
+}
+function electionResult(v){
+  var w=[1,1,1];if(v>0)w[v-1]=1.4;
+  var tot=w[0]+w[1]+w[2],r=Math.random()*tot,win=1;
+  if(r<w[0])win=1;else if(r<w[0]+w[1])win=2;else win=3;
+  life.gov=win;life.elNext=life.day+12;life.vote=v;
+  var msg=GOVS[win].n+' wins! '+GOVS[win].d+' for the next 4 paydays.';
+  if(v===win){addCash(10000);msg+=' You backed the winner and got a +'+money(10000)+' appointment.';chime();}
+  saveGame();
+  qdlg('ELECTION RESULT',msg,[{label:'OK'}]);
+}
+/* ---------- paid rides (fast travel) */
+var DEST=[['MAMA NKECHI MARKET','mama'],['MALLAM SULE, WEST END','sule'],['TOLA, EAST END','tola'],['BABA DELE, JETTY','dele'],['KUNLE WORKSHOP','kunle'],['FOOD STREET AND CLINIC','amala'],['LAGOS HEIGHTS FLATS','doorman'],['MARINA MALL','ronke'],['PALM COURT HOTEL','okon'],['CLUB AURA','club'],['SAPPHIRE HOUSE','concierge']];
+function spotNear(n){
+  var o=[[0,1.9],[1.9,0],[-1.9,0],[0,-1.9],[1.9,1.9],[-1.9,1.9]];
+  for(var i=0;i<o.length;i++)if(freeSpot(n.x+o[i][0],n.z+o[i][1]))return [n.x+o[i][0],n.z+o[i][1]];
+  return [n.x,n.z+2.2];
+}
+function rideTo(key){
+  var n=NK[key].npc;
+  if(jobActive||fare.st||heat>0||shift){toast('Finish what you are doing first');return;}
+  if(driving){toast('Get out of your car first');return;}
+  var d=Math.hypot(n.x-player.x,n.z-player.z),fee=r50(300+d*6);
+  if(d<12){toast('It is close. Just walk');return;}
+  if(cash<fee){buzz();toast('Ride costs '+money(fee)+'. Not enough cash');return;}
+  cash-=fee;setCash();var sp=spotNear(n);player.x=sp[0];player.z=sp[1];player.speed=0;player.yaw=Math.atan2(n.x-sp[0],n.z-sp[1]);
+  advanceHours(d/220);gain('energy',-3);gain('bladder',-2);saveGame();
+  toast('You took a '+(d>110?'danfo':'okada')+' for '+money(fee));closeMenu();
+}
+/* ---------- phone (menu) */
+var phTab='needs';
+function phoneRender(){
+  var el=$('phBody');el.innerHTML='';
+  function row(a,b){var d=document.createElement('div');d.className='ph';var s=document.createElement('span');s.textContent=a;var t=document.createElement('b');t.textContent=b;d.appendChild(s);d.appendChild(t);el.appendChild(d);return d;}
+  function btn(label,fn,cls){var b=document.createElement('button');b.type='button';b.textContent=label;if(cls)b.className=cls;b.addEventListener('click',function(){fn();phoneRender();});el.appendChild(b);return b;}
+  function note(t){var p=document.createElement('p');p.className='sm';p.textContent=t;el.appendChild(p);}
+  var tabs=$('phTabs').children;for(var i=0;i<tabs.length;i++)tabs[i].classList.toggle('on',tabs[i].dataset.t===phTab);
+  if(!life)return;
+  if(phTab!=='bank')row('CASH',money(cash));
+  if(phTab==='needs'){
+    for(var n=0;n<NEEDS.length;n++){
+      var k=NEEDS[n],v=Math.round(need[k]),d=document.createElement('div');d.className='nb';
+      d.innerHTML='<span>'+NLAB[k]+'</span><i><u style="width:'+v+'%" class="'+(v<20?'lo':(v<50?'mid':''))+'"></u></i><b>'+v+'</b>';
+      el.appendChild(d);
+    }
+    row('MOOD',Math.round(mood())+'%  (pay x'+moodMult().toFixed(2)+')');
+    row('DAY',life.day+'  '+clockText());
+    row('GOVERNOR',life.gov?GOVS[life.gov].n:'none yet');
+    if(life.gov)note(GOVS[life.gov].d+'.');
+    note('Eat, sleep, wash, use the toilet and have fun. Low needs make you slower and cut your pay. Food, the bath house, the clinic and the barber are on the north pavement west of the market (white dots on the map). Club Aura and the penthouse are on the island.');
+  }else if(phTab==='work'){
+    CORDER.forEach(function(ck){
+      var c=CARS[ck],lv=levelOf(ck),can=c.ok();
+      row(c.name+(can?'  '+LRANK[lv]:'  LOCKED'),can?money(r50(c.pay*LMULT[lv]))+' / shift':c.req).title=NK[c.key].name;
+    });
+    note('Go to the person shown in their dialog and tap WORK A SHIFT. Stay close for 30 seconds. Promotions come after 4 and 10 shifts: pay x1.4 and x2.');
+    row('TAXI FARES',farePref?'ON':'OFF');
+    note('Shifts: '+CORDER.map(function(ck){return CARS[ck].name.split(' ')[0]+' '+(life.car[ck]||0);}).join(', ')+'.');
+  }else if(phTab==='bank'){
+    row('CASH',money(cash));row('LOAN OWED',money(life.loan));row('INVESTED',money(life.inv));
+    btn('BORROW '+money(20000),function(){if(life.loan>=100000){toast('Loan limit reached');return;}life.loan+=20000;cash+=20000;setCash();saveGame();});
+    btn('REPAY '+money(10000),function(){var a=Math.min(10000,life.loan,cash);if(a<=0)return;life.loan-=a;cash-=a;if(life.loan<=0)life.late=0;setCash();saveGame();});
+    btn('REPAY ALL',function(){var a=Math.min(life.loan,cash);if(a<=0)return;life.loan-=a;cash-=a;if(life.loan<=0)life.late=0;setCash();saveGame();});
+    btn('INVEST '+money(10000),function(){if(cash<10000){buzz();return;}cash-=10000;life.inv+=10000;setCash();saveGame();});
+    btn('WITHDRAW ALL',function(){if(life.inv<=0)return;cash+=life.inv;life.inv=0;setCash();saveGame();});
+    note('Loans grow 8% every payday. Investments move up or down every payday. Paydays come every 3 days.');
+    BIZ.forEach(function(b){
+      var has=life.biz.indexOf(b.id)>=0;
+      if(has)row(b.name,'OWNED +'+money(b.inc));
+      else btn('BUY '+b.name+' '+money(b.price)+' (+'+money(b.inc)+' / payday)',function(){if(cash<b.price){buzz();toast('Not enough cash');return;}cash-=b.price;life.biz.push(b.id);setCash();saveGame();chime();});
+    });
+  }else if(phTab==='go'){
+    note('Pay for a danfo or okada ride to anywhere. The fare depends on distance. You cannot ride during a job, a fare, a shift or a police chase.');
+    DEST.forEach(function(d){var n=NK[d[1]].npc,dist=Math.hypot(n.x-player.x,n.z-player.z),fee=r50(300+dist*6);btn(d[0]+'  '+(dist<12?'(here)':money(fee)),function(){rideTo(d[1]);});});
+  }else{
+    if(life.home){
+      var H=HOMES[life.home],own=life.own.indexOf(life.home)>=0;
+      row('HOME',H.name);row(own?'OWNED':'RENT',own?'no rent':money(rentOf(life.home))+' / payday');
+      row('NEXT PAYDAY','in '+Math.max(0,life.nextPay-life.day)+' day(s)');
+      if(life.arrears)row('ARREARS',life.arrears+'/2 warnings');
+    }else{
+      row('HOME','none');
+      note('Rent a room at Yellow House, a flat at Lagos Heights or the Sapphire penthouse. Go to the person at its door.');
+      btn('SLEEP ROUGH (free)',function(){
+        if(need.energy>80){toast('You are not tired enough');return;}
+        gain('energy',35);gain('hygiene',-15);gain('hunger',-15);advanceHours(5);
+        if(Math.random()<0.35){var s=Math.min(cash,3000);cash-=s;setCash();toast('You slept rough. A thief took '+money(s));}else toast('You slept rough. You feel a bit better');
+        saveGame();
+      });
+    }
+    row('FURNITURE','Bed '+life.furn.bed+' TV '+life.furn.tv+' Fridge '+life.furn.fridge);
+    row('BACKGROUND',life.bg.toUpperCase());
+    row('OWNS',life.own.length?life.own.map(function(i){return HOMES[i].name;}).join(', '):'no property');
+  }
+}
+Array.prototype.forEach.call($('phTabs').children,function(b){b.addEventListener('click',function(){phTab=b.dataset.t;phoneRender();});});
+/* ---------- the people */
+function addPerson(key,o,d){
+  var n=makeNPC(o);n.label=d.label;d.npc=n;d.name=d.name;NK[key]=d;
+  n.talk=function(){hub(key);};
+  return n;
+}
+(function(){
+  var nm=['mama','sule','tola','dele','kunle','ronke','okon'];
+  var base={
+    mama:{name:'MAMA NKECHI',svcLabel:'EAT',origLabel:'ERRANDS',greet:'Welcome, my pikin! You don chop?',career:'stall',hours:null,
+      items:[{l:'JOLLOF MEAL',c:900,food:1,fx:{hunger:55,bladder:-5},msg:'Hot jollof, just how you like am!'},{l:'ZOBO DRINK',c:200,food:1,fx:{hunger:8,energy:5,bladder:-8,fun:2},msg:'Cold zobo, so refreshing.'}],
+      chat:['Business dey go small small, but we dey push.','You don find the hidden cash? Some people drop am around town.','Take care of yourself, no work yourself to death.'],hangMsg:'Mama laughs and shares gist.'},
+    sule:{name:'MALLAM SULE',svcLabel:'SNACKS',origLabel:'GREET',greet:'Peace be with you, my friend.',
+      items:[{l:'BREAD AND AKARA',c:400,food:1,fx:{hunger:30,bladder:-3},msg:'Fresh akara, still hot.'}],
+      chat:['The road is long but the heart is strong.','Lagos needs patient people like you.','Always greet your elders.']},
+    tola:{name:'TOLA',svcLabel:'WATER',origLabel:'TALK',greet:'Pure water, cold cold!',career:'water',
+      items:[{l:'SACHET WATER',c:100,food:1,fx:{hunger:4,energy:3,bladder:-6},msg:'Ice cold pure water.'},{l:'BAG OF WATER',c:250,food:1,fx:{hunger:8,energy:6,bladder:-10},msg:'You drank a lot.'}],
+      chat:['This heat no get mercy o.','Customers dey come, thank God.','Mama Nkechi send you? Good person.']},
+    dele:{name:'BABA DELE',svcLabel:'EAT FISH',origLabel:'TALK',greet:'The lagoon is generous today.',career:'fish',
+      items:[{l:'GRILLED FISH',c:1500,food:1,fx:{hunger:75,bladder:-5,fun:5},msg:'Smoky, spicy grilled fish. Perfect.'}],
+      chat:['I don fish this lagoon thirty years.','Mind the boats when you drive past.','The big fish dey for the deep side.']},
+    kunle:{name:'KUNLE',svcLabel:'',origLabel:'WORKSHOP',greet:'Oga, how far? Car dey okay?',career:'auto',items:[],
+      chat:['Good engine, good life.','Tyres na everything on these roads.','Bring the car anytime.']},
+    ronke:{name:'MADAM RONKE',svcLabel:'MALL',origLabel:'TALK',greet:'Welcome to Marina Mall!',career:'mall',
+      items:[{l:'FOOD COURT MEAL',c:2500,food:1,fx:{hunger:80,fun:10,bladder:-8},msg:'A big proper meal at the food court.'},{l:'SHOPPING SPREE',c:3000,fx:{fun:40,social:10},msg:'You bought a few nice things.'}],
+      chat:['Business is booming on the island.','Fashion never sleeps.','You should come to the club at night.']},
+    okon:{name:'CHIEF OKON',svcLabel:'SPA',origLabel:'TALK',greet:'Fine fountain, abi?',career:'hotel',
+      items:[{l:'SPA DAY',c:8000,fx:{hygiene:100,energy:30,fun:35,bladder:-10},t:2,msg:'A relaxing spa day. You feel brand new.'},{l:'COCONUT WATER',c:600,food:1,fx:{hunger:8,energy:8,bladder:-6},msg:'Fresh coconut water.'}],
+      chat:['Money na water, e dey flow.','The island is a lovely place to live.','Beach walk is free and good for the soul.']}
+  };
+  nm.forEach(function(k,i){
+    var d=base[k],n=npcs[i];d.npc=n;d.orig=n.talk;NK[k]=d;
+    (function(key){n.talk=function(){
+      if(key==='mama'&&jobIdx===0&&!jobActive){NK.mama.orig();return;}
+      hub(key);
+    };})(k);
+  });
+  addPerson('landlady',{x:-58,z:-6.4,yaw:0,skin:'#7a4a2e',skin2:'#6a3e26',low:'#b3261e',low2:'#7a1f1f',top:'#f2d36b',head:'gele',hc:'#2f7d4f',hc2:'#d9a000'},
+    {label:'ROOMS',name:'IYA WALE (LANDLADY)',homeId:'room',friend:false,items:[],greet:'Welcome to Yellow House. Room dey available, small but clean.'});
+  addPerson('amala',{x:-50,z:-6.4,yaw:0,skin:'#6b4026',skin2:'#5a3520',low:'#2f7d4f',low2:'#1f5a35',top:'#f3efe2',head:'gele',hc:'#d9731a',hc2:'#f2b705'},
+    {label:'',name:'IYA AJOKE',svcLabel:'EAT',greet:'Amala and ewedu, hot hot! You must chop.',hours:[7,22],closed:'We close at 10 PM and open at 7 AM.',
+      items:[{l:'AMALA AND EWEDU',c:1200,food:1,fx:{hunger:70,fun:5,bladder:-8},msg:'The best amala in the area. You are full!'},{l:'SUYA',c:700,food:1,fx:{hunger:35,bladder:-4},msg:'Spicy suya. Mouth dey burn small.'},{l:'ZOBO',c:200,food:1,fx:{hunger:6,energy:4,bladder:-8},msg:'Cold zobo.'}],
+      chat:['Customers dey beg for second plate.','Chop well, work well.','Try the ewedu, e fresh.']});
+  addPerson('bath',{x:-42,z:-6.4,yaw:0,skin:'#4a2b1a',skin2:'#3d2314',low:'#2b5a9a',low2:'#1c3a66',top:'#ffffff',head:'cap',hc:'#2b5a9a'},
+    {label:'',name:'BABA ABLUTION',svcLabel:'WASH',greet:'Clean body, clean mind! Toilet and bath available.',hours:[5,23],closed:'We close at 11 PM and open at 5 AM.',
+      items:[{l:'TOILET',c:100,fx:{bladder:100},msg:'Ahh, relief.'},{l:'BATH',c:300,fx:{hygiene:100,bladder:-3},msg:'You are sparkling clean.'}],
+      chat:['Cleanliness is next to godliness.','Water no dey scarce here.']});
+  addPerson('nurse',{x:-34,z:-6.4,yaw:0,skin:'#7a4a2e',skin2:'#6a3e26',low:'#f0f3f2',low2:'#cfd8d4',top:'#1f8a4c',head:'cap',hc:'#ffffff'},
+    {label:'CLINIC',name:'NURSE ADA',svcLabel:'CARE',greet:'St Mercy Clinic. How you dey feel?',
+      items:[{l:'REST IN BED',c:1500,fx:{energy:45,bladder:-15,hunger:-8},t:2,msg:'You rested for two hours and feel better.'},{l:'VITAMINS',c:800,fx:{energy:15,hunger:10},msg:'The vitamins give you a little boost.'}],
+      chat:['Drink water and sleep well.','Many people ignore their health. No be you.']});
+  addPerson('barber',{x:-26,z:-6.4,yaw:0,skin:'#5a3520',skin2:'#4a2b1a',low:'#26262b',low2:'#17171b',top:'#7a2e65',head:'cap',hc:'#17171b'},
+    {label:'',name:'BARBER AYO',svcLabel:'SALON',greet:'Sharp cuts! Fresh fade for fresh vibes.',hours:[8,19],closed:'Salon opens 8 AM to 7 PM.',
+      items:[{l:'HAIRCUT',c:1500,fx:{hygiene:30,social:25,fun:10},t:0.5,msg:'Fresh cut! You look sharp.'},{l:'FULL SET',c:3500,fx:{hygiene:60,social:40,fun:20},t:1,msg:'Full treatment. You look like a star.'}],
+      chat:['A good cut changes everything.','Wetin dey happen for the street?']});
+  addPerson('club',{x:187,z:-6.2,yaw:0,skin:'#4a2b1a',skin2:'#3d2314',low:'#17171b',low2:'#2a2a2e',top:'#17171b',head:'cap',hc:'#7a2e65'},
+    {label:'CLUB',name:'DRE (CLUB AURA)',svcLabel:'ENTER',greet:'Club Aura. Doors open 8 PM till 4 AM.',hours:[20,4],closed:'Club Aura opens at 8 PM. Come back tonight.',
+      items:[{l:'CLUB ENTRY',c:5000,fx:{fun:70,social:60,bladder:-20},t:2,msg:'You danced all night. What a vibe!'},{l:'VIP TABLE',c:15000,fx:{fun:100,social:100,bladder:-30,hygiene:-10},t:2,msg:'VIP life! Bottle service and the best music.'}],
+      chat:['The DJ is on fire tonight.','Nobody enters without a good vibe.']});
+  addPerson('doorman',{x:-8,z:-21.6,yaw:0,skin:'#5a3520',skin2:'#4a2b1a',low:'#17171b',low2:'#2a2a2e',top:'#2b3a66',head:'cap',hc:'#2b3a66'},
+    {label:'FLATS',name:'MR BOLA (DOORMAN)',homeId:'flat',friend:false,items:[],greet:'Welcome to Lagos Heights. Modern flats, 24-hour light.'});
+  addPerson('concierge',{x:165,z:22.6,yaw:0,skin:'#7a4a2e',skin2:'#6a3e26',low:'#1c2a44',low2:'#2a3a5a',top:'#f6ecd9',head:'cap',hc:'#1c2a44'},
+    {label:'PENT.',name:'CONCIERGE (SAPPHIRE HOUSE)',homeId:'pent',friend:false,items:[],greet:'Welcome to Sapphire House. The penthouse awaits you.'});
+  // door NPCs open the home flow directly
+  ['landlady','doorman','concierge'].forEach(function(k){var d=NK[k];d.npc.talk=function(){doorMenu(d.homeId);};});
+  if(lifeSave)lifeInit(lifeSave);else lifeInit(null);
+})();
+
 function openMenu(){
   if(!started||paused)return;
   paused=true;menuEl.hidden=false;
@@ -2324,7 +2866,7 @@ window.addEventListener('keydown',function(e){if(e.code==='Escape'||e.code==='Ke
 
 /* ------------------------------------------------------------------ loop */
 function update(dt){
-  npcsUpdate(dt);checkMission(dt);fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);statTick(dt);
+  npcsUpdate(dt);checkMission(dt);fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);statTick(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
@@ -2338,7 +2880,7 @@ function update(dt){
   var sy=Math.sin(camYaw),cy=Math.cos(camYaw);
   var mf=-inp.iy,mr=inp.ix;
   var vx=-sy*mf+cy*mr,vz=-cy*mf-sy*mr;
-  var target=inp.mag*(inp.run?6.4:3.4);
+  var target=inp.mag*(inp.run?6.4:3.4)*lifeSpeed;
   player.speed+=(target-player.speed)*Math.min(1,dt*9);
   if(inp.mag>0){
     var len=Math.hypot(vx,vz)||1;vx/=len;vz/=len;
