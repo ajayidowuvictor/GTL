@@ -59,6 +59,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 
 #obj{top:calc(env(safe-area-inset-top,0px) + 84px);left:calc(env(safe-area-inset-left,0px) + 16px);background:rgba(20,17,15,.72);border-left:6px solid #7ed17a;padding:5px 12px;display:flex;flex-direction:column}
 #obj .t{font:500 12px/1.1 var(--display);letter-spacing:.2em;color:#cdbf9f}
+#obj .d.late{color:#ff8a7a}
 #obj .d{font:700 22px/1.1 var(--display);letter-spacing:.04em;font-variant-numeric:tabular-nums}
 #dlg{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:min(600px,calc(100% - 32px));z-index:12;background:rgba(20,17,15,.94);border-left:6px solid var(--danfo);padding:10px 14px 12px;box-sizing:border-box}
 #dlg[hidden]{display:none}
@@ -96,7 +97,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <div class="hud tools"><button id="qbtn" type="button">LOW</button><span id="fps">GTL 0.1</span></div>
 <div class="hud" id="hint">Left thumb moves. Right thumb looks. Walk to Mama Nkechi (yellow arrow) and tap TALK.</div>
 <div class="hud" id="toast"></div>
-<div class="hud" id="obj" hidden><span class="t">JOB: DELIVER THE JOLLOF</span><span class="d" id="objDist">0 m</span></div>
+<div class="hud" id="obj" hidden><span class="t" id="objTitle">JOB</span><span class="d" id="objDist">0 m</span><span class="d" id="objTime" hidden></span></div>
 <div class="hud" id="speed" hidden><span id="kmh">0</span> <small>KM/H</small></div>
 
 <div id="dlg" hidden><div id="dlgName"></div><p id="dlgText"></p><div id="dlgBtns"></div></div>
@@ -105,8 +106,8 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
   <div class="card">
     <h1>Grand Theft Lagos</h1>
     <div class="stripe"></div>
-    <div class="ver">GTL 0.1 &middot; Mainland test block</div>
-    <p>Build 4: meet Mama Nkechi, take your first job and get paid. Your cash and job are saved on this phone.</p>
+    <div class="ver">GTL 0.2 &middot; Mainland test block</div>
+    <p>Build 5: three jobs from Mama Nkechi, one against the clock. Your cash and job are saved on this phone.</p>
     <ul>
       <li><b>MOVE</b> &nbsp;drag with your left thumb</li>
       <li><b>LOOK</b> &nbsp;swipe with your right thumb</li>
@@ -124,7 +125,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.1 b4';
+var VERSION='GTL 0.2 b5';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -944,27 +945,54 @@ function money(n){return '₦'+String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
 cashEl.textContent=money(cash);
 
 /* ------------------------------------------------- people, jobs, saving */
-var mState=0,lastObj=-1,SAVE_KEY='gtl_save_v1',DEST={x:-56,z:2};
+var JOBS=[
+  {title:'DELIVER THE JOLLOF',reward:3000,stages:[{x:-56,z:2,label:'DELIVER THE JOLLOF'}],
+   offer:"My guy! Abeg, help me carry this pot of jollof to Mallam Sule, down the main road past the old billboard. The green car by the roadside na my cousin's, the key dey inside. I go pay you ₦3,000.",
+   remind:"Mallam Sule dey wait for you. Follow the yellow light down the main road. Make the jollof no cold!",
+   toast:'NEW JOB: take the jollof to Mallam Sule'},
+  {title:'PURE WATER FOR TOLA',reward:4000,stages:[{x:56,z:2,label:'DELIVER THE PURE WATER'}],
+   offer:"You did well! Next one: Tola at the far east end of the main road ordered ten bags of pure water. Drop it at the yellow light for him and I go give you ₦4,000.",
+   remind:"Tola dey wait at the east end of the main road. Follow the yellow light.",
+   toast:'NEW JOB: pure water for Tola'},
+  {title:'RUSH ORDER',reward:6000,bonus:1000,timer:{stage:1,secs:28},
+   stages:[{x:56,z:2,label:'COLLECT THE PARCEL FROM TOLA'},{x:-56,z:2,label:'RUSH IT TO MALLAM SULE'}],
+   offer:"Now I get one rush job. Tola has a parcel for Mallam Sule and Sule needs it fast. Collect it from Tola in the east, then bring it to Sule in the west. The clock starts when you pick it up: 28 seconds! ₦6,000, plus ₦1,000 if you are quick.",
+   remind:"Collect the parcel from Tola in the east, then rush it to Mallam Sule in the west. The clock starts when you pick it up!",
+   toast:'NEW JOB: rush order. The clock starts at the pickup'}
+];
+var jobIdx=0,jobActive=false,jobStage=0,timerOn=false,timerLeft=0,lastObj=-1,SAVE_KEY='gtl_save_v1';
+function curJob(){return JOBS[jobIdx]||null;}
 function setCash(){cashEl.textContent=money(cash);}
-function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:1,cash:cash,m:mState}));}catch(e){}}
+function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:2,cash:cash,job:jobIdx,active:jobActive?1:0,stage:jobStage}));}catch(e){}}
 function loadGame(){
   try{
     var d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
-    if(d&&typeof d.cash==='number'&&isFinite(d.cash)){cash=Math.max(0,Math.floor(d.cash));var m=d.m|0;mState=(m>=0&&m<=2)?m:0;}
+    if(d&&typeof d.cash==='number'&&isFinite(d.cash)){
+      cash=Math.max(0,Math.floor(d.cash));
+      if(d.v===2){
+        jobIdx=Math.max(0,Math.min(JOBS.length,d.job|0));jobActive=!!d.active&&jobIdx<JOBS.length;jobStage=jobActive?Math.max(0,d.stage|0):0;
+      }else{var m=d.m|0;jobIdx=m>=2?1:0;jobActive=(m===1);jobStage=0;}
+      var cj=curJob();
+      if(jobActive&&cj&&cj.timer)jobStage=0;
+      if(jobActive&&cj&&jobStage>=cj.stages.length)jobStage=0;
+    }
   }catch(e){}
 }
-var objEl=$('obj'),objDist=$('objDist'),dlg=$('dlg'),dlgName=$('dlgName'),dlgText=$('dlgText'),dlgBtns=$('dlgBtns');
+var objEl=$('obj'),objTitle=$('objTitle'),objTime=$('objTime'),objDist=$('objDist'),dlg=$('dlg'),dlgName=$('dlgName'),dlgText=$('dlgText'),dlgBtns=$('dlgBtns');
 arrow.visible=false;
 var beam=new THREE.Mesh(new THREE.CylinderGeometry(0.9,0.9,60,16,1,true),new THREE.MeshBasicMaterial({color:0xf2b705,transparent:true,opacity:0.35,depthWrite:false,fog:false,side:THREE.DoubleSide}));
-beam.position.set(DEST.x,30,DEST.z);scene.add(beam);
+beam.position.set(-56,30,2);scene.add(beam);
 var ring=new THREE.Mesh(new THREE.TorusGeometry(2.6,0.12,6,28),new THREE.MeshBasicMaterial({color:0xf2b705,fog:false}));
-ring.rotation.x=Math.PI/2;ring.position.set(DEST.x,0.2,DEST.z);scene.add(ring);
+ring.rotation.x=Math.PI/2;ring.position.set(-56,0.2,2);scene.add(ring);
 var npcArrow=new THREE.Mesh(new THREE.ConeGeometry(0.3,0.65,4),new THREE.MeshBasicMaterial({color:0xf2b705}));
 npcArrow.rotation.x=Math.PI;scene.add(npcArrow);
 function updateMissionVisuals(){
-  beam.visible=ring.visible=(mState===1);
-  npcArrow.visible=(mState===0);
-  objEl.hidden=(mState!==1);lastObj=-1;
+  var cj=curJob(),st=(jobActive&&cj)?cj.stages[jobStage]:null;
+  beam.visible=ring.visible=!!st;
+  if(st){beam.position.set(st.x,30,st.z);ring.position.set(st.x,0.2,st.z);objTitle.textContent='JOB: '+st.label;}
+  npcArrow.visible=(!jobActive&&!!cj);
+  objEl.hidden=!st;lastObj=-1;
+  var timed=!!(st&&timerOn);objTime.hidden=!timed;
 }
 function openDlg(name,text,btns){
   talking=true;dlgName.textContent=name;dlgText.textContent=text;dlgBtns.innerHTML='';
@@ -1022,23 +1050,52 @@ function npcsUpdate(dt){
   if(npcArrow.visible){npcArrow.position.set(npcs[0].x,2.7+Math.sin(elapsed*3)*0.12,npcs[0].z);npcArrow.rotation.y+=dt*2;}
   if(beam.visible){ring.rotation.z+=dt*0.8;}
 }
-function checkMission(){
-  if(mState!==1||!started||talking)return;
-  var px=driving?car.x:player.x,pz=driving?car.z:player.z,d=Math.hypot(px-DEST.x,pz-DEST.z),m=Math.round(d);
+function checkMission(dt){
+  var cj=curJob();
+  if(!jobActive||!cj||!started||talking)return;
+  var st=cj.stages[jobStage],px=driving?car.x:player.x,pz=driving?car.z:player.z,d=Math.hypot(px-st.x,pz-st.z),m=Math.round(d);
   if(m!==lastObj){lastObj=m;objDist.textContent=m+' m';}
-  if(d<3.4){mState=2;cash+=3000;setCash();saveGame();updateMissionVisuals();toast("DELIVERED!  +₦3,000");}
+  if(timerOn){
+    timerLeft-=dt;
+    var tl=Math.max(0,Math.ceil(timerLeft));objTime.textContent='TIME '+tl+' s';objTime.classList.toggle('late',tl<=8);
+    if(timerLeft<=0){
+      timerOn=false;jobActive=false;jobStage=0;saveGame();updateMissionVisuals();
+      toast('TOO SLOW! Talk to Mama Nkechi to try again');return;
+    }
+  }
+  if(d<3.4){
+    jobStage++;
+    if(jobStage>=cj.stages.length){
+      var bonus=(cj.bonus&&timerOn&&timerLeft>10)?cj.bonus:0,pay=cj.reward+bonus;
+      timerOn=false;jobActive=false;jobStage=0;jobIdx++;cash+=pay;setCash();saveGame();updateMissionVisuals();
+      toast("DELIVERED!  +₦"+String(pay).replace(/\B(?=(\d{3})+(?!\d))/g,',')+(bonus?'  (speed bonus)':''));
+    }else{
+      if(cj.timer&&jobStage===cj.timer.stage){timerOn=true;timerLeft=cj.timer.secs;toast('PARCEL COLLECTED! '+cj.timer.secs+' seconds. Go!');}
+      else toast('Done. Next stop...');
+      saveGame();updateMissionVisuals();
+    }
+  }
 }
 makeNPC({x:5.1,z:16.2,yaw:-Math.PI/2,skin:'#7a4a2e',skin2:'#6a3e26',low:'#d9731a',low2:'#2f7d4f',top:'#f3efe2',head:'gele',hc:'#b3261e',hc2:'#d94b3d',
   talk:function(){
-    if(mState===0)openDlg('MAMA NKECHI',"My guy! Abeg, help me carry this pot of jollof to Mallam Sule, down the main road past the old billboard. The green car by the roadside na my cousin's, the key dey inside. I go pay you ₦3,000.",[{label:"I'LL DO IT",fn:function(){mState=1;saveGame();updateMissionVisuals();toast('NEW JOB: take the jollof to Mallam Sule');}},{label:'LATER'}]);
-    else if(mState===1)openDlg('MAMA NKECHI',"Mallam Sule dey wait for you. Follow the yellow light down the main road. Make the jollof no cold!",[{label:'OK'}]);
-    else openDlg('MAMA NKECHI',"God bless you! Mallam Sule call me, he said the jollof still dey hot. More work coming soon, just wait small.",[{label:'OK'}]);
+    var cj=curJob();
+    if(!cj)openDlg('MAMA NKECHI',"You don help me well well. Rest small, more jobs coming soon!",[{label:'OK'}]);
+    else if(jobActive)openDlg('MAMA NKECHI',cj.remind,[{label:'OK'}]);
+    else openDlg('MAMA NKECHI',(jobIdx>0?'':'')+cj.offer,[{label:"I'LL DO IT",fn:function(){jobActive=true;jobStage=0;timerOn=false;saveGame();updateMissionVisuals();toast(cj.toast);}},{label:'LATER'}]);
   }});
-makeNPC({x:DEST.x,z:6.3,yaw:Math.PI,skin:'#5a3520',skin2:'#4a2b1a',low:'#ece7d6',low2:'#cfc7a8',top:'#ece7d6',head:'cap',hc:'#7a1f1f',
+makeNPC({x:-56,z:6.3,yaw:Math.PI,skin:'#5a3520',skin2:'#4a2b1a',low:'#ece7d6',low2:'#cfc7a8',top:'#ece7d6',head:'cap',hc:'#7a1f1f',
   talk:function(){
-    if(mState===0)openDlg('MALLAM SULE',"Good day! If you want work, go and see Mama Nkechi at her stall near where you started.",[{label:'OK'}]);
-    else if(mState===1)openDlg('MALLAM SULE',"I am waiting for the jollof, my friend. Step into the yellow circle on the road.",[{label:'OK'}]);
-    else openDlg('MALLAM SULE',"Thank you! Best jollof on the mainland. Tell Mama Nkechi I said thanks.",[{label:'OK'}]);
+    if(jobIdx===0&&jobActive)openDlg('MALLAM SULE',"I am waiting for the jollof, my friend. Step into the yellow circle on the road.",[{label:'OK'}]);
+    else if(jobIdx===2&&jobActive&&jobStage===1)openDlg('MALLAM SULE',"My parcel! Hurry, step into the yellow circle!",[{label:'OK'}]);
+    else if(jobIdx===0)openDlg('MALLAM SULE',"Good day! If you want work, go and see Mama Nkechi at her stall near where you started.",[{label:'OK'}]);
+    else if(jobIdx>=3)openDlg('MALLAM SULE',"You are fast, my friend! Lagos needs people like you.",[{label:'OK'}]);
+    else openDlg('MALLAM SULE',"Thank you for the jollof! Best on the mainland. Mama Nkechi may have more work for you.",[{label:'OK'}]);
+  }});
+makeNPC({x:56,z:6.3,yaw:Math.PI,skin:'#6b4026',skin2:'#5a3520',low:'#2b5a9a',low2:'#d9c27a',top:'#2b5a9a',head:'cap',hc:'#2b5a9a',
+  talk:function(){
+    if(jobIdx===1&&jobActive)openDlg('TOLA',"My pure water! Step into the yellow circle on the road.",[{label:'OK'}]);
+    else if(jobIdx===2&&jobActive&&jobStage===0)openDlg('TOLA',"Step into the yellow circle and the parcel is yours. Sule is waiting, so move fast!",[{label:'OK'}]);
+    else openDlg('TOLA',"Business is slow on this side of the block, but the pure water keeps selling. Mama Nkechi sends me good customers.",[{label:'OK'}]);
   }});
 (function(){
   var t=new GB();
@@ -1051,27 +1108,19 @@ makeNPC({x:DEST.x,z:6.3,yaw:Math.PI,skin:'#5a3520',skin2:'#4a2b1a',low:'#ece7d6'
 })();
 loadGame();setCash();updateMissionVisuals();
 $('reset').addEventListener('click',function(){
-  cash=2500;mState=0;try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+  cash=2500;jobIdx=0;jobActive=false;jobStage=0;timerOn=false;try{localStorage.removeItem(SAVE_KEY);}catch(e){}
   setCash();updateMissionVisuals();$('reset').textContent='Progress reset ✓';
 });
-qbtn.addEventListener('click',function(){applyTier(ORDER[(ORDER.indexOf(tier)+1)%ORDER.length]);toast('Quality: '+TIERS[tier].label);});
-function start(){
-  if(started)return;
-  started=true;$('splash').hidden=true;
-  setTimeout(function(){hint.classList.add('off');},8000);
-}
-$('play').addEventListener('click',start);
-
 /* ------------------------------------------------------------------ loop */
 function update(dt){
-  npcsUpdate(dt);checkMission();
+  npcsUpdate(dt);checkMission(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
     if(kmh!==lastKmh){lastKmh=kmh;kmhEl.textContent=kmh;}
     return;
   }
-  arrow.visible=(mState===1&&!usedCar);
+  arrow.visible=(jobActive&&jobIdx===0&&!usedCar);
   if(arrow.visible){arrow.position.set(car.x,3.3+Math.sin(elapsed*3)*0.25,car.z);arrow.rotation.y+=dt*2;}
   updateAct();
   var inp=(started&&!talking)?readInput():{ix:0,iy:0,mag:0,run:false};
