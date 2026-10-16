@@ -37,12 +37,48 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Landscape and full screen
+      - name: Landscape, full screen and edge to edge
         run: |
           MAN=android/app/src/main/AndroidManifest.xml
           sed -i 's#<activity#<activity android:screenOrientation="sensorLandscape"#' "$MAN"
-          STY=android/app/src/main/res/values/styles.xml
-          sed -i 's#<item name="android:background">@null</item>#<item name="android:background">@null</item><item name="android:windowFullscreen">true</item><item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>#' "$STY" || true
+          mkdir -p android/app/src/main/java/ng/gtl/game
+          cat > android/app/src/main/java/ng/gtl/game/MainActivity.java <<'JAVA'
+          package ng.gtl.game;
+
+          import android.os.Build;
+          import android.os.Bundle;
+          import android.view.WindowManager;
+          import androidx.core.view.WindowCompat;
+          import androidx.core.view.WindowInsetsCompat;
+          import androidx.core.view.WindowInsetsControllerCompat;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+            private void immersive() {
+              WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+              if (Build.VERSION.SDK_INT >= 28) {
+                getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+              }
+              WindowInsetsControllerCompat c = new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+              c.hide(WindowInsetsCompat.Type.systemBars());
+              c.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+            @Override public void onCreate(Bundle savedInstanceState) {
+              super.onCreate(savedInstanceState);
+              immersive();
+            }
+            @Override public void onWindowFocusChanged(boolean hasFocus) {
+              super.onWindowFocusChanged(hasFocus);
+              if (hasFocus) immersive();
+            }
+          }
+          JAVA
+          sed -i 's/^          //' android/app/src/main/java/ng/gtl/game/MainActivity.java
+
+      - name: Use the same signing key every build so updates install over the old app
+        run: |
+          mkdir -p ~/.android
+          cp debug.keystore ~/.android/debug.keystore
 
       - name: Build debug APK
         working-directory: android
