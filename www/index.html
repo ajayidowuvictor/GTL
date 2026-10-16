@@ -394,6 +394,11 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 .vcn{font:600 19px/1 var(--ui);letter-spacing:.08em;font-variant-numeric:tabular-nums}
 .vc2{display:flex;justify-content:space-between;font:600 11px/1 var(--ui);opacity:.85;letter-spacing:.08em}
 .vfz{position:absolute;right:14px;top:40%;font:800 22px/1 var(--ui);letter-spacing:.2em;opacity:.7;transform:rotate(-8deg)}
+.cbhero{border-radius:16px;padding:14px 14px 13px;background:linear-gradient(135deg,#241803,#6b4a0b 58%,#c8921a);color:#fff6dc;display:flex;flex-direction:column;gap:3px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.cbhero small{font:700 10px/1 var(--ui);letter-spacing:.2em;opacity:.8}
+.cbhero .cbbig{font:700 26px/1.1 var(--ui);font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap}
+.cbhero .cbusd{font:700 15px/1.2 var(--ui);color:#ffe29a;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cbhero .cbsub{font:11px/1.3 var(--ui);opacity:.75;margin-top:3px}
 .amtdisp.acc{font-size:24px;letter-spacing:.1em}
 
 #err{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#a4262c;color:#fff;font-size:14px;line-height:1.4;padding:12px max(16px,env(safe-area-inset-left,0px));user-select:text;-webkit-user-select:text}
@@ -495,7 +500,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b29';
+var VERSION='GTL 0.9 b30';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -2434,7 +2439,7 @@ var JOBS=[
 var jobIdx=0,jobActive=false,jobStage=0,timerOn=false,timerLeft=0,lastObj=-1,SAVE_KEY='gtl_save_v1';
 var lifeSave=null,got=[],ups={eng:0,tyre:0,paint:0},stat={earned:0,played:0,busts:0,escapes:0,fares:0},endSeen=0;
 function curJob(){return JOBS[jobIdx]||null;}
-function setCash(){cashEl.textContent=money(cash);}
+function setCash(){var t=money(cash);cashEl.textContent=t;cashEl.style.fontSize=t.length>14?'19px':(t.length>11?'25px':'');}
 function gotStr(){var o='';for(var i=0;i<got.length;i++)o+=got[i]?'1':'0';return o;}
 function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:3,cash:cash,job:jobIdx,active:jobActive?1:0,stage:jobStage,got:gotStr(),eng:ups.eng,tyre:ups.tyre,paint:ups.paint,earned:stat.earned,played:Math.round(stat.played),end:endSeen|0,veh:vehKind,own:owned.join(','),bust:stat.busts|0,esc:stat.escapes|0,fares:stat.fares|0,L:lifeSnap()}));}catch(e){}}
 function loadGame(){
@@ -3533,7 +3538,7 @@ var LMULT=[1,1.4,2];
 var GOVS=[null,{n:'GOV. BELLO',d:'Rent is 25% cheaper'},{n:'GOV. ADEYEMI',d:'Shifts and fares pay 15% more'},{n:'GOV. OKAFOR',d:'Food is 20% cheaper'}];
 var APPR={shirt:[['BLACK','#17171b'],['RED','#b3261e'],['GREEN','#2f7d4f'],['BLUE','#2b5a9a'],['YELLOW','#e0b020']],skin:[['DEEP','#6b4026','#5a3520'],['DARK','#4a2a18','#3c2012'],['MEDIUM','#8a5a3a','#774a2e'],['LIGHT','#b07a52','#9a6842']]};
 var life=null,creating=false,lastGH=gameHour,dq=[],warnT={},chatCd={},shift=null,lifeSpeed=1,clubNear=false,clubD=99,needAcc=0,lookCur={shirt:'#17171b',skin:'#6b4026',skin2:'#5a3520'};
-function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
+function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,cb:{ngn:185000000000,usd:1850000000,log:[]},gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
 function lifeInit(sv){
   life=lifeDefault();
   if(sv&&sv.L&&sv.L.l){
@@ -3548,6 +3553,10 @@ function lifeInit(sv){
   if(!life.tx||life.tx.constructor!==Array)life.tx=[];
   if(typeof life.mid!=='number')life.mid=life.msgs.length;
   if(!life.fix||life.fix.constructor!==Array)life.fix=[];
+  if(!life.cb||typeof life.cb!=='object')life.cb={ngn:185000000000,usd:1850000000,log:[]};
+  if(typeof life.cb.ngn!=='number'||!isFinite(life.cb.ngn)||life.cb.ngn<0)life.cb.ngn=0;
+  if(typeof life.cb.usd!=='number'||!isFinite(life.cb.usd)||life.cb.usd<0)life.cb.usd=0;
+  if(!life.cb.log||life.cb.log.constructor!==Array)life.cb.log=[];
   applyLook();
 }
 function lifeSnap(){if(!life)return null;var n={};for(var i=0;i<NEEDS.length;i++)n[NEEDS[i]]=Math.round(need[NEEDS[i]]*10)/10;return {n:n,l:life};}
@@ -3958,6 +3967,7 @@ function phoneDaily(){
 var APPS=[
   {id:'msg',n:'Messages',c:['#3dc27a','#1f8a4c'],ic:'<path d="M4 5h16v11H9l-5 4z"/>',fn:function(a){appMsg(a);}},
   {id:'pay',n:'NairaPay',c:['#1fa860','#0b5a32'],ic:'<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12.5h3M3 10h18"/>',fn:function(){appPay();}},
+  {id:'cityboys',n:'City Boys',c:['#e0a919','#3b2a06'],ic:'<path d="M3 20V11h5v9M8 20V4h6v16M14 20V8h7v12M3 20h18"/><path d="M10.5 8h1M10.5 11.5h1M10.5 15h1"/>',fn:function(){appCity();}},
   {id:'ride',n:'GoRide',c:['#f2b705','#c98a00'],ic:'<path d="M5 16l1.5-5.5h11L19 16v3h-2v-1.5H7V19H5zM6.5 10.5L8 6h8l1.5 4.5"/><path d="M7.5 14h.01M16.5 14h.01"/>',fn:function(){appRide();}},
   {id:'stay',n:'Stays',c:['#8a6ae8','#4a2fb0'],ic:'<path d="M3 19V6M3 14h18v5M21 14v-2.5A2.5 2.5 0 0 0 18.5 9H11v5"/><circle cx="7" cy="11" r="1.6"/>',fn:function(){appHotel();}},
   {id:'fly',n:'Flights',c:['#3a9ae8','#1b4f9a'],ic:'<path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>',fn:function(){appFly();}},
@@ -4331,6 +4341,88 @@ function paySubmit(k,n,reqId,fee){
     var TH=['Thank you o! God bless you.','Ah! You too much. I really appreciate.','Received! I go repay this kindness one day.','My person! Na you be my guy.'];
     setTimeout(function(){pushMsg(k,TH[(Math.random()*TH.length)|0]);},2200);
   },1500);
+}
+
+/* ---- City Boys: family vault (naira + dollars) */
+function cbRate(){var d=life.day|0;return 1500+(((d*53)%41)-20)*5;}
+function cbUsd(n){return 'US$'+String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function cbFit(el,len,col){el.style.fontSize=Math.max(16,Math.min(34,Math.floor(col/(len*0.6))))+'px';}
+function cbLog(s){life.cb.log.unshift({t:stamp(),s:s});if(life.cb.log.length>10)life.cb.log.length=10;}
+function appCity(){
+  phPush('City Boys',function(b){
+    var c=life.cb,h=pAdd(b,pEl('div','cbhero'));
+    pAdd(h,pEl('small','','GENERATIONAL SAVINGS'));
+    var big=pAdd(h,pEl('div','cbbig',money(c.ngn)));cbFit(big,big.textContent.length,250);
+    var u=pAdd(h,pEl('div','cbusd',cbUsd(c.usd)));cbFit(u,u.textContent.length,260);u.style.fontSize=Math.min(parseFloat(u.style.fontSize)||15,16)+'px';
+    pAdd(h,pEl('div','cbsub','The family vault. Handle am well.'));
+    pKV(b,[['Today’s rate','US$1 = '+money(cbRate())],['NairaPay wallet',money(cash)]]);
+    pBtn(b,'Transfer to NairaPay',function(){cbAmount('ngn');},'grn');
+    pBtn(b,'Convert dollars to naira',function(){cbAmount('usd');},'');
+    if(c.log.length){pSect(b,'Recent');c.log.slice(0,6).forEach(function(x){pRow(b,x.s,x.t,'');});}
+    pNote(b,'Only you can move money out of City Boys. The rate changes every day.');
+  });
+}
+function cbAmount(mode){
+  var amt='',isU=mode==='usd';
+  phPush(isU?'Convert dollars':'To NairaPay',function(b){
+    var c=life.cb,n=parseInt(amt||'0',10),bal=isU?c.usd:c.ngn,rate=cbRate();
+    var w=pAdd(b,pEl('div','amtwrap')),l=pAdd(w,pEl('div','')),r=pAdd(w,pEl('div',''));
+    pNote(l,isU?('Dollar vault '+cbUsd(c.usd)+'  ·  US$1 = '+money(rate)):('City Boys naira vault '+money(c.ngn)));
+    var txt=amt?(isU?cbUsd(n):money(n)):(isU?'US$0':'₦0');
+    var d=pAdd(l,pEl('div','amtdisp',txt));cbFit(d,txt.length,225);
+    var bad=n>bal;
+    if(isU)pNote(l,bad?'More than your dollar vault':(n?('You get '+money(n*rate)):'Enter dollars to convert'),bad?'bad':'');
+    else pNote(l,bad?'More than your naira vault':(n?('Wallet after '+money(cash+n)):'Enter amount to send'),bad?'bad':'');
+    var chips=pAdd(l,pEl('div','chips'));
+    var CH=isU?[[1000,'$1K'],[100000,'$100K'],[1000000,'$1M'],[100000000,'$100M']]:[[1000000,'₦1M'],[100000000,'₦100M'],[1000000000,'₦1B'],[10000000000,'₦10B']];
+    CH.forEach(function(v){var ch=pEl('button','chip',v[1]);ch.type='button';ch.addEventListener('click',function(){tap();amt=String(v[0]);phRefresh();});chips.appendChild(ch);});
+    var all=pEl('button','chip','All');all.type='button';all.addEventListener('click',function(){tap();amt=String(Math.floor(bal));phRefresh();});chips.appendChild(all);
+    var go=pBtn(l,'Review',function(){cbReview(mode,n);},'');go.disabled=!(n>=1&&n<=bal&&(isU||n>=100));
+    var kp=pAdd(r,pEl('div','kp'));
+    ['1','2','3','4','5','6','7','8','9','00','0','⌫'].forEach(function(dg){
+      var kb=pEl('button','key',dg);kb.type='button';
+      kb.addEventListener('click',function(){tap();if(dg==='⌫')amt=amt.slice(0,-1);else if((amt+dg).length<=13&&!(amt===''&&(dg==='0'||dg==='00')))amt+=dg;phRefresh();});
+      kp.appendChild(kb);
+    });
+  });
+}
+function cbReview(mode,n){
+  var isU=mode==='usd';
+  phPush('Confirm',function(b){
+    var c=life.cb,rate=cbRate();
+    if(isU)pKV(b,[['From','City Boys dollar vault'],['Convert',cbUsd(n)],['Rate','US$1 = '+money(rate)],['You get',money(n*rate)],['Dollar vault after',cbUsd(c.usd-n)],['Naira vault after',money(c.ngn+n*rate)]]);
+    else pKV(b,[['From','City Boys naira vault'],['To','NairaPay wallet'],['Amount',money(n)],['Fee',money(0)],['Vault after',money(c.ngn-n)],['Wallet after',money(cash+n)]]);
+    pBtn(b,isU?'Convert now':'Send '+money(n),function(){cbSubmit(mode,n);},'grn');
+    pBtn(b,'Cancel',function(){phPop();},'sec');
+  });
+}
+function cbSubmit(mode,n){
+  var isU=mode==='usd',c=life.cb;
+  if(n<1||n>(isU?c.usd:c.ngn)){buzz();toast('Amount is more than the vault');return;}
+  PH.busy=true;
+  phReplace(isU?'Converting':'Sending',function(b){
+    var s=pAdd(b,pEl('div','spinbox'));pAdd(s,pEl('div','spin'));pAdd(s,pEl('div','pbig',isU?'Converting '+cbUsd(n):'Sending '+money(n)));pAdd(s,pEl('div','pnote',isU?'to naira':'to NairaPay'));
+  });
+  setTimeout(function(){
+    PH.busy=false;
+    var rate=cbRate(),got=isU?n*rate:n;
+    if(isU){c.usd-=n;c.ngn+=got;cbLog('Converted '+cbUsd(n)+' to '+money(got));}
+    else{c.ngn-=n;cash+=n;setCash();logTx('From City Boys',n);cbLog('Sent '+money(n)+' to NairaPay');}
+    var ref=(isU?'CB':'CT')+(100000000+(Math.random()*899999999|0));
+    saveGame();chime();vib([30,40,30]);
+    var root=PH.stack[0];
+    PH.stack=[root,{t:'Receipt',th:'',r:function(b){
+      var w=pAdd(b,pEl('div','amtwrap')),l=pAdd(w,pEl('div','')),r=pAdd(w,pEl('div',''));
+      var o=pAdd(l,pEl('div','okbox'));o.innerHTML='<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="25"/><path d="M21 33l8 8 15-17"/></svg>';
+      pAdd(o,pEl('div','pbig',isU?'Conversion successful':'Transfer successful'));
+      var ok=pAdd(o,pEl('div','okamt',isU?money(got):money(n)));cbFit(ok,ok.textContent.length,225);
+      pBtn(l,'Done',function(){PH.stack=[PH.stack[0]];phShow(-1);},'');
+      if(isU)pKV(r,[['Converted',cbUsd(n)],['Rate','US$1 = '+money(rate)],['Naira received',money(got)],['Date',stamp()],['Reference',ref],['Naira vault',money(c.ngn)],['Dollar vault',cbUsd(c.usd)]]);
+      else pKV(r,[['From','City Boys'],['To','NairaPay wallet'],['Date',stamp()],['Reference',ref],['Vault balance',money(c.ngn)],['Wallet balance',money(cash)]]);
+    }}];
+    phShow(1);
+    if(!isU)pushMsg('pay','Credit alert: +'+money(n)+' from City Boys. Ref '+ref+'. Balance '+money(cash)+'.');
+  },1200);
 }
 /* ---- bills */
 var BILLS={
