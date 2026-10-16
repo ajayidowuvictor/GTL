@@ -1,0 +1,26 @@
+name: Vendor three.js
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Fetch three.js r128 and commit it
+        run: |
+          npm install three@0.128.0 --no-save
+          mkdir -p vendor
+          cp node_modules/three/build/three.min.js vendor/three.min.js
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add vendor/three.min.js
+          git commit -m "Add vendored three.js r128" || echo "nothing to commit"
+          git push
