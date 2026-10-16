@@ -495,7 +495,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b24';
+var VERSION='GTL 0.9 b25';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -611,7 +611,18 @@ function dquad(name,cell,c,n,tint){
   for(var k=0;k<6;k++){var j=idx[k];B.P.push(w[j][0],w[j][1],w[j][2]);B.N.push(NVd.x,NVd.y,NVd.z);B.U.push(uv[j][0],uv[j][1]);B.C.push(CO.r,CO.g,CO.b);}
 }
 /* vertical decal on a wall (local +z faces out) */
-function DC(cell,x,y,z,w,h,tint){dquad('decal',cell,[[x-w/2,y-h/2,z],[x+w/2,y-h/2,z],[x+w/2,y+h/2,z],[x-w/2,y+h/2,z]],[0,0,1],tint);}
+var wgs=977;
+function wg(){wgs=(wgs*16807)%2147483647;return (wgs-1)/2147483646;}
+var WGC=['#ffd27a','#ffe2a0','#ffc566','#ffd98a','#fff0c0','#a9cdff'];
+function winGlow(x,y,z,w,h){
+  var c=WGC[(wg()*WGC.length*0.999)|0],zz=z+0.014;
+  dquad('wglow',-1,[[x-w/2,y-h/2,zz],[x+w/2,y-h/2,zz],[x+w/2,y+h/2,zz],[x-w/2,y+h/2,zz]],[0,0,1],c);
+}
+function DC(cell,x,y,z,w,h,tint){
+  dquad('decal',cell,[[x-w/2,y-h/2,z],[x+w/2,y-h/2,z],[x+w/2,y+h/2,z],[x-w/2,y+h/2,z]],[0,0,1],tint);
+  if(cell===0&&wg()<0.7)winGlow(x,y+h*0.02,z,w*0.6,h*0.52);
+  if(cell===2&&wg()<0.75)winGlow(x,y+h*0.5+0.28,z,0.55,0.22);
+}
 /* flat decal on the ground, rotated about Y */
 function DG(cell,x,z,w,d,rot,tint,y){
   y=y||0.083;var cs=Math.cos(rot||0),sn=Math.sin(rot||0);
@@ -1179,6 +1190,22 @@ function tower(tx,tz,w,d,h,col,glass){
   box(tx,h/2,tz,w,h,d,col);
   var n=Math.floor((h-2)/3.6);
   for(var ti=0;ti<n;ti++)box(tx,3.0+ti*3.6,tz,w+0.08,1.5,d+0.08,glass);
+  for(var tj=0;tj<n;tj++){
+    var yy=3.0+tj*3.6;
+    for(var fc=0;fc<4;fc++){
+      var wid=fc<2?w:d,cnt=Math.max(2,Math.floor(wid/3)),sw=wid/cnt;
+      for(var sg=0;sg<cnt;sg++){
+        if(wg()>0.5||(fc<2&&yy<7.5))continue;
+        var off=-wid/2+sw*(sg+0.5),c=WGC[(wg()*WGC.length*0.999)|0],e=0.07,hh=1.0;
+        var P=fc===0?[[off-sw*0.38,yy-hh/2,d/2+e],[off+sw*0.38,yy-hh/2,d/2+e],[off+sw*0.38,yy+hh/2,d/2+e],[off-sw*0.38,yy+hh/2,d/2+e]]
+          :fc===1?[[off-sw*0.38,yy-hh/2,-d/2-e],[off+sw*0.38,yy-hh/2,-d/2-e],[off+sw*0.38,yy+hh/2,-d/2-e],[off-sw*0.38,yy+hh/2,-d/2-e]]
+          :fc===2?[[w/2+e,yy-hh/2,off-sw*0.38],[w/2+e,yy-hh/2,off+sw*0.38],[w/2+e,yy+hh/2,off+sw*0.38],[w/2+e,yy+hh/2,off-sw*0.38]]
+          :[[-w/2-e,yy-hh/2,off-sw*0.38],[-w/2-e,yy-hh/2,off+sw*0.38],[-w/2-e,yy+hh/2,off+sw*0.38],[-w/2-e,yy+hh/2,off-sw*0.38]];
+        for(var pi=0;pi<4;pi++){P[pi][0]+=tx;P[pi][2]+=tz;}
+        dquad('wglow',-1,P,[0,1,0],c);
+      }
+    }
+  }
   box(tx,h+0.4,tz,w+0.5,0.8,d+0.5,'#d8d4c8');
   box(tx,h+1.6,tz,w*0.4,1.6,d*0.4,'#8a8d90');
   cyl(tx+w*0.15,h+4.2,tz,0.18,5,0.18,'#c1352d');
@@ -1376,6 +1403,8 @@ var WMAT={};
 ['plaster','asphalt','dirt','concrete','block','roof'].forEach(function(n){WMAT[n]=gainMat(mkTex(n,true));});
 var decalTex=mkTex('decals',false);
 WMAT.decal=new THREE.MeshLambertMaterial({vertexColors:true,map:decalTex,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+WMAT.wglow=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4});
+var glowMeshes=[];
 WMAT.leaf=new THREE.MeshLambertMaterial({vertexColors:true,map:mkTex('foliage',false),alphaTest:0.45});
 var WORLD_TRIS=0;
 Object.keys(BK).forEach(function(k){
@@ -1388,8 +1417,9 @@ Object.keys(BK).forEach(function(k){
   m.receiveShadow=(B.name!=='decal');
   m.castShadow=(B.name==='plaster'||B.name==='roof'||B.name==='block');
   m.matrixAutoUpdate=false;m.visible=texReady;
-  m.renderOrder=B.name==='decal'?2:0;
-  world.add(m);worldMeshes.push(m);WORLD_TRIS+=B.P.length/9;
+  m.renderOrder=B.name==='decal'?2:(B.name==='wglow'?3:0);
+  if(B.name==='wglow'){m.visible=false;m.castShadow=false;glowMeshes.push(m);world.add(m);WORLD_TRIS+=B.P.length/9;}
+  else{world.add(m);worldMeshes.push(m);WORLD_TRIS+=B.P.length/9;}
   B.P=B.N=B.C=B.U=null;
 });
 setTimeout(texesDone,5000);
@@ -2680,6 +2710,8 @@ function dayUpdate(dt){
   var lcx=driving?car.x:player.x;
   for(var l=0;l<lampSprites.length;l++){var near=on&&Math.abs(lampSprites[l].position.x-lcx)<115;lampSprites[l].visible=near;lampPools[l].visible=near;if(near){lampSprites[l].material.opacity=glow;lampPools[l].material.opacity=glow*0.32;}}
   beamMat.opacity=glow*0.17;
+  WMAT.wglow.opacity=Math.min(1,glow*1.05);
+  for(var gm=0;gm<glowMeshes.length;gm++)glowMeshes[gm].visible=on&&texReady;
   for(var m=0;m<beamMeshes.length;m++)beamMeshes[m].visible=on;
   var hh=Math.floor(gameHour),mm=Math.floor((gameHour-hh)*60/10)*10,h12=hh%12===0?12:hh%12;
   var txt=h12+':'+(mm<10?'0':'')+mm+(hh<12?' AM':' PM');
