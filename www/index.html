@@ -456,7 +456,10 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
       <div class="lab">AUDIO</div>
       <div class="g2"><button id="snd" type="button">SOUND ON</button><button id="radio" type="button">RADIO: OFF</button></div>
       <div class="lab">DISPLAY</div>
-      <div class="g2"><button id="qbtn" type="button">LOW</button><button id="lookb" type="button">LOOK: NORMAL</button><button id="wthb" type="button" class="wide">WEATHER: AUTO</button></div>
+      <div class="g2"><button id="qbtn" type="button">LOW</button><button id="wthb" type="button">WEATHER: AUTO</button></div>
+      <div class="lab">CONTROLS</div>
+      <div class="g2"><button id="lookb" type="button">LOOK: NORMAL</button><button id="spdb" type="button">MOVE: 100%</button><button id="tapb" type="button">TAP MOVE: ON</button><button id="invb" type="button">INVERT Y: OFF</button><button id="camb" type="button" class="wide">AUTO CAMERA: OFF</button></div>
+      <p class="sm">Wheel or pinch to zoom. Click or tap the ground to walk there.</p>
       <div class="lab">GAME</div>
       <div class="g2"><button id="fareb" type="button">FARES: ON</button><button id="copb" type="button">POLICE: ON</button></div>
       <p class="sm">The radio plays while you drive. Fares: drive with no job active and passengers appear.</p>
@@ -517,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b36';
+var VERSION='GTL 0.9 b37';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -1855,7 +1858,7 @@ function room(id,cx,cz,W,D,H,c,o){
   var dx=o.doorX!==undefined?o.doorX:cx-9.5;
   box(dx,1.4,cz+D/2-0.05,2.4,2.8,0.12,'#2b2118');box(dx,1.4,cz+D/2-0.12,1.9,2.4,0.06,'#5a4631');box(dx+0.7,1.2,cz+D/2-0.17,0.1,0.1,0.06,'#d9b24a');
   addSign('EXIT','#1f7a3a','#ffffff',dx,3.3,cz+D/2-0.2,Math.PI,1.6,0.5);
-  INTD[id]={c:[cx,cz],W:W,D:D,sx:dx,sz:cz+D/2-5,out:o.out||'',nm:o.nm||id};
+  INTD[id]={c:[cx,cz],W:W,D:D,H:H,dx:dx,sx:dx,sz:cz+D/2-5,out:o.out||'',nm:o.nm||id};
 }
 function sofa(x,z,ry,len,col,cush){
   frame(x,z,ry,function(){
@@ -2126,7 +2129,7 @@ setTimeout(texesDone,5000);
 
 /* --------------------------------------------------------------- player */
 var player={x:4.8,z:12.2,y:0,yaw:Math.PI,speed:0,phase:0,dirx:0,dirz:-1};
-var pAnim={yaw:Math.PI,speed:0,lean:0,fwd:0};
+var pAnim={yaw:Math.PI,speed:0,lean:0,fwd:0,v:0};
 var blob=null;
 /* player: smooth low-poly figure from the character sheet (black rugby shirt with white bands, black cargo pants, white sneakers) */
 var SKIN='#6b4026',SKIN2='#5a3520',BLK='#17171b',WHT='#f1efe6',PNT='#1e1e22',SOLE='#d6d3c8',HAIR='#0d0d0d';
@@ -2704,14 +2707,233 @@ function collide(px,pz){
   px=Math.max(XMIN,Math.min(XMAX,px));pz=Math.max(-LIM,Math.min(LIM,pz));
   player.x=px;player.z=pz;
 }
-function inSolid(px,py,pz,m){
+function turnToward(a,b,t){var d=((b-a+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;return a+d*Math.min(1,t);}
+
+/* ================================================================ b37: movement + camera controls
+   One controller for everything: keyboard, virtual stick, mouse, tap/click-to-move.
+   Tunables live in CTRL (saved to localStorage as gtl_ctrl). */
+var CPT=!!(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches);
+var CTRL={moveSpeed:1,zoomSens:1,invertY:false,tapMove:!CPT,autoCam:false,accel:16,decel:22,turn:11,walk:3.4,run:6.4};
+(function(){try{var j=JSON.parse(localStorage.getItem('gtl_ctrl')||'null');if(j)for(var k in j)if(k in CTRL&&typeof j[k]===typeof CTRL[k])CTRL[k]=j[k];}catch(e){}})();
+function saveCtrl(){try{localStorage.setItem('gtl_ctrl',JSON.stringify(CTRL));}catch(e){}}
+function angDiff(a,b){var d=((a-b+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;return d;}  /* a-b wrapped to -pi..pi */
+function clampN(v,a,b){return v<a?a:(v>b?b:v);}
+
+/* ---- zoom */
+var camZoom=1,lookIdle=9,_fdt=0.016;
+try{camZoom=parseFloat(localStorage.getItem('gtl_zoom'))||1;}catch(e){}
+function setZoom(z){camZoom=clampN(z,0.45,2.4);try{localStorage.setItem('gtl_zoom',camZoom.toFixed(3));}catch(e){}}
+window.addEventListener('wheel',function(e){
+  if(!started||paused||PH.open)return;
+  e.preventDefault();
+  setZoom(camZoom*Math.exp(e.deltaY*(e.deltaMode===1?16:1)*0.0012*CTRL.zoomSens));
+},{passive:false});
+window.addEventListener('keydown',function(e){
+  if(!started||paused||PH.open||(e.target&&e.target.tagName==='INPUT'))return;
+  if(e.code==='Equal'||e.code==='NumpadAdd')setZoom(camZoom/1.12);
+  else if(e.code==='Minus'||e.code==='NumpadSubtract')setZoom(camZoom*1.12);
+  else if(e.code==='Digit0'||e.code==='Numpad0')setZoom(1);
+});
+
+/* ---- spatial index for solids: used by camera collision and the path finder */
+var SG={},SGn=-1;
+function sgBuild(){
+  SG={};SGn=solids.length;
   for(var i=0;i<solids.length;i++){
-    var s=solids[i];
+    var s=solids[i],x0=Math.floor((s.minX-1)/8),x1=Math.floor((s.maxX+1)/8),z0=Math.floor((s.minZ-1)/8),z1=Math.floor((s.maxZ+1)/8);
+    for(var ix=x0;ix<=x1;ix++)for(var iz=z0;iz<=z1;iz++){var k=(ix+16)*64+(iz+16);(SG[k]||(SG[k]=[])).push(s);}
+  }
+}
+function inSolid(px,py,pz,m){
+  if(SGn!==solids.length)sgBuild();
+  var l=SG[(Math.floor(px/8)+16)*64+Math.floor(pz/8)+16];if(!l)return false;
+  for(var i=0;i<l.length;i++){
+    var s=l[i];
     if(py<s.h&&px>s.minX-m&&px<s.maxX+m&&pz>s.minZ-m&&pz<s.maxZ+m)return true;
   }
   return false;
 }
-function turnToward(a,b,t){var d=((b-a+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;return a+d*Math.min(1,t);}
+
+/* ---- camera collision: how far can the camera sit from the target along (yaw,pitch)? */
+var camD=6,camExtra=0,MINCAM=0.35;
+function camAllow(tx,ty,tz,yaw,pit,want,ceil){
+  var cp=Math.cos(pit),sp=Math.sin(pit),dx=Math.sin(yaw)*cp,dy=sp,dz=Math.cos(yaw)*cp,lim=want;
+  if(dy>0.001&&ty+dy*lim>ceil)lim=Math.max(0,(ceil-ty)/dy);
+  for(var k=0.15;k<=lim;k+=0.15){
+    if(inSolid(tx+dx*k,ty+dy*k,tz+dz*k,0.28)){lim=Math.max(MINCAM,k-0.27);break;}
+  }
+  return Math.max(MINCAM,lim);
+}
+
+/* ---- path finding on a local grid (0.25 m cells), walls grown by the player radius */
+var PF={cell:0.25};
+function pfBuild(cx,cz,half){
+  var c=PF.cell,n=Math.ceil(half*2/c),x0=cx-half,z0=cz-half,blk=new Uint8Array(n*n),r=PR+0.03,r2=r*r,i,j;
+  for(var q=0;q<solids.length;q++){
+    var s=solids[q];
+    if(s.maxX+r<x0||s.minX-r>x0+half*2||s.maxZ+r<z0||s.minZ-r>z0+half*2)continue;
+    var i0=Math.max(0,Math.floor((s.minX-r-x0)/c)),i1=Math.min(n-1,Math.floor((s.maxX+r-x0)/c)),j0=Math.max(0,Math.floor((s.minZ-r-z0)/c)),j1=Math.min(n-1,Math.floor((s.maxZ+r-z0)/c));
+    for(j=j0;j<=j1;j++)for(i=i0;i<=i1;i++){
+      var px=x0+(i+0.5)*c,pz=z0+(j+0.5)*c,qx=Math.max(s.minX,Math.min(px,s.maxX)),qz=Math.max(s.minZ,Math.min(pz,s.maxZ));
+      if((px-qx)*(px-qx)+(pz-qz)*(pz-qz)<r2)blk[j*n+i]=1;
+    }
+  }
+  for(j=0;j<n;j++)for(i=0;i<n;i++){
+    var wx=x0+(i+0.5)*c,wz=z0+(j+0.5)*c;
+    if(wx<XMIN+PR||wx>XMAX-PR||wz<-LIM+PR||wz>LIM-PR)blk[j*n+i]=1;
+  }
+  return {n:n,x0:x0,z0:z0,blk:blk};
+}
+function pfCell(g,x,z){
+  var c=PF.cell;return [clampN(Math.floor((x-g.x0)/c),0,g.n-1),clampN(Math.floor((z-g.z0)/c),0,g.n-1)];
+}
+function pfBlockedAt(g,x,z){
+  var c=PF.cell,i=Math.floor((x-g.x0)/c),j=Math.floor((z-g.z0)/c);
+  if(i<0||j<0||i>=g.n||j>=g.n)return true;
+  return g.blk[j*g.n+i]===1;
+}
+function pfNearestFree(g,i,j,R){
+  if(!g.blk[j*g.n+i])return j*g.n+i;
+  for(var r=1;r<=R;r++){
+    var best=-1,bd=1e9;
+    for(var dj=-r;dj<=r;dj++)for(var di=-r;di<=r;di++){
+      if(Math.max(Math.abs(di),Math.abs(dj))!==r)continue;
+      var a=i+di,b=j+dj;if(a<0||b<0||a>=g.n||b>=g.n||g.blk[b*g.n+a])continue;
+      var d=di*di+dj*dj;if(d<bd){bd=d;best=b*g.n+a;}
+    }
+    if(best>=0)return best;
+  }
+  return -1;
+}
+function pfLos(g,ax,az,bx,bz){
+  var d=Math.hypot(bx-ax,bz-az),st=Math.max(1,Math.ceil(d/0.2));
+  for(var k=0;k<=st;k++){if(pfBlockedAt(g,ax+(bx-ax)*k/st,az+(bz-az)*k/st))return false;}
+  return true;
+}
+/* returns {pts:[{x,z}...], reached:bool} (start excluded) or null */
+function pfSolve(g,sx,sz,gx,gz){
+  var n=g.n,c=PF.cell,N=n*n,sc=pfCell(g,sx,sz),gc=pfCell(g,gx,gz);
+  var s0=pfNearestFree(g,sc[0],sc[1],12);if(s0<0)return null;
+  var g0=pfNearestFree(g,gc[0],gc[1],20);if(g0<0)g0=gc[1]*n+gc[0];
+  var gi=g0%n,gj=(g0-gi)/n;
+  var G=new Float32Array(N).fill(1e9),P=new Int32Array(N).fill(-1),C=new Uint8Array(N);
+  var hf=[],hi=[];
+  function push(f,i){var k=hf.length;hf.push(f);hi.push(i);while(k>0){var p=(k-1)>>1;if(hf[p]<=hf[k])break;var tf=hf[p],ti=hi[p];hf[p]=hf[k];hi[p]=hi[k];hf[k]=tf;hi[k]=ti;k=p;}}
+  function pop(){
+    var top=hi[0],lf=hf.pop(),li=hi.pop();
+    if(hf.length){hf[0]=lf;hi[0]=li;var k=0,L=hf.length;for(;;){var a=2*k+1,b=a+1,m=k;if(a<L&&hf[a]<hf[m])m=a;if(b<L&&hf[b]<hf[m])m=b;if(m===k)break;var tf=hf[m],ti=hi[m];hf[m]=hf[k];hi[m]=hi[k];hf[k]=tf;hi[k]=ti;k=m;}}
+    return top;
+  }
+  function H(i){var a=Math.abs(i%n-gi),b=Math.abs(((i-i%n)/n)-gj);return (Math.max(a,b)+0.4142*Math.min(a,b));}
+  G[s0]=0;push(H(s0),s0);
+  var best=s0,bestH=H(s0),exp=0,found=false;
+  var DI=[1,-1,0,0,1,1,-1,-1],DJ=[0,0,1,-1,1,-1,1,-1];
+  while(hf.length&&exp<250000){
+    var cur=pop();if(C[cur])continue;C[cur]=1;exp++;
+    if(cur===g0){found=true;best=cur;break;}
+    var ci=cur%n,cj=(cur-ci)/n,h=H(cur);
+    if(h<bestH){bestH=h;best=cur;}
+    for(var d=0;d<8;d++){
+      var ni=ci+DI[d],nj=cj+DJ[d];if(ni<0||nj<0||ni>=n||nj>=n)continue;
+      var nx=nj*n+ni;if(g.blk[nx]||C[nx])continue;
+      if(d>=4&&(g.blk[cj*n+ni]||g.blk[nj*n+ci]))continue;
+      var ng=G[cur]+(d<4?1:1.4142);
+      if(ng<G[nx]){G[nx]=ng;P[nx]=cur;push(ng+H(nx),nx);}
+    }
+  }
+  var cells=[],k=best;while(k>=0){cells.push(k);k=P[k];}
+  cells.reverse();
+  var pts=[{x:sx,z:sz}];
+  for(var q=1;q<cells.length;q++){var ci2=cells[q]%n,cj2=(cells[q]-ci2)/n;pts.push({x:g.x0+(ci2+0.5)*c,z:g.z0+(cj2+0.5)*c});}
+  if(found&&!g.blk[gc[1]*n+gc[0]])pts[pts.length]={x:gx,z:gz};
+  /* string pulling */
+  var out=[],i=0,last=pts.length-1;
+  while(i<last){var j=last;while(j>i+1&&!pfLos(g,pts[i].x,pts[i].z,pts[j].x,pts[j].z))j--;out.push(pts[j]);i=j;}
+  return {pts:out,reached:found};
+}
+function pfPath(sx,sz,gx,gz){
+  var d=Math.hypot(gx-sx,gz-sz),half=Math.min(45,Math.max(14,d/2+12));
+  var g=pfBuild((sx+gx)/2,(sz+gz)/2,half);
+  return pfSolve(g,sx,sz,gx,gz);
+}
+
+/* ---- click / tap to move */
+var TM={path:null,i:0,goal:null,npc:null,run:false,best:1e9,t:0,replanned:false,pulse:0};
+var RC=new THREE.Raycaster(),RV2=new THREE.Vector2(),RV3=new THREE.Vector3(),RHIT=new THREE.Vector3(),RPL=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+var tmMark=new THREE.Mesh(new THREE.RingGeometry(0.34,0.5,28),new THREE.MeshBasicMaterial({color:0xf5b800,transparent:true,opacity:0.9,depthWrite:false,side:THREE.DoubleSide}));
+tmMark.rotation.x=-Math.PI/2;tmMark.visible=false;tmMark.renderOrder=5;scene.add(tmMark);
+function tmStop(){TM.path=null;TM.npc=null;tmMark.visible=false;}
+function tmPlan(gx,gz){
+  var r=pfPath(player.x,player.z,gx,gz);
+  if(!r||!r.pts.length)return false;
+  TM.path=r.pts;TM.i=0;TM.best=1e9;TM.t=0;
+  var L=0,px=player.x,pz=player.z;for(var k=0;k<r.pts.length;k++){L+=Math.hypot(r.pts[k].x-px,r.pts[k].z-pz);px=r.pts[k].x;pz=r.pts[k].z;}
+  TM.run=L>28;
+  var e=r.pts[r.pts.length-1];tmMark.position.set(e.x,0.07,e.z);tmMark.visible=true;
+  return true;
+}
+function ctrlGo(gx,gz,npc){
+  var dd=Math.hypot(gx-player.x,gz-player.z);
+  if(dd>60){gx=player.x+(gx-player.x)*60/dd;gz=player.z+(gz-player.z)*60/dd;}
+  TM.goal={x:gx,z:gz};TM.npc=npc||null;TM.replanned=false;
+  if(!tmPlan(gx,gz)){TM.npc=null;tmMark.visible=false;return false;}
+  return true;
+}
+function ctrlClick(px,py){
+  if(!CTRL.tapMove||!started||talking||paused||driving||fadeBusy||PH.open)return false;
+  var rc=canvas.getBoundingClientRect();
+  RV2.set(((px-rc.left)/rc.width)*2-1,-((py-rc.top)/rc.height)*2+1);
+  RC.setFromCamera(RV2,camera);
+  var ray=RC.ray,pick=null,bd=0.95;
+  for(var i=0;i<npcs.length;i++){
+    var n=npcs[i];if(Math.hypot(n.x-player.x,n.z-player.z)>75)continue;
+    RV3.set(n.x,1.0,n.z);
+    if(RV3.clone().sub(ray.origin).dot(ray.direction)<=0)continue;
+    var dd=ray.distanceToPoint(RV3);if(dd<bd){bd=dd;pick=n;}
+  }
+  var gx,gz;
+  if(pick){
+    var ax=player.x-pick.x,az=player.z-pick.z,al=Math.hypot(ax,az)||1;
+    gx=pick.x+ax/al*1.5;gz=pick.z+az/al*1.5;
+  }else{
+    if(!ray.intersectPlane(RPL,RHIT))return false;
+    gx=RHIT.x;gz=RHIT.z;
+  }
+  return ctrlGo(gx,gz,pick);
+}
+/* turns the current click-to-move path into a stick-like input; any real input cancels it */
+function ctrlTap(inp,dt){
+  if(!TM.path)return inp;
+  if(inp.mag>0||talking||paused||driving||!started||fadeBusy){tmStop();return inp;}
+  var p=TM.path,last=p.length-1;
+  while(TM.i<last&&Math.hypot(p[TM.i].x-player.x,p[TM.i].z-player.z)<0.55)TM.i++;
+  var w=p[TM.i],dx=w.x-player.x,dz=w.z-player.z,d=Math.hypot(dx,dz),rem=d;
+  for(var k=TM.i;k<last;k++)rem+=Math.hypot(p[k+1].x-p[k].x,p[k+1].z-p[k].z);
+  tmMark.scale.setScalar(1+0.12*Math.sin(elapsed*7));
+  if(TM.i===last&&d<0.28){
+    var n=TM.npc;tmStop();
+    if(n&&!talking&&Math.hypot(n.x-player.x,n.z-player.z)-0.35<2.6){player.yaw=Math.atan2(n.x-player.x,n.z-player.z);n.talk();}
+    return {ix:0,iy:0,mag:0,run:false};
+  }
+  /* stuck? replan once, then give up */
+  if(rem<TM.best-0.15){TM.best=rem;TM.t=0;}else TM.t+=dt;
+  if(TM.t>1.3){
+    if(!TM.replanned&&TM.goal){TM.replanned=true;var nn=TM.npc;if(!tmPlan(TM.goal.x,TM.goal.z)){tmStop();}else TM.npc=nn;}
+    else tmStop();
+    return {ix:0,iy:0,mag:0,run:false};
+  }
+  var hd=Math.atan2(player.dirx,player.dirz),want=Math.atan2(dx,dz),turn=Math.abs(angDiff(want,hd));
+  var mag=Math.max(0.32,Math.min(1,rem/1.6));
+  if(turn>0.5&&d<3)mag=Math.min(mag,0.62);
+  return {ix:0,iy:0,mag:mag,run:(TM.run&&rem>7),wx:dx/(d||1),wz:dz/(d||1)};
+}
+
+/* ---- walking out through a room's door */
+function doorWalkOut(inp){
+  if(inp.mag<=0||fadeBusy||talking)return;
+  var id=intId(),d=INTD[id];if(!d||d.dx===undefined)return;
+  if(player.z>d.c[1]+d.D/2-1.25&&Math.abs(player.x-d.dx)<1.3&&player.dirz>0.3)exitInt();
+}
 
 /* ----------------------------------------------------------------- input */
 var started=false,running=false;
@@ -2724,14 +2946,26 @@ function placeStick(){
   stickEl.style.left='96px';stickEl.style.top=(window.innerHeight-108)+'px';
   knob.style.transform='';stickEl.classList.remove('on');
 }
-function startLook(e,pad){look.id=e.pointerId;look.lx=e.clientX;look.ly=e.clientY;pad.setPointerCapture(e.pointerId);}
-var LOOKS=[['SLOW',0.7],['NORMAL',1],['FAST',1.5]],lookI=1;
-try{lookI=Math.max(0,Math.min(2,parseInt(localStorage.getItem('gtl_look')||'1',10)));if(!(lookI>=0))lookI=1;}catch(e){}
+var clk=null;
+function startLook(e,pad){
+  look.id=e.pointerId;look.lx=e.clientX;look.ly=e.clientY;lookIdle=0;
+  clk={id:e.pointerId,t:performance.now(),d:0,ok:(e.pointerType==='mouse')?(e.button===0):true};
+  pad.setPointerCapture(e.pointerId);
+}
+var LOOKS=[['VERY SLOW',0.5],['SLOW',0.7],['NORMAL',1],['FAST',1.5],['VERY FAST',2.2]],lookI=2;
+try{var lv=localStorage.getItem('gtl_look2');if(lv!==null)lookI=Math.max(0,Math.min(4,parseInt(lv,10)||0));else{var ov=localStorage.getItem('gtl_look');if(ov!==null)lookI=[1,2,3][Math.max(0,Math.min(2,parseInt(ov,10)||0))];}}catch(e){}
 function doLook(e){
   var dx=e.clientX-look.lx,dy=e.clientY-look.ly,lm=LOOKS[lookI][1];look.lx=e.clientX;look.ly=e.clientY;
-  camYaw-=dx*0.0055*lm;camPitch=Math.max(0.05,Math.min(1.15,camPitch+dy*0.0045*lm));
+  if(clk&&clk.id===e.pointerId)clk.d+=Math.abs(dx)+Math.abs(dy);
+  lookIdle=0;
+  camYaw-=dx*0.0055*lm;camPitch=Math.max(0.05,Math.min(1.15,camPitch+dy*0.0045*lm*(CTRL.invertY?-1:1)));
 }
-function endLook(e){if(e.pointerId===look.id)look.id=null;}
+function endLook(e){
+  if(e.pointerId!==look.id)return;
+  look.id=null;
+  var c=clk;clk=null;
+  if(c&&c.id===e.pointerId&&c.ok&&c.d<10&&performance.now()-c.t<380&&e.type==='pointerup')ctrlClick(e.clientX,e.clientY);
+}
 padL.addEventListener('pointerdown',function(e){
   if(!started)return;
   e.preventDefault();
@@ -2754,9 +2988,29 @@ function endStick(e){
   stick.id=null;stick.x=0;stick.y=0;placeStick();
 }
 padL.addEventListener('pointerup',endStick);padL.addEventListener('pointercancel',endStick);
-padR.addEventListener('pointerdown',function(e){if(!started)return;e.preventDefault();if(look.id===null)startLook(e,padR);});
-padR.addEventListener('pointermove',function(e){if(e.pointerId===look.id)doLook(e);});
-padR.addEventListener('pointerup',endLook);padR.addEventListener('pointercancel',endLook);
+var pin={on:false,a:-1,b:-1,ax:0,ay:0,bx:0,by:0,d0:1,z0:1};
+padR.addEventListener('pointerdown',function(e){
+  if(!started)return;e.preventDefault();
+  if(look.id===null)startLook(e,padR);
+  else if(!pin.on&&e.pointerType!=='mouse'&&e.pointerId!==look.id){
+    pin.on=true;pin.a=look.id;pin.b=e.pointerId;pin.ax=look.lx;pin.ay=look.ly;pin.bx=e.clientX;pin.by=e.clientY;
+    pin.d0=Math.max(30,Math.hypot(pin.ax-pin.bx,pin.ay-pin.by));pin.z0=camZoom;
+    if(clk)clk.d=999;
+    try{padR.setPointerCapture(e.pointerId);}catch(x){}
+  }
+});
+padR.addEventListener('pointermove',function(e){
+  if(pin.on){
+    if(e.pointerId===pin.a){pin.ax=e.clientX;pin.ay=e.clientY;look.lx=e.clientX;look.ly=e.clientY;}
+    else if(e.pointerId===pin.b){pin.bx=e.clientX;pin.by=e.clientY;}
+    else return;
+    setZoom(pin.z0*pin.d0/Math.max(30,Math.hypot(pin.ax-pin.bx,pin.ay-pin.by)));
+    return;
+  }
+  if(e.pointerId===look.id)doLook(e);
+});
+function padRUp(e){if(pin.on&&(e.pointerId===pin.a||e.pointerId===pin.b))pin.on=false;endLook(e);}
+padR.addEventListener('pointerup',padRUp);padR.addEventListener('pointercancel',padRUp);
 function runOn(e){e.preventDefault();running=true;runBtn.classList.add('on');try{runBtn.setPointerCapture(e.pointerId);}catch(x){}}
 function runOff(){running=false;runBtn.classList.remove('on');}
 runBtn.addEventListener('pointerdown',runOn);runBtn.addEventListener('pointerup',runOff);runBtn.addEventListener('pointercancel',runOff);
@@ -2833,7 +3087,7 @@ function readInput(){
   var kx=((keys.KeyD||keys.ArrowRight)?1:0)-((keys.KeyA||keys.ArrowLeft)?1:0);
   var ky=((keys.KeyS||keys.ArrowDown)?1:0)-((keys.KeyW||keys.ArrowUp)?1:0);
   if(kx||ky){var l=Math.hypot(kx,ky);ix=kx/l;iy=ky/l;}
-  if(keys.KeyQ)camYaw+=0.03;if(keys.KeyE)camYaw-=0.03;
+  var qe=(keys.KeyQ?1:0)-(keys.KeyE?1:0);if(qe){camYaw+=qe*1.8*_fdt*LOOKS[lookI][1];lookIdle=0;}
   var mag=Math.min(1,Math.hypot(ix,iy));
   if(mag<0.12){mag=0;ix=0;iy=0;}
   return {ix:ix,iy:iy,mag:mag,run:running||keys.ShiftLeft||keys.ShiftRight};
@@ -3746,8 +4000,19 @@ var WTHN=['AUTO','CLEAR','RAIN'];
 function showWth(){$('wthb').textContent='WEATHER: '+WTHN[wthMode];}
 $('wthb').addEventListener('click',function(){wthMode=(wthMode+1)%3;try{localStorage.setItem('gtl_wth',String(wthMode));}catch(e){}showWth();});
 showWth();
-function showLook(){$('lookb').textContent='LOOK: '+LOOKS[lookI][0];}
-$('lookb').addEventListener('click',function(){lookI=(lookI+1)%3;try{localStorage.setItem('gtl_look',String(lookI));}catch(e){}showLook();});
+var MSPD=[0.8,1,1.25];
+function showLook(){
+  $('lookb').textContent='LOOK: '+LOOKS[lookI][0];
+  $('spdb').textContent='MOVE: '+Math.round(CTRL.moveSpeed*100)+'%';
+  $('tapb').textContent='TAP MOVE: '+(CTRL.tapMove?'ON':'OFF');
+  $('invb').textContent='INVERT Y: '+(CTRL.invertY?'ON':'OFF');
+  $('camb').textContent='AUTO CAMERA: '+(CTRL.autoCam?'ON':'OFF');
+}
+$('lookb').addEventListener('click',function(){lookI=(lookI+1)%LOOKS.length;try{localStorage.setItem('gtl_look2',String(lookI));}catch(e){}showLook();});
+$('spdb').addEventListener('click',function(){var i=MSPD.indexOf(CTRL.moveSpeed);CTRL.moveSpeed=MSPD[(i+1)%MSPD.length];saveCtrl();showLook();});
+$('tapb').addEventListener('click',function(){CTRL.tapMove=!CTRL.tapMove;if(!CTRL.tapMove)tmStop();saveCtrl();showLook();});
+$('invb').addEventListener('click',function(){CTRL.invertY=!CTRL.invertY;saveCtrl();showLook();});
+$('camb').addEventListener('click',function(){CTRL.autoCam=!CTRL.autoCam;saveCtrl();showLook();});
 showLook();
 
 /* ------------------------------------------------------------ car radio: a little synthesised afrobeat loop */
@@ -7033,6 +7298,7 @@ window.addEventListener('keydown',function(e){
 
 /* ------------------------------------------------------------------ loop */
 function update(dt){
+  _fdt=dt;
   npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);baddieTick(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
@@ -7044,19 +7310,42 @@ function update(dt){
   if(arrow.visible){arrow.position.set(car.x,3.3+Math.sin(elapsed*3)*0.25,car.z);arrow.rotation.y+=dt*2;}
   updateAct();
   var inp=(started&&!talking)?readInput():{ix:0,iy:0,mag:0,run:false};
+  inp=ctrlTap(inp,dt);
   var sy=Math.sin(camYaw),cy=Math.cos(camYaw);
   var mf=-inp.iy,mr=inp.ix;
   var vx=-sy*mf+cy*mr,vz=-cy*mf-sy*mr;
-  var target=inp.mag*(inp.run?6.4:3.4)*lifeSpeed*(1+(life?(life.fit||0):0)*0.0009);
-  player.speed+=(target-player.speed)*Math.min(1,dt*9);
+  if(inp.wx!==undefined){vx=inp.wx;vz=inp.wz;}
+  var target=inp.mag*(inp.run?CTRL.run:CTRL.walk)*CTRL.moveSpeed*lifeSpeed*(1+(life?(life.fit||0):0)*0.0009);
+  var opx=player.x,opz=player.z,hd=Math.atan2(player.dirx,player.dirz);
   if(inp.mag>0){
     var len=Math.hypot(vx,vz)||1;vx/=len;vz/=len;
-    player.dirx=vx;player.dirz=vz;
-    player.yaw=turnToward(player.yaw,Math.atan2(vx,vz),dt*12);
+    var wantH=Math.atan2(vx,vz),df=angDiff(wantH,hd),adf=Math.abs(df);
+    if(player.speed<0.7)hd=wantH;
+    else{
+      var trn=CTRL.turn*(1-0.55*Math.min(1,player.speed/CTRL.run))*dt;
+      hd+=clampN(df,-trn,trn);
+      if(adf>1.75)target=0;else if(adf>0.9)target*=Math.max(0.25,1-(adf-0.9)/0.85);
+    }
+    player.dirx=Math.sin(hd);player.dirz=Math.cos(hd);
   }
-  if(player.speed>0.02)collide(player.x+player.dirx*player.speed*dt,player.z+player.dirz*player.speed*dt);
-  var amt=Math.min(1,player.speed/3.2),runAmt=Math.max(0,Math.min(1,(player.speed-3.4)/3));
-  player.phase+=player.speed*dt*1.9;
+  player.speed+=clampN((target-player.speed)*Math.min(1,dt*8),-CTRL.decel*dt,CTRL.accel*dt);
+  if(target===0&&player.speed<0.03)player.speed=0;
+  if(inp.mag>0||player.speed>0.3)player.yaw=turnToward(player.yaw,Math.atan2(player.dirx,player.dirz),dt*12);
+  if(player.speed>0.02){
+    var stp=player.speed*dt,nsub=Math.max(1,Math.ceil(stp/0.18));
+    for(var si=0;si<nsub;si++)collide(player.x+player.dirx*stp/nsub,player.z+player.dirz*stp/nsub);
+  }
+  doorWalkOut(inp);
+  lookIdle+=dt;
+  if(CTRL.autoCam&&started&&!talking&&look.id===null&&lookIdle>1.2&&player.speed>1.5)camYaw=turnToward(camYaw,player.yaw+Math.PI,dt*0.9*Math.min(1,player.speed/5));
+  /* animate from the speed we actually moved, so pushing into a wall does not run on the spot */
+  var mvv=Math.min(9,Math.hypot(player.x-opx,player.z-opz)/Math.max(dt,0.001));
+  pAnim.v+=(mvv-pAnim.v)*Math.min(1,dt*12);
+  var aspd=Math.min(player.speed,pAnim.v+0.4),nsd=aspd/Math.max(0.5,CTRL.moveSpeed);
+  var trY=dt>0?angDiff(player.yaw,pAnim.yaw)/dt:0;
+  var tip=nsd<1.4?Math.min(1,Math.abs(trY)/5)*0.5:0;
+  var amt=Math.max(Math.min(1,nsd/3.2),tip),runAmt=Math.max(0,Math.min(1,(nsd-3.4)/3));
+  player.phase+=(aspd*1.9+tip*7)*dt;
   var sw=Math.sin(player.phase)*amt*(0.75+0.35*runAmt),as=0.7+0.4*runAmt;
   /* idle life: breathing, weight shift, a slow look-around; lean into turns and with acceleration */
   var idle=1-Math.min(1,amt*3),tr=dt>0?((player.yaw-pAnim.yaw+Math.PI*3)%(Math.PI*2)-Math.PI)/dt:0,pa=dt>0?(player.speed-pAnim.speed)/dt:0;
@@ -7093,15 +7382,29 @@ function updateCamera(dt){
       camPitch+=(0.27-camPitch)*Math.min(1,dt*1.5);
     }
   }else{camSnap=true;camSpd+=(0-camSpd)*Math.min(1,dt*3);}
-  camDist+=((driving?8.4+(CHL-2.2)*1.3+camSpd*0.075:(inInt()?4.2:6.2))-camDist)*Math.min(1,dt*3);
+  var zz=driving?clampN(camZoom,0.6,1.8):clampN(camZoom,inInt()?0.5:0.45,inInt()?1.5:2.4);
+  camDist+=(((driving?8.4+(CHL-2.2)*1.3+camSpd*0.075:(inInt()?4.2:6.2))*zz)-camDist)*Math.min(1,dt*3);
   var fovT=60+camSpd*0.48;camFov+=(fovT-camFov)*Math.min(1,dt*3);
   if(Math.abs(camera.fov-camFov)>0.08){camera.fov=camFov;camera.updateProjectionMatrix();}
-  if(inInt()&&camPitch>0.3)camPitch=0.3;
-  var cp=Math.cos(camPitch),sp=Math.sin(camPitch);
+  if(inInt()&&camPitch>0.8)camPitch=0.8;
+  var ceilY=1e9;
+  if(!driving&&inInt()){var cid=INTD[intId()];if(cid&&cid.H)ceilY=cid.H-0.3;}
+  var wantD=camDist,okD=camAllow(tx,ty,tz,camYaw,camPitch,wantD,ceilY),exT=0;
+  if(okD<Math.min(wantD,2.6)){
+    var a0=okD;
+    for(var ex=0.12;ex<=0.84;ex+=0.12){
+      var pp=Math.min(1.35,camPitch+ex),aa=camAllow(tx,ty,tz,camYaw,pp,wantD,ceilY);
+      if(aa>a0+0.25){a0=aa;exT=pp-camPitch;if(aa>=Math.min(wantD,2.6))break;}
+    }
+  }
+  camExtra+=(exT-camExtra)*Math.min(1,dt*(exT>camExtra?7:2.5));
+  var pitE=Math.min(1.4,camPitch+camExtra);
+  var capD=camAllow(tx,ty,tz,camYaw,pitE,wantD,ceilY);
+  if(capD<camD)camD=capD;else camD+=(capD-camD)*Math.min(1,dt*4);
+  var cp=Math.cos(pitE),sp=Math.sin(pitE);
   var dx=Math.sin(camYaw)*cp,dy=sp,dz=Math.cos(camYaw)*cp;
-  var f=1;
-  for(;f>0.2;f-=0.08){if(!inSolid(tx+dx*camDist*f,ty+dy*camDist*f,tz+dz*camDist*f,0.3))break;}
-  var d=camDist*f;
+  var d=camD;
+  if(!driving){var vis=camD>(root.visible?0.95:1.15);if(root.visible!==vis){root.visible=vis;blob.visible=vis;}}
   var sh=camShake+(driving&&camSpd>17?(camSpd-17)*0.004:0);
   camShake=Math.max(0,camShake-dt*1.6);
   var ox=0,oy=0,oz=0;
