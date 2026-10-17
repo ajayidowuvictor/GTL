@@ -400,6 +400,22 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 .cbhero .cbbig{font:700 26px/1.1 var(--ui);font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap}
 .cbhero .cbusd{font:700 15px/1.2 var(--ui);color:#ffe29a;font-variant-numeric:tabular-nums;white-space:nowrap}
 .cbhero .cbsub{font:11px/1.3 var(--ui);opacity:.75;margin-top:3px}
+.minrow{position:sticky;bottom:-14px;display:flex;gap:6px;padding:8px 0 2px;background:var(--pbg);margin-top:2px}
+.minp{flex:1;min-width:0;padding:10px 13px;border-radius:18px;border:1px solid var(--pline);background:var(--pcard);color:var(--ptxt);font:14px var(--ui);outline:none}
+.minsend{padding:0 16px;border:0;border-radius:18px;background:var(--pacc);color:#1a1405;font:700 13px var(--ui)}
+.callv{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0;width:100%}
+.av.cav{width:86px;height:86px;flex-basis:86px;font-size:36px}
+.av.cav.ring{animation:avring 1.1s infinite}
+@keyframes avring{0%{box-shadow:0 0 0 0 rgba(47,191,113,.6)}100%{box-shadow:0 0 0 24px rgba(47,191,113,0)}}
+.cname{font:700 20px var(--ui)}.cstat{font:13px var(--ui);color:var(--pmut)}
+.cline{max-width:92%;padding:8px 12px;border-radius:14px;font:13px/1.35 var(--ui)}
+.cline.them{background:#232730;align-self:flex-start}.cline.me{background:var(--pacc);color:#1a1405;align-self:flex-end}
+#phone .pb.red{background:#d63a31;color:#fff}
+.lovebar{height:8px;border-radius:5px;background:var(--pcard2);overflow:hidden}.lovebar i{display:block;height:100%;background:linear-gradient(90deg,#ff6b9a,#e0488f)}
+#incall{position:fixed;left:50%;transform:translate(-50%,-150%);top:calc(env(safe-area-inset-top,0px) + 8px);z-index:30;display:flex;align-items:center;gap:10px;width:min(340px,calc(100vw - 32px));box-sizing:border-box;padding:9px 12px;border-radius:20px;background:rgba(20,22,27,.97);color:#fff;transition:transform .3s;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+#incall.on{transform:translate(-50%,0)}#incall[hidden]{display:none}
+#incall .ict{flex:1;min-width:0;display:flex;flex-direction:column}#incall .ict b{font:700 15px var(--ui)}#incall .ict span{font:12px var(--ui);color:#9aa0aa}
+#incall .icb{width:42px;height:42px;border-radius:50%;border:0;font-size:18px;color:#fff}#incall .dec{background:#d63a31}#incall .acc{background:#2fbf71}
 .amtdisp.acc{font-size:24px;letter-spacing:.1em}
 
 #err{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#a4262c;color:#fff;font-size:14px;line-height:1.4;padding:12px max(16px,env(safe-area-inset-left,0px));user-select:text;-webkit-user-select:text}
@@ -501,7 +517,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b31';
+var VERSION='GTL 0.9 b32';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -2425,7 +2441,7 @@ function updateAct(){
 }
 document.addEventListener('contextmenu',function(e){e.preventDefault();});
 var keys={};
-window.addEventListener('keydown',function(e){keys[e.code]=true;if(e.code==='KeyF'&&!e.repeat)toggleCar();if(!started&&(e.code==='Enter'||e.code==='Space'))start();});
+window.addEventListener('keydown',function(e){if(e.target&&e.target.tagName==='INPUT')return;keys[e.code]=true;if(e.code==='KeyF'&&!e.repeat)toggleCar();if(!started&&(e.code==='Enter'||e.code==='Space'))start();});
 window.addEventListener('keyup',function(e){keys[e.code]=false;});
 function readInput(){
   var ix=0,iy=0;
@@ -3467,7 +3483,7 @@ function onCrash(){
   showHeat();
 }
 function bust(){
-  var fine=Math.min(cash,500+heat*1500);
+  var fine=Math.round(Math.min(cash,500+heat*1500)*Math.max(0,1-0.25*((life.sf&&life.sf.guard)||0)));
   cash-=fine;stat.busts++;setCash();
   if(gig)gigAbort('',false);
   heat=0;bustMeter=0;loseT=0;clearPatrols();showHeat();
@@ -3648,7 +3664,7 @@ var LMULT=[1,1.4,2];
 var GOVS=[null,{n:'GOV. BELLO',d:'Rent is 25% cheaper'},{n:'GOV. ADEYEMI',d:'Shifts and fares pay 15% more'},{n:'GOV. OKAFOR',d:'Food is 20% cheaper'}];
 var APPR={shirt:[['BLACK','#17171b'],['RED','#b3261e'],['GREEN','#2f7d4f'],['BLUE','#2b5a9a'],['YELLOW','#e0b020']],skin:[['DEEP','#6b4026','#5a3520'],['DARK','#4a2a18','#3c2012'],['MEDIUM','#8a5a3a','#774a2e'],['LIGHT','#b07a52','#9a6842']]};
 var life=null,creating=false,lastGH=gameHour,dq=[],warnT={},chatCd={},shift=null,lifeSpeed=1,clubNear=false,clubD=99,needAcc=0,lookCur={shirt:'#17171b',skin:'#6b4026',skin2:'#5a3520'};
-function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,cb:{ngn:185000000000,usd:1850000000,log:[]},gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
+function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,bb:{},mn:[],sf:{},cb:{ngn:185000000000,usd:1850000000,log:[]},gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
 function lifeInit(sv){
   life=lifeDefault();
   if(sv&&sv.L&&sv.L.l){
@@ -3663,6 +3679,9 @@ function lifeInit(sv){
   if(!life.tx||life.tx.constructor!==Array)life.tx=[];
   if(typeof life.mid!=='number')life.mid=life.msgs.length;
   if(!life.fix||life.fix.constructor!==Array)life.fix=[];
+  if(!life.bb||typeof life.bb!=='object')life.bb={};
+  if(!life.mn||life.mn.constructor!==Array)life.mn=[];
+  if(!life.sf||typeof life.sf!=='object')life.sf={};
   if(!life.cb||typeof life.cb!=='object')life.cb={ngn:185000000000,usd:1850000000,log:[]};
   if(typeof life.cb.ngn!=='number'||!isFinite(life.cb.ngn)||life.cb.ngn<0)life.cb.ngn=0;
   if(typeof life.cb.usd!=='number'||!isFinite(life.cb.usd)||life.cb.usd<0)life.cb.usd=0;
@@ -3759,10 +3778,11 @@ function passOut(){
 function newDay(){
   life.day++;
   if(life.day>=life.nextPay){life.nextPay+=3;payday();}
-  phoneDaily();
+  phoneDaily();richDaily();
 }
 function lifeUpdate(dt){
   if(!life||!started)return;
+  callTick(dt);
   if(!life.made&&!creating&&!talking&&!paused){startCreation();return;}
   if(creating)return;
   if(!talking&&dq.length&&!paused){var d=dq.shift();openDlg(d[0],d[1],d[2]);return;}
@@ -4019,11 +4039,11 @@ function acctOf(key){return ('00000'+(hashStr('acct'+key)%100000)).slice(-5)+('0
 function myAcct(){if(!life.acct){var s='22';for(var i=0;i<8;i++)s+=(Math.random()*10|0);life.acct=s;}return life.acct;}
 function stamp(){return 'Day '+life.day+' · '+clockText();}
 function logTx(l,a){if(!life)return;life.tx.unshift({l:l,a:a,t:stamp(),d:life.day,c:catOf(l,a)});if(life.tx.length>120)life.tx.length=120;}
-function senderName(f){return f==='pay'?'NairaPay':(f==='bet'?'LuckyBet':f==='quick'?'Alhaji Quick-Cash':(NK[f]?nice(NK[f].name):nice(f)));}
+function senderName(f){if(BBK[f])return nice(BBK[f].n);if(f==='pa')return 'Your PA';return f==='pay'?'NairaPay':(f==='bet'?'LuckyBet':f==='quick'?'Alhaji Quick-Cash':(NK[f]?nice(NK[f].name):nice(f)));}
 function avatar(f,sz){
   var a=pEl('div','av'+(sz?' '+sz:''));
   if(f==='pay'){a.style.background='linear-gradient(135deg,#2fbf71,#1f8a4c)';a.textContent='₦';}
-  else{a.textContent=senderName(f).charAt(0);a.style.background=SCOL[hashStr(f)%SCOL.length];}
+  else{a.textContent=senderName(f).charAt(0);a.style.background=BBK[f]?BBK[f].col:(f==='pa'?'#2a79c9':SCOL[hashStr(f)%SCOL.length]);}
   return a;
 }
 function phBlock(){
@@ -4053,7 +4073,7 @@ function pushMsg(f,text,act,me){
   life.msgs.push({id:++life.mid,f:f,x:text,a:act||null,me:me?1:0,r:(me||open)?1:0,t:stamp(),d:0});
   if(life.msgs.length>80)life.msgs.splice(0,life.msgs.length-80);
   if(!me&&!open)notify(f,text);
-  phBadges();if(PH.open)phRefresh();
+  phBadges();if(PH.open){var lm=life.msgs[life.msgs.length-1];if(!(open&&threadAppend(f,lm)))phRefresh();}
 }
 function phoneWelcome(){
   if(!life||life.wel)return;life.wel=1;
@@ -4078,6 +4098,9 @@ var APPS=[
   {id:'msg',n:'Messages',c:['#3dc27a','#1f8a4c'],ic:'<path d="M4 5h16v11H9l-5 4z"/>',fn:function(a){appMsg(a);}},
   {id:'pay',n:'NairaPay',c:['#1fa860','#0b5a32'],ic:'<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12.5h3M3 10h18"/>',fn:function(){appPay();}},
   {id:'cityboys',n:'City Boys',c:['#e0a919','#3b2a06'],ic:'<path d="M3 20V11h5v9M8 20V4h6v16M14 20V8h7v12M3 20h18"/><path d="M10.5 8h1M10.5 11.5h1M10.5 15h1"/>',fn:function(){appCity();}},
+  {id:'contacts',n:'Contacts',c:['#34c26f','#17803f'],ic:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z"/>',fn:function(a){appContacts(a);}},
+  {id:'estate',n:'Estates',c:['#c8921a','#5a3a05'],ic:'<path d="M3 20V9l5-4 5 4v11M13 20V8l4-3 4 3v12M6 20v-5h4v5"/>',fn:function(){appEstates();}},
+  {id:'staff',n:'Staff',c:['#2a79c9','#14407a'],ic:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 11a3 3 0 1 0 0-6M17 20a5 5 0 0 0-3-4.5"/>',fn:function(){appStaff();}},
   {id:'ride',n:'GoRide',c:['#f2b705','#c98a00'],ic:'<path d="M5 16l1.5-5.5h11L19 16v3h-2v-1.5H7V19H5zM6.5 10.5L8 6h8l1.5 4.5"/><path d="M7.5 14h.01M16.5 14h.01"/>',fn:function(){appRide();}},
   {id:'stay',n:'Stays',c:['#8a6ae8','#4a2fb0'],ic:'<path d="M3 19V6M3 14h18v5M21 14v-2.5A2.5 2.5 0 0 0 18.5 9H11v5"/><circle cx="7" cy="11" r="1.6"/>',fn:function(){appHotel();}},
   {id:'fly',n:'Flights',c:['#3a9ae8','#1b4f9a'],ic:'<path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>',fn:function(){appFly();}},
@@ -4164,6 +4187,7 @@ function openPhone(app,arg){
 }
 function closePhone(){
   if(!PH.open)return;
+  if(CALL.f)callEnd();
   PH.open=false;PH.busy=false;phoneEl.classList.remove('on');
   setTimeout(function(){if(!PH.open)phoneEl.hidden=true;},420);
   paused=false;
@@ -4437,6 +4461,7 @@ function paySubmit(k,n,reqId,fee){
     logTx('To '+senderName(k),-n);if(fee)logTx('Transfer fee',-fee);
     var pts=Math.min(3,Math.floor(n/1500));if(pts)giveFriend(k,pts);gain('social',Math.min(14,4+pts*3));
     if(reqId)life.msgs.forEach(function(m){if(m.id===reqId)m.d=1;});
+    if(BBK[k])bbPaid(k,n);
     saveGame();chime();vib([30,40,30]);
     var root=PH.stack[0];
     PH.stack=[root,{t:'Receipt',th:'',r:function(b){
@@ -4449,7 +4474,7 @@ function paySubmit(k,n,reqId,fee){
     phShow(1);
     pushMsg('pay','Debit alert: -'+money(n+fee)+' to '+senderName(k)+' ('+acctOf(k)+'). Ref '+ref+'. Balance '+money(cash)+'.');
     var TH=['Thank you o! God bless you.','Ah! You too much. I really appreciate.','Received! I go repay this kindness one day.','My person! Na you be my guy.'];
-    setTimeout(function(){pushMsg(k,TH[(Math.random()*TH.length)|0]);},2200);
+    if(!BBK[k])setTimeout(function(){pushMsg(k,TH[(Math.random()*TH.length)|0]);},2200);
   },1500);
 }
 
@@ -4534,6 +4559,465 @@ function cbSubmit(mode,n){
     if(!isU)pushMsg('pay','Credit alert: +'+money(n)+' from City Boys. Ref '+ref+'. Balance '+money(cash)+'.');
   },1200);
 }
+/* ============================================================ RICH LIFE: chat brain, babes, calls, estates, staff */
+function moneyS(n){var a=Math.abs(n),s=n<0?'-':'';if(a>=1e9)return s+'₦'+(+(a/1e9).toFixed(2))+'B';if(a>=1e6)return s+'₦'+(+(a/1e6).toFixed(2))+'M';if(a>=1e3)return s+'₦'+Math.round(a/1e3)+'K';return s+'₦'+a;}
+var BB=[
+ {k:'adaeze',n:'ADAEZE',city:'Lagos',job:'Instagram baddie',col:'#e0488f',sig:['Wetin your boy dey do? Make I come show you where to take me.','I just post one new fit. Go like am o!','Igbo girl no dey cheap, but for you I go think about am.']},
+ {k:'zainab',n:'ZAINAB',city:'Abuja',job:'Fashion model',col:'#8a5ae0',sig:['Abuja is quiet without you, to be honest.','I have a shoot tomorrow. Wish me luck.','You always know what to say. That is dangerous.']},
+ {k:'tonye',n:'TONYE',city:'Port Harcourt',job:'Investment banker',col:'#2fa0b0',sig:['I closed a big deal today. Dinner is on you now.','Port Harcourt pepper soup is better with company, you know.','Smart men are my weakness, abeg dey smart o.']},
+ {k:'ireti',n:'IRETI',city:'Lagos',job:'Nollywood actress',col:'#e08a3a',sig:['Omo, the movie set was tiring today. Come and rub my head.','I fit act cry, but with you I no need.','Oya talk, I dey listen.']},
+ {k:'sasha',n:'SASHA',city:'Lagos',job:'Club DJ',col:'#d0488f',sig:['I dey spin tonight at Club Aura. Come o!','Music is life, but you are better.','Party no dey finish where I dey.']},
+ {k:'fatima',n:'FATIMA',city:'Abuja',job:'Doctor',col:'#2fa86e',sig:['I just finished a long shift. A voice like yours helps.','Take care of yourself o, drink water.','You are sweet, I like a gentleman.']}
+];
+var BBK={};BB.forEach(function(b){BBK[b.k]=b;});
+var INTRO={
+ adaeze:'Hey! I saw you around Lagos. People say you dey shine well well. I am Adaeze, abeg save my number 😏',
+ zainab:'Hello, this is Zainab. A friend gave me your number. I model in Abuja. Maybe we can chat sometime?',
+ tonye:'Good day. Tonye here from Port Harcourt, I work in banking. I heard about you. Say hi when you are free.',
+ ireti:'Heyy! Na Ireti, the actress. Omo I see you for event. You fine o! Make we talk 😊',
+ sasha:'Yo! Sasha the DJ here. You be the guy wey dey enter Club Aura abi? Come say hi tonight!',
+ fatima:'Salaam, I am Dr Fatima. A colleague mentioned you. I hope it is okay that I messaged.'
+};
+var BTIERS=[0,15,35,60,85],TLAB=['Just met','Friends','Crush','Girlfriend','Ride or die'];
+function bbS(k){if(!life.bb)life.bb={};var s=life.bb[k];if(!s)s=life.bb[k]={l:0,m:0,cd:0,cc:0,dd:0,dn:0,last:0};return s;}
+function bbTier(l){var t=0;for(var i=0;i<BTIERS.length;i++)if(l>=BTIERS[i])t=i;return t;}
+function bbLove(k,v){
+  var s=bbS(k);if(v>0&&life.sf&&life.sf.stylist)v+=1;
+  var t0=bbTier(s.l);s.l=Math.max(0,Math.min(100,s.l+v));var t1=bbTier(s.l);s.last=life.day;
+  if(t1>t0){
+    var UP=['','We dey get closer o. I like talking to you.','I think I am starting to catch feelings...','So... are we official? Because I dey call you my boo ❤️','You are my person. Nobody else. Na you and me forever.'];
+    setTimeout(function(){pushMsg(k,UP[t1]);toast(nice(BBK[k].n)+' is now '+TLAB[t1]);},900);
+  }
+}
+/* chat lines per intent, by closeness tier 0 to 4 */
+var BL={
+ greet:[['Hello. Do I know you?','Hi... who be this one again?'],['Hey! I dey o. How far?','Hi! Long time. How is your day?'],['Heyy, I was just thinking about you 😊','Hello my guy, I dey fine. You?'],['Hello baby ❤️ I miss you o','Heyy babe, you don chop? I dey wait for you.'],['My love! You are my favourite notification 😘','Baeee! My day just got better.']],
+ love:[['Hmm, slow down. We just met.','Haha, you dey run too fast o.'],['Aww, thank you. You are sweet.','Hehe, you dey try. I see you.'],['Stop it, you dey make me blush 🙈','You get mouth o! I like am.'],['I love you too, baby ❤️','You are mine and I am yours. Simple.'],['You are my whole world. I no fit lie.','Forever, baby. Na you I choose every day.']],
+ meet:[['I no too know you. Maybe later.','Hmm, let us talk more first.'],['Maybe we can link up one day. Not now though.','Let me check my schedule and revert.'],['Okay, I wan see you too! Where we dey go?','I dey free o. Take me somewhere nice.'],['Come get me baby! I dey ready 😘','Yes! Pick me up, I go dress fine.'],['Anywhere with you is heaven. Come now!','I am already dressed. Where are we going?']],
+ money:[['Ehn? I no dey collect money from strangers o.','Abeg, na me you wan ask money?'],['I no get money to give o, I dey manage.','Ask your friends, I dey manage myself.'],['Baby, you know say I dey hustle too.','You for dey spoil me, no be reverse!'],['Baby, na you suppose spoil me o 😂','You get money pass me, no try me.'],['Anything you need, I dey here for you.','We are a team. But you carry the money o 😉']],
+ thanks:[['No wahala.','You are welcome.'],['No problem at all.','Anytime.'],['Anytime, my dear.','Hehe, you are welcome.'],['Anything for you, baby.','Awww, you are welcome ❤️'],['Always for you, my love.','You never have to thank me.']],
+ gist:[['Nothing much. Just business.','I dey around. You?'],['Life dey go on. Work and more work.','Small small things. Na you I wan hear from.'],['I don see crazy things today! Make I tell you later.','Gist plenty o. Make we link up.'],['My day was long but hearing from you fixes it.','I dey think of you since morning.'],['Everything is better now that you texted.','Tell me everything about your day, baby.']],
+ insult:[['Wow. Rude. Bye.','Who you think you be?'],['That was rude. I go ignore that one.','You hurt me, you know.'],['Ah ah! That one pain me o.','I no expect that from you.'],['Baby why would you say that? I am hurt.','I cry small after that one.'],['That really hurt. Please do not talk to me like that.','I am hurt. Say sorry.']]
+};
+var FCC={};
+var GOSSIP=['Dem say Lagos go flood again this week.','Fuel price dey cause wahala again o.','I hear say new club go open for Lekki.','Somebody say dem see celebrity for Marina Mall.','Naija jollof war no go ever end.','Abuja big men dey buy land like say na biscuit.'];
+function chatIntent(t){
+  t=t.toLowerCase();
+  if(/\b(fool|stupid|idiot|useless|ugly|mad|shut up|bastard|nonsense|dumb)\b/.test(t))return 'insult';
+  if(/\b(thanks|thank you|thank u|tnx|tanx)\b/.test(t))return 'thanks';
+  if(/(love|miss you|beautiful|gorgeous|handsome|babe|baby|sweet|kiss|cute|marry|fine girl|my queen|honey)/.test(t))return 'love';
+  if(/(meet|date|dinner|link up|come over|see you|hang out|chill|visit|where you|where are you|pick you|outing|go out)/.test(t))return 'meet';
+  if(/(money|cash|loan|borrow|send me|help me|transfer)/.test(t))return 'money';
+  if(/(gist|story|news|wahala|update|what happened|wetin dey happen)/.test(t))return 'gist';
+  if(/\b(hi|hello|hey|heyy|yo|sup|how far|wetin dey|good (morning|afternoon|evening)|how are you|howdy)\b/.test(t))return 'greet';
+  return 'other';
+}
+function pickOf(a){return a[(Math.random()*a.length)|0];}
+function chatBrain(f,txt){
+  var it=chatIntent(txt),b=BBK[f];
+  if(b){
+    var s=bbS(f),tier=bbTier(s.l),line;
+    if(s.cd!==life.day){s.cd=life.day;s.cc=0;}
+    if(it==='other')line=Math.random()<0.5?pickOf(b.sig):pickOf(BL.gist[tier]);
+    else line=pickOf(BL[it][tier]);
+    var act=null;
+    if(it==='love'||it==='greet'||it==='gist'||it==='other'){if(s.cc<3){s.cc++;bbLove(f,it==='love'?2:1);gain('social',6);gain('fun',2);}}
+    else if(it==='insult')bbLove(f,-5);
+    else if(it==='meet'&&tier>=2)act={t:'date',k:f};
+    else if(it==='meet')gain('social',2);
+    return {x:line,a:act};
+  }
+  /* friends and others */
+  if(it==='money')return {x:pickOf(['Boss, you get money pass me o. Na me go ask you!','Ah, I dey broke. Abeg no tease me.','Oga, which money? I dey manage.'])};
+  if(it==='love')return {x:pickOf(['Haba boss! Hahaha, I hear you o.','Eh? Ok... thank you. I think.','Hehe, you dey try.'])};
+  if(it==='thanks')return {x:pickOf(['No wahala o.','Anytime.','Na small thing.'])};
+  if(it==='insult')return {x:pickOf(['Haba, why you dey talk like that?','Oga calm down o.','I no fit talk to you now.'])};
+  if(it==='gist')return {x:pickOf(GOSSIP)};
+  if(it==='meet'){var nm=null;for(var i=0;i<DEST.length;i++)if(DEST[i][1]===f)nm=DEST[i][0];return {x:nm?'I dey '+nice(nm)+'. Come find me o.':'I dey around. Come find me.'};}
+  var fc=FCC[f];if(!fc||fc.d!==life.day)fc=FCC[f]={d:life.day,n:0};
+  if(fc.n<4){fc.n++;gain('social',5);giveFriend(f,1);}
+  return {x:chatLine(f)};
+}
+function isContact(f){return !!(NK[f]&&f!=='pay'&&f!=='quick')||!!BBK[f]||f==='pa';}
+function typingOn(f){PH.typing=f;var t=$('thr');if(t&&t.dataset.f===f&&!$('tyi')){var ty=pEl('div','typing');ty.id='tyi';ty.innerHTML='<i></i><i></i><i></i>';t.appendChild(ty);phBodyN.scrollTop=phBodyN.scrollHeight;}}
+function typingOff(){PH.typing='';var e=$('tyi');if(e)e.remove();}
+function chatSend(f,text){
+  text=String(text||'').trim();if(!text||PH.typing)return;
+  if(f==='pa'){pushMsg('pa',text,null,1);typingOn(f);setTimeout(function(){typingOff();pushMsg('pa',paAnswer(text));},900);return;}
+  pushMsg(f,text,null,1);
+  typingOn(f);
+  setTimeout(function(){
+    typingOff();
+    var r=chatBrain(f,text);saveGame();
+    pushMsg(f,r.x,r.a);
+  },1000+Math.random()*900);
+}
+function chatReply(f){chatSend(f,'How far?');}
+function bubbleNodes(f,m,into){
+  var d=pEl('div','bub '+(m.me?'me':(f==='pay'?'sys':'in')));
+  d.appendChild(document.createTextNode(m.x));d.appendChild(pEl('span','ts',m.t));into.appendChild(d);
+  if(m.a){
+    var box=pEl('div','macts');into.appendChild(box);
+    if(m.d)box.appendChild(pEl('span','mdone',m.d===1?'Done':'Ignored'));
+    else if(m.a.t==='send'){
+      pBtn(box,'Send '+money(m.a.n),function(){payReview(m.a.k,m.a.n,m.id);},'sm');
+      pBtn(box,'Ignore',function(){m.d=2;if(BBK[m.a.k])bbLove(m.a.k,-2);phRefresh();},'sm sec');
+    }else if(m.a.t==='open')pBtn(box,m.a.l||'Open',function(){openApp(m.a.app);},'sm');
+    else if(m.a.t==='date'){pBtn(box,'Take her out',function(){bbDates(m.a.k);},'sm');}
+  }
+}
+function threadAppend(f,m){
+  var t=$('thr');if(!t||t.dataset.f!==f||!m)return false;
+  var ty=$('tyi');if(ty)ty.remove();
+  bubbleNodes(f,m,t);if(PH.typing===f)typingOn(f);
+  phBodyN.scrollTop=phBodyN.scrollHeight;return true;
+}
+function msgThread(f){
+  phPush(senderName(f),function(b){
+    life.msgs.forEach(function(m){if(m.f===f)m.r=1;});phBadges();
+    var t=pAdd(b,pEl('div',''));t.id='thr';t.dataset.f=f;t.style.cssText='display:flex;flex-direction:column;gap:9px';
+    life.msgs.forEach(function(m){if(m.f===f)bubbleNodes(f,m,t);});
+    if(PH.typing===f){var ty=pEl('div','typing');ty.id='tyi';ty.innerHTML='<i></i><i></i><i></i>';t.appendChild(ty);}
+    if(isContact(f)&&f!=='pa'){
+      var ch=pAdd(b,pEl('div','chips'));
+      var Q=[['How far?',function(){chatSend(f,'How far?');}],['Call',function(){startCall(f);}],['Send money',function(){payAmount(f);}]];
+      if(BBK[f])Q.push(['Profile',function(){bbProfile(f);}]);
+      Q.forEach(function(q){var c=pEl('button','chip',q[0]);c.type='button';c.addEventListener('click',function(){tap();q[1]();});ch.appendChild(c);});
+    }
+    if(isContact(f)){
+      var row=pAdd(b,pEl('div','minrow')),inp=pEl('input','minp');inp.type='text';inp.placeholder='Message...';inp.maxLength=140;inp.setAttribute('autocomplete','off');
+      if(!PH.draft)PH.draft={};inp.value=PH.draft[f]||'';
+      inp.addEventListener('input',function(){PH.draft[f]=inp.value;});
+      var go=function(){var v=inp.value;if(!v.trim())return;inp.value='';PH.draft[f]='';tap();chatSend(f,v);inp.focus();};
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();go();}});
+      row.appendChild(inp);
+      var sb=pEl('button','minsend','Send');sb.type='button';sb.addEventListener('click',go);row.appendChild(sb);
+    }
+    setTimeout(function(){phBodyN.scrollTop=phBodyN.scrollHeight;},0);
+  },f);
+}
+function paAnswer(t){
+  var it=chatIntent(t);
+  if(/(report|today|summary|staff|payroll)/i.test(t))return 'Boss, '+staffCount()+' staff on the payroll, '+money(payrollOf())+' per day. Everything is running well.';
+  if(it==='greet')return 'Good day, boss. Anything you need me to arrange?';
+  if(it==='thanks')return 'My pleasure, boss.';
+  return pickOf(['Noted, boss.','I will handle it, boss.','Understood. I am on it.']);
+}
+/* ---- calls */
+var CALL={f:'',st:0,t:0,lines:[],act:null,tm:null,iv:null,ring:null},INC={f:'',to:null,ring:null},callT=45;
+var incEl=document.createElement('div');incEl.id='incall';incEl.hidden=true;document.body.appendChild(incEl);
+function ringStart(k){var o=k==='inc'?INC:CALL;ringStop(k);var rg=function(){tone(880,0.18,'sine',0.12,0);tone(660,0.18,'sine',0.12,0.24);vib([180,90,180]);};rg();o.ring=setInterval(rg,1500);}
+function ringStop(k){var o=k==='inc'?INC:CALL;if(o.ring){clearInterval(o.ring);o.ring=null;}}
+function callEnd(){clearTimeout(CALL.tm);clearInterval(CALL.iv);ringStop('call');CALL.f='';CALL.st=0;CALL.act=null;}
+function callMsgLine(f){var b=BBK[f];if(b)return pickOf(BL.greet[bbTier(bbS(f).l)]);return pickOf(['Hello? Boss, how far?','Ah, na you! I dey hear you.','Hello o, I dey listen.']);}
+function startCall(f,answered){
+  if(PH.busy)return;
+  callEnd();
+  CALL={f:f,st:0,t:0,lines:[],act:null,tm:null,iv:null,ring:null};
+  var connect=function(){
+    ringStop('call');CALL.st=1;CALL.lines.push({w:1,x:callMsgLine(f)});
+    CALL.iv=setInterval(function(){CALL.t++;var e=$('ctime');if(e)e.textContent='Connected · '+callClock(CALL.t);},1000);
+    if(PH.open&&PH.stack[PH.stack.length-1].th==='call')phRefresh();
+  };
+  phPush('Call',callRender,'call');
+  if(answered)connect();else{ringStart('call');CALL.tm=setTimeout(connect,2800+Math.random()*1400);}
+}
+function callClock(t){var m=Math.floor(t/60),s=t%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;}
+function callRender(b){
+  var f=CALL.f;if(!f){pAdd(b,pEl('div','empty','Call ended.'));return;}
+  var w=pAdd(b,pEl('div','callv'));
+  var av=pAdd(w,avatar(f));av.classList.add('cav');if(CALL.st===0)av.classList.add('ring');
+  pAdd(w,pEl('div','cname',senderName(f)));
+  var st=pAdd(w,pEl('div','cstat',CALL.st?'Connected · '+callClock(CALL.t):'Calling...'));st.id='ctime';
+  CALL.lines.slice(-4).forEach(function(l){pAdd(w,pEl('div','cline '+(l.w?'them':'me'),l.x));});
+  if(CALL.st){
+    var ch=pAdd(w,pEl('div','chips'));ch.style.justifyContent='center';
+    var O=BBK[f]?[['Sweet talk','You are so beautiful baby'],['Her day','Any gist? How was your day?'],['Invite her out','Let us go on a date']]:[['How far?','How far?'],['Any gist?','Any gist?'],['Where you dey?','Where you dey now?']];
+    O.forEach(function(o){var c=pEl('button','chip',o[0]);c.type='button';c.addEventListener('click',function(){tap();callSay(o[1]);});ch.appendChild(c);});
+    if(CALL.act&&CALL.act.t==='date')pBtn(w,'Take her out',function(){bbDates(f);},'');
+    var mc=pEl('button','chip','Send money');mc.type='button';mc.addEventListener('click',function(){tap();payAmount(f);});ch.appendChild(mc);
+  }
+  var e=pBtn(w,CALL.st?'End call':'Cancel',function(){callEnd();phPop();},'red');
+}
+function callSay(text){
+  if(!CALL.f||CALL.busy)return;var f=CALL.f;CALL.busy=1;
+  CALL.lines.push({w:0,x:text});phRefresh();
+  setTimeout(function(){
+    CALL.busy=0;if(CALL.f!==f)return;
+    var r=chatBrain(f,text);CALL.lines.push({w:1,x:r.x});CALL.act=r.a;saveGame();
+    if(PH.open&&PH.stack.length&&PH.stack[PH.stack.length-1].th==='call')phRefresh();
+  },900);
+}
+function incoming(f){
+  if(INC.f||CALL.f)return;
+  INC.f=f;incEl.innerHTML='';
+  var av=avatar(f);incEl.appendChild(av);
+  var tx=pEl('div','ict');tx.appendChild(pEl('b','',senderName(f)));tx.appendChild(pEl('span','','Incoming call'));incEl.appendChild(tx);
+  var no=pEl('button','icb dec','✕');no.type='button';no.addEventListener('click',function(){incDone(true);});
+  var yes=pEl('button','icb acc','☎');yes.type='button';yes.addEventListener('click',function(){var g=INC.f;incDone(false);if(!PH.open)openPhone('contacts',g);else openApp('contacts',g);});
+  incEl.appendChild(no);incEl.appendChild(yes);incEl.hidden=false;void incEl.offsetWidth;incEl.classList.add('on');
+  ringStart('inc');INC.to=setTimeout(function(){incDone(true,true);},15000);
+}
+function incDone(declined,missed){
+  var f=INC.f;clearTimeout(INC.to);ringStop('inc');INC.f='';incEl.classList.remove('on');setTimeout(function(){if(!INC.f)incEl.hidden=true;},300);
+  if(!f||!declined)return;
+  if(BBK[f]){bbLove(f,missed?-1:-1);setTimeout(function(){pushMsg(f,missed?pickOf(['You no pick my call? Okay o.','Missed call from me. Call me back abeg.']):pickOf(['Why you cut my call? Okay.','Wow. You declined me? Fine.']));},2500);}
+  else setTimeout(function(){pushMsg(f,'I call you o, you no pick. Call me back.');},2500);
+}
+function callTick(dt){
+  if(!life||!life.made||!started)return;
+  callT-=dt;if(callT>0)return;
+  if(paused||talking||creating||fadeBusy||dq.length||PH.open||INC.f||CALL.f){callT=8;return;}
+  callT=140+Math.random()*180;
+  if(!bbS('adaeze').m&&elapsed>20){bbS('adaeze').m=1;bbS('adaeze').l=6;bbS('adaeze').last=life.day;pushMsg('adaeze',INTRO.adaeze);return;}
+  var met=BB.filter(function(b){return bbS(b.k).m;});
+  if(met.length&&Math.random()<0.65){var b=pickOf(met);if(bbS(b.k).l>=8){incoming(b.k);return;}}
+  var fr=CONTACTS.filter(function(k){return NK[k]&&(life.fr[k]||0)>=2;});
+  if(fr.length&&Math.random()<0.35)incoming(pickOf(fr));
+}
+/* ---- babes */
+var DATES=[
+ {n:'Street food and zobo',c:8000,l:4,h:1.5,req:0,fun:15,soc:12,say:'That was fun! Simple things are the best.'},
+ {n:'Restaurant dinner',c:150000,l:8,h:2.5,req:0,fun:25,soc:18,say:'Dinner was lovely. You know how to treat a woman.'},
+ {n:'VIP club night',c:1200000,l:12,h:5,req:1,fun:45,soc:25,say:'The club was crazy! Bottles everywhere. I loved it!'},
+ {n:'Shopping spree',c:5000000,l:15,h:3.5,req:1,fun:40,soc:20,say:'You really bought me all those? Omo, you are a real baller!'},
+ {n:'Yacht day on the lagoon',c:25000000,l:21,h:6,req:2,fun:60,soc:30,say:'A whole yacht?! I will never forget today, baby!'},
+ {n:'Private jet weekend in Dubai',c:150000000,l:32,h:14,req:3,fun:90,soc:40,say:'Dubai in a private jet... you are unbelievable. I love you!'}
+];
+var GIFTS=[
+ {n:'Flowers and chocolate',c:20000,l:3},{n:'New iPhone',c:2000000,l:7},{n:'Designer handbag',c:3500000,l:9},
+ {n:'Diamond jewellery',c:15000000,l:14},{n:'Luxury wristwatch',c:40000000,l:18}
+];
+function bbProfile(k){
+  phPush(nice(BBK[k].n),function(b){
+    var B=BBK[k],s=bbS(k),t=bbTier(s.l);
+    var h=pAdd(b,pEl('div','hero'));h.style.background='linear-gradient(135deg,'+B.col+',#2a1830)';
+    h.appendChild(pEl('span','st',TLAB[t].toUpperCase()));h.appendChild(pEl('b','',nice(B.n)));h.appendChild(pEl('span','',B.job+' · '+B.city));
+    var lb=pAdd(b,pEl('div','lovebar'));var li=document.createElement('i');li.style.width=s.l+'%';lb.appendChild(li);
+    pKV(b,[['Love',s.l+' / 100'],['Level',TLAB[t]],['Lives in',B.city],['Dates today',String(s.dd===life.day?s.dn:0)+' / 2']]);
+    pBtn(b,'Message',function(){msgThread(k);},'');
+    pBtn(b,'Call',function(){startCall(k);},'sec');
+    pBtn(b,'Take her out',function(){bbDates(k);},'grn');
+    pBtn(b,'Send a gift',function(){bbGifts(k);},'sec');
+  });
+}
+function bbDates(k){
+  phPush('Take her out',function(b){
+    var s=bbS(k),t=bbTier(s.l),tn=s.dd===life.day?s.dn:0;
+    pNote(b,'Wallet '+money(cash)+'. Dates today with '+nice(BBK[k].n)+': '+tn+' of 2.');
+    DATES.forEach(function(d){
+      var lock=t<d.req;
+      pRow(b,d.n,lock?'Needs '+TLAB[d.req]+' level':'Love +'+d.l,moneyS(d.c),lock?null:function(){bbDoDate(k,d);},pLead('<path d="M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z"/>',BBK[k].col),'a');
+    });
+  });
+}
+function bbDoDate(k,d){
+  var s=bbS(k),why=phBlock();if(why){toast(why);buzz();return;}
+  if(s.dd!==life.day){s.dd=life.day;s.dn=0;}
+  if(s.dn>=2){buzz();toast(nice(BBK[k].n)+' is tired of dates today');return;}
+  if(cash<d.c){buzz();toast('Not enough money: '+money(d.c)+' needed');return;}
+  cash-=d.c;setCash();s.dn++;logTx('Date with '+nice(BBK[k].n),-d.c);
+  closePhone();
+  fadeSeq(d.n+' with '+nice(BBK[k].n)+'...',function(){
+    bbLove(k,d.l);gain('fun',d.fun);gain('social',d.soc);gain('hunger',20);gain('energy',-6);advanceHours(d.h);
+    saveGame();chime();
+  },'',{mid:1300,total:2600,done:function(){toast('Date done: love +'+d.l);setTimeout(function(){pushMsg(k,d.say);},1500);}});
+}
+function bbGifts(k){
+  phPush('Send a gift',function(b){
+    pNote(b,'Wallet '+money(cash)+'. Your gift goes to '+nice(BBK[k].n)+' by courier.');
+    GIFTS.forEach(function(g){pRow(b,g.n,'Love +'+g.l,moneyS(g.c),function(){bbDoGift(k,g);},pLead('<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8h14v-8M8 8a2.5 2.5 0 1 1 4-2.5M16 8a2.5 2.5 0 1 0-4-2.5"/>','#d0488f'),'a');});
+  });
+}
+function bbDoGift(k,g){
+  var s=bbS(k);if(s.gd!==life.day){s.gd=life.day;s.gc=0;}
+  if(s.gc>=3){buzz();toast('She has enough gifts for today');return;}
+  if(cash<g.c){buzz();toast('Not enough money: '+money(g.c)+' needed');return;}
+  cash-=g.c;setCash();s.gc++;logTx('Gift for '+nice(BBK[k].n),-g.c);bbLove(k,g.l);gain('fun',4);saveGame();chime();
+  toast('Gift delivered: love +'+g.l);
+  var GR=['OMG!! Thank you baby, I love it!','You did not have to, but I am so happy! ❤️','Wow. You really know how to spoil a girl.'];
+  setTimeout(function(){pushMsg(k,pickOf(GR));},1600);
+  phRefresh();
+}
+function bbPaid(k,n){
+  var l=Math.min(6,Math.max(1,Math.floor(n/150000)+1));bbLove(k,l);
+  setTimeout(function(){pushMsg(k,pickOf(['Thank you baby! You are the best ❤️','Alert don enter! I love you o.','You always take care of me. Thank you.']));},2200);
+}
+function bbRequestsAndDrama(){
+  var met=BB.filter(function(b){return bbS(b.k).m;});
+  met.forEach(function(b){
+    var s=bbS(b.k);
+    if(life.day-s.last>5&&s.l>0)s.l=Math.max(0,s.l-1);
+  });
+  var rq=met.filter(function(b){return bbS(b.k).l>=15;});
+  if(rq.length&&Math.random()<0.4){
+    var b=pickOf(rq),t=bbTier(bbS(b.k).l),n=[50000,200000,500000,1000000,2000000][t];
+    var T=['Baby abeg, I need '+money(n)+' for my hair and nails.','Love, my rent is due. Can you send '+money(n)+'?','Babe, I saw a nice bag. Please help with '+money(n)+' 🥺','Darling, I need '+money(n)+' for a small shoot. I go pay you back, promise.'];
+    pushMsg(b.k,pickOf(T),{t:'send',k:b.k,n:n});
+  }
+  var gf=met.filter(function(b){return bbS(b.k).l>=60;});
+  if(gf.length>=2&&Math.random()<0.3){
+    var v=pickOf(gf);bbLove(v.k,-8);
+    pushMsg(v.k,pickOf(['Somebody told me you are seeing another girl. Is it true?','I saw your pictures with another babe. We need to talk.']));
+  }
+}
+function bbIntroDaily(){
+  var un=BB.filter(function(b){return !bbS(b.k).m;});
+  if(!un.length||life.day<2||Math.random()>0.55)return;
+  var b=pickOf(un),s=bbS(b.k);s.m=1;s.l=6;s.last=life.day;pushMsg(b.k,INTRO[b.k]);
+}
+/* ---- estates (mansions) */
+var MANS=[
+ {id:'ikoyi',n:'IKOYI GLASS VILLA',city:'Lagos',price:6e9,up:250000,col:['#3a8fe0','#16508a'],d:'Glass and white marble on a quiet Ikoyi street. Pool, cinema room and 8 bedrooms.'},
+ {id:'banana',n:'BANANA ISLAND MANSION',city:'Lagos',price:12e9,up:600000,col:['#8a5ae0','#3a2490'],d:'Waterfront mansion on the richest island in Lagos. Private jetty and a 12-car garage.'},
+ {id:'lekki',n:'LEKKI BEACH PALACE',city:'Lagos',price:20e9,up:900000,col:['#e08a3a','#a04a10'],d:'A palace on the Atlantic. Infinity pool, helipad and a beach club.'},
+ {id:'maitama',n:'MAITAMA MANSION',city:'Abuja',price:9e9,up:450000,col:['#2fa86e','#176a44'],d:'Quiet diplomatic district. Garden, guest wing and a panic room.'},
+ {id:'asokoro',n:'ASOKORO PALACE',city:'Abuja',price:30e9,up:1200000,col:['#b08a2a','#6a4a10'],d:'A palace in the shadow of Aso Rock. Marble halls, a ballroom and a tall security fence.'},
+ {id:'phgra',n:'OLD GRA MEGA MANSION',city:'Port Harcourt',price:5e9,up:200000,col:['#2fa0b0','#176a7a'],d:'Big colonial-style mansion in Old GRA with a river-view terrace.'}
+];
+var MANBY={};MANS.forEach(function(m){MANBY[m.id]=m;});
+var STAFF=[
+ {id:'driver',n:'PERSONAL DRIVER',w:60000,max:1,perk:'GoRide fares become free'},
+ {id:'guard',n:'BODYGUARD',w:150000,max:4,perk:'Each one cuts police fines by 25%'},
+ {id:'chef',n:'PRIVATE CHEF',w:120000,max:1,perk:'Hunger refilled every morning'},
+ {id:'maid',n:'HOUSEKEEPER',w:50000,max:2,perk:'Hygiene refilled every morning'},
+ {id:'stylist',n:'STYLIST',w:90000,max:1,perk:'Babes fall for you faster (+1 love)'},
+ {id:'pa',n:'PERSONAL ASSISTANT',w:100000,max:1,perk:'Texts you a report every morning'},
+ {id:'manager',n:'BUSINESS MANAGER',w:300000,max:3,perk:'Earns ₦900,000 a day each',inc:900000}
+];
+function rideFee(x){return (life.sf&&life.sf.driver)?0:r50(300+x*6);}
+function staffCount(){var n=0;STAFF.forEach(function(s){n+=(life.sf&&life.sf[s.id])||0;});return n;}
+function payrollOf(){var n=0;STAFF.forEach(function(s){n+=s.w*((life.sf&&life.sf[s.id])||0);});return n;}
+function upkeepOf(){var n=0;life.mn.forEach(function(id){if(MANBY[id])n+=MANBY[id].up;});return n;}
+function slotsOf(){return 3+6*life.mn.length;}
+var HOUSEIC='<path d="M3 20V9l5-4 5 4v11M13 20V8l4-3 4 3v12M6 20v-5h4v5"/>';
+function appEstates(){
+  phPush('Estates',function(b){
+    var h=pAdd(b,pEl('div','hero'));h.style.background='linear-gradient(135deg,#2a1d04,#8a6a1a)';
+    h.appendChild(pEl('span','st','ESTATES'));h.appendChild(pEl('b','',life.mn.length?life.mn.length+' mansion'+(life.mn.length>1?'s':'')+' owned':'Buy your first mansion'));
+    h.appendChild(pEl('span','','Daily upkeep '+money(upkeepOf())+' · Wallet '+moneyS(cash)));
+    if(life.mn.length){pSect(b,'Your mansions');life.mn.forEach(function(id){var m=MANBY[id];if(m)pRow(b,nice(m.n),m.city,'Owned',function(){mnDetail(m);},pLead(HOUSEIC,m.col[0]),'a');});}
+    pSect(b,'For sale');
+    MANS.forEach(function(m){if(life.mn.indexOf(m.id)>=0)return;pRow(b,nice(m.n),m.city+' · upkeep '+moneyS(m.up)+'/day',moneyS(m.price),function(){mnDetail(m);},pLead(HOUSEIC,m.col[0]),'a');});
+    pNote(b,'Mansions are managed from this app for now. You will be able to walk inside them in Rich Town, coming in a later update.');
+  });
+}
+function mnDetail(m){
+  phPush(nice(m.n),function(b){
+    var own=life.mn.indexOf(m.id)>=0;
+    var h=pAdd(b,pEl('div','hero'));h.style.background='linear-gradient(135deg,'+m.col[0]+','+m.col[1]+')';
+    h.appendChild(pEl('span','st',own?'YOURS':'FOR SALE'));h.appendChild(pEl('b','',nice(m.n)));h.appendChild(pEl('span','',m.d));
+    pKV(b,[['City',m.city],['Price',money(m.price)],['Upkeep',money(m.up)+' a day'],['Staff room','+6 staff'],['Wallet',money(cash)]]);
+    if(!own){
+      var why=cash<m.price?'Your wallet is short. Move money from City Boys first.':'';
+      if(why){pNote(b,why,'bad');pBtn(b,'Open City Boys',function(){openApp('cityboys');},'sec');}
+      var go=pBtn(b,'Buy for '+moneyS(m.price),function(){
+        if(cash<m.price){buzz();return;}
+        cash-=m.price;life.mn.push(m.id);setCash();logTx('Bought '+nice(m.n),-m.price);saveGame();chime();
+        toast('You now own '+nice(m.n)+'!');
+        PH.stack=[PH.stack[0]];phShow(-1);
+        if(life.sf&&life.sf.pa)pushMsg('pa','Congratulations boss! '+nice(m.n)+' is yours. I have arranged room for 6 more staff.');
+      },'grn');go.disabled=!!why;
+    }else{
+      pBtn(b,'Stay the night',function(){mnStay(m);},'');
+      pBtn(b,'Throw a party · '+moneyS(25000000),function(){mnParty(m);},'sec');
+      pBtn(b,'Invite her over',function(){mnInvite(m);},'sec');
+    }
+  });
+}
+function mnStay(m){
+  var why=phBlock();if(why){toast(why);buzz();return;}
+  closePhone();
+  fadeSeq('Sleeping at '+nice(m.n)+'...',function(){
+    gain('energy',100);gain('hygiene',80);gain('bladder',100);gain('hunger',-12);gain('fun',15);
+    if(gameHour>=7)newDay();gameHour=7;lastGH=7;saveGame();chime();
+  },'You wake up in luxury',{mid:1200,total:2700});
+}
+function mnParty(m){
+  var why=phBlock();if(why){toast(why);buzz();return;}
+  if(cash<25000000){buzz();toast('A party costs '+money(25000000));return;}
+  cash-=25000000;setCash();logTx('Party at '+nice(m.n),-25000000);
+  var guests=BB.filter(function(b){return bbS(b.k).m&&bbS(b.k).l>=35;});
+  closePhone();
+  fadeSeq('The party at '+nice(m.n)+'...',function(){
+    guests.forEach(function(g){bbLove(g.k,5);});
+    gain('fun',60);gain('social',45);gain('hunger',25);gain('energy',-12);advanceHours(5);saveGame();chime();
+  },'',{mid:1400,total:2800,done:function(){toast(guests.length?guests.length+' babe'+(guests.length>1?'s':'')+' came. Love +5 each':'Nobody special came. Chat with some babes first');}});
+}
+function mnInvite(m){
+  phPush('Invite her over',function(b){
+    var list=BB.filter(function(x){return bbS(x.k).m;});
+    if(!list.length){pAdd(b,pEl('div','empty','You have not met anyone yet. Babes will message you as you get known.'));return;}
+    pNote(b,'Dinner at your mansion costs '+money(3000000)+'. She must be at least a Friend, once a day each.');
+    list.forEach(function(x){var s=bbS(x.k),lock=bbTier(s.l)<1?'Not close enough yet':(s.iv===life.day?'Already visited today':'');
+      pRow(b,nice(x.n),lock||x.job+' · '+TLAB[bbTier(s.l)],lock?'':moneyS(3000000),lock?null:function(){mnDoInvite(m,x.k);},avatar(x.k),'a');});
+  });
+}
+function mnDoInvite(m,k){
+  var s=bbS(k),why=phBlock();if(why){toast(why);buzz();return;}
+  if(cash<3000000){buzz();toast('Dinner costs '+money(3000000));return;}
+  cash-=3000000;setCash();s.iv=life.day;logTx('Dinner with '+nice(BBK[k].n),-3000000);
+  closePhone();
+  fadeSeq('Dinner with '+nice(BBK[k].n)+'...',function(){bbLove(k,10);gain('fun',30);gain('social',20);gain('hunger',60);advanceHours(3);saveGame();chime();},'',
+   {mid:1200,total:2500,done:function(){toast('Love +10');setTimeout(function(){pushMsg(k,pickOf(['Your house is unreal! I loved tonight.','That chef of yours is something! Thank you baby.','I feel like a queen in your house ❤️']));},1500);}});
+}
+/* ---- staff */
+function appStaff(){
+  phPush('Staff',function(b){
+    var tot=staffCount(),sl=slotsOf();
+    var h=pAdd(b,pEl('div','hero'));h.style.background='linear-gradient(135deg,#14407a,#2a79c9)';
+    h.appendChild(pEl('span','st','YOUR PEOPLE'));h.appendChild(pEl('b','',tot+' of '+sl+' staff hired'));h.appendChild(pEl('span','','Payroll '+money(payrollOf())+' a day, paid every morning with mansion upkeep'));
+    STAFF.forEach(function(s){
+      var n=(life.sf&&life.sf[s.id])||0;
+      var r=pRow(b,nice(s.n),s.perk+' · '+moneyS(s.w)+'/day',n?n+' hired':'',null,pLead('<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 11a3 3 0 1 0 0-6M17 20a5 5 0 0 0-3-4.5"/>','#2a79c9'));
+      var ac=pAdd(b,pEl('div','macts'));
+      var hb=pBtn(ac,'Hire',function(){stHire(s);},'sm');hb.disabled=n>=s.max||tot>=sl;
+      if(n)pBtn(ac,'Fire',function(){life.sf[s.id]--;saveGame();phRefresh();},'sm sec');
+    });
+    if(!life.mn.length)pNote(b,'You have room for 3 staff. Every mansion you buy adds room for 6 more.');
+    pNote(b,'If your wallet cannot cover the payroll, staff perks pause for that day.');
+  });
+}
+function stHire(s){
+  if(!life.sf)life.sf={};
+  if((life.sf[s.id]||0)>=s.max||staffCount()>=slotsOf()){buzz();return;}
+  if(cash<s.w){buzz();toast('Not enough money for the first day: '+money(s.w));return;}
+  cash-=s.w;setCash();life.sf[s.id]=(life.sf[s.id]||0)+1;logTx('Hired '+nice(s.n),-s.w);saveGame();chime();
+  if(s.id==='pa')setTimeout(function(){pushMsg('pa','Good day, boss. I am your new personal assistant. I will send you a report every morning, and you can message me anytime.');},1200);
+  phRefresh();
+}
+function richDaily(){
+  if(!life||!life.made)return;
+  bbIntroDaily();bbRequestsAndDrama();
+  var wage=payrollOf(),up=upkeepOf(),tot=wage+up,paid=true,inc=0,L=[];
+  if(tot>0){
+    if(cash>=tot){cash-=tot;logTx('Staff wages and mansion upkeep',-tot);L.push('paid '+moneyS(tot));}
+    else{paid=false;L.push('could not pay '+moneyS(tot));}
+  }
+  if(paid&&life.sf){
+    if(life.sf.manager){inc=900000*life.sf.manager;cash+=inc;logTx('Business manager profits',inc);L.push('managers earned '+moneyS(inc));}
+    if(life.sf.chef)need.hunger=Math.max(need.hunger,85);
+    if(life.sf.maid)need.hygiene=Math.max(need.hygiene,85);
+  }
+  setCash();
+  if(life.sf&&life.sf.pa){
+    var met=BB.filter(function(b){return bbS(b.k).m;}).length;
+    pushMsg('pa','Good morning, boss. Day '+life.day+' report: '+(L.length?L.join(', ')+'. ':'nothing to pay today. ')+'Wallet '+moneyS(cash)+'. '+(met?met+' babe'+(met>1?'s':'')+' in your contacts.':'No new contacts yet.'));
+  }else if(tot>0&&!paid)pushMsg('pay','Staff and upkeep of '+money(tot)+' could not be paid today. Your staff perks are paused.');
+}
+/* ---- contacts */
+function appContacts(a){
+  if(a){startCall(a,true);return;}
+  phPush('Contacts',function(b){
+    var met=BB.filter(function(x){return bbS(x.k).m;});
+    if(life.sf&&life.sf.pa){pSect(b,'Staff');pRow(b,'Your PA','Personal assistant','',function(){msgThread('pa');},avatar('pa'));}
+    pSect(b,'Babes');
+    if(!met.length)pNote(b,'Nobody yet. As you get known around the cities, people will message you.');
+    met.forEach(function(x){var s=bbS(x.k);pRow(b,nice(x.n),x.job+' · '+TLAB[bbTier(s.l)],'♥ '+s.l,function(){bbProfile(x.k);},avatar(x.k));});
+    pSect(b,'Friends');
+    CONTACTS.forEach(function(k){if(!NK[k])return;pRow(b,senderName(k),hearts(k)||'Friend','',function(){msgThread(k);},avatar(k));});
+  });
+}
 /* ---- bills */
 var BILLS={
   air:{t:'Airtime',opts:[['₦100 airtime',100,{social:4}],['₦200 airtime',200,{social:6,fun:2}],['₦500 airtime',500,{social:10,fun:4}],['₦1,000 airtime',1000,{social:16,fun:6}],['₦2,000 airtime',2000,{social:24,fun:10}]],cb:0.02,note:'Stay in touch with friends. You get 2% cashback.'},
@@ -4605,41 +5089,6 @@ function msgList(b){
     if(un)r.classList.add('unr');
   });
 }
-function msgThread(f){
-  phPush(senderName(f),function(b){
-    life.msgs.forEach(function(m){if(m.f===f)m.r=1;});phBadges();
-    life.msgs.forEach(function(m){
-      if(m.f!==f)return;
-      var d=pAdd(b,pEl('div','bub '+(m.me?'me':(f==='pay'?'sys':'in'))));
-      d.appendChild(document.createTextNode(m.x));d.appendChild(pEl('span','ts',m.t));
-      if(m.a){
-        var box=pAdd(b,pEl('div','macts'));
-        if(m.d)pAdd(box,pEl('span','mdone',m.d===1?'Done':'Ignored'));
-        else if(m.a.t==='send'){
-          pBtn(box,'Send '+money(m.a.n),function(){payReview(m.a.k,m.a.n,m.id);},'sm');
-          pBtn(box,'Ignore',function(){m.d=2;phRefresh();},'sm sec');
-        }else if(m.a.t==='open')pBtn(box,m.a.l||'Open',function(){openApp(m.a.app);},'sm');
-      }
-    });
-    if(PH.typing===f){var ty=pAdd(b,pEl('div','typing'));ty.innerHTML='<i></i><i></i><i></i>';}
-    if(f!=='pay'&&f!=='quick'&&NK[f]){
-      var ch=pAdd(b,pEl('div','chips'));
-      [['How far?',function(){chatReply(f);}],['Send money',function(){payAmount(f);}]].forEach(function(q){var c=pEl('button','chip',q[0]);c.type='button';c.addEventListener('click',function(){tap();q[1]();});ch.appendChild(c);});
-    }
-    setTimeout(function(){phBodyN.scrollTop=phBodyN.scrollHeight;},0);
-  },f);
-}
-function chatReply(f){
-  if(PH.typing)return;
-  pushMsg(f,'How far?',null,1);
-  PH.typing=f;phRefresh();
-  setTimeout(function(){
-    PH.typing='';var line;
-    if(chatCd[f]&&elapsed-chatCd[f]<90)line='I dey small busy now. Make we talk later.';
-    else{chatCd[f]=elapsed;gain('social',9);gain('fun',2);giveFriend(f,1);line=chatLine(f);saveGame();}
-    pushMsg(f,line);
-  },1300);
-}
 /* ---------- rides */
 function rideBlock(key,fee,d){
   var w=phBlock();if(w)return w;
@@ -4649,7 +5098,7 @@ function rideBlock(key,fee,d){
   return '';
 }
 function rideTo(key){
-  var n=NK[key].npc,d=Math.hypot(n.x-player.x,n.z-player.z),fee=r50(300+d*6),why=rideBlock(key,fee,d);
+  var n=NK[key].npc,d=Math.hypot(n.x-player.x,n.z-player.z),fee=rideFee(d),why=rideBlock(key,fee,d);
   if(why){buzz();toast(why);return false;}
   cash-=fee;setCash();logTx('GoRide to '+nice(DESTNAME(key)),-fee);saveGame();
   var danfo=d>110;
@@ -4665,14 +5114,14 @@ function appRide(){phPush('GoRide',function(b){
   var w=driving?'Get out of your car to book a ride.':'';
   if(w)pNote(b,w,'bad');
   pNote(b,'Pick a place. The fare depends on distance. No rides during a job, shift, fare or police chase.');
-  DEST.filter(function(d){return regOf(NK[d[1]].npc.x)===regOf(player.x);}).map(function(d){var n=NK[d[1]].npc,dist=Math.hypot(n.x-player.x,n.z-player.z);return {l:d[0],k:d[1],dist:dist,fee:r50(300+dist*6)};}).sort(function(a,c){return a.dist-c.dist;}).forEach(function(x){
+  DEST.filter(function(d){return regOf(NK[d[1]].npc.x)===regOf(player.x);}).map(function(d){var n=NK[d[1]].npc,dist=Math.hypot(n.x-player.x,n.z-player.z);return {l:d[0],k:d[1],dist:dist,fee:rideFee(dist)};}).sort(function(a,c){return a.dist-c.dist;}).forEach(function(x){
     var here=x.dist<12;
     pRow(b,nice(x.l),here?'You are here':(Math.round(x.dist)+' m · '+(x.dist>110?'Danfo':'Okada')),here?'':money(x.fee),here?null:function(){rideConfirm(x.k);},pLead('<path d="M5 16l1.5-5.5h11L19 16v3h-2v-1.5H7V19H5z"/>','#c98a00'),'a');
   });
 });}
 function rideConfirm(key){
   phPush('Confirm ride',function(b){
-    var n=NK[key].npc,d=Math.hypot(n.x-player.x,n.z-player.z),fee=r50(300+d*6),why=rideBlock(key,fee,d);
+    var n=NK[key].npc,d=Math.hypot(n.x-player.x,n.z-player.z),fee=rideFee(d),why=rideBlock(key,fee,d);
     var hero=pAdd(b,pEl('div','hero'));hero.style.background='linear-gradient(135deg,#c98a00,#7a5200)';
     hero.appendChild(pEl('span','','Your ride to'));hero.appendChild(pEl('b','',nice(DESTNAME(key))));hero.appendChild(pEl('span','',Math.round(d)+' m · '+(d>110?'Danfo':'Okada')+' · about '+Math.max(1,Math.round(d/40))+' min'));
     pKV(b,[['Fare',money(fee)],['Pay with','NairaPay wallet'],['Wallet',money(cash)]]);
@@ -5588,6 +6037,7 @@ $('mreset').addEventListener('click',function(){
   resetAll();updateStats();this.textContent='PROGRESS RESET';
 });
 window.addEventListener('keydown',function(e){
+  if(e.target&&e.target.tagName==='INPUT'){if(e.code==='Escape')e.target.blur();return;}
   if(e.code==='KeyT'&&!e.repeat){if(PH.open)closePhone();else openPhone();return;}
   if(e.code==='Escape'||e.code==='KeyP'){if(PH.open){closePhone();return;}if(fadeBusy)return;if(paused)closeMenu();else openMenu();}
 });
