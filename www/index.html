@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b44';
+var VERSION='GTL 0.9 b45';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -3562,7 +3562,7 @@ function updateAct(){
     if(driving)want='EXIT';
     else{
       var cd=carDist(player.x,player.z),nd=99;
-      for(var i=0;i<npcs.length;i++){var d=Math.hypot(player.x-npcs[i].x,player.z-npcs[i].z)-0.35;if(d<nd){nd=d;nearNpc=npcs[i];}}
+      for(var i=0;i<npcs.length;i++){if(npcs[i].off)continue;var d=Math.hypot(player.x-npcs[i].x,player.z-npcs[i].z)-0.35;if(d<nd){nd=d;nearNpc=npcs[i];}}
       if(inInt())for(var si=0;si<SPOTS.length;si++){var spt=SPOTS[si],sd2=Math.hypot(player.x-spt.x,player.z-spt.z);if(sd2<nd){nd=sd2;nearNpc=spt;}}
       if(nd<2.4&&nd<cd)want=nearNpc.act||'TALK';else{nearNpc=null;if(cd<2.4)want='ENTER';}
     }
@@ -3742,7 +3742,7 @@ function makeNPC(o){
 function npcsUpdate(dt){
   var px=driving?car.x:player.x,pz=driving?car.z:player.z;
   for(var i=0;i<npcs.length;i++){
-    var n=npcs[i],dx=px-n.x,dz=pz-n.z,near=(dx*dx+dz*dz)<49,vis=(dx*dx+dz*dz)<cullR2*0.3;n.grp.visible=vis;n.bl.visible=vis;if(sun.castShadow)gateShadow(n.grp,(dx*dx+dz*dz)<2025);
+    var n=npcs[i],dx=px-n.x,dz=pz-n.z,near=(dx*dx+dz*dz)<49,vis=(dx*dx+dz*dz)<cullR2*0.3;if(n.off)vis=false;n.grp.visible=vis;n.bl.visible=vis;if(sun.castShadow)gateShadow(n.grp,(dx*dx+dz*dz)<2025);
     n.grp.rotation.y=turnToward(n.grp.rotation.y,near?Math.atan2(dx,dz):n.baseYaw,dt*5);
     var br=Math.sin(elapsed*1.9+n.ph);
     n.body.scale.y=1+br*0.006;
@@ -3958,8 +3958,8 @@ function audioUpdate(dt){
   hornBtn.classList.toggle('on',!!hornHeld);
   if(rainG)rainG.gain.setTargetAtTime(audioOn?0.085*rainAmt:0,t,0.4);
   if(skidG){skidG.gain.setTargetAtTime(on?0.075*Math.min(1,skidAmt*1.6):0,t,0.04);skidF.frequency.setTargetAtTime(1300+Math.min(1,sp/20)*900,t,0.1);}
-  var want=((radioOn&&driving)||clubNear)&&started&&audioOn;
-  if(radioG)radioG.gain.setTargetAtTime(driving?0.55:Math.max(0.06,0.55*(1-clubD/26)),t,0.3);
+  var want=((radioOn&&driving)||clubNear||partyNear)&&started&&audioOn;
+  if(radioG)radioG.gain.setTargetAtTime(driving?0.55:Math.max(0.06,0.55*(1-Math.min(clubD,partyD)/30)),t,0.3);
   if(want&&!radio.timer)radioStart();else if(!want&&radio.timer)radioStop();
 }
 var sndBtn=$('snd');
@@ -4967,7 +4967,7 @@ var LMULT=[1,1.4,2];
 var GOVS=[null,{n:'GOV. BELLO',d:'Rent is 25% cheaper'},{n:'GOV. ADEYEMI',d:'Shifts and fares pay 15% more'},{n:'GOV. OKAFOR',d:'Food is 20% cheaper'}];
 var APPR={shirt:[['BLACK','#17171b'],['RED','#b3261e'],['GREEN','#2f7d4f'],['BLUE','#2b5a9a'],['YELLOW','#e0b020']],skin:[['DEEP','#6b4026','#5a3520'],['DARK','#4a2a18','#3c2012'],['MEDIUM','#8a5a3a','#774a2e'],['LIGHT','#b07a52','#9a6842']]};
 var life=null,creating=false,lastGH=gameHour,dq=[],warnT={},chatCd={},shift=null,lifeSpeed=1,clubNear=false,clubD=99,needAcc=0,lookCur={shirt:'#17171b',skin:'#6b4026',skin2:'#5a3520'};
-function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,bb:{},mn:[],sf:{},fit:0,cb:{ngn:185000000000,usd:1850000000,log:[]},gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
+function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,sx:{},msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,bb:{},mn:[],sf:{},fit:0,cb:{ngn:185000000000,usd:1850000000,log:[]},gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
 function lifeInit(sv){
   life=lifeDefault();
   if(sv&&sv.L&&sv.L.l){
@@ -5276,7 +5276,7 @@ function payday(){
   pushMsg('pay','Payday summary: '+(L.length?L.join('. '):'a quiet payday')+'.');
   if(life.loan>0)pushMsg('quick','Oga, na '+money(life.loan)+' you owe me o. Pay before I send my boys.',{t:'open',app:'pay',l:'Open NairaPay'});
   qdlg('PAYDAY REPORT',(L.length?L.join('.  ')+'.':'A quiet payday.')+'  Next payday in 3 days.',[{label:'OK'}]);
-  if(life.day>=life.elNext)startElection();
+  /* b45: polling day is a real event at Heritage Ground now (see socialTick) */
 }
 function randomEvent(){
   if(Math.random()>0.6)return '';
@@ -5349,7 +5349,7 @@ function acctOf(key){return ('00000'+(hashStr('acct'+key)%100000)).slice(-5)+('0
 function myAcct(){if(!life.acct){var s='22';for(var i=0;i<8;i++)s+=(Math.random()*10|0);life.acct=s;}return life.acct;}
 function stamp(){return 'Day '+life.day+' · '+clockText();}
 function logTx(l,a){if(!life)return;life.tx.unshift({l:l,a:a,t:stamp(),d:life.day,c:catOf(l,a)});if(life.tx.length>120)life.tx.length=120;}
-function senderName(f){if(BBK[f])return nice(BBK[f].n);if(f==='pa')return 'Your PA';return f==='pay'?'NairaPay':(f==='bet'?'LuckyBet':f==='quick'?'Alhaji Quick-Cash':(NK[f]?nice(NK[f].name):nice(f)));}
+function senderName(f){if(BBK[f])return nice(BBK[f].n);if(f==='pa')return 'Your PA';return f==='evt'?'Lagos Events':f==='pay'?'NairaPay':(f==='bet'?'LuckyBet':f==='quick'?'Alhaji Quick-Cash':(NK[f]?nice(NK[f].name):nice(f)));}
 function avatar(f,sz){
   var a=pEl('div','av'+(sz?' '+sz:''));
   if(f==='pay'){a.style.background='linear-gradient(135deg,#2fbf71,#1f8a4c)';a.textContent='₦';}
@@ -5412,6 +5412,7 @@ var APPS=[
   {id:'estate',n:'Estates',c:['#c8921a','#5a3a05'],ic:'<path d="M3 20V9l5-4 5 4v11M13 20V8l4-3 4 3v12M6 20v-5h4v5"/>',fn:function(){appEstates();}},
   {id:'staff',n:'Staff',c:['#2a79c9','#14407a'],ic:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 11a3 3 0 1 0 0-6M17 20a5 5 0 0 0-3-4.5"/>',fn:function(){appStaff();}},
   {id:'ride',n:'GoRide',c:['#f2b705','#c98a00'],ic:'<path d="M5 16l1.5-5.5h11L19 16v3h-2v-1.5H7V19H5zM6.5 10.5L8 6h8l1.5 4.5"/><path d="M7.5 14h.01M16.5 14h.01"/>',fn:function(){appRide();}},
+  {id:'events',n:'Events',c:['#c1352d','#6a1530'],ic:'<path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/>',fn:function(){appEvents();}},
   {id:'vip',n:'VIP Garage',c:['#2b2f38','#0e1014'],ic:'<path d="M4 17v-4l2-5h12l2 5v4M4 17h16M7 17v2M17 17v2M7 12h10"/>',fn:function(){appVip();}},
   {id:'stay',n:'Stays',c:['#8a6ae8','#4a2fb0'],ic:'<path d="M3 19V6M3 14h18v5M21 14v-2.5A2.5 2.5 0 0 0 18.5 9H11v5"/><circle cx="7" cy="11" r="1.6"/>',fn:function(){appHotel();}},
   {id:'fly',n:'Flights',c:['#3a9ae8','#1b4f9a'],ic:'<path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>',fn:function(){appFly();}},
@@ -7025,7 +7026,7 @@ function appRide(){phPush('GoRide',function(b){
   var w=driving?'Get out of your car to book a ride.':'';
   if(w)pNote(b,w,'bad');
   pNote(b,'Pick a place. The fare depends on distance. No rides during a job, shift, fare or police chase.');
-  DEST.filter(function(d){return grpOf(NK[d[1]].npc.x)===grpOf(player.x);}).map(function(d){var n=NK[d[1]].npc,dist=Math.hypot(n.x-player.x,n.z-player.z);return {l:d[0],k:d[1],dist:dist,fee:rideFee(dist)};}).sort(function(a,c){return a.dist-c.dist;}).forEach(function(x){
+  DEST.filter(function(d){return !NK[d[1]].npc.off&&grpOf(NK[d[1]].npc.x)===grpOf(player.x);}).map(function(d){var n=NK[d[1]].npc,dist=Math.hypot(n.x-player.x,n.z-player.z);return {l:d[0],k:d[1],dist:dist,fee:rideFee(dist)};}).sort(function(a,c){return a.dist-c.dist;}).forEach(function(x){
     var here=x.dist<12;
     pRow(b,nice(x.l),here?'You are here':(Math.round(x.dist)+' m · '+(x.dist>110?'Danfo':'Okada')),here?'':money(x.fee),here?null:function(){rideConfirm(x.k);},pLead('<path d="M5 16l1.5-5.5h11L19 16v3h-2v-1.5H7V19H5z"/>','#c98a00'),'a');
   });
@@ -8064,10 +8065,336 @@ window.addEventListener('keydown',function(e){
   if(e.code==='Escape'||e.code==='KeyP'){if(PH.open){closePhone();return;}if(fadeBusy)return;if(paused)closeMenu();else openMenu();}
 });
 
+/* ============================================================ b45: Lagos social life
+   Owambe parties, campaign rallies, polling day and the victory party now happen in the street, with a crowd,
+   a stage, music and a host you can talk to. The Events app on the phone shows what is on and rides you there.
+   Venues: FOUNTAIN PLAZA (228.5,-16.5) and WATERFRONT GROUND (148,-31). The stage is on the far (-z) side, so each venue group is turned round. ============================================================ */
+var partyNear=false,partyD=99;
+var SVEN=[
+  {k:'g',nm:'FOUNTAIN PLAZA',x:228.5,z:-16.5,key:'evg'},
+  {k:'h',nm:'WATERFRONT GROUND',x:148,z:-31,key:'evh'}
+];
+var CANDS=[null,
+  {n:'BELLO',col:'#2f7fd0',slogan:'LOWER RENT, BETTER LAGOS',speech:'My people! Rent in this city is a wahala. Vote me and your rent goes down by a quarter. No more sleeping in the bus park!'},
+  {n:'ADEYEMI',col:'#d9a21a',slogan:'MORE PAY FOR YOUR HUSTLE',speech:'Okada men, shift workers, drivers: your sweat must pay. Vote me and every shift and every fare pays fifteen percent more!'},
+  {n:'OKAFOR',col:'#c1352d',slogan:'FOOD ON EVERY TABLE',speech:'Hunger no be policy. Vote me and food in this Lagos becomes twenty percent cheaper. Rice for everybody!'}
+];
+var CLRANKS=[[0,'Nobody'],[15,'Known face'],[50,'Party regular'],[140,'Big name'],[350,'Lagos legend']];
+function SX(){
+  var S=life.sx;
+  if(!S||S.clout===undefined){S=life.sx={clout:0,ate:{},vd:-1,v:0,pledge:0,vic:-1,md:-1,inv:{},hit:{},got:{}};}
+  return S;
+}
+function clRank(){var c=SX().clout,r=CLRANKS[0][1];for(var i=0;i<CLRANKS.length;i++)if(c>=CLRANKS[i][0])r=CLRANKS[i][1];return r;}
+function clGain(n){var S=SX(),b=clRank();S.clout+=n;var a=clRank();if(a!==b){pushMsg('evt','You are now a '+a+' in Lagos. People know your name.');toast('Clout: '+a);}}
+/* what is on, by game day */
+function evList(day){
+  var out=[],L=life,S=SX(),d=L.elNext-day;
+  if(d>=1&&d<=3)out.push({id:'r'+day,type:'rally',v:'g',h0:12,h1:20,c:4-d,title:'CAMPAIGN RALLY: '+CANDS[4-d].n});
+  if(d<=0)out.push({id:'p'+day,type:'poll',v:'h',h0:8,h1:18,title:'POLLING DAY'});
+  if(S.vic===day&&L.gov)out.push({id:'w'+day,type:'victory',v:'g',h0:16,h1:23.5,c:L.gov,title:'VICTORY PARTY: '+CANDS[L.gov].n});
+  if(day%4===1){
+    var v=(((day-1)/4)|0)%2?'h':'g';
+    if(!out.some(function(e){return e.v===v;}))out.push({id:'o'+day,type:'owambe',v:v,h0:15,h1:23.5,title:'OWAMBE'});
+  }
+  return out;
+}
+function venueOf(k){return k==='g'?SVEN[0]:SVEN[1];}
+function hourText(h){var hh=Math.floor(h),mm=Math.round((h-hh)*60),h12=hh%12===0?12:hh%12;return h12+(mm?':'+(mm<10?'0':'')+mm:'')+(hh<12||hh===24?' AM':' PM');}
+/* ---------- set pieces: built once per venue, shown while an event is on */
+var BOXG=new THREE.BoxGeometry(1,1,1),CYLG=new THREE.CylinderGeometry(1,1,1,10),SPHG=new THREE.SphereGeometry(1,8,6);
+function sbox(B,x,y,z,w,h,d,c){B.add(BOXG,x,y,z,w,h,d,0,0,0,c);}
+function scyl(B,x,y,z,r,h,c){B.add(CYLG,x,y,z,r,h,r,0,0,0,c);}
+function ssph(B,x,y,z,r,c){B.add(SPHG,x,y,z,r,r,r,0,0,0,c);}
+function stage(B,gold){
+  sbox(B,0,0.45,5.6,9,0.9,3.6,'#3a2a1a');sbox(B,0,0.93,3.78,9,0.08,0.12,gold);
+  sbox(B,0,2.7,7.3,9.4,3.4,0.22,'#2a2030');
+  sbox(B,-5.2,0.9,4.6,1.2,1.8,1.1,'#17171b');sbox(B,5.2,0.9,4.6,1.2,1.8,1.1,'#17171b');
+  sbox(B,-5.2,2.15,4.6,0.9,0.7,0.9,'#17171b');sbox(B,5.2,2.15,4.6,0.9,0.7,0.9,'#17171b');
+  scyl(B,-5.2,0.9,4.0,0.28,0.1,'#cfd3d8');scyl(B,5.2,0.9,4.0,0.28,0.1,'#cfd3d8');
+}
+function posts(B,x,z,w,d,h,c){[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){scyl(B,x+p[0]*w/2,h/2,z+p[1]*d/2,0.09,h,c);});}
+function bunting(B,z,x0,x1,y){
+  sbox(B,(x0+x1)/2,y,z,x1-x0,0.03,0.03,'#d9d0bd');
+  var cols=['#c1352d','#f2b705','#2f7d4f','#2b5a9a','#e0488f','#ffffff'],i=0;
+  for(var x=x0+0.6;x<x1;x+=0.9,i++)sbox(B,x,y-0.22,z,0.5,0.4,0.03,cols[i%cols.length]);
+}
+function buildParty(){
+  var B=new GB();
+  sbox(B,0,0.02,1.5,17,0.04,12,'#d8c9a4');sbox(B,0,0.05,0.4,3.2,0.03,8.4,'#8a1f3a');sbox(B,0,0.06,0.4,2.6,0.03,8.4,'#c1352d');
+  stage(B,'#d9a21a');
+  [-1,1].forEach(function(sd){
+    posts(B,sd*7.2,1.2,5.4,3.8,3.2,'#cfd3d8');
+    for(var i=0;i<8;i++)sbox(B,sd*7.2-2.4+i*0.68,3.28,1.2,0.62,0.07,4.0,i%2?'#d9a21a':'#8a1f3a');
+    sbox(B,sd*7.2,3.05,1.2,5.6,0.2,0.05,'#f1efe6');
+    sbox(B,sd*7.2,0.44,1.2,4.2,0.88,1.0,'#f1efe6');
+    for(var j=0;j<4;j++){scyl(B,sd*7.2-1.5+j*1.0,1.0,1.2,0.22,0.24,j%2?'#d9731a':'#e8c21a');}
+    for(var q=0;q<2;q++){sbox(B,sd*7.2-1.4+q*2.8,0.25,3.1,0.5,0.5,0.5,'#2b5a9a');sbox(B,sd*7.2-1.4+q*2.8,0.25,-0.7,0.5,0.5,0.5,'#2b5a9a');}
+  });
+  bunting(B,-4.2,-8,8,3.6);bunting(B,3.9,-8,8,3.9);
+  [-1,1].forEach(function(sd){
+    scyl(B,sd*4.6,1.0,3.95,0.05,2.0,'#d9d0bd');
+    ['#c1352d','#f2b705','#2f7d4f','#e0488f','#2b5a9a','#ffffff'].forEach(function(c,i){ssph(B,sd*4.6+Math.sin(i*1.7)*0.3,0.45+i*0.32,3.95+Math.cos(i*1.7)*0.3,0.28,c);});
+  });
+  return B;
+}
+function buildRally(){
+  var B=new GB();
+  sbox(B,0,0.02,1.5,17,0.04,12,'#cfc7b0');
+  stage(B,'#f1efe6');
+  /* campaign truck with a loudspeaker */
+  sbox(B,8.2,0.95,1.0,2.4,1.1,5.2,'#e9ecef');sbox(B,8.2,1.65,-1.7,2.3,1.0,1.4,'#e9ecef');sbox(B,8.2,1.75,-2.42,2.0,0.55,0.05,'#1b2630');
+  sbox(B,8.2,2.15,2.2,1.2,0.9,1.0,'#17171b');sbox(B,8.2,2.55,2.2,0.8,0.3,0.8,'#cfd3d8');
+  [[-1,-2.6],[1,-2.6],[-1,2.4],[1,2.4]].forEach(function(p){B.add(CYLG,8.2+p[0]*1.28,0.42,p[1],0.42,0.34,0.42,0,0,Math.PI/2,'#17171b');});
+  /* rope barrier along the front */
+  for(var i=0;i<9;i++){scyl(B,-6+i*1.5,0.5,-1.6,0.05,1.0,'#cfd3d8');if(i)sbox(B,-6+i*1.5-0.75,0.8,-1.6,1.5,0.04,0.04,'#c1352d');}
+  /* poster boards */
+  [[-9,2.5],[9.4,4.5]].forEach(function(p){scyl(B,p[0],1.1,p[1],0.05,2.2,'#7a5a3a');sbox(B,p[0],2.0,p[1]+0.05,1.4,1.0,0.05,'#f1efe6');});
+  return B;
+}
+function buildPoll(){
+  var B=new GB();
+  sbox(B,0,0.02,0,17,0.04,12,'#d3cbb8');
+  posts(B,2.5,0,7,4.5,3.0,'#cfd3d8');
+  for(var i=0;i<7;i++)sbox(B,2.5-3+i*1.0,3.05,0,1.0,0.07,4.6,i%2?'#f1efe6':'#2f7d4f');
+  /* officer table and ballot box */
+  sbox(B,3.0,0.45,0.8,2.6,0.1,0.9,'#7a5a3a');sbox(B,3.0,0.22,0.8,2.4,0.44,0.8,'#5a3d22');
+  sbox(B,4.1,0.85,0.8,0.55,0.55,0.55,'#2f7d4f');sbox(B,4.1,1.15,0.8,0.3,0.03,0.04,'#17171b');
+  /* three voting booths */
+  for(var b=0;b<3;b++){var bx=0.8+b*1.7,bz=-1.4;sbox(B,bx,0.5,bz,1.1,1.0,0.7,'#cfd3d8');sbox(B,bx,1.1,bz,1.1,0.06,0.7,'#2f7d4f');sbox(B,bx-0.55,0.65,bz+0.3,0.04,1.3,0.5,'#cfd3d8');sbox(B,bx+0.55,0.65,bz+0.3,0.04,1.3,0.5,'#cfd3d8');}
+  /* queue stanchions */
+  for(var q=0;q<8;q++){scyl(B,-7.0+q*1.3,0.5,2.0,0.05,1.0,'#17171b');if(q)sbox(B,-7.0+q*1.3-0.65,0.85,2.0,1.3,0.04,0.04,'#c1352d');}
+  return B;
+}
+var SVSET={};
+function svMesh(B,mat,shadow){var m=B.mesh(mat);m.castShadow=!!shadow;m.receiveShadow=false;return m;}
+function mkBanner(){
+  var c=document.createElement('canvas');c.width=512;c.height=160;
+  var tex=ctex(c),m=new THREE.Mesh(new THREE.PlaneGeometry(8.6,2.7),new THREE.MeshBasicMaterial({map:tex}));
+  return {c:c,t:tex,m:m};
+}
+function drawBanner(b,bg,t1,t2,fg){
+  var g=b.c.getContext('2d');g.fillStyle=bg;g.fillRect(0,0,512,160);
+  g.fillStyle='rgba(255,255,255,0.14)';g.fillRect(0,0,512,14);g.fillRect(0,146,512,14);
+  g.fillStyle=fg||'#fff';g.textAlign='center';g.textBaseline='middle';
+  var f=64;g.font='bold '+f+'px Arial';while(g.measureText(t1).width>470&&f>24){f-=4;g.font='bold '+f+'px Arial';}
+  g.fillText(t1,256,66);g.font='bold 26px Arial';
+  var s=26;while(g.measureText(t2).width>470&&s>12){s-=2;g.font='bold '+s+'px Arial';}
+  g.fillText(t2,256,122);
+  b.t.needsUpdate=true;
+}
+function svBuild(){
+  SVEN.forEach(function(V){
+    var G=new THREE.Group();G.position.set(V.x,0,V.z);G.rotation.y=Math.PI;G.visible=false;scene.add(G);V.G=G;
+    var party=svMesh(buildParty(),charMat),rally=svMesh(buildRally(),charMat),poll=svMesh(buildPoll(),charMat);
+    party.visible=rally.visible=poll.visible=false;G.add(party);G.add(rally);G.add(poll);
+    V.party=party;V.rally=rally;V.poll=poll;
+    V.ban=mkBanner();V.ban.m.position.set(0,2.75,7.15);V.ban.m.rotation.y=Math.PI;G.add(V.ban.m);
+    V.ban.m.visible=false;
+    /* flags in the candidate's colour */
+    V.flagMat=new THREE.MeshLambertMaterial({color:0x2f7fd0});
+    var fg=new THREE.Group();
+    [[-7,-1.2],[-3.5,-1.2],[3.5,-1.2],[7,-1.2]].forEach(function(p){
+      var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,4.2,6),charMat);
+      var fl=new THREE.Mesh(new THREE.BoxGeometry(1.1,0.7,0.03),V.flagMat);
+      pole.position.set(p[0],2.1,p[1]);fl.position.set(p[0]+0.55,3.7,p[1]);
+      fg.add(pole);fg.add(fl);
+    });
+    fg.visible=false;G.add(fg);V.flags=fg;
+    V.walk=[];
+    for(var i=0;i<9;i++){
+      var w=plainWalker({shirt:WP[(i*5+V.nm.length)%WP.length].shirt,pants:WP[(i*3+2)%WP.length].pants,skin:WP[(i*7+1)%WP.length].skin,hair:'#0d0d0d',shoe:'#2a2a2e',a:[0,0],b:[0,0],sp:2,fem:i%2===1});
+      w.ph=i*1.9+0.7;w.g.visible=false;w.yaw=0;V.walk.push(w);
+    }
+    V.cur=null;V.sol=[];
+  });
+}
+/* crowd formations in venue-local coordinates: [x,z,yaw] (yaw 0 faces the stage, which is on the +z side) */
+var FORM_PARTY=[[-3,2.4],[-1,2.8],[1.4,2.2],[3.2,2.8],[-2,0.8],[0.4,1.0],[2.4,0.6],[-4.2,1.2],[4.4,1.4]];
+var FORM_RALLY=[[-4,1.4],[-2.4,2.2],[-0.8,1.2],[0.8,2.4],[2.4,1.2],[4,2.2],[-3.2,0.2],[0,0.4],[3.2,0.3]];
+var FORM_POLL=[[-5.9,2.7],[-4.6,2.7],[-3.3,2.7],[-2.0,2.7],[-0.7,2.7],[0.6,2.7],[1.9,2.7],[3.2,2.8],[4.4,2.2]];
+function svSolids(V,type){
+  V.sol.forEach(function(s){var i=solids.indexOf(s);if(i>=0)solids.splice(i,1);});V.sol=[];
+  var L=[];
+  if(type==='owambe'||type==='victory'||type==='rally')L.push([0,5.6,9,3.6,0.9]);
+  if(type==='owambe'||type==='victory')L.push([-7.2,1.2,4.2,1.0,0.9],[7.2,1.2,4.2,1.0,0.9]);
+  if(type==='rally')L.push([8.2,1.0,2.4,5.2,1.6]);
+  if(type==='poll')L.push([3.0,0.8,2.6,0.9,0.9],[2.5,-1.4,5.2,0.7,1.0]);
+  L.forEach(function(a){var s={minX:V.x-a[0]-a[2]/2,maxX:V.x-a[0]+a[2]/2,minZ:V.z-a[1]-a[3]/2,maxZ:V.z-a[1]+a[3]/2,h:a[4]};solids.push(s);V.sol.push(s);});
+}
+function svMount(V,ev){
+  V.cur=ev?ev.id:null;V.ev=ev||null;
+  var on=!!ev;
+  V.G.visible=on;
+  V.party.visible=on&&(ev.type==='owambe'||ev.type==='victory');V.rally.visible=on&&ev.type==='rally';V.poll.visible=on&&ev.type==='poll';
+  V.ban.m.visible=on&&ev.type!=='poll';V.flags.visible=on&&ev.type==='rally';
+  var host=NK[V.key].npc;host.off=!on;
+  svSolids(V,on?ev.type:'');
+  if(!on){V.walk.forEach(function(w){w.g.visible=false;});return;}
+  var S=SX();
+  if(ev.type==='rally'){var c=CANDS[ev.c];drawBanner(V.ban,c.col,c.n+' FOR LAGOS',c.slogan,'#fff');V.flagMat.color.set(c.col);host.x=V.x+0.4;host.z=V.z-3.7;}
+  else if(ev.type==='victory'){var c2=CANDS[ev.c];drawBanner(V.ban,c2.col,c2.n+' WINS!','THANK YOU LAGOS. THE PARTY IS ON US','#fff');host.x=V.x;host.z=V.z-3.9;}
+  else if(ev.type==='owambe'){var NM=['TUNDE & AMAKA','CHIDI & BISI','MUSA & FOLA','DELE & NKEM','SEUN & HAUWA'],nm=NM[(((life.day-1)/4)|0)%NM.length];drawBanner(V.ban,'#6a1530',nm,'ASO EBI PARTY · EAT · DANCE · SPRAY','#f6d77a');host.x=V.x;host.z=V.z-3.9;}
+  else{host.x=V.x-3.0;host.z=V.z-1.7;}
+  host.grp.position.x=host.x;host.grp.position.z=host.z;host.bl.position.x=host.x;host.bl.position.z=host.z;
+  host.baseYaw=0;
+  var F=ev.type==='poll'?FORM_POLL:(ev.type==='rally'?FORM_RALLY:FORM_PARTY);
+  V.walk.forEach(function(w,i){
+    w.x=V.x-F[i][0];w.z=V.z-F[i][1];
+    w.yaw=ev.type==='poll'?Math.PI/2:Math.PI+((i%3)-1)*0.15;
+    w.g.position.set(w.x,0,w.z);w.g.rotation.y=w.yaw;
+  });
+}
+var svT=0,svAnim=0,svDay=-1;
+function svActive(){
+  var out={g:null,h:null};
+  if(!life||!life.made)return out;
+  evList(life.day).forEach(function(e){if(gameHour>=e.h0&&gameHour<e.h1)out[e.v]=e;});
+  return out;
+}
+function socialTick(dt){
+  if(!life||!life.made||!started||creating)return;
+  svAnim+=dt;svT-=dt;
+  var px=driving?car.x:player.x,pz=driving?car.z:player.z,S=SX();
+  /* day change: news, invites, polling results */
+  if(life.day!==S.md){S.md=life.day;svNews();}
+  if(life.day>=life.elNext&&(life.day>life.elNext||gameHour>=18)){
+    var v=(S.vd===life.elNext)?S.v:0;electionResult(v);S.vd=-1;
+  }
+  if(svT<=0){
+    svT=0.4;
+    var act=svActive();
+    SVEN.forEach(function(V){var e=act[V.k];var id=e?e.id:null;if(id!==V.cur)svMount(V,e);});
+    var best=99,live=false;
+    SVEN.forEach(function(V){if(V.ev&&V.ev.type!=='poll'){var d=Math.hypot(px-V.x,pz-V.z);if(d<best)best=d;}});
+    partyD=best;partyNear=best<30&&!inInt();
+  }
+  for(var vi=0;vi<SVEN.length;vi++){
+    var V=SVEN[vi];if(!V.ev||inInt())continue;
+    var dd=Math.hypot(px-V.x,pz-V.z);
+    var vis=dd<120;
+    for(var i=0;i<V.walk.length;i++){
+      var w=V.walk[i];w.g.visible=vis;if(!vis)continue;
+      var wn=dd<45;if(wn!==w.nr){w.nr=wn;w.m1.visible=wn;w.m2.visible=!wn;w.lL.visible=w.lR.visible=w.aL.visible=w.aR.visible=wn;}
+      if(!wn)continue;
+      var mode=V.ev.type==='poll'?2:(V.ev.type==='rally'?1:0),s=Math.sin(svAnim*(mode===0?6.2:(mode===1?4:1.4))+w.ph);
+      w.g.position.y=mode===2?0:Math.abs(s)*0.09;
+      w.g.rotation.y=w.yaw+(mode===0?Math.sin(svAnim*2.1+w.ph)*0.5:0);
+      if(mode===0){w.aL.rotation.x=-2.5+s*0.45;w.aR.rotation.x=-2.5-s*0.45;w.lL.rotation.x=s*0.35;w.lR.rotation.x=-s*0.35;}
+      else if(mode===1){w.aR.rotation.x=-2.7+s*0.3;w.aL.rotation.x=0.1;w.lL.rotation.x=w.lR.rotation.x=0;}
+      else{w.aL.rotation.x=w.aR.rotation.x=0;w.lL.rotation.x=w.lR.rotation.x=0;}
+    }
+  }
+}
+function svNews(){
+  var S=SX(),L=life,d=L.elNext-L.day,ev=evList(L.day);
+  if(d===3)pushMsg('evt','Campaign season! Three candidates hold rallies on Fountain Plaza from 12 noon, one a day. Free rice and the best crowd in Lagos.',{t:'open',app:'events',l:'Open Events'});
+  if(d===0)pushMsg('evt','TODAY IS ELECTION DAY. The polling station at Waterfront Ground is open from 8 AM to 6 PM. Go and vote!',{t:'open',app:'events',l:'Open Events'});
+  ev.forEach(function(e){
+    if(e.type==='owambe'){
+      var fr=CONTACTS.filter(function(k){return NK[k]&&NK[k].friend!==false&&frLevel(k)>=1;});
+      var v=venueOf(e.v);
+      if(fr.length){var k=fr[(Math.random()*fr.length)|0];S.inv[e.id]=k;pushMsg(k,'Owambe at '+nice(v.nm)+' from '+hourText(e.h0)+' today! Come and let us enjoy. Bring cash for spraying o!',{t:'open',app:'events',l:'Open Events'});}
+      else pushMsg('evt','Owambe at '+nice(v.nm)+' from '+hourText(e.h0)+' today. Free food and loud music.',{t:'open',app:'events',l:'Open Events'});
+    }
+    if(e.type==='victory')pushMsg('evt',CANDS[e.c].n+' is throwing a victory party at Fountain Plaza from '+hourText(e.h0)+' tonight. Everyone is invited.',{t:'open',app:'events',l:'Open Events'});
+  });
+}
+/* ---------- the host of each venue */
+function svEvent(V){return V.ev;}
+function svFirst(V,ev){
+  var S=SX();
+  if(!S.hit[ev.id]){S.hit[ev.id]=1;clGain(2);var k=S.inv[ev.id];if(k&&NK[k]&&!S.got[ev.id]){S.got[ev.id]=1;giveFriend(k,2);pushMsg(k,'I saw you at the party, my friend. Thanks for coming! 🔥');}}
+}
+function svTalk(V){
+  var ev=V.ev;if(!ev)return;
+  svFirst(V,ev);
+  if(ev.type==='owambe'||ev.type==='victory')partyMenu(V,ev);
+  else if(ev.type==='rally')rallyMenu(V,ev);
+  else pollMenu(V,ev);
+}
+function partyMenu(V,ev,msg){
+  var S=SX(),ate=S.ate[ev.id]||0,vic=ev.type==='victory',nm=vic?CANDS[ev.c].n+"'S PARTY":'THE MC';
+  var sp=function(a,c){return {label:'SPRAY '+money(a),fn:function(){
+    if(cash<a){buzz();partyMenu(V,ev,'Your pocket no reach. Spraying needs '+money(a)+'.');return;}
+    cash-=a;setCash();logTx('Sprayed at the party',-a);gain('fun',10+c);gain('social',8+c);clGain(c);chime();saveGame();
+    for(var i=0;i<12;i++)emitPuff(V.x+(Math.random()-0.5)*5,1.6+Math.random()*0.8,V.z+1.5+Math.random()*3,(Math.random()-0.5)*1.5,-0.8,(Math.random()-0.5)*1.5,0.4,1.6,0.9,i%3?0x6fcf86:0xf1efe6);
+    partyMenu(V,ev,(c>=20?'The MC screams your name and the whole crowd roars!':(c>=6?'The dancers swarm around you!':'A little love from the crowd.'))+' Clout +'+c+'.');
+  }};};
+  var btns=[
+    {label:'EAT JOLLOF (FREE)',fn:function(){
+      if(ate>=3){partyMenu(V,ev,'You have eaten three plates already! Leave some for the others.');return;}
+      S.ate[ev.id]=ate+1;gain('hunger',32);gain('fun',4);gain('bladder',-3);saveGame();partyMenu(V,ev,'Party jollof with chicken and plantain. Sweet! You feel full.');}},
+    {label:'DANCE FOR AN HOUR',fn:function(){
+      fadeSeq('You hit the dance floor...',function(){gain('fun',32);gain('social',20);gain('energy',-14);gain('bladder',-6);advanceHours(1);clGain(3);},'',{mid:600,total:1500});
+      setTimeout(function(){saveGame();},1800);}},
+    sp(5000,2),sp(25000,8),sp(200000,30),
+    {label:'LEAVE'}
+  ];
+  openDlg(nm+'  ·  '+clRank().toUpperCase(),(msg?msg+'  ':'')+(vic?'The winner is buying everybody drinks. Eat, dance, or spray the crowd. ':'Welcome to the owambe! Eat, dance, or spray naira on the dancers. ')+'You get '+money(cash)+'.',btns);
+}
+function rallyMenu(V,ev,msg){
+  var S=SX(),c=CANDS[ev.c],key='rr'+ev.id;
+  var btns=[
+    {label:'LISTEN TO THE SPEECH',fn:function(){gain('social',4);clGain(1);rallyMenu(V,ev,c.n+' says: "'+c.speech+'"');}},
+    {label:'COLLECT RALLY RICE',fn:function(){
+      if(S.got[key]){rallyMenu(V,ev,'You already collected. Do not be greedy!');return;}
+      S.got[key]=1;gain('hunger',30);gain('fun',3);addCash(2000);logTx('Rally transport money',2000);chime();saveGame();
+      rallyMenu(V,ev,'A rice pack and ₦2,000 "transport money" from the campaign team. Politics!');}},
+    {label:S.pledge===ev.c?'YOU PLEDGED SUPPORT':'PLEDGE SUPPORT',fn:function(){
+      S.pledge=ev.c;clGain(2);saveGame();rallyMenu(V,ev,'You wave the '+c.n+' flag. The crowd cheers. Do not forget to vote on election day!');}},
+    {label:'LEAVE'}
+  ];
+  openDlg('RALLY: '+c.n+'  ·  '+GOVS[ev.c].d.toUpperCase(),(msg?msg+'  ':'')+'"'+c.slogan+'". The crowd is loud and the loudspeaker is louder.',btns);
+}
+function pollMenu(V,ev,msg){
+  var S=SX(),voted=S.vd===life.elNext;
+  var btns=[];
+  if(!voted){
+    [1,2,3].forEach(function(i){btns.push({label:'VOTE '+CANDS[i].n+(S.pledge===i?' (PLEDGED)':''),fn:function(){
+      S.vd=life.elNext;S.v=i;clGain(3);gain('social',5);chime();saveGame();
+      pollMenu(V,ev,'You dip your finger in the ink and drop your ballot for '+CANDS[i].n+'. Results come in at 6 PM.');
+    }});});
+  }
+  btns.push({label:'LEAVE'});
+  openDlg('ELECTORAL OFFICER',(msg?msg+'  ':'')+(voted?'You already voted today. Results are announced at 6 PM.':'Welcome. One person, one vote. BELLO: rent 25% cheaper. ADEYEMI: shifts and fares pay 15% more. OKAFOR: food 20% cheaper.'),btns);
+}
+/* ---------- the hosts */
+(function(){
+  var skin=['#6b4026','#5a3520'],low=['#2a2030','#d9a21a'];
+  SVEN.forEach(function(V,i){
+    addPerson(V.key,{x:V.x,z:V.z-3.9,yaw:0,skin:skin[i],skin2:skin[1-i],low:'#2a2030',low2:'#3a2c48',top:i?'#f1efe6':'#6a1530',style:'agbada',head:'fila',hc:i?'#f1efe6':'#6a1530'},
+      {label:'EVENT',name:'EVENT HOST',friend:false,items:[],greet:'Welcome.'});
+    var n=NK[V.key].npc;n.off=true;n.talk=function(){svTalk(V);};
+  });
+  DEST.push(['FOUNTAIN PLAZA EVENT','evg'],['WATERFRONT GROUND EVENT','evh']);
+  svBuild();
+})();
+/* ---------- Events app */
+function appEvents(){phPush('Events',function(b){
+  var S=SX(),d=life.elNext-life.day;
+  var hero=pAdd(b,pEl('div','hero'));hero.style.background='linear-gradient(135deg,#8a1f3a,#d9a21a)';
+  hero.appendChild(pEl('span','','Your clout'));hero.appendChild(pEl('b','',clRank()));hero.appendChild(pEl('span','',S.clout+' points · spray at parties, vote, and show face to earn more'));
+  pKV(b,[['Governor',life.gov?GOVS[life.gov].n:'none yet'],['Next election',d<=0?'today':'in '+d+' day'+(d===1?'':'s')],['Pledged to',S.pledge?CANDS[S.pledge].n:'nobody yet']]);
+  var any=false;
+  for(var o=0;o<5;o++){
+    evList(life.day+o).forEach(function(e){
+      if(o===0&&gameHour>=e.h1)return;
+      any=true;
+      var v=venueOf(e.v),live=o===0&&gameHour>=e.h0,when=live?'LIVE NOW · until '+hourText(e.h1):(o===0?'Today '+hourText(e.h0)+' to '+hourText(e.h1):(o===1?'Tomorrow ':'In '+o+' days ')+hourText(e.h0));
+      var go=live?function(){rideConfirm(v.key);}:null;
+      pRow(b,nice(e.title),nice(v.nm)+' · '+when,live?'GO':'',go,pLead('<path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/>',live?'#c1352d':'#8a6a1a'),live?'a':'');
+    });
+  }
+  if(!any)pNote(b,'Nothing on for the next few days. Owambe parties come round every few days, and campaign season comes before each election.');
+  pNote(b,'Free food, loud music and clout at every event. Tap GO on a live one and a ride takes you there.');
+});}
+
+var _er45=electionResult;electionResult=function(v){_er45(v);SX().vic=life.day+1;};
 /* ------------------------------------------------------------------ loop */
 function update(dt){
   _fdt=dt;
-  npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);vipTick(dt);baddieTick(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);gfxUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
+  npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);vipTick(dt);socialTick(dt);baddieTick(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);gfxUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
   if(driving){
     var dctl=readDrive(),nsub=Math.min(4,Math.max(1,Math.ceil(Math.abs(car.speed)*dt)));for(var si=0;si<nsub;si++)driveUpdate(dt/nsub,dctl);setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
