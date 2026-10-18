@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b46';
+var VERSION='GTL 0.9 b47';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -615,7 +615,7 @@ var BK={},curMat=null;
 var COLMAT={'#2e3034':'asphalt','#b07a52':'dirt','#a56f49':'dirt','#bd8a5c':'dirt','#a9855a':'dirt','#bfae8c':'dirt','#e3cf9b':'dirt','#9b9a94':'concrete','#d9d0bd':'concrete','#8d8f90':'concrete','#7d7468':'concrete','#98694a':'concrete','#d8cdb5':'block'};
 var MSC={plaster:2.4,asphalt:4,dirt:6,concrete:2,block:1.8,roof:1.2};
 var CHK=80;
-function bkt(name,cx,cz){var k=name+'|'+Math.floor(cx/CHK)+'|'+Math.floor(cz/CHK);return BK[k]||(BK[k]={name:name,P:[],N:[],C:[],U:[]});}
+function bkt(name,cx,cz){var k=name+'|'+CHK+'|'+Math.floor(cx/CHK)+'|'+Math.floor(cz/CHK);return BK[k]||(BK[k]={name:name,P:[],N:[],C:[],U:[]});}
 var UB=new THREE.BoxGeometry(1,1,1).toNonIndexed();
 var UC=new THREE.CylinderGeometry(0.5,0.5,1,8).toNonIndexed();
 var UI=new THREE.IcosahedronGeometry(0.5,1);
@@ -718,7 +718,7 @@ var SIGNS=[],signT=0;
 function signsCull(dt){
   signT-=dt;if(signT>0)return;signT=0.35;
   var px=driving?car.x:player.x,pz=driving?car.z:player.z;
-  for(var i=0;i<SIGNS.length;i++){var m=SIGNS[i],dx=m.position.x-px,dz=m.position.z-pz;m.visible=dx*dx+dz*dz<6400;}
+  for(var i=0;i<SIGNS.length;i++){var m=SIGNS[i],dx=m.position.x-px,dz=m.position.z-pz;m.visible=!m.hide&&dx*dx+dz*dz<6400;}
 }
 function addSign(text,bg,fg,x,y,z,ang,w,h){
   var c=document.createElement('canvas');c.width=512;c.height=Math.max(64,Math.round(512*h/w));
@@ -1115,8 +1115,7 @@ function barrier(bx,bz,alongZ){
   if(alongZ){box(bx,0.6,bz-len/2,0.3,1.2,0.3,'#555');box(bx,0.6,bz+len/2,0.3,1.2,0.3,'#555');solid(bx,bz,0.6,len+0.4,1.3);}
   else{box(bx-len/2,0.6,bz,0.3,1.2,0.3,'#555');box(bx+len/2,0.6,bz,0.3,1.2,0.3,'#555');solid(bx,bz,len+0.4,0.6,1.3);}
 }
-barrier(-67.5,0,true);barrier(0,67.5,false);barrier(0,-67.5,false);
-addSign('ROAD WORKS AHEAD','#f2b705','#141414',-67.2,1.9,0,Math.PI/2,3.4,0.9);
+barrier(0,67.5,false);barrier(0,-67.5,false);
 addSign('ROAD WORKS AHEAD','#f2b705','#141414',0,1.9,67.2,Math.PI,3.4,0.9);
 addSign('ROAD WORKS AHEAD','#f2b705','#141414',0,1.9,-67.2,0,3.4,0.9);
 
@@ -2424,6 +2423,285 @@ WMAT.decal=new THREE.MeshLambertMaterial({vertexColors:true,map:decalTex,transpa
 WMAT.wglow=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4});
 var glowMeshes=[];
 WMAT.leaf=new THREE.MeshLambertMaterial({vertexColors:true,map:mkTex('foliage',false),alphaTest:0.45});
+var CHK_SAVE=CHK;CHK=40;
+/* ---- b47: OJUELEGBA AND SURULERE. A fictionalised mainland district inspired by the real junction where Yaba, Mushin and Surulere traffic meet:
+   a four-armed signalled junction under a flyover, shop-and-flat blocks all round, roadside traders and bus stops, and quieter residential streets behind. ---- */
+var OJX=-170;
+(function(){
+  var JX=OJX,sd=47047;function jr(){sd=(sd*16807)%2147483647;return (sd-1)/2147483646;}
+  /* the east-west road continues west of the old barricade */
+  box(-205,0.03,0,130,0.06,10,ROAD);
+  var wx;
+  for(wx=-137;wx>=-265;wx-=7){if(Math.abs(wx-JX)<22)continue;box(wx,0.066,0,3,0.012,0.18,'#e9c46a');}
+  [-4.6,4.6].forEach(function(ez){box(-205,0.066,ez,130,0.012,0.12,'#e8e4da');});
+  [-5.8,5.8].forEach(function(sz){box(-205,0.09,sz,130,0.18,1.6,SH);});
+  /* junction: the main road flares to four lanes, Ojuelegba Road crosses it */
+  box(JX,0.036,0,40,0.072,16,ROAD);
+  box(JX,0.034,0,14,0.068,132,ROAD);
+  [-8.6,8.6].forEach(function(sx){box(JX+sx,0.09,-38,1.6,0.18,56,SH);box(JX+sx,0.09,38,1.6,0.18,56,SH);});
+  [-9.6,9.6].forEach(function(sz){box(JX-30,0.09,sz,20,0.18,1.6,SH);box(JX+30,0.09,sz,20,0.18,1.6,SH);});
+  [-6.2,6.2].forEach(function(ex){box(JX+ex,0.084,-38,0.12,0.012,56,'#e8e4da');box(JX+ex,0.084,38,0.12,0.012,56,'#e8e4da');});
+  var zz;
+  for(zz=12;zz<=62;zz+=6){box(JX,0.084,zz,0.18,0.012,3,'#e9c46a');box(JX,0.084,-zz,0.18,0.012,3,'#e9c46a');}
+  /* lane arrows and stop lines */
+  box(JX-27,0.085,2.6,0.5,0.012,4.6,'#f4f1e8');box(JX+27,0.085,-2.6,0.5,0.012,4.6,'#f4f1e8');
+  box(JX-3.6,0.085,-18,6.4,0.012,0.5,'#f4f1e8');box(JX+3.6,0.085,18,6.4,0.012,0.5,'#f4f1e8');
+  /* zebra crossings on all four arms */
+  var zk;
+  for(zk=-4;zk<=4;zk++){
+    box(JX-23,0.086,zk*1.0,3.4,0.012,0.5,'#f4f1e8');box(JX+23,0.086,zk*1.0,3.4,0.012,0.5,'#f4f1e8');
+    box(JX+zk*1.2,0.086,-14,0.55,0.012,3.4,'#f4f1e8');box(JX+zk*1.2,0.086,14,0.55,0.012,3.4,'#f4f1e8');
+  }
+  /* the flyover over the junction: a landmark deck on pillars, closed at both ends for extension works */
+  box(JX,6.9,0,72,0.9,5.6,'#8d8f90');
+  [-1,1].forEach(function(s){box(JX,7.7,s*2.7,72,0.7,0.22,'#c9c7c0');box(JX,7.2,s*2.55,72,0.12,0.12,'#555');});
+  for(var fk=-2;fk<=2;fk++){var fpx=JX+fk*14;box(fpx,3.4,0,1.2,6.8,1.2,'#7e8184');box(fpx,6.3,0,2.6,0.4,2.2,'#7e8184');solid(fpx,0,1.4,1.4,7);}
+  [-1,1].forEach(function(s){
+    box(JX+s*36.5,3.5,0,1.2,7,6.0,'#a8a29a');solid(JX+s*36.5,0,1.4,6,7.2);
+    for(var bi=0;bi<4;bi++)box(JX+s*37.4,7.5,-2+bi*1.33,0.1,0.5,0.9,bi%2?'#f1efe6':'#e07a1f');
+  });
+  addSign('OJUELEGBA FLYOVER','#1d5c3a','#ffffff',JX,7.6,3.0,0,16,1.6);
+  addSign('OJUELEGBA FLYOVER','#1d5c3a','#ffffff',JX,7.6,-3.0,Math.PI,16,1.6);
+  addSign('EXTENSION WORKS','#f2b705','#141414',JX-37.2,6.2,0,-Math.PI/2,5,0.9);addSign('EXTENSION WORKS','#f2b705','#141414',JX+37.2,6.2,0,Math.PI/2,5,0.9);
+  /* signal poles */
+  [[JX-25.6,5.9],[JX+25.6,-5.9],[JX-8,-16.6],[JX+8,16.6]].forEach(function(p){cyl(p[0],2.0,p[1],0.16,4,0.16,'#3a3d40');box(p[0],4.05,p[1],0.5,1.2,0.12,'#111114');});
+  /* end of the district road */
+  [0.55,0.95].forEach(function(by,i){box(-268,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
+  box(-268,0.6,-4.7,0.3,1.2,0.3,'#555');box(-268,0.6,4.7,0.3,1.2,0.3,'#555');solid(-268,0,0.6,9.8,1.3);
+  addSign('ROAD WORKS AHEAD','#f2b705','#141414',-267.8,1.9,0,Math.PI/2,3.4,0.9);
+  /* both arms of Ojuelegba Road end where the district ends */
+  [-1,1].forEach(function(sg){
+    barrier(JX-3.7,sg*67.5,false);barrier(JX+3.7,sg*67.5,false);
+    addSign('ROAD WORKS AHEAD','#f2b705','#141414',JX,1.9,sg*67.2,sg>0?Math.PI:0,3.4,0.9);
+  });
+  /* streetlights and poles along the new stretch */
+  var lx;
+  for(lx=-84;lx>=-260;lx-=22){if(Math.abs(lx-JX)<24)continue;lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
+  [[JX-30,-10.6],[JX+30,-10.6],[JX-30,10.6],[JX+30,10.6],[JX-10.6,-40],[JX+10.6,-40],[JX-10.6,40],[JX+10.6,40]].forEach(function(p){lamp(p[0],p[1],p[1]>0?-Math.PI/2:Math.PI/2);ALAMPS.push([p[0],p[1]>0?p[1]-1.2:p[1]+1.2]);});
+  var pxs=[];for(lx=-84;lx>=-260;lx-=28){if(Math.abs(lx-JX)<26)continue;pxs.push(lx);}
+  poleLine(pxs,-6.4,3);
+})();
+
+var OJB={};
+/* ---- b47: shop-and-flat blocks, roadside trade, bus stops, residential streets and the school, all built from the existing kit ---- */
+(function(){
+  var JX=OJX,sd=70707;function br(){sd=(sd*16807)%2147483647;return (sd-1)/2147483646;}
+  var WALLS=['#e8d9b8','#8fc4b3','#e7a6b3','#bcd0e6','#f2d36b','#a9c3a0','#d9b8a0','#c9d3a8','#e0b9c8','#d6c9a8'];
+  var ROOFS=['#6b4a3a','#7b8187','#8a4b2a','#4a5560','#6a5a48'];
+  var SIGNS=[['#1f8a4c','#ffffff'],['#c1352d','#ffffff'],['#f2b705','#141414'],['#2f6fb1','#ffffff'],['#7a2e65','#ffffff'],['#e07a1f','#141414'],['#14161a','#f2d36b'],['#1d5c3a','#f6ecd9']];
+  var NAMES=['IYA IBEJI PROVISIONS','TOLU PHARMACY','GLORY BARBERS','SHALOM FASHION','OJU ELECTRICALS','ZION GAS REFILL','BRIGHT STAR POULTRY','ALHAJI TAILORS','OLAMIDE PHONE CENTRE','WINNERS BET','DIVINE MERCY CHEMIST','CITY TRUST BANK','LAGOS FABRICS','TEMITOPE SALON','HOPE CYBER CAFE','PEACE BUILDING MATERIALS','OKE FOODSTUFF','ROYAL TYRES','BISOLA BOUTIQUE','SUNRISE BAKERY','ADE SPARE PARTS','GRACE STATIONERY','FAITH PRINTERS','OJUELEGBA TRADERS','MIRACLE MOBILE','CHIDI WINES','SAFE HANDS PHARMACY','LUCKY STAR DRINKS','AYO ELECTRONICS','KEMI COSMETICS','NEW LIFE BOOKSHOP','TRUST DRY CLEANERS','ESTHER HAIR WORLD','BOLA GENERATORS','PRIME FOOD STORE','GOLDEN CROWN HOTEL'];
+  var nI=0;
+  function upperFacade(L,fh,floors,Y0,wl,balcony){
+    var bays=Math.max(2,Math.round(L/3.4)),doorCols=['#5a3b2a','#2f4f6f','#7a2e2e','#3d5a40'];
+    var posts=Math.max(2,Math.round(L/1.8)),cloth=['#c1352d','#2f6fb1','#f2b705','#f1efe6','#2a9d5b'];
+    for(var k=0;k<=bays;k++)box(-L/2+k*L/bays,Y0+fh*floors/2,0.07,0.26,fh*floors,0.14,tint(wl,0.38));
+    for(var f=0;f<floors;f++){
+      var y0=Y0+f*fh;
+      for(var i=0;i<bays;i++){
+        var lx=-L/2+(i+0.5)*L/bays;
+        box(lx-0.45,y0+1.1,0.05,1.0,2.1,0.1,doorCols[(i+f)%4]);
+        DC(2,lx-0.45,y0+1.14,0.105,1.14,2.2);
+        box(lx+0.75,y0+1.65,0.05,1.0,0.9,0.1,'#23364a');
+        DC(0,lx+0.75,y0+1.65,0.105,1.3,1.3);
+        DC(5,lx,y0-0.05,0.108,1.9,2.3);
+        if(balcony&&(i*7+f*3)%5===0)box(lx+0.3,y0+0.95,1.72,0.55,0.9,0.03,cloth[(i+f)%5]);
+      }
+      box(0,y0+fh-0.08,0.06,L+0.2,0.16,0.14,'#f1efe6');
+      if(balcony){
+        box(0,y0,0.9,L,0.16,1.8,'#c9c7c0');box(0,y0+0.58,1.72,L,0.07,0.07,'#3a3a3a');
+        for(var p=0;p<=posts;p++)box(-L/2+p*(L/posts),y0+0.3,1.72,0.07,0.6,0.07,'#3a3a3a');
+      }
+    }
+  }
+  /* a shop on the ground floor with flats above */
+  function shopHouse(o){
+    var wall=o.wall||WALLS[(br()*WALLS.length)|0],roof=o.roof||ROOFS[(br()*ROOFS.length)|0],sg=SIGNS[(br()*SIGNS.length)|0],nm=o.name||NAMES[(nI++)%NAMES.length];
+    var fl=o.floors||2+((br()*2)|0),fh=3.1,uf=fl-1,w=o.w||9,d=o.d||9,h=4;
+    building({kind:'shop',face:o.face,x:o.x,z:o.z,w:w,d:d,h:h,wall:wall,roof:roof,signBg:o.sbg||sg[0],signFg:o.sfg||sg[1],awning:o.aw||sg[0],name:nm});
+    if(uf>0){
+      var top=h+fh*uf;
+      curMat=null;box(o.x,h+fh*uf/2+0.1,o.z,w,fh*uf,d,wall);
+      curMat='roof';box(o.x,top+0.3,o.z,w+0.5,0.28,d+0.5,roof);curMat=null;
+      solid(o.x,o.z,w,d,top+0.4);
+      var oo={x:o.x,z:o.z,w:w,d:d,face:o.face},fp=frontPoint(oo),a=FACE[o.face],L=frontLen(oo);
+      frame(fp[0],fp[1],a,function(){upperFacade(L,fh,uf,h,wall,true);});
+      var r=br();
+      if(r<0.35)wtank(o.x+w*0.2,top+0.45,o.z-d*0.2,'#1b1b1e');
+      else if(r<0.6)roofAC(o.x-w*0.2,top+0.45,o.z);
+      else if(r<0.8)dish(o.x+w*0.25,top+0.45,o.z,0);
+    }
+    return {x:o.x,z:o.z,w:w,d:d,face:o.face};
+  }
+  /* ---------- north side, both halves (shops face the main road, z < 0) ---------- */
+  var k;
+  for(k=0;k<9;k++){
+    shopHouse({face:'S',x:JX+20.5+k*9,z:-16.5,floors:2+(k%3)});
+    shopHouse({face:'S',x:JX-20.5-k*9,z:-16.5,floors:2+((k+1)%3)});
+  }
+  /* second rank facing a market lane (z -26) */
+  for(k=0;k<8;k++){
+    if(k%2===0){shopHouse({face:'S',x:JX+40+k*9,z:-37,d:9,floors:2});shopHouse({face:'S',x:JX-40-k*9,z:-37,d:9,floors:2});}
+  }
+  /* market lane stalls */
+  for(k=0;k<8;k++){stall(JX+30+k*3.4,-27,sid0(k));stall(JX-30-k*3.4,-27,sid0(k+3));}
+  function sid0(i){return i+2;}
+  /* ---------- Ojuelegba Road frontage, north arm ---------- */
+  [-29.5,-38.5,-47.5,-56.5].forEach(function(zc,i){
+    shopHouse({face:'W',x:JX+18,z:zc,w:10,d:9,floors:2+(i%2)});
+    shopHouse({face:'E',x:JX-18,z:zc,w:10,d:9,floors:2+((i+1)%2)});
+  });
+  /* ---------- south side ---------- */
+  OJB.super=shopHouse({face:'N',x:JX+30,z:16.5,w:14,d:9,floors:2,name:'OJUELEGBA SUPERMARKET',sbg:'#2f7d4f',sfg:'#ffffff',aw:'#2f7d4f',wall:'#f1efe6'});
+  OJB.buka=shopHouse({face:'N',x:JX+42.5,z:16.5,w:9,d:9,floors:2,name:'IYA BASIRA BUKA',sbg:'#c1352d',sfg:'#ffffff',aw:'#c1352d',wall:'#e8d9b8'});
+  OJB.clinic=shopHouse({face:'N',x:JX+55,z:16.5,w:12,d:9,floors:3,name:'SURULERE MEDICAL CENTRE',sbg:'#1f8a4c',sfg:'#ffffff',aw:'#f1efe6',wall:'#f1efe6'});
+  for(k=0;k<5;k++)shopHouse({face:'N',x:JX+69.5+k*9,z:16.5,floors:2+(k%2)});
+  for(k=0;k<2;k++)shopHouse({face:'N',x:JX-20.5-k*9,z:16.5,floors:2+(k%3)});
+  /* the school forecourt stays open at x=JX-60; shops line the road either side of it */
+  for(k=0;k<2;k++)shopHouse({face:'N',x:JX-38.5-k*9,z:16.5,floors:2+((k+1)%3)});
+  for(k=0;k<3;k++)shopHouse({face:'N',x:JX-82.5-k*9,z:16.5,floors:2+((k+2)%3)});
+  [-29.5].forEach(function(zc){shopHouse({face:'W',x:JX+18,z:-zc,w:10,d:9,floors:2});shopHouse({face:'E',x:JX-18,z:-zc,w:10,d:9,floors:3});});
+  /* ---------- bus stops, traders, okada and danfo ---------- */
+  function busStop(x,z,ry,nm){
+    frame(x,z,ry,function(){
+      box(0,0.12,0,5,0.24,2.2,'#8d8f90');
+      [-2.3,2.3].forEach(function(px){[-0.9,0.9].forEach(function(pz){box(px,1.4,pz,0.12,2.8,0.12,'#555');});});
+      box(0,2.85,0,5.4,0.14,2.5,'#2f6fb1');box(0,2.5,-0.95,5,0.9,0.08,'#23364a');
+      box(0,0.55,-0.8,3.6,0.1,0.5,'#8a6a45');box(-1.7,0.3,-0.8,0.1,0.6,0.4,'#555');box(1.7,0.3,-0.8,0.1,0.6,0.4,'#555');
+    });
+    solid(x,z,5,2.2,2.9);
+    addSign(nm,'#2f6fb1','#ffffff',x,3.6,z+(ry===0?0:0),ry===0?0:Math.PI,4.6,0.8);
+  }
+  busStop(JX+46,-8.6,0,'OJUELEGBA BUS STOP');
+  busStop(JX-46,8.6,Math.PI,'OJUELEGBA BUS STOP');
+  /* roadside traders along the verges */
+  for(k=0;k<6;k++){stall(JX+58+k*3.4,-8.2,k+5);}
+  for(k=0;k<5;k++){stall(JX-58-k*3.4,8.2,k+1);}
+  [[JX+14,-8.4,0.2],[JX+16,-8.6,0.1],[JX+18,-8.3,-0.1],[JX-14,8.4,3.3],[JX-16,8.6,3.2],[JX-34,8.4,3.1]].forEach(function(o){okada(o[0],o[1],o[2]);});
+  danfo(JX+62,-9.6,0);danfo(JX-62,9.6,Math.PI);
+  /* ---------- residential street behind the shops (south-east): Ayo Close ---------- */
+  var RZ=49;
+  box(JX+55,0.03,RZ,96,0.06,6,'#3a3c40');
+  box(JX+55,0.066,RZ,96,0.012,0.14,'#c9c3b0');
+  for(k=0;k<5;k++){
+    var hx=JX+21+k*15;
+    building({kind:'house',face:'S',x:hx,z:RZ-9.5,w:11,d:8,h:3.4+((k%2)*0.5),wall:WALLS[(k*3)%10],roof:ROOFS[k%5]});
+    building({kind:'house',face:'N',x:hx,z:RZ+10,w:11,d:8,h:3.4+(((k+1)%2)*0.5),wall:WALLS[(k*3+5)%10],roof:ROOFS[(k+2)%5]});
+    wallX(RZ-4.6,hx-5.8,hx+5.8,hx,3.0);wallX(RZ+5.6,hx-5.8,hx+5.8,hx,3.0);
+    if(k%2===0)car(hx+2.8,RZ-3.4,0,['#c9c9c9','#8e2f2f','#14161a'][k%3]);
+    if(k%3===1)tree(hx-4,RZ-3.0);
+  }
+  drain(JX+8,JX+102,RZ-3.4);drain(JX+8,JX+102,RZ+3.4);
+  poleLine([JX+20,JX+44,JX+68,JX+92],RZ+3.8,2);
+  [[JX+36,RZ+15],[JX+62,RZ+15],[JX+84,RZ+15]].forEach(function(p){tree(p[0],p[1]);});
+  addSign('AYO CLOSE','#1d5c3a','#ffffff',JX+9.5,2.6,RZ-3.4,Math.PI/2,1.8,0.45);
+  /* a church and a mosque on the quiet side */
+  building({kind:'house',face:'N',x:JX+97,z:RZ+10,w:14,d:10,h:5,wall:'#f1efe6',roof:'#6b4a3a',cross:true});
+  building({kind:'house',face:'S',x:JX+97,z:RZ-9.5,w:12,d:9,h:4.6,wall:'#e8e3d2',roof:'#2d6a4f'});
+  cyl(JX+103.8,5.4,RZ-9.5,1.2,10.8,1.2,'#e8e3d2');cyl(JX+103.8,11.2,RZ-9.5,1.6,0.5,1.6,'#2d6a4f');lump(JX+103.8,11.9,RZ-9.5,1.2,1.0,1.2,'#2d6a4f');
+  addSign('ST PAUL CHURCH','#2d4a8a','#ffffff',JX+97,5.6,RZ+4.9,Math.PI,6,0.8);
+  addSign('CENTRAL MOSQUE','#2d6a4f','#ffffff',JX+97,5.2,RZ-5.0,0,6,0.8);
+  /* ---------- Ojuelegba Community Secondary School (south-west compound) ---------- */
+  var SX=JX-60,SZ=44;
+  wallX(SZ-21.5,SX-30,SX+30,SX,5.0);wallX(SZ+21.5,SX-30,SX+30);wallZ(SX-30,SZ-21.5,SZ+21.5);wallZ(SX+30,SZ-21.5,SZ+21.5);
+  box(SX,0.04,SZ,58,0.05,43,'#b8a57a');
+  building({kind:'multi',face:'N',x:SX,z:SZ+8,w:40,d:12,h:8,floors:2,balcony:true,wall:'#f1efe6',roof:'#2d6a4f'});
+  box(SX,0.06,SZ-8,22,0.06,14,'#b86a3a');box(SX,0.075,SZ-8,22,0.012,0.15,'#f4f1e8');
+  [-1,1].forEach(function(s){box(SX+s*11,1.0,SZ-8,0.15,2.0,2.6,'#f1efe6');box(SX+s*11,2.0,SZ-8,0.15,0.15,3,'#f1efe6');});
+  addSign('OJUELEGBA COMMUNITY SECONDARY SCHOOL','#2d6a4f','#ffffff',SX,3.6,SZ-21.1,Math.PI,9,1.1);
+  tree(SX-24,SZ-14);tree(SX+24,SZ-14);tree(SX-24,SZ+22);tree(SX+24,SZ+22);palm(SX-20,SZ-4);palm(SX+20,SZ-4);
+  OJB.school={x:SX,z:21};
+})();
+
+CHK=CHK_SAVE;
+/* ---- b47: four places in Ojuelegba you can walk into: a supermarket, a buka, a clinic and a school classroom ---- */
+var OJI={super:[1580,-42],buka:[1580,-14],clinic:[1580,14],school:[1580,42]};
+(function(){
+  var GC=['#c1352d','#f2b705','#2f6fb1','#2a9d5b','#f1efe6','#e07a1f','#7a2e65'];
+  function gond(x,z,len,off){
+    box(x,0.95,z,len,1.9,0.9,'#d9d4c8');solid(x,z,len,0.9,1.9);
+    [-1,1].forEach(function(s){[0.5,1.15,1.8].forEach(function(h,hi){for(var i=0;i<Math.floor(len/0.62);i++)box(x-len/2+0.35+i*0.62,h,z+s*0.48,0.46,0.42,0.12,GC[(i+hi*2+off+(s>0?3:0))%7]);});});
+    box(x,1.98,z,len+0.1,0.08,1.0,'#c1352d');
+  }
+  function table(x,z,col){box(x,0.75,z,1.5,0.08,0.95,col||'#8a6a45');[[-0.65,-0.38],[0.65,-0.38],[-0.65,0.38],[0.65,0.38]].forEach(function(p){box(x+p[0],0.37,z+p[1],0.08,0.74,0.08,'#3a2a1c');});solid(x,z,1.5,0.95,0.8);}
+  function bed(x,z,ry,sheet){
+    frame(x,z,ry,function(){box(0,0.4,0,2.0,0.3,0.95,'#e9e4d6');box(0,0.62,0,1.9,0.18,0.85,sheet);box(-0.78,0.75,0,0.4,0.2,0.6,'#f6f3ec');box(0,0.2,0,2.0,0.4,0.95,'#9aa0a6');});
+    solid(x,z,Math.abs(Math.cos(ry))>0.5?2.0:0.95,Math.abs(Math.cos(ry))>0.5?0.95:2.0,0.9);
+  }
+  /* ----- OJUELEGBA SUPERMARKET (1550, -42) ----- */
+  (function(){
+    var cx=OJI.super[0],cz=OJI.super[1],W=26,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('ojsuper',cx,cz,W,D,H,{floor:'#d9d6cc',wall:'#f4f1ea',trim:'#2f7d4f',ceil:'#faf8f4'},{out:'ojsuperd',nm:'OJUELEGBA SUPERMARKET',doorX:cx-9.5});
+    for(var zi=0;zi<4;zi++)box(X(0),0.115,Z(-5.5+zi*3.6),24,0.02,0.1,'#c9c3b0');
+    gond(X(-5),Z(-2),9,0);gond(X(-5),Z(-5.4),9,2);gond(X(6),Z(-2),9,4);
+    /* chiller wall */
+    for(var ci=0;ci<6;ci++){box(X(-10+ci*3.4),1.1,Z(-8.4),3.1,2.2,0.7,'#cfe3ee');box(X(-10+ci*3.4),1.1,Z(-8.0),2.8,1.9,0.05,'#9ec3d8');solid(X(-10+ci*3.4),Z(-8.4),3.1,0.7,2.2);}
+    addSign('OJUELEGBA SUPERMARKET','#2f7d4f','#ffffff',X(0),3.7,Z(-8.8),0,10,0.9);
+    /* checkout */
+    box(X(9),0.55,Z(5.2),5.6,1.1,1.2,'#2b2118');box(X(9),1.14,Z(5.2),5.8,0.1,1.4,'#e9e4d6');solid(X(9),Z(5.2),5.8,1.4,1.2);
+    box(X(10.6),1.4,Z(5.2),0.6,0.5,0.5,'#1b1b1f');
+    box(X(5.4),0.45,Z(5.2),0.6,0.9,1.0,'#555');solid(X(5.4),Z(5.2),0.6,1.0,0.9);
+    [[-8,6],[-7,6.2],[-6,6]].forEach(function(p){box(X(p[0]),0.3,Z(p[1]),0.6,0.35,0.45,'#c1352d');});
+    plant(X(-12),Z(7),1.0);
+    function plant(x,z,s){cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  })();
+  /* ----- IYA BASIRA BUKA (1550, -14) ----- */
+  (function(){
+    var cx=OJI.buka[0],cz=OJI.buka[1],W=22,D=16,H=4.2,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('ojbuka',cx,cz,W,D,H,{floor:'#c9b58f',wall:'#f0e4c8',trim:'#c1352d',ceil:'#f6efdc'},{out:'ojbukad',nm:'IYA BASIRA BUKA',doorX:cx-8});
+    [[-6,-1],[-6,3],[0,-1],[0,3],[6,-1],[6,3]].forEach(function(p,i){
+      table(X(p[0]),Z(p[1]),i%2?'#8a6a45':'#7a5a38');
+      [[-1,0],[1,0]].forEach(function(s){CHAIRFN(X(p[0]+s[0]*1.3),Z(p[1]),s[0]>0?-Math.PI/2:Math.PI/2,['#c1352d','#2f6fb1','#f2b705'][(i+(s[0]>0?1:0))%3]);});
+    });
+    /* serving counter and pots */
+    box(X(0),0.55,Z(-5.2),15,1.1,1.3,'#5a3b2a');box(X(0),1.14,Z(-5.2),15.2,0.1,1.5,'#e9e4d6');solid(X(0),Z(-5.2),15.2,1.5,1.2);
+    [-5.5,-2.7,0,2.7,5.5].forEach(function(px,i){cyl(X(px),1.4,Z(-5.2),0.95,0.5,0.95,['#8a8d90','#6a6e72','#a8321f','#8a8d90','#2f6a4a'][i]);cyl(X(px),1.7,Z(-5.2),1.0,0.08,1.0,'#555');});
+    box(X(0),1.2,Z(-7.4),15,2.4,0.5,'#6a4a30');
+    addSign('MENU: JOLLOF  AMALA  PEPPER SOUP','#c1352d','#ffffff',X(0),3.2,Z(-7.7),0,9,0.9);
+    box(X(-9.5),1.1,Z(-4.8),0.9,2.2,0.7,'#cfe3ee');solid(X(-9.5),Z(-4.8),0.9,0.7,2.2);
+    box(X(9.5),2.6,Z(-7.6),2.2,1.3,0.12,'#0b0d12');box(X(9.5),2.6,Z(-7.55),2.0,1.1,0.05,'#2b6aa8');
+    cyl(X(0),4.0,Z(1),1.4,0.08,1.4,'#444');
+  })();
+  /* ----- SURULERE MEDICAL CENTRE (1550, 14) ----- */
+  (function(){
+    var cx=OJI.clinic[0],cz=OJI.clinic[1],W=24,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('ojclinic',cx,cz,W,D,H,{floor:'#dfe6e4',wall:'#f4f8f7',trim:'#1f8a4c',ceil:'#ffffff'},{out:'ojclinicd',nm:'SURULERE MEDICAL CENTRE',doorX:cx-9});
+    /* waiting area */
+    for(var wi=0;wi<5;wi++){CHAIRFN(X(-10+wi*1.3),Z(5),Math.PI,'#1f8a4c');}
+    box(X(-7),0.34,Z(7.4),7,0.04,0.2,'#bcd0cc');
+    /* reception */
+    box(X(5),0.55,Z(4),6,1.1,1.2,'#e9e4d6');box(X(5),1.14,Z(4),6.2,0.1,1.4,'#1f8a4c');solid(X(5),Z(4),6.2,1.4,1.2);
+    box(X(7),1.5,Z(4),0.7,0.5,0.1,'#14161a');
+    /* wards behind a partition with two doorways */
+    [[-10.75,2.5],[0,13],[10.75,2.5]].forEach(function(q){box(X(q[0]),H/2,Z(-1.5),q[1],H,0.4,'#f4f8f7');solid(X(q[0]),Z(-1.5),q[1],0.4,H);});
+    [-8,8].forEach(function(dx2){box(X(dx2),H-0.6,Z(-1.5),3.0,1.2,0.4,'#f4f8f7');});
+    bed(X(-9),Z(-6),Math.PI/2,'#2f6fb1');bed(X(-5),Z(-6),Math.PI/2,'#2f6fb1');bed(X(5),Z(-6),Math.PI/2,'#1f8a4c');bed(X(9),Z(-6),Math.PI/2,'#1f8a4c');
+    box(X(0),0.5,Z(-8.4),5,1.0,0.7,'#cfd8d4');solid(X(0),Z(-8.4),5,0.7,1.0);
+    box(X(-11.4),1.0,Z(-6),0.5,2.0,2.4,'#cfd8d4');solid(X(-11.4),Z(-6),0.5,2.4,2.0);
+    box(X(11.4),1.0,Z(-6),0.5,2.0,2.4,'#cfd8d4');solid(X(11.4),Z(-6),0.5,2.4,2.0);
+    addSign('SURULERE MEDICAL CENTRE','#1f8a4c','#ffffff',X(0),3.5,Z(8.7),Math.PI,10,0.9);
+    box(X(-11.7),2.2,Z(2),0.1,0.9,3,'#f6f3ec');
+  })();
+  /* ----- OJUELEGBA COMMUNITY SECONDARY SCHOOL: classroom (1550, 42) ----- */
+  (function(){
+    var cx=OJI.school[0],cz=OJI.school[1],W=30,D=20,H=4.6,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('ojschool',cx,cz,W,D,H,{floor:'#bfb7a4',wall:'#efe9d6',trim:'#2d6a4f',ceil:'#f6f3ec'},{out:'ojschoold',nm:'OJUELEGBA COMMUNITY SECONDARY SCHOOL',doorX:cx-11});
+    /* blackboard and teacher's desk at the back wall */
+    box(X(0),2.4,Z(-9.7),11,2.6,0.12,'#1f4a35');box(X(0),2.4,Z(-9.62),11.4,2.9,0.05,'#6a4a30');box(X(0),2.4,Z(-9.55),10.6,2.4,0.04,'#244f3a');
+    addSign('ENGLISH  MATHS  BASIC SCIENCE','#244f3a','#f1efe6',X(0),2.4,Z(-9.5),0,8.4,1.0);
+    box(X(-4),0.7,Z(-7.4),2.4,0.1,1.1,'#7a5a38');box(X(-4),0.35,Z(-7.4),2.2,0.7,0.9,'#5a3b2a');solid(X(-4),Z(-7.4),2.4,1.1,0.8);
+    /* student desks, 4 rows of 5 */
+    for(var r=0;r<4;r++)for(var c=0;c<5;c++){
+      var dx=X(-8+c*4),dz=Z(-3+r*2.4);
+      box(dx,0.72,dz,1.5,0.08,0.7,'#b08a5a');box(dx-0.65,0.36,dz,0.08,0.72,0.6,'#555');box(dx+0.65,0.36,dz,0.08,0.72,0.6,'#555');
+      box(dx,0.42,dz+0.78,0.8,0.08,0.5,'#2f6fb1');box(dx,0.7,dz+1.0,0.8,0.5,0.08,'#2f6fb1');
+      solid(dx,dz,1.5,0.7,0.8);
+    }
+    box(X(13),1.4,Z(-4),0.5,2.8,5,'#cfd8d4');solid(X(13),Z(-4),0.5,5,2.8);
+    [[X(-14),Z(2)],[X(14),Z(2)]].forEach(function(p){box(p[0],2.3,p[1],0.1,1.2,3,'#8fc4d9');});
+    addSign('SCHOOL RULES: BE ON TIME','#2d6a4f','#ffffff',X(8),3.2,Z(-9.6),0,5,0.7);
+  })();
+})();
+
 var WORLD_TRIS=0;
 Object.keys(BK).forEach(function(k){
   var B=BK[k],g=new THREE.BufferGeometry();
@@ -3182,7 +3460,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-66,XMAX=1600;
+var LIM=66,PR=0.38,XMIN=-300,XMAX=1600;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -3992,8 +4270,8 @@ function buildOkada(){
   return b.mesh();
 }
 var LANES=[
-  {x:-63,z:2.5,h:Math.PI/2,speed:9},
-  {x:247,z:-2.5,h:-Math.PI/2,speed:8},
+  {x:-265,z:2.5,h:Math.PI/2,speed:9,b:[-266,248]},
+  {x:247,z:-2.5,h:-Math.PI/2,speed:8,b:[-266,248]},
   {x:-2,z:-63,h:0,speed:7},
   {x:2,z:63,h:Math.PI,speed:8.5},
   {x:292,z:4.4,h:Math.PI/2,speed:10,b:[289,481]},
@@ -4011,7 +4289,9 @@ var LANES=[
   {x:1012,z:4.4,h:Math.PI/2,speed:10,b:[1011,1207]},
   {x:1208,z:-4.4,h:-Math.PI/2,speed:9.5,b:[1011,1207]},
   {x:1106.5,z:-63,h:0,speed:8,b:[1011,1207]},
-  {x:1113.5,z:63,h:Math.PI,speed:8.5,b:[1011,1207]}
+  {x:1113.5,z:63,h:Math.PI,speed:8.5,b:[1011,1207]},
+  {x:OJX-2,z:-63,h:0,speed:7,b:[OJX-4,OJX+4]},
+  {x:OJX+2,z:63,h:Math.PI,speed:8,b:[OJX-4,OJX+4]}
 ];
 function regOf(x){return x>1000?4:(x>730?3:(x>500?2:(x>258?1:0)));}
 function grpOf(x){var r=regOf(x);return r===3?0:(r===4?1:r);}
@@ -4069,7 +4349,7 @@ function sigUpdate(dt){
   }
 }
 /* distance from a vehicle's front to its stop line (negative once it is past), or Infinity when it can drive on */
-function sigGap(v){
+function sigGap0(v){
   if(v.lane>3)return Infinity;
   var L=SIGL[v.lane],st=sigState(L.ax);
   if(st==='g')return Infinity;
@@ -4376,13 +4656,13 @@ function MZ(z){return (z+LIM)/(2*LIM)*MH;}
   g.fillStyle='#2f7fa8';g.fillRect(MX(137.2),0,MW-MX(137.2),MZ(-56));g.fillRect(MX(137.2),MZ(56),MW-MX(137.2),MH-MZ(56));
   g.fillStyle='#e3cf9b';g.fillRect(MX(137.2),MZ(46),MW-MX(137.2),MZ(56)-MZ(46));
   g.fillStyle='#8d8f90';g.fillRect(MX(99.5),MZ(-7.2),MX(137.5)-MX(99.5),MZ(7.2)-MZ(-7.2));
-  g.fillStyle='#4a4d52';g.fillRect(0,MZ(-5),MX(251),MZ(5)-MZ(-5));g.fillRect(MX(-4),0,MX(4)-MX(-4),MH);g.fillRect(MX(191),MZ(-56),MX(199)-MX(191),MZ(56)-MZ(-56));
+  g.fillStyle='#4a4d52';g.fillRect(0,MZ(-5),MX(251),MZ(5)-MZ(-5));g.fillRect(MX(-4),0,MX(4)-MX(-4),MH);g.fillRect(MX(OJX-7),0,MX(OJX+7)-MX(OJX-7),MH);g.fillRect(MX(191),MZ(-56),MX(199)-MX(191),MZ(56)-MZ(-56));
   g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);
   g.beginPath();g.moveTo(0,MZ(0));g.lineTo(MX(251),MZ(0));g.moveTo(MX(0),0);g.lineTo(MX(0),MH);g.moveTo(MX(195),MZ(-56));g.lineTo(MX(195),MZ(56));g.stroke();g.setLineDash([]);
   g.fillStyle='#c9b08a';
   for(var i=0;i<solids.length;i++){
     var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
-    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/316*MW),Math.max(2,d/(2*LIM)*MH));
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(MR[0][1]-MR[0][0])*MW),Math.max(2,d/(2*LIM)*MH));
   }
 })();
 (function(){
@@ -4971,7 +5251,7 @@ var LMULT=[1,1.4,2];
 var GOVS=[null,{n:'GOV. BELLO',d:'Rent is 25% cheaper'},{n:'GOV. ADEYEMI',d:'Shifts and fares pay 15% more'},{n:'GOV. OKAFOR',d:'Food is 20% cheaper'}];
 var APPR={shirt:[['BLACK','#17171b'],['RED','#b3261e'],['GREEN','#2f7d4f'],['BLUE','#2b5a9a'],['YELLOW','#e0b020']],skin:[['DEEP','#6b4026','#5a3520'],['DARK','#4a2a18','#3c2012'],['MEDIUM','#8a5a3a','#774a2e'],['LIGHT','#b07a52','#9a6842']]};
 var life=null,creating=false,lastGH=gameHour,dq=[],warnT={},chatCd={},shift=null,lifeSpeed=1,clubNear=false,clubD=99,needAcc=0,lookCur={shirt:'#17171b',skin:'#6b4026',skin2:'#5a3520'};
-function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,sx:{},msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,bb:{},mn:[],sf:{},fit:0,cb:{ngn:185000000000,usd:1850000000,log:[]},gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
+function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,sx:{},edu:0,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,bb:{},mn:[],sf:{},fit:0,cb:{ngn:185000000000,usd:1850000000,log:[]},gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
 function lifeInit(sv){
   life=lifeDefault();
   if(sv&&sv.L&&sv.L.l){
@@ -5164,7 +5444,7 @@ function svcMenu(key,msg){
 function levelOf(ck){var n=life.car[ck]||0;return n>=10?2:(n>=4?1:0);}
 function shiftPay(ck){
   var c=CARS[ck];
-  return r50(c.pay*LMULT[levelOf(ck)]*moodMult()*(1+0.1*Math.floor(frLevel(c.key)/2)));
+  return r50(c.pay*LMULT[levelOf(ck)]*moodMult()*(1+0.1*Math.floor(frLevel(c.key)/2))*(1+0.04*eduLevel()));
 }
 function startShift(ck){
   var c=CARS[ck];
@@ -8395,10 +8675,179 @@ function appEvents(){phPush('Events',function(b){
 });}
 
 var _er45=electionResult;electionResult=function(v){_er45(v);SX().vic=life.day+1;};
+/* ---- b47: Ojuelegba people, opening hours, school, careers and daily life ---- */
+function eduLevel(){var e=(life&&life.edu)|0;return e>=16?3:(e>=8?2:(e>=3?1:0));}
+var EDUN=['No certificate yet','Level 1: Basic','Level 2: Secondary','Level 3: Advanced'];
+var OJP=[
+  {k:'ojsuperd',id:'ojsuper',nm:'OJUELEGBA SUPERMARKET',h:[7,21],x:OJX+30,z:10.9,yaw:Math.PI,shop:'ojsuper'},
+  {k:'ojbukad',id:'ojbuka',nm:'IYA BASIRA BUKA',h:[7,22],x:OJX+42.5,z:10.9,yaw:Math.PI,shop:'ojbuka'},
+  {k:'ojclinicd',id:'ojclinic',nm:'SURULERE MEDICAL CENTRE',h:[8,20],x:OJX+55,z:10.9,yaw:Math.PI,shop:'ojclinic'},
+  {k:'ojschoold',id:'ojschool',nm:'OJUELEGBA COMMUNITY SECONDARY SCHOOL',h:[8,17],x:OJB.school.x,z:20.4,yaw:Math.PI,shop:'ojschool'}
+];
+var OJCLOSED=[];
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  var D={
+    ojsuperd:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#1c2a44',low2:'#121c30',top:'#2f7d4f',head:'cap',hc:'#2f7d4f'},name:'SECURITY GUARD',lbl:'SUPERMARKET',greet:'Welcome to Ojuelegba Supermarket. Open 7 AM to 9 PM.'},
+    ojbukad:{look:{skin:sk[1],skin2:'#6a3e26',low:'#c1352d',low2:'#7a1f1f',top:'#f2d36b',head:'gele',hc:'#c1352d',hc2:'#f2b705'},name:'IYA BASIRA',lbl:'BUKA',greet:'Come in, come in! Hot food dey inside. Open 7 AM to 10 PM.'},
+    ojclinicd:{look:{skin:sk[0],skin2:'#5a3520',low:'#f0f3f2',low2:'#cfd8d4',top:'#1f8a4c',head:'cap',hc:'#ffffff'},name:'CLINIC RECEPTION',lbl:'CLINIC',greet:'Surulere Medical Centre. Open 8 AM to 8 PM.'},
+    ojschoold:{look:{skin:sk[3],skin2:'#774a2e',low:'#2a2a30',low2:'#1c1c20',top:'#f1efe6',head:'cap',hc:'#2d6a4f'},name:'GATEMAN',lbl:'SCHOOL',greet:'Ojuelegba Community Secondary School. Lessons run 8 AM to 5 PM.'}
+  };
+  OJP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    /* closed board over the door */
+    addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.x,2.4,p.k==='ojschoold'?22.3:11.85,Math.PI,3.2,0.6);
+    var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    DEST.push([p.nm,p.k]);
+  });
+  /* the people inside, each with a real job to do */
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  inside('ojsuper','ojsuper',[9,6.6],{skin:sk[1],skin2:'#6a3e26',low:'#1c1c22',low2:'#14141a',top:'#2f7d4f',head:'cap',hc:'#2f7d4f'},
+    {label:'CASHIER',name:'MR EMEKA (CASHIER)',svcLabel:'BUY',friend:false,career:'cashier',hours:[7,21],closed:'We are closed.',greet:'Welcome! Anything you need, just ask.',
+     items:[{l:'GROCERIES',c:6500,food:1,fx:{hunger:45,fun:2},msg:'You pack groceries and snack on bread and milk.'},{l:'LOAF OF BREAD AND TEA',c:1200,food:1,fx:{hunger:28,energy:4,bladder:-3},msg:'Bread and tea from the corner of the shop.'},{l:'COLD WATER',c:300,fx:{bladder:-5,energy:3},msg:'Cold bottled water.'},{l:'SOAP AND TOOTHPASTE',c:1500,fx:{hygiene:25},msg:'You freshen up with new toiletries.'}]},Math.PI);
+  inside('ojbuka','ojbuka',[0,-6.5],{skin:sk[1],skin2:'#6a3e26',low:'#c1352d',low2:'#7a1f1f',top:'#f2d36b',head:'gele',hc:'#c1352d',hc2:'#f2b705'},
+    {label:'FOOD',name:'IYA BASIRA',svcLabel:'EAT',friend:false,career:'waiter',hours:[7,22],closed:'We have finished cooking for today.',greet:'Eh! Welcome o. Wetin you wan chop?',
+     items:[{l:'JOLLOF AND CHICKEN',c:2200,food:1,fx:{hunger:75,fun:5,bladder:-7},msg:'Smoky party jollof with chicken. Perfect.'},{l:'AMALA AND EWEDU',c:1800,food:1,fx:{hunger:70,fun:4,bladder:-6},msg:'Hot amala with ewedu and gbegiri. Heavy and good.'},{l:'PEPPER SOUP',c:1600,food:1,fx:{hunger:45,energy:6,fun:4,bladder:-6},msg:'Spicy goat meat pepper soup. It clears your head.'},{l:'ZOBO',c:300,food:1,fx:{hunger:6,energy:4,bladder:-6},msg:'Cold zobo.'}]});
+  inside('ojclinic','ojclinic',[5,2.6],{skin:sk[0],skin2:'#5a3520',low:'#f0f3f2',low2:'#cfd8d4',top:'#1f8a4c',head:'cap',hc:'#ffffff'},
+    {label:'NURSE',name:'NURSE FUNKE',svcLabel:'CARE',friend:false,career:'aide',hours:[8,20],closed:'The clinic is closed. Emergencies go to St Mercy Clinic.',greet:'Surulere Medical Centre. How you dey feel?',
+     items:[{l:'CHECK-UP',c:3500,fx:{energy:20,hygiene:5,fun:2},msg:'The doctor checks you over. All good, just rest well.'},{l:'MALARIA TEST AND DRUGS',c:6500,fx:{energy:30,hunger:-4},msg:'Treated and given drugs. You feel better already.'},{l:'REST IN THE WARD',c:2500,fx:{energy:45,bladder:-12,hunger:-8},t:2,msg:'You rested in the ward for two hours.'}]});
+  inside('ojschool','ojteacher',[-4,-8.6],{skin:sk[3],skin2:'#774a2e',low:'#2a2a30',low2:'#1c1c20',top:'#2b5a9a',head:'cap',hc:'#2b5a9a'},
+    {label:'TEACHER',name:'MR ADEBAYO (TEACHER)',friend:false,greet:'Welcome to class. Learning pays.'},0);
+  NK.ojteacher.npc.talk=function(){eduTalk();};
+  /* exit guards, like the mall */
+  OJP.forEach(function(p){
+    var c=INTD[p.id].c,dd=INTD[p.id];
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* a traffic warden at the junction */
+  addPerson('ojwarden',{x:OJX+11,z:-10.6,yaw:0,skin:sk[0],skin2:'#5a3520',low:'#2f7d4f',low2:'#1f5a35',top:'#f2f2f2',head:'cap',hc:'#2f7d4f'},
+    {label:'WARDEN',name:'TRAFFIC WARDEN SEGUN',friend:false,greet:'Ojuelegba junction. Obey the lights o. Danfo and okada no get respect here.'});
+  NK.ojwarden.npc.talk=function(){openDlg('TRAFFIC WARDEN SEGUN','Ojuelegba is the busiest crossing on the mainland. Stop at the red light and the zebra is for people, abeg. The flyover is still under works.',[{label:'OK'}]);};
+  DEST.push(['OJUELEGBA JUNCTION','ojwarden']);
+  /* careers: these show up in the phone Jobs list and use the same shift system as every other job */
+  CARS.waiter={name:'BUKA WAITER',key:'ojbuka',pay:2800,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-6,hygiene:-8,fun:-6,bladder:-4}};
+  CARS.cashier={name:'SUPERMARKET CASHIER',key:'ojsuper',pay:3600,secs:30,req:'Education Level 1 (study at the school)',ok:function(){return eduLevel()>=1;},cost:{energy:-12,hunger:-7,hygiene:-3,fun:-6,bladder:-5}};
+  CARS.aide={name:'CLINIC ASSISTANT',key:'ojclinic',pay:4600,secs:30,req:'Education Level 2 (study at the school)',ok:function(){return eduLevel()>=2;},cost:{energy:-13,hunger:-8,hygiene:-4,fun:-6,bladder:-5}};
+  ['waiter','cashier','aide'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  /* places to send gigs and deliveries */
+  [[OJX-40,2.5],[OJX+40,-2.5],[OJX,-30],[OJX,30],[OJX+60,11.5],[OJX-60,-11.5],[-230,2.5],[-200,-2.5],[-140,2.5],[-110,-2.5],[OJX,-55],[OJX,55],[OJX+55,40],[OJB.school.x,19]].forEach(function(p){FSPOTS.push(p);});
+})();
+
+/* ---- b47: the Ojuelegba junction has its own signals, offset from the Origin crossroad so the two are never green together ---- */
+function sigStateO(axis){
+  var p=(SIG.ph+3)%6;
+  if(axis==='NS')return p===0?'g':(p===1?'y':'r');
+  return p===3?'g':(p===4?'y':'r');
+}
+var SIGMO=[];
+[{x:OJX-25.6,z:5.9,a:-Math.PI/2,ax:'EW'},{x:OJX+25.6,z:-5.9,a:Math.PI/2,ax:'EW'},{x:OJX-8,z:-16.6,a:Math.PI,ax:'NS'},{x:OJX+8,z:16.6,a:0,ax:'NS'}].forEach(function(h){
+  var m=new THREE.Mesh(new THREE.PlaneGeometry(0.36,0.96),new THREE.MeshBasicMaterial({map:SIGTEX.r,toneMapped:false}));
+  m.position.set(h.x+Math.sin(h.a)*0.3,4.05,h.z+Math.cos(h.a)*0.3);m.rotation.y=h.a;scene.add(m);
+  SIGMO.push({m:m,ax:h.ax,st:'r'});
+});
+var SIGLO={0:{ax:'EW',line:OJX-27},1:{ax:'EW',line:OJX+27},20:{ax:'NS',line:-18},21:{ax:'NS',line:18}};
+function ojGap(v){
+  var L=SIGLO[v.lane];if(!L)return Infinity;
+  var st=sigStateO(L.ax);if(st==='g')return Infinity;
+  var gs;
+  if(v.lane===0)gs=L.line-(v.x+v.r);
+  else if(v.lane===1)gs=(v.x-v.r)-L.line;
+  else if(v.lane===20)gs=L.line-(v.z+v.r);
+  else gs=(v.z-v.r)-L.line;
+  if(gs<-0.3||gs>40)return Infinity;
+  if(st==='y'&&gs<v.speed*0.9+1.5)return Infinity;
+  return gs+1.5;
+}
+function sigGap(v){var a=sigGap0(v),b=ojGap(v);return a<b?a:b;}
+function ojLamps(){
+  for(var i=0;i<SIGMO.length;i++){
+    var s=sigStateO(SIGMO[i].ax);
+    if(s!==SIGMO[i].st){SIGMO[i].st=s;SIGMO[i].m.material.map=SIGTEX[s];SIGMO[i].m.material.needsUpdate=true;}
+  }
+}
+/* traffic on the new stretch and on Ojuelegba Road */
+addVeh('danfo',0,40);addVeh('sedan',0,110,'#e0c040');addVeh('okada',0,190);addVeh('sedan',0,300,'#2f4f8e');
+addVeh('danfo',1,330);addVeh('sedan',1,372,'#c9c9c9');addVeh('okada',1,416,'#14161a');addVeh('danfo',1,470);addVeh('sedan',1,505,'#8e2f2f');
+addVeh('danfo',20,26);addVeh('sedan',20,70,'#d9d9d9');addVeh('okada',20,100);
+addVeh('danfo',21,30);addVeh('sedan',21,66,'#2f6a8e');addVeh('okada',21,102);
+
+function eduTalk(){
+  var e=(life.edu|0),L=eduLevel(),nx=L>=3?0:[3,8,16][L]-e;
+  if(!isOpen(8,17)){openDlg('MR ADEBAYO','Lessons run 8 AM to 5 PM. Come back tomorrow.',[{label:'OK'}]);return;}
+  openDlg('MR ADEBAYO (TEACHER)',EDUN[L]+'. '+e+' study hours so far'+(nx>0?', '+nx+' more for the next level':'')+'. Certificates open better jobs: cashier at Level 1, clinic assistant at Level 2, and shift pay rises 4% a level.',[
+    {label:'STUDY 1 HOUR ₦1,500',fn:function(){eduStudy(1,1500);}},
+    {label:'STUDY 3 HOURS ₦4,000',fn:function(){eduStudy(3,4000);}},
+    {label:'BYE'}]);
+}
+function eduStudy(h,c){
+  if(cash<c){buzz();openDlg('MR ADEBAYO','Fees for '+h+' hour'+(h>1?'s':'')+' are '+money(c)+'. You get '+money(cash)+'.',[{label:'BACK',fn:eduTalk}]);return;}
+  if(need.energy<20||need.hunger<10){buzz();openDlg('MR ADEBAYO','You look too tired or hungry to learn today. Rest and eat first.',[{label:'OK'}]);return;}
+  var before=eduLevel();
+  cash-=c;setCash();logTx('School fees',-c);
+  applyFx({energy:-7*h,hunger:-5*h,fun:-4*h,bladder:-3*h});
+  life.edu=(life.edu|0)+h;advanceHours(h);saveGame();chime();
+  var after=eduLevel();
+  if(after>before){toast('CERTIFICATE! '+EDUN[after]);pushMsg('evt','You passed '+EDUN[after]+' at Ojuelegba Community Secondary School.');}
+  openDlg('MR ADEBAYO','Good work today. '+EDUN[after]+', '+life.edu+' study hours.',[{label:'MORE',fn:eduTalk},{label:'DONE'}]);
+}
+/* daily life: people who come and go by the clock */
+var OJW=[];
+(function(){
+  var J=OJX,sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var COM=[[6,10],[16,20]],MKT=[[7,18]],STU=[[7.2,8.6],[14.5,16.2]],EVE=[[17,23]],FAM=[[15,19.5]],ALL=[[6,23]];
+  [
+    [J+22,-8.4,J+95,-8.4,COM],[J-22,8.4,J-100,8.4,COM],[J-95,-8.4,J-24,-8.4,COM],[J+95,8.4,J+24,8.4,COM],
+    [J+8.4,-18,J+8.4,-60,COM],[J-8.4,60,J-8.4,18,COM],[J-8.4,-60,J-8.4,-16,COM],[J+8.4,16,J+8.4,60,COM],
+    [J+28,-24.3,J+58,-24.3,MKT],[J-58,-29.6,J-28,-29.6,MKT],[J+30,-29.8,J+60,-29.8,MKT],[J-30,-24.3,J-56,-24.3,MKT],
+    [J-52,8.4,J-60,19.6,STU],[J-48,8.4,J-58,19.6,STU],[J-56,8.4,J-62,19.6,STU],
+    [J+10,46.2,J+85,46.2,FAM],[J+85,51.8,J+12,51.8,FAM],[J+20,46.4,J+60,46.4,EVE],
+    [J-30,-8,J+30,-8,EVE],[J+30,8,J-30,8,EVE],[J+10,-8.4,J+10,-60,ALL],[J-10,60,J-10,18,ALL]
+  ].forEach(function(r,i){
+    var w=makeWalker({fem:i%2,occ:i%2,look:i,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[r[0],r[1]],b:[r[2],r[3]],sp:1.2+(i%4)*0.25});
+    OJW.push({w:w,win:r[4]});w.off=true;
+  });
+})();
+/* people inside: shoppers, a nurse and patients, and a classroom of students in uniform */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#2f6fb1','#c1352d','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f','#f3efe2'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0;
+  function W(id,a,b,win,sp,u){
+    var d=INTD[id].c,i=n++;
+    var w=makeWalker({fem:i%2,occ:1,look:i+3,shirt:u?u[0]:cl[i%8],pants:u?u[1]:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:u?'#f1efe6':'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  W('ojsuper',[-9,-3.7],[-1,-3.7],[[7,21]],0.55);W('ojsuper',[9,1.5],[-8,1.5],[[7,21]],0.7);W('ojsuper',[8,-7.1],[-8,-7.1],[[8,20]],0.5);
+  W('ojbuka',[-4,-3.3],[4,-3.3],[[7,22]],0.5);W('ojbuka',[-10,1.5],[9,1.5],[[11,21]],0.6);
+  W('ojclinic',[-9,0.4],[9,0.4],[[8,20]],0.7,['#f0f3f2','#cfd8d4']);W('ojclinic',[-3,2],[0,2],[[8,20]],0.35);
+  [[-6,-5.2,5.2],[-2,5,-5.2],[2,-5.2,5.2],[6,5.2,-5.2],[-6,5.2,-4.6],[2,5.2,-5]].forEach(function(q,k){W('ojschool',[q[0],q[1]],[q[0],q[2]],[[8.2,16.8]],0.35+0.05*(k%3),['#f1efe6','#2b3a66']);});
+})();
+var ojT=0;
+function ojTick(dt){
+  ojLamps();
+  if(!started||!life)return;
+  ojT+=dt;if(ojT<1)return;ojT=0;
+  var h=gameHour;
+  OJCLOSED.forEach(function(c){c.m.hide=isOpen(c.p.h[0],c.p.h[1]);});
+  OJW.forEach(function(o){var on=false;for(var i=0;i<o.win.length;i++){if(h>=o.win[i][0]&&h<o.win[i][1]){on=true;break;}}o.w.off=!on;});
+  if(inInt()){var id=intId(),p=OJP.filter(function(q){return q.id===id;})[0];if(p&&!isOpen(p.h[0],p.h[1])&&!ojKick){ojKick=true;toast(nice(p.nm)+' is closing. Time to go.');exitInt();setTimeout(function(){ojKick=false;},4000);}}
+}
+var ojKick=false;
+
 /* ------------------------------------------------------------------ loop */
 function update(dt){
   _fdt=dt;
-  npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);vipTick(dt);socialTick(dt);baddieTick(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);gfxUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
+  npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);vipTick(dt);socialTick(dt);ojTick(dt);baddieTick(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);gfxUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
   if(driving){
     var dctl=readDrive(),nsub=Math.min(4,Math.max(1,Math.ceil(Math.abs(car.speed)*dt)));for(var si=0;si<nsub;si++)driveUpdate(dt/nsub,dctl);setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
