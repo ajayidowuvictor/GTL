@@ -124,3 +124,16 @@ Measured (headless, Lagos start view)
 - World triangles 214,669 to 242,653 (+13%, budget 15%). Visible draw calls +6 to +7% (budget 10%; the extra calls are the 6 new sign meshes).
 - Regression: 15 earlier scripts and 3 controls scripts pass.
 - Not measured: real frame rate on the Infinix Hot 30i.
+
+## 10. Stage D result (b41)
+
+What changed
+- One shared people kit (`personKit`) now builds everyone: hero, walkers and NPCs. Body builds (narrow to broad), four extra skin tones, heights, eleven hairstyles for women and eight for men (braids, afro, puffs, bun, cornrows, long, bob, ponytail, locs, twists, fade, hightop...), caps, kufi, fila, durag, hijab, glasses, beards, earrings, patterned clothing, and the agbada.
+- Women have a wide wardrobe, picked from the walker's number so the crowd is stable: casual (tee or tank with jeans, shorts or trousers; sundress; blouse and skirt), occasion (fitted midi, evening gown, knee dress, long skirt, cocktail mini), a modest long dress with hijab, and only about 1 in 16 in a traditional buba with gele. The old square shoulder slab is gone; the buba now has a plain wrapper tie at the hip.
+- Women are slimmer through shoulders and waist, with narrower arms and bare or tights legs below a short hem.
+- NPCs: the head is a separate piece that turns to look at the player within 14 m and nods during a conversation; arms gesture while talking.
+
+Measured (headless)
+- Per-person triangles: walkers nearAvg 1121, max 1512; far-LOD max 1376; NPC max 1604; hero 1318 unchanged. Limit 2,200.
+- Not done: sitting and idle variants; walkers' heads do not track the player (NPCs only).
+- Not measured: real frame rate on the Infinix Hot 30i.
