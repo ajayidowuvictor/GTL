@@ -96,3 +96,17 @@ Verified
 - Screenshots at sunrise, noon, sunset, dusk with shadows, night, rain, Rich Town and all 10 interiors, compared with the classic look.
 - Regression: 15 earlier scripts and 3 controls scripts all pass. Draw calls and triangles unchanged (no geometry was added).
 - Not measured: real frame rate on the Infinix Hot 30i (TEST PHONE in the menu).
+
+## 8. Stage B result (b39)
+
+What changed
+- Honest scope note: r128 `MeshLambertMaterial` lights per vertex, so true normal maps are not possible without replacing every material. Surface detail is done in the pixel shader from the world position instead.
+- World detail layer: large-scale stain and patch variation (all tiers, one octave on LOW, two on MEDIUM) plus fine grain on HIGH, fading out with distance. Breaks the visible tiling of the six 512 px textures. Walls get vertical streaking, ground gets patches.
+- Wet roads: rain darkens asphalt, dirt and concrete and builds puddles with sky and sun reflection. Roads stay damp for about 2.5 game-minutes after rain and are dry indoors.
+- Car paint and glass: sky reflection (fresnel) and sun highlight on HIGH only. Glass is told apart from tyres and paint by its dark blue vertex colour.
+- Each world material now compiles its own shader (17 programs on LOW and MEDIUM, 28 on HIGH, was about 10), so first start compiles slightly more.
+
+Verified
+- Renders: dry and wet streets, sunset, rain, parked and moving cars on HIGH. Wet sheen was cut back twice after roads looked washed out.
+- Draw calls and triangles unchanged (no geometry added). Regression: all 15 earlier scripts and 3 controls scripts pass.
+- Not measured: real frame rate on the Infinix Hot 30i.

@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b38';
+var VERSION='GTL 0.9 b39';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -580,9 +580,9 @@ sun.shadow.camera.near=1;sun.shadow.camera.far=160;sun.shadow.bias=-0.0006;sun.s
 
 /* quality tiers: same game on every tier, only the cost changes */
 var TIERS={
-  low:{label:'LOW',res:0.85,far:110,fogNear:30,shadows:false},
-  medium:{label:'MEDIUM',res:1.25,far:150,fogNear:40,shadows:false},
-  high:{label:'HIGH',res:2,far:190,fogNear:55,shadows:true}
+  low:{label:'LOW',res:0.85,far:110,fogNear:30,shadows:false,det:0.4,shine:0},
+  medium:{label:'MEDIUM',res:1.25,far:150,fogNear:40,shadows:false,det:0.6,shine:0},
+  high:{label:'HIGH',res:2,far:190,fogNear:55,shadows:true,det:1,shine:1}
 };
 var ORDER=['low','medium','high'];
 var tier='low',cullR2=12100;
@@ -2125,14 +2125,90 @@ function mkTex(key,repeat){
   im.onerror=function(){if(--texLeft===0)texesDone();};
   im.src=TEXSRC[key];return t;
 }
-function gainMat(map,extra,gain){gain=gain||(GFX.lin?1.12:1.3);
-  var o={vertexColors:true,map:map};for(var k in extra)o[k]=extra[k];
-  var m=new THREE.MeshLambertMaterial(o);
-  m.customProgramCacheKey=function(){return 'gain'+gain;};m.onBeforeCompile=function(sh){sh.fragmentShader=sh.fragmentShader.replace('#include <map_fragment>','vec4 tx_=mapTexelToLinear(texture2D(map,vUv));diffuseColor.rgb*=tx_.rgb*'+gain.toFixed(3)+';diffuseColor.a*=tx_.a;');};
+/* ---- b39: surfaces. World-space grain and stain variation (breaks texture repeats), wet roads with puddles in rain,
+   and shine on car paint and glass (HIGH tier). Walls and roads are lit per corner in this engine, so there are no
+   true normal maps: these effects work in the pixel shader from the world position instead. ---- */
+var GFXU={det:{value:1},wet:{value:0},shine:{value:0},sky:{value:new THREE.Color(0x888888)},sunCol:{value:new THREE.Color(1,1,1)},sunDir:{value:new THREE.Vector3(0,1,0)},wetv:0};
+var NOISE_GLSL=[
+'float h21(vec2 p){p=fract(p*vec2(0.1031,0.1030));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}',
+'float vn2(vec2 x){vec2 i=floor(x),f=fract(x);f=f*f*(3.0-2.0*f);return mix(mix(h21(i),h21(i+vec2(1.0,0.0)),f.x),mix(h21(i+vec2(0.0,1.0)),h21(i+vec2(1.0,1.0)),f.x),f.y);}',
+'float h31(vec3 p){p=fract(p*0.1031);p+=dot(p,p.zyx+31.32);return fract((p.x+p.y)*p.z);}',
+'float vn3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.0-2.0*f);',
+' return mix(mix(mix(h31(i),h31(i+vec3(1.0,0.0,0.0)),f.x),mix(h31(i+vec3(0.0,1.0,0.0)),h31(i+vec3(1.0,1.0,0.0)),f.x),f.y),',
+'            mix(mix(h31(i+vec3(0.0,0.0,1.0)),h31(i+vec3(1.0,0.0,1.0)),f.x),mix(h31(i+vec3(0.0,1.0,1.0)),h31(i+vec3(1.0,1.0,1.0)),f.x),f.y),f.z);}'
+].join('\n');
+function gf(v){return (+v).toFixed(3);}
+/* o: gain (brightness), kind 'ground' or 'wall', det (grain strength), wet (how much rain darkens it), sheen (puddle shine) */
+function gainMat(map,extra,o){
+  o=o||{};var gain=o.gain||(GFX.lin?1.12:1.3),kind=o.kind||'wall',det=o.det||0,wetK=o.wet||0,sheen=o.sheen||0;
+  var ob={vertexColors:true,map:map};for(var k in extra)ob[k]=extra[k];
+  var m=new THREE.MeshLambertMaterial(ob);
+  m.customProgramCacheKey=function(){return 'gm'+gain+kind+det+wetK+sheen;};
+  m.onBeforeCompile=function(sh){
+    sh.uniforms.uDet=GFXU.det;sh.uniforms.uWet=GFXU.wet;sh.uniforms.uSky=GFXU.sky;sh.uniforms.uSunCol=GFXU.sunCol;sh.uniforms.uSunDir=GFXU.sunDir;
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vWP;')
+      .replace('#include <worldpos_vertex>','#include <worldpos_vertex>\nvWP=(modelMatrix*vec4(transformed,1.0)).xyz;');
+    var ground=kind==='ground';
+    var body='vec4 tx_=mapTexelToLinear(texture2D(map,vUv));diffuseColor.rgb*=tx_.rgb*'+gf(gain)+';diffuseColor.a*=tx_.a;\n'
+      +'float wetP=0.0,wetS=0.0;\n';
+    if(det>0){
+      body+='if(uDet>0.01){float dFade=1.0-smoothstep(22.0,70.0,length(cameraPosition-vWP));\n';
+      if(ground)body+=' float dp=vn2(vWP.xz*0.11)*0.6+(uDet>0.45?vn2(vWP.xz*0.47)*0.4:0.2);\n';
+      else body+=' float dp=vn3(vec3(vWP.x*0.55,vWP.y*0.07,vWP.z*0.55))*0.55+(uDet>0.45?vn3(vWP*0.35)*0.45:0.225);\n';
+      body+=' diffuseColor.rgb*=1.0+(dp-0.5)*'+gf(det*2.0)+'*uDet;\n';
+      if(ground)body+=' if(uDet>0.9)diffuseColor.rgb*=1.0+(vn2(vWP.xz*6.0)-0.5)*'+gf(det*0.9)+'*dFade;\n';
+      else body+=' if(uDet>0.9)diffuseColor.rgb*=1.0+(vn3(vWP*5.0)-0.5)*'+gf(det*0.7)+'*dFade;\n';
+      body+='}\n';
+    }
+    if(wetK>0){
+      body+='if(uWet>0.01){float pm='+(ground?'smoothstep(0.40,0.62,vn2(vWP.xz*0.28))':'0.0')+';\n'
+        +' wetP=uWet*pm;wetS=uWet*(0.06+0.94*pm);\n'
+        +' diffuseColor.rgb*=1.0-'+gf(0.5*wetK)+'*uWet*(0.55+0.45*pm);}\n';
+    }
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vWP;\nuniform float uDet,uWet;uniform vec3 uSky,uSunCol,uSunDir;\n'+NOISE_GLSL)
+      .replace('#include <map_fragment>',body);
+    if(sheen>0){
+      sh.fragmentShader=sh.fragmentShader.replace('#include <envmap_fragment>','#include <envmap_fragment>\n'
+        +'if(wetS>0.0){vec3 Vv=normalize(cameraPosition-vWP);float fr=pow(1.0-clamp(Vv.y,0.0,1.0),5.0);vec3 Rr=reflect(-Vv,vec3(0.0,1.0,0.0));float sp=pow(max(dot(Rr,uSunDir),0.0),70.0);\n'
+        +' outgoingLight+=(uSky*(0.015+0.32*fr)+uSunCol*sp*1.0)*wetS*'+gf(sheen)+';}\n');
+    }
+  };
   return m;
 }
+/* cars: paint and glass pick up the sky and the sun on HIGH. Glass is told apart from tyres and paint by its dark blue vertex colour. */
+var carMat=new THREE.MeshLambertMaterial({vertexColors:true});
+carMat.customProgramCacheKey=function(){return 'car'+(GFX.lin?1:0);};
+carMat.onBeforeCompile=function(sh){
+  sh.uniforms.uShine=GFXU.shine;sh.uniforms.uSky=GFXU.sky;
+  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vN;varying vec3 vMV;')
+    .replace('#include <fog_vertex>','#include <fog_vertex>\nvN=transformedNormal;vMV=mvPosition.xyz;');
+  var D=GFX.lin?'0.035':'0.17';
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vN;varying vec3 vMV;uniform float uShine;uniform vec3 uSky;')
+    .replace('#include <envmap_fragment>','#include <envmap_fragment>\n'
+    +'if(uShine>0.01){vec3 N=normalize(vN);vec3 Vv=normalize(-vMV);\n'
+    +' float lum=dot(diffuseColor.rgb,vec3(0.3,0.55,0.15));float bl=diffuseColor.b/(diffuseColor.r+0.004);\n'
+    +' float glass=smoothstep(1.25,1.6,bl)*(1.0-smoothstep('+D+','+D+'*1.6,lum));\n'
+    +' float tyre=(1.0-smoothstep('+D+'*0.4,'+D+'*0.7,lum))*(1.0-glass);\n'
+    +' float shin=glass+(1.0-glass-tyre)*0.55+tyre*0.25;\n'
+    +' float fr=pow(1.0-max(dot(N,Vv),0.0),3.0);\n'
+    +' vec3 Ld=directionalLights[0].direction;vec3 H=normalize(Ld+Vv);float sp=pow(max(dot(N,H),0.0),mix(50.0,140.0,glass));\n'
+    +' outgoingLight+=(uSky*(0.05+0.8*fr)*(0.4+0.5*glass)+directionalLights[0].color*sp*0.9*getShadowMask())*shin*uShine;}\n');
+};
+/* wet memory: roads stay damp for a while after the rain stops (about 2.5 game-minutes) and are dry indoors */
+function gfxUpdate(dt){
+  var ins=inInt();
+  if(!ins){var tg=rainAmt;if(tg>=GFXU.wetv)GFXU.wetv=tg;else GFXU.wetv=Math.max(tg,GFXU.wetv-dt/150);}
+  GFXU.wet.value=ins?0:GFXU.wetv;GFXU.det.value=TIERS[tier].det;GFXU.shine.value=TIERS[tier].shine;
+  var fc=scene.fog.color,k=0.65;
+  GFXU.sky.value.setRGB((GFX.lin?s2l(fc.r):fc.r)*k,(GFX.lin?s2l(fc.g):fc.g)*k,(GFX.lin?s2l(fc.b):fc.b)*k);
+  GFXU.sunCol.value.copy(sun.color).multiplyScalar(sun.intensity);
+  GFXU.sunDir.value.copy(sunDir);
+}
+var WSURF={plaster:{kind:'wall',det:0.13,wet:0.12},asphalt:{kind:'ground',det:0.12,wet:1,sheen:1,gain:GFX.lin?5:0},dirt:{kind:'ground',det:0.2,wet:0.55,sheen:0.18},
+  concrete:{kind:'wall',det:0.13,wet:0.4,sheen:0},block:{kind:'wall',det:0.16,wet:0.12},roof:{kind:'ground',det:0.08,wet:0.2}};
+
 var WMAT={};
-['plaster','asphalt','dirt','concrete','block','roof'].forEach(function(n){WMAT[n]=gainMat(mkTex(n,true),null,(GFX.lin&&n==='asphalt')?5:0);});
+['plaster','asphalt','dirt','concrete','block','roof'].forEach(function(n){WMAT[n]=gainMat(mkTex(n,true),null,WSURF[n]);});
 var decalTex=mkTex('decals',false);
 WMAT.decal=new THREE.MeshLambertMaterial({vertexColors:true,map:decalTex,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
 WMAT.wglow=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4});
@@ -2175,12 +2251,12 @@ GB.prototype.add=function(g,x,y,z,sx,sy,sz,rx,ry,rz,color){
     this.c.push(col.r,col.g,col.b);
   }
 };
-GB.prototype.mesh=function(){
+GB.prototype.mesh=function(mat){
   var g=new THREE.BufferGeometry();
   g.setAttribute('position',new THREE.Float32BufferAttribute(this.p,3));
   g.setAttribute('normal',new THREE.Float32BufferAttribute(this.n,3));
   g.setAttribute('color',new THREE.Float32BufferAttribute(this.c,3));
-  var m=new THREE.Mesh(g,charMat);m.castShadow=true;m.frustumCulled=false;return m;
+  var m=new THREE.Mesh(g,mat||charMat);m.castShadow=true;m.frustumCulled=false;return m;
 };
 var SPH=new THREE.SphereGeometry(0.5,12,9),SPHs=new THREE.SphereGeometry(0.5,6,4),SPHm=new THREE.SphereGeometry(0.5,8,6),BOXG=new THREE.BoxGeometry(1,1,1);
 function cylG(rt,rb,h){return new THREE.CylinderGeometry(rt,rb,h,12);}
@@ -2513,18 +2589,18 @@ function buildVehicleModel(kind){
   var b=new GB(),V=VEHS[kind];
   if(kind==='sedan'){
     var GREEN=PAINTS[(typeof ups==='object'&&ups?ups.paint:0)|0][1];paintCur.set(GREEN);
-    sedanParts(b,GREEN);carRoot.add(b.mesh());
+    sedanParts(b,GREEN);carRoot.add(b.mesh(carMat));
     wheelGroup(-0.93,1.4,true,0.34,0.24);wheelGroup(0.93,1.4,true,0.34,0.24);wheelGroup(-0.93,-1.35,false,0.34,0.24);wheelGroup(0.93,-1.35,false,0.34,0.24);
   }else if(kind==='danfo'){
-    danfoParts(b);carRoot.add(b.mesh());
+    danfoParts(b);carRoot.add(b.mesh(carMat));
     wheelGroup(-0.95,1.6,true,0.36,0.28);wheelGroup(0.95,1.6,true,0.36,0.28);wheelGroup(-0.95,-1.6,false,0.36,0.28);wheelGroup(0.95,-1.6,false,0.36,0.28);
   }else if(kind==='keke'){
-    kekeParts(b);carRoot.add(b.mesh());
+    kekeParts(b);carRoot.add(b.mesh(carMat));
     wheelGroup(0,1.15,true,0.28,0.16);wheelGroup(-0.62,-0.85,false,0.28,0.18);wheelGroup(0.62,-0.85,false,0.28,0.18);
   }else if(kind==='suv'||kind==='sport'){
     var sx=V.sx,wx=0.93*sx[0],zf=1.4*sx[2],zr=-1.35*sx[2];
-    sedanParts(b,V.col);var bm=b.mesh();bm.scale.set(sx[0],sx[1],sx[2]);carRoot.add(bm);
-    var xb=new GB();luxExtras(xb,kind);carRoot.add(xb.mesh());
+    sedanParts(b,V.col);var bm=b.mesh(carMat);bm.scale.set(sx[0],sx[1],sx[2]);carRoot.add(bm);
+    var xb=new GB();luxExtras(xb,kind);carRoot.add(xb.mesh(carMat));
     wheelGroup(-wx,zf,true,V.wr,0.3);wheelGroup(wx,zf,true,V.wr,0.3);wheelGroup(-wx,zr,false,V.wr,0.3);wheelGroup(wx,zr,false,V.wr,0.3);
   }else{
     bikeParts(b,true,'#c1352d');carRoot.add(b.mesh());
@@ -3484,12 +3560,12 @@ var traffic=[];
 function buildDanfo(){
   var b=new GB();danfoParts(b);
   [-1,1].forEach(function(sd){[-1.6,1.6].forEach(function(wz){staticWheel(b,sd*0.95,wz,0.36,0.28);});});
-  return b.mesh();
+  return b.mesh(carMat);
 }
 function buildSedan(col){
   var b=new GB();sedanParts(b,col);
   [-1,1].forEach(function(sd){[1.4,-1.35].forEach(function(wz){staticWheel(b,sd*0.93,wz,0.34,0.24);});});
-  return b.mesh();
+  return b.mesh(carMat);
 }
 function buildOkada(){
   var b=new GB();bikeParts(b,true,'#c1352d');
@@ -6241,10 +6317,10 @@ function luxExtras(b,kind){
 }
 function luxStatic(kind,dx){
   var V=VEHS[kind],g=new THREE.Group(),b=new GB(),sx=V.sx;
-  sedanParts(b,V.col);var m=b.mesh();m.scale.set(sx[0],sx[1],sx[2]);g.add(m);
+  sedanParts(b,V.col);var m=b.mesh(carMat);m.scale.set(sx[0],sx[1],sx[2]);g.add(m);
   var w=new GB(),r=V.wr,wx=0.93*sx[0],zf=1.4*sx[2],zr=-1.35*sx[2];
   [-1,1].forEach(function(sd){staticWheel(w,sd*wx,zf,r,0.3);staticWheel(w,sd*wx,zr,r,0.3);});
-  luxExtras(w,kind);g.add(w.mesh());
+  luxExtras(w,kind);g.add(w.mesh(carMat));
   var c=INTD.motors.c;g.position.set(c[0]+dx,0.36,c[1]-2);g.rotation.y=Math.PI*0.8;return g;
 }
 function motorsTick(dt){if(window.MDISP&&intId()==='motors')for(var i=0;i<MDISP.length;i++)MDISP[i].rotation.y+=dt*0.5;}
@@ -7412,7 +7488,7 @@ window.addEventListener('keydown',function(e){
 /* ------------------------------------------------------------------ loop */
 function update(dt){
   _fdt=dt;
-  npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);baddieTick(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
+  npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);baddieTick(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);gfxUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
   if(driving){
     driveUpdate(dt,readDrive());setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
