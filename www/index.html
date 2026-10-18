@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b45';
+var VERSION='GTL 0.9 b46';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -2544,14 +2544,18 @@ function tubeGeo(secs,seg,capTop,capBot){
 function loftGeo(secs,cols,backCap,frontCap){
   var n=secs[0].p.length,P=[],C=[],I=[],cc=new THREE.Color(),s,j;
   secs.forEach(function(q){for(j=0;j<n;j++){cc.set(cols[q.c[j]]);P.push(q.p[j][0],q.p[j][1],q.z);C.push(cc.r,cc.g,cc.b);}});
-  for(s=0;s<secs.length-1;s++)for(j=0;j<n;j++){var a=s*n+j,b=s*n+(j+1)%n,c=(s+1)*n+(j+1)%n,d=(s+1)*n+j;I.push(a,b,c,a,c,d);}
+  var ccwA=0,zinc=secs[secs.length-1].z>secs[0].z;
+  secs.forEach(function(q){var A=0,k;for(k=0;k<n;k++){var u=q.p[k],w2=q.p[(k+1)%n];A+=u[0]*w2[1]-w2[0]*u[1];}if(Math.abs(A)>Math.abs(ccwA))ccwA=A;});
+  var wflip=(ccwA>0)!==zinc;
+  for(s=0;s<secs.length-1;s++)for(j=0;j<n;j++){var a=s*n+j,b=s*n+(j+1)%n,c=(s+1)*n+(j+1)%n,d=(s+1)*n+j;if(wflip)I.push(a,c,b,a,d,c);else I.push(a,b,c,a,c,d);}
+  var capFlip0=(ccwA>0)===zinc;
   function cap(si,col,flip){
     var q=secs[si],base=P.length/3,cx=0,cy=0;q.p.forEach(function(t){cx+=t[0];cy+=t[1];});cx/=n;cy/=n;cc.set(col);
     P.push(cx,cy,q.z);C.push(cc.r,cc.g,cc.b);
     for(var k=0;k<n;k++){P.push(q.p[k][0],q.p[k][1],q.z);C.push(cc.r,cc.g,cc.b);}
     for(var k2=0;k2<n;k2++){var A=base+1+k2,B=base+1+(k2+1)%n;if(flip)I.push(base,B,A);else I.push(base,A,B);}
   }
-  if(backCap)cap(0,backCap,true);if(frontCap)cap(secs.length-1,frontCap,false);
+  if(backCap)cap(0,backCap,capFlip0);if(frontCap)cap(secs.length-1,frontCap,!capFlip0);
   var g=new THREE.BufferGeometry();
   g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setAttribute('color',new THREE.Float32BufferAttribute(C,3));g.setIndex(I);g.computeVertexNormals();return g;
 }
