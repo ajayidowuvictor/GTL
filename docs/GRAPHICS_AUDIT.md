@@ -110,3 +110,17 @@ Verified
 - Renders: dry and wet streets, sunset, rain, parked and moving cars on HIGH. Wet sheen was cut back twice after roads looked washed out.
 - Draw calls and triangles unchanged (no geometry added). Regression: all 15 earlier scripts and 3 controls scripts pass.
 - Not measured: real frame rate on the Infinix Hot 30i.
+
+## 9. Stage C result (b40)
+
+What changed
+- Rooftops everywhere (all districts): satellite dishes, TV antennas, air-conditioner condensers and the odd coloured water tank, placed by a position-based random so the layout is stable.
+- Shop fronts (not Rich Town): goods hanging from the awning rail, and one of crates, plastic chairs and table, jerrycans and a drum, or stacked sachet water beside the door. Small solid footprints, kept clear of doors.
+- Market stalls now sell different things (hanging bunches, baskets of pepper and tomato, tins, cloth rolls).
+- Lagos mainland: four container kiosks with hatch, awning and sign, two billboards, four striped speed bumps, a jerrycan fuel queue beside the fuel station.
+- All built from the existing box and cylinder kit and baked into the chunk meshes. The new props use their own random numbers and restore the world's streams, so nothing else moved.
+
+Measured (headless, Lagos start view)
+- World triangles 214,669 to 242,653 (+13%, budget 15%). Visible draw calls +6 to +7% (budget 10%; the extra calls are the 6 new sign meshes).
+- Regression: 15 earlier scripts and 3 controls scripts pass.
+- Not measured: real frame rate on the Infinix Hot 30i.

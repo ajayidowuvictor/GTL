@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b39';
+var VERSION='GTL 0.9 b40';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -799,6 +799,118 @@ function multiFacade(o,L,fh,floors){
     }
   }
 }
+/* ---- b40: Lagos street detail kit. Everything is built from the same boxes and cylinders as the rest of the world and is baked into the
+   existing chunk meshes, so it adds triangles but no draw calls. Placement uses its own position-based random numbers and puts the
+   world's random streams back afterwards, so nothing else in the world moves. ---- */
+function hseed(a,b){var n=(Math.floor(a*73.1)*374761393+Math.floor(b*91.7)*668265263)|0;n=Math.imul(n^(n>>>13),1274126177);return (n^(n>>>16))>>>0;}
+function mkR(a,b){var s=hseed(a,b)||1;return function(){s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};}
+var PCRATE=['#c1352d','#f2b705','#2f6fb1','#2a9d5b'],PHANG=['#c1352d','#f2b705','#2f6fb1','#2a9d5b','#e07a1f','#f1efe6','#7a2e65'];
+function dish(x,y,z,dir){
+  box(x,y+0.3,z,0.06,0.6,0.06,'#6a6e72');
+  if(dir===0)cyl(x,y+0.72,z,0.62,0.07,0.62,'#dcdcd6',0.9,0,0);else if(dir===1)cyl(x,y+0.72,z,0.62,0.07,0.62,'#dcdcd6',-0.9,0,0);else cyl(x,y+0.72,z,0.62,0.07,0.62,'#dcdcd6',0,0,-0.9);
+  box(x,y+0.95,z+(dir===0?0.22:(dir===1?-0.22:0)),0.05,0.05,0.34,'#44484c');
+}
+function antenna(x,y,z){
+  box(x,y+1.1,z,0.05,2.2,0.05,'#8d9399');
+  [[0.5,0.9],[0.95,0.75],[1.4,0.6],[1.85,0.45]].forEach(function(b){box(x,y+b[0]+0.2,z,b[1],0.03,0.03,'#9aa0a6');});
+}
+function roofAC(x,y,z){box(x,y+0.35,z,0.95,0.7,0.55,'#d9dcd9');cyl(x,y+0.72,z,0.5,0.04,0.5,'#2b2b2e');box(x,y+0.08,z,1.05,0.16,0.62,'#6a6e72');}
+function wtank(x,y,z,col){
+  [[-0.5,-0.5],[0.5,-0.5],[-0.5,0.5],[0.5,0.5]].forEach(function(q){box(x+q[0],y+0.35,z+q[1],0.1,0.7,0.1,'#555');});
+  box(x,y+0.74,z,1.3,0.08,1.3,'#666');
+  cyl(x,y+1.5,z,1.15,1.4,1.15,col);cyl(x,y+2.22,z,0.6,0.08,0.6,shade(col,0.7));
+}
+function jerry(x,z,col,ry){
+  box(x,0.24,z,0.36,0.48,0.24,col,ry||0);box(x,0.5,z,0.1,0.06,0.1,'#1a1a1a',ry||0);box(x+0.07,0.46,z,0.12,0.04,0.05,shade(col,0.7),ry||0);
+}
+function crates(x,z,n,c0){
+  for(var i=0;i<n;i++)box(x,0.14+i*0.27,z,0.5,0.26,0.36,PCRATE[(c0+i)%4]);
+}
+function pchair(x,z,ry){
+  frame(x,z,ry,function(){
+    box(0,0.44,0,0.42,0.04,0.42,'#f1efe6');box(0,0.72,-0.2,0.42,0.5,0.04,'#f1efe6');
+    [[-0.18,-0.18],[0.18,-0.18],[-0.18,0.18],[0.18,0.18]].forEach(function(q){box(q[0],0.21,q[1],0.04,0.42,0.04,'#d8d4c8');});
+  });
+}
+/* world position of a point on a building front, then a solid there */
+function fsolid(fp,a,lx,lz,w,d,h){
+  var x=fp[0]+Math.cos(a)*lx+Math.sin(a)*lz,z=fp[1]-Math.sin(a)*lx+Math.cos(a)*lz;
+  if(Math.abs(Math.sin(a))>0.5)solid(x,z,d,w,h);else solid(x,z,w,d,h);
+}
+function lagosExtras(o,L,fp,a){
+  var js=jseed,ws=wgs,cm=curMat;curMat=null;
+  var R=mkR(o.x,o.z),reg=o.x>1000?4:(o.x>730?3:(o.x>500?2:(o.x>258?1:0))),rich=(reg===3||reg===4);
+  var h=o.h,y0=h+0.3,w=o.w,d=o.d;
+  /* roof: dishes, antennas, air-conditioner condensers, a water tank */
+  var rx0=o.x-w/2+1.0,rxs=Math.max(1,w-(o.kind==='multi'?6.5:2.0));
+  var n=(o.kind==='shop')?(R()<0.45?2:1):2+((R()*2)|0);
+  for(var i=0;i<n;i++){
+    var px=rx0+R()*rxs,pz=o.z+(R()-0.5)*(o.kind==='shop'?1.6:2.0),t=R();
+    if(t<0.4)dish(px,y0,pz,(R()*3)|0);else if(t<0.7)antenna(px,y0,pz);else if(t<0.9||rich)roofAC(px,y0,pz);else wtank(px,y0,pz,R()<0.5?'#2f6fb1':'#e8e8e0');
+  }
+  /* front: hanging goods under shop awnings, crates, plastic chairs, jerrycans, sachet-water stacks */
+  if(o.kind==='shop'&&!rich&&L>=6){
+    var kind=(R()*5)|0;
+    frame(fp[0],fp[1],a,function(){
+      /* hanging goods on the awning rail */
+      if(kind!==4){
+        var hs=0;
+        for(var hx=-L/2+0.9;hx<=L/2-0.9;hx+=0.8){
+          if(R()<0.3)continue;
+          box(hx,2.34,1.78,0.16,0.32,0.06,PHANG[(hs++*3+((R()*7)|0))%7]);
+        }
+      }
+    });
+    var side=R()<0.5?1:-1,sx=side*(L/2-0.95);
+    frame(fp[0],fp[1],a,function(){
+      if(kind===0){crates(sx,0.75,3,(R()*4)|0);crates(sx+side*0.55,0.75,2,(R()*4)|0);}
+      else if(kind===1){pchair(sx,0.9,0.5);pchair(sx+side*(-0.8),1.0,-0.4);box(sx+side*(-0.4),0.38,0.95,0.5,0.04,0.5,'#8a6a45');box(sx+side*(-0.4),0.19,0.95,0.06,0.38,0.06,'#6b4f33');}
+      else if(kind===2){for(var j=0;j<4;j++)jerry(sx+side*(j%2)*0.4,0.7+(j>>1)*0.3,j%2?'#2a9d5b':'#f2b705',0.2*j);cyl(sx+side*0.2,0.45,1.25,0.58,0.9,0.58,PCRATE[(R()*4)|0]);}
+      else if(kind===3){for(var q=0;q<2;q++)for(var r=0;r<3;r++)box(sx+side*q*0.55,0.12+r*0.22,0.75,0.5,0.2,0.34,'#e4eef4');}
+    });
+    if(kind===0)fsolid(fp,a,sx+side*0.27,0.75,1.1,0.5,1.0);
+    else if(kind===1)fsolid(fp,a,sx-side*0.2,0.95,1.5,0.9,0.9);
+    else if(kind===2)fsolid(fp,a,sx+side*0.2,1.0,1.0,0.9,0.9);
+    else if(kind===3)fsolid(fp,a,sx+side*0.27,0.75,1.1,0.4,0.7);
+  }
+  jseed=js;wgs=ws;curMat=cm;
+}
+/* container kiosk: tin-sheet shop with a hatch, an awning and a sign */
+var KCOL=['#2f6fb1','#2a9d5b','#e07a1f','#c1352d','#7a2e65'];
+function kiosk(x,z,face,col,name,bg,fg){
+  var a=FACE[face];
+  frame(x,z,a,function(){
+    box(0,1.3,0,2.4,2.6,3.2,col);
+    for(var i=-3;i<=3;i++)box(i*0.3,1.3,1.63,0.06,2.5,0.04,shade(col,0.82));
+    box(0,2.65,0.3,2.7,0.1,3.8,shade(col,0.6));
+    box(0,1.5,1.64,1.7,0.9,0.06,'#1d2a36');
+    box(0,1.04,1.78,1.9,0.08,0.4,'#cfc8b6');
+    box(0,2.18,2.05,2.0,0.06,0.95,shade(col,0.78),0,0.3);
+    box(-0.5,1.17,1.8,0.3,0.24,0.2,'#c1352d');box(0.1,1.2,1.8,0.35,0.3,0.2,'#f2b705');box(0.6,1.17,1.8,0.3,0.24,0.2,'#2a9d5b');
+    box(1.21,1.1,0.5,0.04,2.0,0.9,shade(col,0.5));
+    box(0.9,0.12,1.5,0.5,0.24,0.4,'#e4eef4');
+    AOQ(0,0.4,3.6,4.6);
+  });
+  fsolid([x,z],a,0,0,2.4,3.2,2.7);
+  addSign(name,bg,fg,x+Math.sin(a)*1.66,2.38,z+Math.cos(a)*1.66,a,2.1,0.5);
+}
+function billboard(x,z,face,text,bg,fg,wd,ht){
+  var a=FACE[face];
+  frame(x,z,a,function(){
+    [-wd/2+0.3,wd/2-0.3].forEach(function(px){box(px,4.1,0,0.4,8.2,0.4,'#555');});
+    box(0,6.2,0.05,wd+0.6,ht+0.6,0.3,'#2b2d30');
+  });
+  [-wd/2+0.3,wd/2-0.3].forEach(function(px){fsolid([x,z],a,px,0,0.6,0.6,8.2);});
+  addSign(text,bg,fg,x+Math.sin(a)*0.22,6.2,z+Math.cos(a)*0.22,a,wd,ht);
+}
+function speedBump(x,z,ry,len){
+  var n=Math.max(3,Math.round(len/0.9)),sw=len/n;
+  frame(x,z,ry,function(){for(var i=0;i<n;i++)box(-len/2+sw*(i+0.5),0.045,0,sw,0.09,0.75,i%2?'#1c1c1e':'#e9c46a');});
+}
+function fuelQueue(x0,x1,z){
+  var cs=['#f2b705','#2a9d5b','#2f6fb1','#c1352d','#f2b705','#e07a1f'],i=0;
+  for(var x=x0;x<=x1;x+=1.0,i++){jerry(x+((i*37)%5-2)*0.04,z+((i*53)%7-3)*0.05,cs[i%6],((i*29)%7-3)*0.07);}
+}
 function building(o){
   var h=o.h,L=frontLen(o);
   curMat=null;
@@ -839,6 +951,7 @@ function building(o){
   if(o.cross){
     box(o.x,h+1.7,o.z,0.3,2.6,0.3,'#f1efe6');box(o.x,h+2.2,o.z,1.5,0.3,0.3,'#f1efe6');
   }
+  lagosExtras(o,L,fp,a);
 }
 
 /* compound walls with a gate gap */
@@ -1062,6 +1175,12 @@ function stall(sx,sz,i){
   box(sx-0.5,0.78,sz,0.7,0.34,0.7,GOODS[i%6]);box(sx+0.5,0.74,sz,0.6,0.26,0.6,GOODS[(i+2)%6]);
   box(sx-1.15,1.15,sz+0.6,0.08,2.3,0.08,'#555');box(sx+1.15,1.15,sz+0.6,0.08,2.3,0.08,'#555');
   box(sx,2.45,sz+0.1,2.8,0.08,2.3,CANOPY[(i*5+Math.floor(i/3))%6],0,0.1);
+  /* b40: each stall sells something different */
+  var sv=i%4;
+  if(sv===0){for(var hk=0;hk<4;hk++)box(sx-0.9+hk*0.6,2.12,sz+1.12,0.2,0.34,0.06,PHANG[(hk+i)%7]);}
+  else if(sv===1){cyl(sx-0.1,0.99,sz+0.1,0.55,0.22,0.55,'#a8321f');cyl(sx+0.55,0.99,sz-0.1,0.45,0.2,0.45,'#e07a1f');}
+  else if(sv===2){for(var tk=0;tk<3;tk++){cyl(sx-0.7+tk*0.22,0.99,sz+0.1,0.18,0.28,0.18,'#c9c3b0');cyl(sx-0.7+tk*0.22,0.99,sz-0.2,0.18,0.28,0.18,'#a8321f');}box(sx+0.55,0.94,sz,0.5,0.22,0.5,'#e4eef4');}
+  else{for(var rk=0;rk<3;rk++)cyl(sx-0.6+rk*0.45,0.98,sz,0.22,0.7,0.22,PHANG[(rk*2+i)%7],0,0,Math.PI/2);}
   AOQ(sx,sz,3.4,2.4);
   solid(sx,sz,2.3,1.2,1.2);
 }
@@ -1167,6 +1286,15 @@ refuse(-47,31);refuse(-47,6.5);refuse(66,-8);refuse(-6.5,12.5);refuse(70,26);
 roadWear(-66,96,0,true);roadWear(144,248,0,false);
 zebra(-9,0);zebra(9,0);zebra(150,0);
 poster(46,22,Math.PI,12,2.2,1.6,1.4);poster(58,22,Math.PI,12,2.0,1.5,1.4);poster(64.15,35,Math.PI/2,12,2.2,1.6,1.4);poster(40.15,30,-Math.PI/2,12,2.0,1.5,1.4);
+/* ---- b40: Lagos mainland street life ---- */
+kiosk(8.8,-33,'W',KCOL[0],'BOLA AIRTIME & POS','#1f3d7a','#ffffff');
+kiosk(-9.2,-45,'E',KCOL[1],'MAMA TOYIN PROVISIONS','#1d5a37','#fff3c4');
+kiosk(-9.2,34,'E',KCOL[2],'COLD SACHET WATER','#9a4a12','#ffffff');
+kiosk(8.8,45,'W',KCOL[4],'TUNDE PHONE REPAIR','#4a1f5a','#ffffff');
+billboard(44,-11.5,'S','NAIRAPAY · SEND MONEY FREE','#1f8a4c','#f6ecd9',8,3.4);
+billboard(14,16,'N','MAMA PUT · HOT AMALA DAILY','#c1352d','#fff3c4',8,3.4);
+speedBump(-33,0,Math.PI/2,13);speedBump(33,0,Math.PI/2,13);speedBump(0,-20,0,11.5);speedBump(0,20,0,11.5);
+fuelQueue(-24,-13,-17.6);
 /* ---- distant skyline, fogged ---- */
 var SKY=['#a9a79e','#b9b2a2','#9aa0a6','#c5b99f','#8f9aa3'];
 for(var sk=0;sk<80;sk++){
