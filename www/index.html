@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b43';
+var VERSION='GTL 0.9 b44';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -2820,12 +2820,12 @@ var VEHS={
   danfo:{name:'DANFO',price:45000,chw:1.05,chl:2.6,cr:1.3,cmax:17,acc:6,grip:0.85,blen:5.4,bwid:2.4,beams:[[-0.65,0.8,2.55],[0.65,0.8,2.55]]},
   keke:{name:'KEKE',price:25000,chw:0.75,chl:1.5,cr:0.85,cmax:14,acc:7,grip:1.2,blen:3.2,bwid:1.7,beams:[[0,0.8,1.25]]},
   okada:{name:'OKADA',price:30000,chw:0.4,chl:1.1,cr:0.55,cmax:25,acc:11,grip:1.25,blen:2.3,bwid:0.8,beams:[[0,0.95,0.75]]},
-  suv:{name:'RANGE SUV',price:180000000,lux:1,col:'#16181d',sx:[1.07,1.24,1.06],wr:0.44,chw:0.98,chl:2.4,cr:1.15,cmax:27,acc:9,grip:1.05,blen:5.1,bwid:2.2,beams:[[-0.7,0.95,2.5],[0.7,0.95,2.5]]},
-  sport:{name:'SUPERCAR',price:650000000,lux:1,col:'#e8c21a',sx:[1.08,0.8,1.03],wr:0.32,chw:0.95,chl:2.3,cr:1.05,cmax:40,acc:14,grip:1.2,blen:4.9,bwid:2.2,beams:[[-0.66,0.58,2.4],[0.66,0.58,2.4]]},
-  ev:{name:'VOLTA EV SEDAN',price:150000000,lux:1,col:'#e9ecf1',sx:[1,0.93,1.04],wr:0.34,chw:0.94,chl:2.35,cr:1.07,cmax:30,acc:13,grip:1.08,blen:4.9,bwid:2.1,beams:[[-0.62,0.7,2.4],[0.62,0.7,2.4]]},
-  trk:{name:'STEELFANG E-TRUCK',price:280000000,lux:1,col:'#aab0b6',body:'trk',wr:0.46,wx:1.0,zf:1.65,zr:-1.6,chw:1.04,chl:2.75,cr:1.2,cmax:32,acc:13,grip:1.1,blen:5.6,bwid:2.4,beams:[[-0.55,0.7,2.8],[0.55,0.7,2.8]]},
-  ssuv:{name:'AURORA SUPER-SUV',price:340000000,lux:1,col:'#e0701a',sx:[1.1,1.3,1.1],wr:0.46,chw:1.04,chl:2.6,cr:1.2,cmax:36,acc:12.5,grip:1.1,blen:5.5,bwid:2.4,beams:[[-0.5,1.05,2.95],[0.5,1.05,2.95]]},
-  gt:{name:'VELOCE GT',price:980000000,lux:1,col:'#c4161c',body:'gt',wr:0.36,wx:0.97,zf:1.5,zr:-1.4,chw:1.0,chl:2.5,cr:1.05,cmax:46,acc:16,grip:1.25,blen:5.0,bwid:2.2,beams:[[-0.5,0.5,2.5],[0.5,0.5,2.5]]}
+  suv:{name:'RANGE SUV',price:180000000,lux:1,col:'#16181d',sx:[1.07,1.24,1.06],wr:0.44,chw:0.98,chl:2.4,cr:1.15,cmax:36,acc:5.11,grip:1.05,blen:5.1,bwid:2.2,beams:[[-0.7,0.95,2.5],[0.7,0.95,2.5]]},
+  sport:{name:'SUPERCAR',price:650000000,lux:1,col:'#e8c21a',sx:[1.08,0.8,1.03],wr:0.32,chw:0.95,chl:2.3,cr:1.05,cmax:55,acc:9.96,grip:1.2,blen:4.9,bwid:2.2,beams:[[-0.66,0.58,2.4],[0.66,0.58,2.4]]},
+  ev:{name:'VOLTA EV SEDAN',price:150000000,lux:1,col:'#e9ecf1',sx:[1,0.93,1.04],wr:0.34,chw:0.94,chl:2.35,cr:1.07,cmax:38,acc:6.27,grip:1.08,blen:4.9,bwid:2.1,beams:[[-0.62,0.7,2.4],[0.62,0.7,2.4]]},
+  trk:{name:'STEELFANG E-TRUCK',price:280000000,lux:1,col:'#aab0b6',body:'trk',wr:0.46,wx:1.0,zf:1.65,zr:-1.6,chw:1.04,chl:2.75,cr:1.2,cmax:40,acc:5.85,grip:1.1,blen:5.6,bwid:2.4,beams:[[-0.55,0.7,2.8],[0.55,0.7,2.8]]},
+  ssuv:{name:'AURORA SUPER-SUV',price:340000000,lux:1,col:'#e0701a',sx:[1.1,1.3,1.1],wr:0.46,chw:1.04,chl:2.6,cr:1.2,cmax:46,acc:8.06,grip:1.1,blen:5.5,bwid:2.4,beams:[[-0.5,1.05,2.95],[0.5,1.05,2.95]]},
+  gt:{name:'VELOCE GT',price:980000000,lux:1,col:'#c4161c',body:'gt',wr:0.36,wx:0.97,zf:1.5,zr:-1.4,chw:1.0,chl:2.5,cr:1.05,cmax:60,acc:10.62,grip:1.25,blen:5.0,bwid:2.2,beams:[[-0.5,0.5,2.5],[0.5,0.5,2.5]]}
 };
 var VORDER=['sedan','danfo','keke','okada','ev','suv','trk','ssuv','sport','gt'];
 var PAINTS=[['GREEN','#2f7d4f'],['YELLOW','#f2b705'],['RED','#b3261e'],['BLUE','#2b5a9a'],['WHITE','#e9e6dc'],['BLACK','#26262b']];
@@ -3032,7 +3032,7 @@ function fxUpdate(dt){
     }
   }else puffAcc=0;
   /* wheelspin puffs when pulling away hard */
-  if(lastThr&&sp>0.3&&sp<3.2&&vehKind!=='okada'){
+  if(lastThr&&sp>0.3&&sp<(FEEL.spin?9:3.2)&&vehKind!=='okada'){
     launchAcc+=dt;if(launchAcc>0.09){launchAcc=0;emitPuff(car.x+fx*wl,0.2,car.z+fz*wl,(Math.random()-0.5)*0.6,0.4,(Math.random()-0.5)*0.6,0.7,0.55,0.26,0xd8d2c4);}
   }
 }
@@ -3094,20 +3094,50 @@ function collideCar(){
   return hit;
 }
 function driveUpdate(dt,ctl){
-  var s=car.speed,l=car.lat,s0=s;
-  if(ctl.gas){s+=(s<0?14:ACCEL*(1-Math.max(0,s)/CMAX))*dt;}
-  else if(ctl.brake){if(s>0.4)s-=16*dt;else s=Math.max(-5,s-5*dt);}
-  else if(s!==0){var dr=(1.8+0.012*s*s)*dt;s=Math.abs(s)<=dr?0:s-(s>0?dr:-dr);}
+  var s=car.speed,l=car.lat,s0=s,F=FEEL;
+  /* gearbox (sound for every ride; real shift cuts and torque curve for the luxury cars) */
+  var fr=Math.max(0,s)/CMAX,n=F.g,g=0,r=0;
+  if(n>0){var gp=Math.min(0.9999,fr)*n;g=Math.floor(gp);r=gp-g;}
+  if(n>0&&ctl.gas&&g>car.gear&&s>2){car.shift=0.13;}
+  car.gear=n>0?g:0;
+  if(car.shift>0)car.shift-=dt;
+  if(ctl.gas){
+    if(s<0)s+=14*dt;
+    else if(F.lux){
+      var tail=1-Math.pow(fr,2.4),a;
+      if(n===0)a=ACCEL*(1+0.18*(1-fr))*tail;
+      else a=ACCEL*(0.8+0.4*Math.sin(Math.PI*Math.min(1,0.2+0.75*r)))*tail;
+      if(car.shift>0)a*=0.2;
+      s+=a*dt;
+    }else s+=ACCEL*(1-Math.max(0,s)/CMAX)*dt;
+  }
+  else if(ctl.brake){
+    car.bk=Math.min(1,car.bk+dt*9);
+    if(s>0.4)s-=F.brk*(0.55+0.45*car.bk)*dt;else s=Math.max(-5,s-5*dt);
+  }
+  else if(s!==0){var dr=(F.lux?(1.4+0.0022*s*s):(1.8+0.012*s*s))*dt;s=Math.abs(s)<=dr?0:s-(s>0?dr:-dr);}
+  if(!ctl.brake)car.bk=Math.max(0,car.bk-dt*6);
   s=Math.max(-5,Math.min(CMAX,s));
-  var maxSt=0.62*GRIP/(1+Math.abs(s)*0.09);
-  car.steer+=(ctl.steer*maxSt-car.steer)*Math.min(1,dt*8);
+  /* engine speed for the sound: it climbs each gear, drops on the shift and revs up at a standstill */
+  var rt=n>0?0.28+0.68*r:0.3+0.7*fr;
+  if(ctl.gas&&s<2.5)rt=Math.max(rt,0.62);
+  if(car.shift>0)rt*=0.55;
+  if(!ctl.gas&&!ctl.brake&&n>0)rt=0.25+0.5*r;
+  car.rpm+=(rt-car.rpm)*Math.min(1,dt*(rt>car.rpm?10:6));
+  var maxSt=0.62*GRIP/(1+Math.abs(s)*0.09),sr=(Math.abs(ctl.steer)<Math.abs(car.steer)?12:8)*F.agi;
+  car.steer+=(ctl.steer*maxSt-car.steer)*Math.min(1,dt*sr);
   /* grip: tyres hold the sideways speed down; braking hard in a turn or flooring it on a corner lets the back slide */
   var k=8*GRIP*(1-0.28*rainAmt),drift=ctl.brake&&s>7&&Math.abs(car.steer)>0.08;
   if(drift)k=1.7*GRIP;
   else if(ctl.gas&&s>13&&Math.abs(ctl.steer)>0.8)k*=0.5;
+  else if(F.spin&&ctl.gas&&s<10&&Math.abs(ctl.steer)>0.5)k*=0.6;
   car.brk=ctl.brake&&s>7;
   var yaw=-(s/(1.9+CHL*0.4))*Math.tan(car.steer)*(drift?1.3:1);
-  var dh=yaw*dt;car.yawRate+=(yaw-car.yawRate)*Math.min(1,dt*10);
+  if(F.lux){/* tyres can only turn a car so hard: at speed the wheel asks for less turn, so a fast car understeers instead of spinning */
+    var yc=GRIP*22/Math.max(Math.abs(s),4)*(drift?1.25:1);
+    if(yaw>yc)yaw=yc;else if(yaw<-yc)yaw=-yc;
+  }
+  var dh=yaw*dt;car.yawRate+=(yaw-car.yawRate)*Math.min(1,dt*10*F.agi);
   car.h+=dh;
   var cd=Math.cos(dh),sd=Math.sin(dh),s2=s*cd+l*sd;l=-s*sd+l*cd;s=s2;
   var l1=l*Math.exp(-k*dt);if(s>0)s+=Math.abs(l-l1)*0.25;l=l1;
@@ -3123,7 +3153,7 @@ function driveUpdate(dt,ctl){
   if(car.spin>6.2832||car.spin<-6.2832)car.spin%=6.2832;
   /* body springs: nose dips under braking, lifts under power, leans out in turns */
   var acc=dt>0?(s-s0)/dt:0;car.accel+=(acc-car.accel)*Math.min(1,dt*10);
-  var pT=Math.max(-0.08,Math.min(0.1,-car.accel*0.0052)),rT=Math.max(-0.12,Math.min(0.12,s*car.yawRate*0.0036));
+  var pT=Math.max(-0.08,Math.min(0.1,-car.accel*0.0052*(0.1+0.9*F.roll))),rT=Math.max(-0.12,Math.min(0.12,s*car.yawRate*0.0036*F.roll));
   if(vehKind==='okada')pT=Math.max(-0.2,Math.min(0.06,-car.accel*0.012));
   car.pitV+=((pT-car.pit)*95-car.pitV*11)*dt;car.pit+=car.pitV*dt;
   car.rolV+=((rT-car.rol)*95-car.rolV*11)*dt;car.rol+=car.rolV*dt;
@@ -3795,7 +3825,18 @@ makeNPC({x:97.5,z:-30,yaw:-Math.PI/2,skin:'#5a3520',skin2:'#4a2b1a',low:'#2b4a6a
     else openDlg('BABA DELE',"The lagoon dey give us plenty fish. Mama Nkechi buys the best of it. Mind the boats when you cross the bridge!",[{label:'OK'}]);
   }});
 var ENG_P=[8000,16000],TYR_P=[6000,12000],PAINT_P=2000;
-function applyUps(){var V=VEHS[vehKind];CHW=V.chw;CHL=V.chl;CR=V.cr;CMAX=V.cmax+ups.eng*3.5;ACCEL=V.acc+ups.eng*1.6;GRIP=V.grip+ups.tyre*0.15;}
+/* b44: how each ride feels. g = gears (0 for an electric single speed), brk = braking m/s2, agi = how fast it answers the wheel, roll = body lean, spin = wheelspin on launch, b = engine pitch */
+var FEELS={
+  sedan:{g:5,b:52},danfo:{g:5,b:38,agi:0.8,roll:1.5},keke:{g:3,b:80,agi:1.1,roll:1.3},okada:{g:4,b:72,agi:1.3},
+  ev:{g:0,brk:17,agi:1.05,roll:0.8},suv:{g:6,b:46,brk:15,agi:0.85,roll:1.35},trk:{g:0,brk:15,agi:0.85,roll:1.4},
+  ssuv:{g:7,b:44,brk:17,agi:0.9,roll:1.3,spin:1},sport:{g:7,b:58,brk:19,agi:1.15,roll:0.55,spin:1},gt:{g:8,b:54,brk:20,agi:1.1,roll:0.6,spin:1}
+};
+var FEEL={g:5,b:52,brk:16,agi:1,roll:1,spin:0,lux:false};
+function applyUps(){
+  var V=VEHS[vehKind];CHW=V.chw;CHL=V.chl;CR=V.cr;CMAX=V.cmax+ups.eng*3.5;ACCEL=V.acc+ups.eng*1.6;GRIP=V.grip+ups.tyre*0.15;
+  var F=FEELS[vehKind]||{};FEEL={g:F.g===undefined?5:F.g,b:F.b||52,brk:F.brk||16,agi:F.agi||1,roll:F.roll||1,spin:F.spin||0,lux:!!V.lux};
+  car.gear=0;car.rpm=0.2;car.shift=0;car.bk=0;
+}
 function setVehicle(kind){
   vehKind=kind;buildVehicleModel(kind);applyUps();setCarPose();if(beamsReady)setPlayerBeams();
 }
@@ -3899,10 +3940,19 @@ function aiHonk(vol){tone(420,0.3,'square',0.05*vol,0);tone(520,0.3,'square',0.0
 function audioUpdate(dt){
   if(!AC||!eng)return;
   var t=AC.currentTime,on=driving&&started&&audioOn,sp=Math.abs(car.speed),thr=lastThr;
-  var fr=46+sp*5.4;
-  eng.o1.frequency.setTargetAtTime(fr,t,0.08);eng.o2.frequency.setTargetAtTime(fr*0.5,t,0.08);
-  eng.f.frequency.setTargetAtTime(240+sp*30+(thr?140:0),t,0.1);
-  eng.g.gain.setTargetAtTime(on?(0.04+(thr?0.035:0)+Math.min(0.03,sp*0.0015)):0,t,0.12);
+  var fr,FE=FEEL,ev=(FE.g===0);
+  if(eng.ev!==ev){eng.ev=ev;eng.o1.type=ev?'sine':'sawtooth';eng.o2.type=ev?'sine':'square';}
+  if(ev){
+    fr=170+sp*21;
+    eng.o1.frequency.setTargetAtTime(fr,t,0.06);eng.o2.frequency.setTargetAtTime(fr*2.01,t,0.06);
+    eng.f.frequency.setTargetAtTime(1500+sp*40,t,0.1);
+    eng.g.gain.setTargetAtTime(on?(0.012+(thr?0.02:0)+Math.min(0.02,sp*0.0008)):0,t,0.12);
+  }else{
+    var rp=car.rpm||0.2;fr=FE.b*(0.8+rp*1.7);
+    eng.o1.frequency.setTargetAtTime(fr,t,0.05);eng.o2.frequency.setTargetAtTime(fr*0.5,t,0.05);
+    eng.f.frequency.setTargetAtTime((FE.spin?420:240)+rp*(FE.spin?1500:900)+(thr?160:0),t,0.08);
+    eng.g.gain.setTargetAtTime(on?(0.04+(thr?0.035:0)+Math.min(0.03,sp*0.0015)):0,t,0.1);
+  }
   var hh=(hornHeld||keys.KeyH)&&driving&&audioOn;
   hornG.gain.setTargetAtTime(hh?0.06:0,t,0.02);
   hornBtn.classList.toggle('on',!!hornHeld);
@@ -8019,7 +8069,7 @@ function update(dt){
   _fdt=dt;
   npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);vipTick(dt);baddieTick(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);gfxUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
   if(driving){
-    driveUpdate(dt,readDrive());setCarPose();updateAct();
+    var dctl=readDrive(),nsub=Math.min(4,Math.max(1,Math.ceil(Math.abs(car.speed)*dt)));for(var si=0;si<nsub;si++)driveUpdate(dt/nsub,dctl);setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
     if(kmh!==lastKmh){lastKmh=kmh;kmhEl.textContent=kmh;}
     return;
@@ -8108,7 +8158,7 @@ function updateCamera(dt){
   }else{camSnap=true;camSpd+=(0-camSpd)*Math.min(1,dt*3);}
   var zz=driving?clampN(camZoom,0.6,1.8):clampN(camZoom,inInt()?0.5:0.45,inInt()?1.5:2.4);
   camDist+=(((driving?8.4+(CHL-2.2)*1.3+camSpd*0.075:(inInt()?4.2:6.2))*zz)-camDist)*Math.min(1,dt*3);
-  var fovT=60+camSpd*0.48;camFov+=(fovT-camFov)*Math.min(1,dt*3);
+  var fovT=60+Math.min(camSpd,36)*0.48+Math.max(0,camSpd-36)*0.2;camFov+=(fovT-camFov)*Math.min(1,dt*3);
   if(Math.abs(camera.fov-camFov)>0.08){camera.fov=camFov;camera.updateProjectionMatrix();}
   if(inInt()&&camPitch>0.8)camPitch=0.8;
   var ceilY=1e9;
