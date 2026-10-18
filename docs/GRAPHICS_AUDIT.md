@@ -1,6 +1,6 @@
 # GTL graphics overhaul: Phase 1 audit, Phase 2 decision, plan
 
-Status: audit and baseline done (build b37). No rendering code has been changed yet.
+Status: audit and baseline done (build b37). Stage A (colour and light) shipped in b38; stages B to G are still to do.
 
 ## 1. What the game is built with
 
@@ -82,3 +82,17 @@ Risks and mitigations
 
 Outstanding questions for the owner
 - The only real-device measurement is the TEST PHONE result on the Infinix Hot 30i. That should be recorded once now, before stage A, and again after each stage.
+
+## 7. Stage A result (b38)
+
+What changed
+- Linear-light colour pipeline: sRGB output, textures and colours converted to linear at one point (`GFX` module at the top of the script), vertex colours and shading helpers re-derived in screen space, fog and background kept in screen colours (r128 applies fog after encoding).
+- A sun that travels east to west with the clock, shifting light direction, colour and shadow angle; a moon and stars at night; sun and moon discs fade with cloud and rain. Shadows (HIGH tier) follow the real sun direction, soft PCF, normal bias.
+- Light levels and the day table re-tuned for linear light; asphalt gets its own brightness (each material now compiles its own shader gain).
+- Interiors re-tuned (hemisphere 1.0 normal rooms, 0.8 club).
+- Menu, DISPLAY: LIGHTING NEW / CLASSIC switch (needs an app restart) keeps the old look available.
+
+Verified
+- Screenshots at sunrise, noon, sunset, dusk with shadows, night, rain, Rich Town and all 10 interiors, compared with the classic look.
+- Regression: 15 earlier scripts and 3 controls scripts all pass. Draw calls and triangles unchanged (no geometry was added).
+- Not measured: real frame rate on the Infinix Hot 30i (TEST PHONE in the menu).
