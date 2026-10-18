@@ -182,3 +182,19 @@ Not done
 | F. Performance | b43 | Distance shadow gating on HIGH, leak and texture checks |
 
 Known limits across all stages: real-phone frame rate unmeasured; no sit or idle poses; the Aurora super-SUV is boxy; no arrival animation for called cars.
+
+## 14. Driving-feel pass (b44, not part of the graphics plan)
+
+Measured before (headless, physics stepped directly): all six luxury cars braked identically (24 m from 100 km/h), top speeds were 97 to 166 km/h, the fast cars could spin 125 to 185 degrees from full lock at 160 km/h, and the engine sound was one pitch for every ride.
+
+Changed (luxury cars only for physics; every ride gets its own engine sound)
+- Gearbox: 6 to 8 gears for the petrol cars with a torque curve and a short power cut on each upshift; the EV sedan and E-truck are single-speed with instant torque.
+- 0 to 100 km/h: EV 4.8 s, Range SUV 6.5 s, E-truck 5.0 s, Aurora 3.9 s, Supercar 3.0 s, Veloce GT 2.8 s. Top speed: 137, 130, 144, 166, 198, 216 km/h.
+- Braking from 100 km/h: 20 m (GT) to 26 m (SUV and truck), with a short brake ramp for all rides.
+- Heavier cars answer the wheel and lean more (SUV, truck, Aurora, danfo); light fast cars are sharper and flatter.
+- Grip limit: at speed the wheel asks for less turn, so a fast car understeers rather than spinning. Full lock at 160 km/h now turns about 50 degrees in 1.5 s with 6 to 8 degrees of slip, instead of 150 to 185 degrees. Low-speed handbrake turns still work.
+- Wheelspin puffs on launch for the fast cars, small physics sub-steps at high speed so nothing tunnels through a post, and the field of view widens less at speed.
+- Engine sound by ride: its own pitch, rising and dropping with each gear and a rev at a standstill; the electric cars have a quiet rising whine.
+
+Not changed: sedan, danfo, keke and okada physics (only their sound and braking ramp).
+Not measured: how it feels on the phone, and the engine sound could only be checked in code, not heard.
