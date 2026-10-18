@@ -137,3 +137,20 @@ Measured (headless)
 - Per-person triangles: walkers nearAvg 1121, max 1512; far-LOD max 1376; NPC max 1604; hero 1318 unchanged. Limit 2,200.
 - Not done: sitting and idle variants; walkers' heads do not track the player (NPCs only).
 - Not measured: real frame rate on the Infinix Hot 30i.
+
+## 11. Stage E result and b42 changes (b42)
+
+b42 changes before Stage E (player requests)
+- No yellow arrow over Mama Nkechi any more; the opening hint no longer sends the player to her.
+- A new game starts inside the player's own home: the Yellow House room (a real interior with bed, wardrobe, window, TV on a stool, table, fan), the Lagos Heights flat, or the Sapphire penthouse. NEPO starts in the flat, LAPO is moved outside after the character screen, returning players load inside `life.home`. A HOME spot (bed or sofa) opens sleep, shower, kitchen and furnishing; a LEAVE spot by the door goes outside.
+- Six luxury cars with original names and generic shapes (no real brands): Volta EV sedan, Range SUV, Steelfang E-truck (angular pickup), Aurora super-SUV, Veloce GT (grand tourer) and the Supercar, each with its own body, price (N150M to N980M), top speed and a showroom turntable (dealer pages of three).
+- VIP Garage phone app: lists all six, buy there, and call any owned car. After 9 s the car appears at a free kerb spot near the player (or outside the home door when indoors) with two bodyguards beside it for 45 s. The call replaces the car currently in use.
+
+Stage E: presentation (all CSS or per-frame maths, no post-processing pass)
+- On-foot camera eases onto the player (high gain, so no input lag) and snaps after any teleport, door or car change. Look control is untouched.
+- Street-lamp glow sprites enlarged (3.6 to 4.6 m) for a softer night bloom.
+- Vignette strengthened slightly with a longer falloff.
+- Distance haze and day/night grading were already tiered per quality level in stages A to C and are unchanged.
+
+Measured (headless): per-person triangles unchanged (nearMax 1512, NPC max 1604, hero 1318); draw calls low 163 / medium 170 / high 174, programs 17 / 17 / 28.
+Not done: arrival animation for called cars, sit and idle poses, real-phone frame rate.
