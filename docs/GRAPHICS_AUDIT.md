@@ -154,3 +154,31 @@ Stage E: presentation (all CSS or per-frame maths, no post-processing pass)
 
 Measured (headless): per-person triangles unchanged (nearMax 1512, NPC max 1604, hero 1318); draw calls low 163 / medium 170 / high 174, programs 17 / 17 / 28.
 Not done: arrival animation for called cars, sit and idle poses, real-phone frame rate.
+
+## 12. Stage F result (b43)
+
+Measured first (headless, b42 build)
+- Textures uploaded: 30 at start, 33 to 35 after touring the whole Lagos street. The "100 sign textures" from the first audit are only uploaded when in view, so the atlas idea would save little. Not done, on purpose: the risk to every shop sign was bigger than the gain.
+- JS heap 80 to 96 MB and flat. Five tours of the full street: geometries rise to about 500 and stay there, textures stay at 34, heap does not grow. No leak found.
+- Game logic about 0.8 ms per frame for all 85 walkers, 56 NPCs and traffic, so update throttling was not worth adding.
+- Shadows exist on HIGH only (LOW and MEDIUM use the blob). On HIGH, people and cars have meshes that are never frustum-culled, so every one of them was sent into the shadow pass even when far outside the 30 m shadow window.
+
+Changed
+- `gateShadow()`: on HIGH, walkers and NPCs beyond 45 m and traffic beyond 50 m no longer cast shadows. Result: shadow-casting objects drawn per view fell from 208 to 190, 173 to 149 and 183 to 164 (about 9 to 14 percent fewer) at three Lagos positions. Draw calls and triangles for the main view are unchanged. Nearby people and cars still cast shadows (checked in a render).
+
+Not done
+- Sign texture atlas (see above), distance LOD changes, update throttling.
+- Real frame rate on the Infinix Hot 30i is still unmeasured; HIGH is where this helps and a Hot 30i will normally run LOW or MEDIUM.
+
+## 13. Stage G: summary (all stages)
+
+| Stage | Release | Result |
+|---|---|---|
+| A. Colour and light | b38 | Linear-light pipeline, travelling sun, haze by time of day, tuned exposure |
+| B. Materials | b39 | Procedural normal maps, detail layer, glass and paint shine on HIGH, wet roads |
+| C. Street detail | b40 | Rooftop clutter, kiosks, billboards, speed bumps, fuel queue, stall variety |
+| D. Characters | b41 | Shared people kit, women's wardrobe, hairstyles, head tracking |
+| E. Camera | b42 | Smooth on-foot camera, bigger lamp glow, stronger vignette |
+| F. Performance | b43 | Distance shadow gating on HIGH, leak and texture checks |
+
+Known limits across all stages: real-phone frame rate unmeasured; no sit or idle poses; the Aurora super-SUV is boxy; no arrival animation for called cars.
