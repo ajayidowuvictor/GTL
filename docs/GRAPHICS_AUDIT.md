@@ -198,3 +198,20 @@ Changed (luxury cars only for physics; every ride gets its own engine sound)
 
 Not changed: sedan, danfo, keke and okada physics (only their sound and braking ramp).
 Not measured: how it feels on the phone, and the engine sound could only be checked in code, not heard.
+
+## 15. Social life (b45, not part of the graphics plan)
+
+Why: the owner said GTL still does not feel like Lagos Life. Public descriptions of Lagos Life stress other real players, trading, friendships and virtual elections on top of a rent, food and shift routine. GTL already had elections, parties and friendship stars, but only as pop-up text, so nothing happened in the city.
+
+Changed
+- Events happen in the street now, at two venues: Fountain Plaza (228, -16) and Waterfront Ground (148, -31). Each has a stage, tents, tables, bunting, a banner and a crowd of nine people who dance, cheer or queue, with music that plays when you are within 30 m.
+- Owambe party every four days (starts on the first day, 3 PM to 11:30 PM): eat free jollof (three plates), dance for an hour, or spray N5,000 / N25,000 / N200,000 at the dancers.
+- Campaign rallies on the three days before an election, one candidate a day at Fountain Plaza with a truck, flags and a banner in the candidate's colour: hear the speech, collect rally rice and N2,000 transport money, pledge support.
+- Polling day at Waterfront Ground (8 AM to 6 PM) with booths and a queue: vote for one of three candidates. Results come at 6 PM (or at the next midnight if you skipped it). The old pop-up election is gone.
+- Victory party for the winner the next evening at Fountain Plaza.
+- Clout: a social ranking (Nobody to Lagos legend) earned at events, shown in a new Events phone app together with the governor, the next election and your pledge.
+- Events app: lists what is on for five days, with a GO button that books a ride to a live event. Friends you have grown close to text you party invites, and you earn friendship points for showing up.
+
+Measured (headless): per-person triangles unchanged; with an event on screen, draw calls rose by 2 to 7 and triangles stayed within budget (high tier 98k at the plaza). Rally, party and polling renders checked at day and night.
+
+Not done: real other players (needs a server), trading between players, sit and idle poses. The crowd is scripted, not real people.
