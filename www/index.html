@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b53';
+var VERSION='GTL 0.9 b54';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -3775,9 +3775,6 @@ var YBB={};
   [[-2452,-2095],[-2085,-1981],[-1971,-1892]].forEach(function(s){lb(s[0],s[1],0.09,-5.8,0.18,1.6,SH);});
   lb(-2452,-1892,0.09,5.8,0.18,1.6,SH);
   /* the far end */
-  [0.55,0.95].forEach(function(by,i){box(-2452,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
-  box(-2452,0.6,-4.7,0.3,1.2,0.3,'#555');box(-2452,0.6,4.7,0.3,1.2,0.3,'#555');solid(-2452,0,0.6,9.8,1.3);
-  addSign('ROAD WORKS AHEAD','#f2b705','#141414',-2451.8,1.9,0,Math.PI/2,3.4,0.9);
   /* a gantry over the road at the start of Yaba */
   [-7.4,7.4].forEach(function(gz){box(-1912,3.4,gz,0.5,6.8,0.5,'#555');solid(-1912,gz,0.6,0.6,6.8);});
   box(-1912,6.9,0,0.5,0.5,15.4,'#555');
@@ -3975,6 +3972,274 @@ var YBI={term:[2175,-42],tej:[2175,-14],ec:[2175,14],cch:[2175,42],tec:[2240,-30
     [[5,-0.5],[5,4],[10.5,-0.5],[10.5,4],[8.5,7.6]].forEach(function(p,i){table(X(p[0]),Z(p[1]),'#e9e4d6',1.5,1.5);CHAIRFN(X(p[0]-1.3),Z(p[1]),Math.PI/2,GC[i%7]);CHAIRFN(X(p[0]+1.3),Z(p[1]),-Math.PI/2,GC[(i+2)%7]);});
     SOFAFN(X(-12.3),Z(2),Math.PI/2,3.6,'#1f6f43','#d9d2c2');solid(X(-12.3),Z(2),1.7,3.6,1);
     plant(X(-12),Z(-6.5));plant(X(12),Z(8));
+  })();
+})();
+
+var CHK_SAVE8=CHK;CHK=40;
+/* ---- b54: MAKOKO. A fictionalised version of the real Makoko-Iwaya waterfront: a land road with two land villages (Apollo and Sogunro),
+   a sawmill and a jetty, then a lagoon with four villages on stilts (Adogbo, Migbewhe, Oko Agbon, Yanshiwhe), plank walkways, canoes,
+   a floating school and the Third Mainland Bridge beyond. The layout is invented, not surveyed. ---- */
+var MKSH=-2712,MKD=[],MKB={};
+(function(){
+  var SHP=OJB.shopHouse,wx,k=0,nn=0,zz,i,j;
+  var NMS=['FISHING NETS AND HOOKS','PROVISIONS','PHONE CHARGING','CANOE PADDLES','BARBER','TAILOR','DRINKS DEPOT','ROPE AND TWINE','HARDWARE','BUKA','POWER BANKS','PLANKS AND NAILS'];
+  function S(o){o.name=NMS[(nn++)%NMS.length];return SHP(o);}
+  function lb(x0,x1,y,z,h,d,col){var n=Math.ceil(Math.abs(x1-x0)/36),i,sl=(x1-x0)/n;for(i=0;i<n;i++)box(x0+sl*(i+0.5),y,z,sl+0.02,h,d,col);}
+  function lawn(x,z,w,d,col){box(x,0.02,z,w,0.04,d,col||'#5b8f3e');}
+  var WOOD=['#7a5e3e','#6e5436','#86684a','#5e4830'],WALL=['#8a7a62','#7d6a52','#9a8a70','#6e6a5e','#8a6a4a','#7a8a8e','#a39478','#5f7d80','#a58f6e','#b09a78'];
+  var ROOF=['#8a8f94','#9a6a4a','#a8a39a','#7a7f84','#b07a5a','#6f7a80'];
+  /* ---------- ground and water ---------- */
+  box(-2582,-0.1,0,260,0.2,700,'#a8704a');
+  box(-2878,-0.35,0,336,0.2,700,'#3d6860');
+  /* ---------- the main road carries on west into Makoko ---------- */
+  lb(-2712,-2452,0.03,0,0.06,10,ROAD);
+  for(wx=-2454;wx>=-2706;wx-=7)box(wx,0.066,0,3,0.012,0.18,'#e9c46a');
+  [-4.6,4.6].forEach(function(ez){lb(-2712,-2452,0.066,ez,0.012,0.12,'#e8e4da');});
+  lb(-2712,-2452,0.09,-5.8,0.18,1.6,SH);lb(-2712,-2452,0.09,5.8,0.18,1.6,SH);
+  /* a gantry over the road at the start of Makoko */
+  [-7.4,7.4].forEach(function(gz){box(-2470,3.4,gz,0.5,6.8,0.5,'#555');solid(-2470,gz,0.6,0.6,6.8);});
+  box(-2470,6.9,0,0.5,0.5,15.4,'#555');
+  addSign('IWAYA ROAD. MAKOKO WATERFRONT','#14161a','#f2d36b',-2469.7,6.9,0,Math.PI/2,10,0.9);
+  addSign('IWAYA ROAD. MAKOKO WATERFRONT','#14161a','#f2d36b',-2470.3,6.9,0,-Math.PI/2,10,0.9);
+  /* the road ends at a gate: people and canoes only */
+  box(-2714,0.9,-3.1,0.5,1.8,4.2,'#6e5436');box(-2714,0.9,3.1,0.5,1.8,4.2,'#6e5436');solid(-2714,-3.3,0.6,4.6,1.8);solid(-2714,3.3,0.6,4.6,1.8);
+  box(-2714,1.8,-5.3,0.5,3.6,0.5,'#555');box(-2714,1.8,5.3,0.5,3.6,0.5,'#555');solid(-2714,-5.4,0.6,0.6,3.6);solid(-2714,5.4,0.6,0.6,3.6);
+  box(-2714,3.5,0,0.4,0.3,10.8,'#555');
+  addSign('MAKOKO WATERFRONT. WALKERS AND CANOES ONLY','#1f6f43','#ffffff',-2713.7,3.4,0,Math.PI/2,8,0.8);
+  addSign('MAKOKO WATERFRONT. WALKERS AND CANOES ONLY','#1f6f43','#ffffff',-2714.3,3.4,0,-Math.PI/2,8,0.8);
+  /* ---------- north side, east to west ---------- */
+  for(wx=-2462;wx>=-2520;wx-=9){S({face:'S',x:wx,z:-16.5,floors:2+((k++)%2)});}
+  MKB.smoke=SHP({face:'S',x:-2545,z:-16.5,w:18,d:9,floors:2,name:'SMOKEHOUSE',sbg:'#7a3b2a',sfg:'#f2d36b',aw:'#7a3b2a',wall:'#d9c4a0'});
+  for(wx=-2565;wx>=-2601;wx-=9){S({face:'S',x:wx,z:-16.5,floors:2+((k++)%2)});}
+  MKB.baale=SHP({face:'S',x:-2635,z:-16.5,w:16,d:9,floors:2,name:"BAALE'S COMMUNITY HALL",sbg:'#7a2e65',sfg:'#ffffff',aw:'#7a2e65',wall:'#e8e3d2'});
+  MKB.boat=SHP({face:'S',x:-2668,z:-16.5,w:18,d:9,floors:2,name:'BOAT WORKSHOP',sbg:'#1f3a68',sfg:'#f2d36b',aw:'#1f3a68',wall:'#d9d2c2'});
+  S({face:'S',x:-2694,z:-16.5,w:9,d:9,floors:2});
+  /* ---------- south side ---------- */
+  for(wx=-2462;wx>=-2498;wx-=9){S({face:'N',x:wx,z:16.5,floors:2+((k++)%2)});}
+  MKB.mkt=SHP({face:'N',x:-2530,z:16.5,w:30,d:9,floors:2,name:'MAKOKO FISH MARKET',sbg:'#1f6f43',sfg:'#ffffff',aw:'#1f6f43',wall:'#f1efe6'});
+  for(wx=-2560;wx>=-2596;wx-=9){S({face:'N',x:wx,z:16.5,floors:2+((k++)%2)});}
+  /* ---------- land villages: Sogunro (north) and Apollo (south), plank houses along lanes ---------- */
+  function plank(x,z,w,d,h,wall,roof,fz,ry){
+    /* a low plank house with a pitched zinc roof; the door faces fz (+1 toward +z, -1 toward -z) */
+    box(x,h/2,z,w,h,d,wall);
+    var pa=0.34,half=d/2,len=half/Math.cos(pa)+0.25;
+    box(x,h+Math.tan(pa)*half/2+0.08,z-half/2,w+0.7,0.12,len,roof,0,-pa,0);
+    box(x,h+Math.tan(pa)*half/2+0.08,z+half/2,w+0.7,0.12,len,roof,0,pa,0);
+    box(x,1.0,z+fz*(d/2+0.03),0.95,2.0,0.06,'#3a2a1a');
+    box(x+w/4,1.6,z+fz*(d/2+0.03),0.7,0.55,0.05,'#9ec3d8');
+    solid(x,z,w,d,h+1.2);
+  }
+  var rowsN=[-28.5,-38.5,-48.5,-58.5],rowsS=[28.5,38.5,48.5,58.5];
+  rowsN.forEach(function(rz,ri){for(j=0;j<29;j++){var hx=-2472-8*j;if(hx===-2616||hx<-2698)continue;var q=(ri*7+j*3)%10;plank(hx,rz,5.2+(q%3)*0.5,5,2.5+(q%4)*0.25,WALL[q],ROOF[(q+ri)%6],(j%2)?1:-1);}});
+  rowsS.forEach(function(rz,ri){for(j=0;j<23;j++){var hx=-2472-8*j;if(hx===-2616||hx<-2650)continue;var q=(ri*5+j*3+4)%10;plank(hx,rz,5.2+(q%3)*0.5,5,2.5+(q%4)*0.25,WALL[q],ROOF[(q+ri)%6],(j%2)?-1:1);}});
+  lawn(-2616,-43,10,36,'#a88a5a');lawn(-2616,43,10,36,'#a88a5a');
+  addSign('SOGUNRO','#7a3b2a','#f2d36b',-2616,2.4,-23.5,0,5,0.7);addSign('APOLLO','#7a3b2a','#f2d36b',-2616,2.4,23.5,Math.PI,5,0.7);
+  [-2604,-2628].forEach(function(px){box(px,1.2,-23.5,0.2,2.4,0.2,'#555');box(px,1.2,23.5,0.2,2.4,0.2,'#555');});
+  [[-2480,-24],[-2560,-24],[-2640,-24],[-2690,-24],[-2480,24],[-2560,24],[-2640,24]].forEach(function(p){tree(p[0],p[1]);});
+  /* ---------- the sawmill on the shore, south side ---------- */
+  wallX(14,-2708,-2656,-2682,8);wallZ(-2656,14,62);wallX(62,-2708,-2656);
+  lb(-2708,-2656,0.04,38,0.06,48,'#8a7a60');
+  function logs(x,z,n,rows){var r,c;for(r=0;r<rows;r++)for(c=0;c<n-r;c++)cyl(x,0.45+r*0.7,z+(c+r*0.5)*0.85,0.8,6,0.8,r%2?'#7a5a3a':'#8a6a46',0,0,Math.PI/2);solid(x,z+(n-1)*0.425,6.2,n*0.85+0.4,2.4);}
+  logs(-2699,50,5,3);logs(-2676,50,5,3);logs(-2699,58,3,2);
+  [[-2692,30],[-2672,30],[-2692,42],[-2672,42]].forEach(function(c){cyl(c[0],2.2,c[1],0.4,4.4,0.4,'#555');solid(c[0],c[1],0.5,0.5,4.4);});
+  box(-2682,4.6,36,26,0.3,18,'#9a6a4a');box(-2682,4.9,36,26,0.12,18.4,'#7a7f84');
+  box(-2682,0.9,36,10,0.9,1.4,'#6e5436');cyl(-2682,1.4,36,1.6,0.12,1.6,'#c9c9c9',Math.PI/2,0,0);solid(-2682,36,10,1.4,1.2);
+  for(i=0;i<6;i++)box(-2699+i*0.2,0.2+i*0.12,36,2.4,0.14,0.5,'#c9a870');
+  addSign('SAWMILL. LOGS FROM THE LAGOON','#6e5436','#ffffff',-2682,3.6,13.7,Math.PI,8,0.8);
+  /* logs floating in the water beyond the sawmill */
+  for(i=0;i<9;i++)cyl(-2722-(i%3)*6,-0.2,22+i*4,0.7,7,0.7,'#6e5436',0,((i*37)%10)/10,Math.PI/2);
+  /* ---------- street furniture on the land road ---------- */
+  var lx;
+  for(lx=-2480;lx>=-2706;lx-=22){lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
+  var pxs=[];for(lx=-2480;lx>=-2706;lx-=28)pxs.push(lx);
+  poleLine(pxs,-6.4,3);
+  OJB.busStop(-2500,-8.6,0,'IWAYA ROAD');OJB.busStop(-2600,8.6,Math.PI,'MAKOKO JUNCTION');
+  [[-2480,-8.4,0.2],[-2486,-8.6,0.1],[-2575,8.4,3.3],[-2581,8.6,3.2],[-2640,-8.4,0.1]].forEach(function(o){okada(o[0],o[1],o[2]);});
+  /* ======================= THE LAGOON ======================= */
+  function deck(x0,x1,z0,z1,tone){
+    MKD.push([x0,x1,z0,z1]);
+    var n=Math.max(1,Math.ceil((x1-x0)/6)),sl=(x1-x0)/n,j;
+    for(j=0;j<n;j++)box(x0+sl*(j+0.5),0,(z0+z1)/2,sl+0.02,0.2,z1-z0,WOOD[(j+(tone|0))%4]);
+  }
+  function stilts(x0,x1,z0,z1){
+    var j,c;
+    for(j=x0+1;j<=x1-0.5;j+=6){box(j,-0.45,z0+0.25,0.22,0.9,0.22,'#4a3a28');box(j,-0.45,z1-0.25,0.22,0.9,0.22,'#4a3a28');}
+    for(j=z0+4;j<=z1-3;j+=6){box(x0+0.25,-0.45,j,0.22,0.9,0.22,'#4a3a28');box(x1-0.25,-0.45,j,0.22,0.9,0.22,'#4a3a28');}
+  }
+  /* the jetty, the main walk W1, the cross walks and the loop walks */
+  deck(-2742,-2712,-4,4,0);stilts(-2742,-2712,-4,4);
+  deck(-3004,-2742,-2,2,1);stilts(-3004,-2742,-2,2);
+  deck(-3016,-3004,-6,6,2);stilts(-3016,-3004,-6,6);
+  deck(-3004,-2748,-42,-38,3);deck(-3004,-2748,38,42,3);stilts(-3004,-2748,-42,-38);stilts(-3004,-2748,38,42);
+  [-2750,-2790,-2880,-2960].forEach(function(cx,ci){deck(cx-2,cx+2,-42,42,ci);stilts(cx-2,cx+2,-42,42);});
+  /* the floating school: a platform, barrels and an A-frame building */
+  deck(-2784,-2756,-36,-8,1);stilts(-2784,-2756,-36,-8);deck(-2772,-2768,-8,-2,2);
+  for(i=0;i<14;i++){cyl(-2783.2+(i%7)*4.6,-0.15,i<7?-35.2:-8.8,0.9,0.9,0.9,i%2?'#2f6fb1':'#e9e4d6');}
+  (function(){
+    var cx=-2770,cz=-24,th=Math.atan2(7,6),L=Math.sqrt(36+49);
+    box(cx,3.5,cz-3,18,0.25,L,'#e8e4da',0,-th,0);box(cx,3.5,cz+3,18,0.25,L,'#e8e4da',0,th,0);
+    box(cx,0.15,cz,18,0.3,12,'#c9b690');
+    [-9,9].forEach(function(gx){var s;for(s=0;s<7;s++){var w=12-s*1.7;box(cx+gx,0.5+s,cz,0.25,1,w,'#d9d2c2');}});
+    box(cx,0.9,cz+6.05,5,1.8,0.2,'#2b2118');box(cx,0.9,cz+5.96,3.6,1.6,0.1,'#5a4631');
+    [-6.5,6.5].forEach(function(wx2){box(cx+wx2,1.6,cz+6.1,2.0,1.1,0.1,'#9ec3d8');});
+    addSign('MAKOKO FLOATING SCHOOL','#2f6fb1','#ffffff',cx,3.6,cz+6.15,0,9,0.9);
+    solid(cx,cz,18,12,7);
+  })();
+  /* the four villages on stilts: three rows of plank houses over a deck */
+  function village(name,x0,x1,north,seed){
+    var sg=north?-1:1,z0=north?-36:6,z1=north?-6:36;
+    deck(x0,x1,z0,z1,seed);stilts(x0,x1,z0,z1);
+    var cx=(x0+x1)/2;
+    deck(cx-2,cx+2,north?-6:2,north?-2:6,seed+1);
+    deck(x0-4,x0,sg*20-2,sg*20+2,seed);deck(x1,x1+4,sg*20-2,sg*20+2,seed);
+    var rows=[[sg*32.5,sg],[sg*23.5,-sg],[sg*11.5,-sg]],ri,jj,q,hx;
+    rows.forEach(function(r,rn){
+      for(jj=0;x0+6+jj*8+3<=x1-3;jj++){
+        hx=x0+6+jj*8;q=(seed*3+rn*7+jj*3)%10;
+        var fz=(rn===0)?-sg:((rn===2)?sg:((jj%2)?1:-1)),w=5.4+(q%3)*0.5,h=2.5+(q%4)*0.25;
+        plank(hx,r[0],w,5,h,WALL[q],ROOF[(q+rn)%6],fz);
+      }
+    });
+    /* fish drying racks along the wide aisle */
+    for(jj=0;x0+8+jj*10+3<=x1-6;jj++){
+      var rx=x0+10+jj*10,rz=sg*19.4;
+      box(rx,1.45,rz,6,0.07,0.07,'#6e5436');[-3,3].forEach(function(o){box(rx+o,0.72,rz,0.1,1.45,0.1,'#6e5436');});
+      for(i=0;i<9;i++)box(rx-2.6+i*0.65,1.05,rz,0.14,0.7,0.1,i%3?'#b8b4a8':'#8a7a62');
+      solid(rx,rz,6.2,0.4,1.5);
+    }
+    /* the name board, facing the main walk */
+    box(cx-2.5,1.4,sg*6.6,0.18,2.8,0.18,'#555');box(cx+2.5,1.4,sg*6.6,0.18,2.8,0.18,'#555');
+    addSign(name,'#14161a','#f2d36b',cx,2.6,sg*6.6,north?0:Math.PI,5.6,0.8);
+    /* canoes tied up along the channel next to the main walk */
+    for(jj=0;jj<4;jj++){
+      var mx=x0+14+jj*17,mz=sg*3.9;
+      frame(mx,mz,((jj*47)%7)/10,function(){box(0,-0.1,0,3.9,0.32,0.95,['#6a4a2a','#2f6fb1','#7a3b2a','#2a7a5a'][(jj+seed)%4]);box(2.0,-0.02,0,0.6,0.2,0.7,'#6a4a2a');box(-2.0,-0.02,0,0.6,0.2,0.7,'#6a4a2a');box(0,0.12,0,3.7,0.06,0.9,'#8a6a3a');});
+    }
+  }
+  village('ADOGBO',-2874,-2796,true,1);village('MIGBEWHE',-2874,-2796,false,2);
+  village('OKO AGBON',-2954,-2886,true,3);village('YANSHIWHE',-2954,-2886,false,4);
+  /* fishing nets in the open water beyond the villages */
+  for(i=0;i<8;i++){var nx=-3000+i*5.4;[-30,30].forEach(function(nz,ni){cyl(nx,0.6,nz+(ni?-1:1)*(i%3),0.18,2.2,0.18,'#5a4631');if(i)box(nx-2.7,0.8,nz+(ni?-1:1)*(i%3),5.2,0.7,0.05,'#b8b4a8');});}
+  /* the world's edge: the Third Mainland Bridge crosses the lagoon beyond the last walkway */
+  (function(){
+    var bx=-3034,zp;
+    box(bx,9.4,0,13,0.9,140,'#8f9094');
+    box(bx-6.4,10.3,0,0.4,1.0,140,'#b8b9bb');box(bx+6.4,10.3,0,0.4,1.0,140,'#b8b9bb');
+    for(zp=-60;zp<=60;zp+=24){box(bx,4.5,zp,3.2,9,3.2,'#a8a9ab');solid(bx,zp,3.4,3.4,9);}
+    for(zp=-56;zp<=56;zp+=28){lamp(bx+6.2,zp,Math.PI/2);}
+    addSign('THIRD MAINLAND BRIDGE','#1f6f43','#ffffff',bx+6.6,12.4,0,Math.PI/2,11,1.1);
+  })();
+  /* water you cannot walk on: everything that is not a deck becomes a solid, one row at a time */
+  (function(){
+    var X0=-3044,X1=-2712,Z0=-66,Z1=66,nx=X1-X0,nz=Z1-Z0,iz,ix,x,z,run,open,d,dd,cnt=0;
+    for(iz=0;iz<nz;iz++){
+      z=Z0+iz+0.5;run=-1;
+      for(ix=0;ix<=nx;ix++){
+        open=true;
+        if(ix<nx){
+          x=X0+ix+0.5;open=false;
+          for(d=0;d<MKD.length;d++){dd=MKD[d];if(x>dd[0]&&x<dd[1]&&z>dd[2]&&z<dd[3]){open=true;break;}}
+        }
+        if(!open&&run<0)run=ix;
+        if(open&&run>=0){solid(X0+(run+ix)/2,z,ix-run,1,2);cnt++;run=-1;}
+      }
+    }
+    MKB.waterSolids=cnt;
+  })();
+  MKB.done=1;
+})();
+
+CHK=CHK_SAVE8;
+/* ---- b54: five places in Makoko you can walk into: the fish market, the smokehouse, the school, the Baale's hall and the boat workshop ---- */
+var MKI={mkt:[2305,-42],smoke:[2305,-14],school:[2305,14],baale:[2305,42],boat:[2370,-30]};
+(function(){
+  var GC=['#c1352d','#f2b705','#2f6fb1','#2a9d5b','#f1efe6','#e07a1f','#7a2e65'];
+  function table(x,z,col,w,d){w=w||1.5;d=d||0.95;box(x,0.75,z,w,0.08,d,col||'#8a6a45');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.37,z+p[1]*(d/2-0.1),0.08,0.74,0.08,'#3a2a1c');});solid(x,z,w,d,0.8);}
+  function plant(x,z,s){s=s||1;cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  function counter(x,z,w,col){box(x,0.55,z,w,1.1,0.8,col||'#2b2118');box(x,1.14,z,w+0.2,0.1,1.0,'#e9e4d6');solid(x,z,w+0.2,1.0,1.2);}
+  function bench(x,z,w,col){box(x,0.45,z,w,0.1,0.6,col||'#8a6a45');box(x-w/2+0.2,0.22,z,0.1,0.44,0.5,'#5a4631');box(x+w/2-0.2,0.22,z,0.1,0.44,0.5,'#5a4631');solid(x,z,w,0.6,0.5);}
+  function fishTable(x,z,w){box(x,0.7,z,w,0.12,1.5,'#c9d4d8');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.35,z+p[1]*0.65,0.1,0.7,0.1,'#5a4631');});
+    var n=Math.floor(w/0.9),i;for(i=0;i<n;i++){box(x-w/2+0.55+i*0.9,0.9,z,0.7,0.3,0.9,['#2f6fb1','#e9e4d6','#2f6fb1','#2a9d5b'][i%4]);lump(x-w/2+0.55+i*0.9,1.12,z,0.55,0.16,0.7,['#c9d4d8','#a8b4b8','#8a8f94'][i%3]);}
+    solid(x,z,w,1.5,1.2);}
+  function backing(cx,cz,W,D,H,wall){box(cx,Math.min(3.9,H-0.9)/2+0.0,cz-D/2+0.3,W-2,Math.min(3.9,H-0.9),0.3,wall);}
+  /* ----- MAKOKO FISH MARKET ----- */
+  (function(){
+    var cx=MKI.mkt[0],cz=MKI.mkt[1],W=34,D=24,H=5.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('mkmkt',cx,cz,W,D,H,{floor:'#cfd2c8',wall:'#f2eee2',trim:'#1f6f43',ceil:'#faf8f4'},{out:'mkmktd',nm:'MAKOKO FISH MARKET',doorX:cx-10});
+    box(X(0),2.0,Z(-11.7),W-2,4.0,0.3,'#e8e3d2');
+    [[-9,'#1f6f43','FRESH FISH',9],[3,'#2f6fb1','CRAYFISH AND PERIWINKLE',8],[13,'#e07a1f','DRIED FISH',8]].forEach(function(c){
+      counter(X(c[0]),Z(-10),c[3],c[1]);addSign(c[2],c[1],'#ffffff',X(c[0]),3.9,Z(-11.5),0,c[3]+0.8,0.8);
+    });
+    addSign('FROM THE LAGOON TO LAGOS','#14161a','#f2d36b',X(0),4.8,Z(-11.5),0,10,0.6);
+    [[-10,-3.5],[-3,-3.5],[4,-3.5],[11,-3.5],[-10,2],[-3,2],[4,2],[11,2]].forEach(function(t){fishTable(X(t[0]),Z(t[1]),4.4);});
+    box(X(-16.8),1.0,Z(5),1.2,2.0,3,'#e9eef0');box(X(-16.2),1.2,Z(5),0.04,1.5,2.8,'#9ec3d8');solid(X(-16.8),Z(5),1.2,3,2.0);
+    addSign('ICE BLOCKS','#2f6fb1','#ffffff',X(-16.1),3.2,Z(5),Math.PI/2,2.8,0.5);
+    plant(X(-16),Z(-10));plant(X(16),Z(10.5));
+  })();
+  /* ----- SMOKEHOUSE ----- */
+  (function(){
+    var cx=MKI.smoke[0],cz=MKI.smoke[1],W=30,D=22,H=4.8,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('mksmoke',cx,cz,W,D,H,{floor:'#bfb59f',wall:'#e0d2b4',trim:'#7a3b2a',ceil:'#e9dfc8'},{out:'mksmoked',nm:'SMOKEHOUSE',doorX:cx-10});
+    box(X(0),1.9,Z(-10.7),W-2,3.8,0.3,'#d6c6a2');
+    counter(X(-6),Z(-9),10,'#7a3b2a');
+    addSign('SMOKED FISH. MAKOKO','#7a3b2a','#f2d36b',X(-6),3.7,Z(-10.5),0,9,0.8);
+    /* three drum smokers with glowing coals and racks above */
+    [6,10,14].forEach(function(dx){
+      cyl(X(dx),0.7,Z(-6.6),1.6,1.4,1.6,'#3a3d40');cyl(X(dx),1.45,Z(-6.6),1.3,0.1,1.3,'#e07a1f');
+      box(X(dx),2.3,Z(-6.6),1.7,0.06,1.1,'#6e5436');var i;for(i=0;i<6;i++)box(X(dx-0.7+i*0.28),2.05,Z(-6.6),0.12,0.5,0.1,i%2?'#8a6a46':'#b8b4a8');
+      solid(X(dx),Z(-6.6),1.7,1.7,2.4);
+    });
+    box(X(10),3.6,Z(-9.6),9,0.4,0.2,'#14161a');addSign('FIRE. KEEP BACK','#c1352d','#ffffff',X(10),3.6,Z(-9.5),0,5,0.5);
+    /* the long drying table and benches */
+    table(X(-2),Z(1.5),'#c9b690',8,1.6);
+    var i;for(i=0;i<8;i++)lump(X(-5.2+i*0.9),0.95,Z(1.5),0.6,0.18,0.9,['#8a6a46','#b8b4a8','#6e5436'][i%3]);
+    [[-13,3],[-13,7]].forEach(function(b){bench(X(b[0]),Z(b[1]),4);});
+    [[13.2,3.5],[13.6,4.5],[12.6,4.7]].forEach(function(p){lump(X(p[0]),0.5,Z(p[1]),0.9,0.7,0.8,'#d9c4a0');});
+    solid(X(13.1),Z(4.2),2.2,2.2,0.9);
+    plant(X(-14),Z(-9.5));
+  })();
+  /* ----- THE SCHOOL ----- */
+  (function(){
+    var cx=MKI.school[0],cz=MKI.school[1],W=30,D=20,H=4.8,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('mkschool',cx,cz,W,D,H,{floor:'#d8cdb4',wall:'#eef2f4',trim:'#2f6fb1',ceil:'#faf8f4'},{out:'mkschoold',nm:'MAKOKO FLOATING SCHOOL',doorX:cx-10});
+    box(X(0),1.9,Z(-9.7),W-2,3.8,0.3,'#e4e8ea');box(X(0),2.3,Z(-9.5),14,1.9,0.08,'#2f6a34');
+    addSign('LEARN. READ. COUNT. FRANCAIS. ENGLISH.','#2f6fb1','#ffffff',X(0),4.2,Z(-9.5),0,13,0.7);
+    box(X(7),0.45,Z(-7.2),3.2,0.9,1.2,'#8a6a45');solid(X(7),Z(-7.2),3.2,1.2,0.95);
+    [-1.5,2].forEach(function(rz){[-8,-1,6].forEach(function(rx){box(X(rx),0.55,Z(rz),5.2,0.07,0.9,'#c9b690');box(X(rx-2.4),0.27,Z(rz),0.08,0.54,0.8,'#6e5436');box(X(rx+2.4),0.27,Z(rz),0.08,0.54,0.8,'#6e5436');solid(X(rx),Z(rz),5.2,0.9,0.6);bench(X(rx),Z(rz+0.9),4.4,'#2f6fb1');});});
+    box(X(-14.9),2.2,Z(0),0.1,2.2,6,'#2a7a6a');addSign('ABC. 123. BONJOUR.','#2f6fb1','#ffffff',X(-14.75),3.6,Z(0),Math.PI/2,5,0.6);
+    box(X(14.9),2.0,Z(2),0.1,2.2,6,'#c1352d');addSign('THE FIRST FLOATING SCHOOL, 2013','#14161a','#f2d36b',X(14.75),3.6,Z(2),-Math.PI/2,5.6,0.6);
+    plant(X(-13),Z(-8));plant(X(13),Z(8));
+  })();
+  /* ----- THE BAALE'S COMMUNITY HALL ----- */
+  (function(){
+    var cx=MKI.baale[0],cz=MKI.baale[1],W=26,D=18,H=4.6,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('mkbaale',cx,cz,W,D,H,{floor:'#c9bca2',wall:'#efe7d8',trim:'#7a2e65',ceil:'#f6f0e4'},{out:'mkbaaled',nm:"BAALE'S COMMUNITY HALL",doorX:cx-9});
+    box(X(0),1.9,Z(-8.7),W-2,3.8,0.3,'#e2d9c6');
+    addSign("MAKOKO COMMUNITY HALL",'#7a2e65','#f2d36b',X(0),3.7,Z(-8.5),0,9,0.9);
+    box(X(0),0.06,Z(-6.6),8,0.12,4.4,'#7a2e65');box(X(0),0.6,Z(-8.1),2.2,1.2,0.8,'#2b2118');box(X(0),1.7,Z(-8.4),2.2,1.6,0.2,'#c1352d');solid(X(0),Z(-8.1),2.4,0.9,1.3);
+    box(X(0),0.07,Z(2.5),3,0.04,17,'#c1352d');
+    [-1,1].forEach(function(s){var i;for(i=0;i<4;i++)bench(X(s*5.2),Z(-3+i*3),3.6,'#8a6a45');});
+    [[-12.8,-3],[-12.8,3],[12.8,-3],[12.8,3]].forEach(function(p){box(X(p[0]),2.0,Z(p[1]),0.1,1.5,1.6,'#7a2e65');});
+    plant(X(-11.5),Z(-7.5));plant(X(11.5),Z(7.5));
+  })();
+  /* ----- THE BOAT WORKSHOP ----- */
+  (function(){
+    var cx=MKI.boat[0],cz=MKI.boat[1],W=32,D=22,H=5.0,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('mkboat',cx,cz,W,D,H,{floor:'#bfae8e',wall:'#e8dfca',trim:'#1f3a68',ceil:'#f0e8d6'},{out:'mkboatd',nm:'BOAT WORKSHOP',doorX:cx-10});
+    box(X(0),1.9,Z(-10.7),W-2,3.8,0.3,'#d9d0bc');
+    counter(X(-8),Z(-9),10,'#1f3a68');
+    addSign('PADDLES. MODELS. CANOES.','#1f3a68','#f2d36b',X(-8),3.7,Z(-10.5),0,9,0.8);
+    /* two canoe hulls on trestles */
+    [[6,-6],[6,-1.5]].forEach(function(p,pi){
+      box(X(p[0]),0.9,Z(p[1]),7,0.5,1.2,['#6a4a2a','#2f6fb1'][pi]);box(X(p[0]+3.8),1.0,Z(p[1]),0.8,0.4,0.9,['#6a4a2a','#2f6fb1'][pi]);box(X(p[0]-3.8),1.0,Z(p[1]),0.8,0.4,0.9,['#6a4a2a','#2f6fb1'][pi]);
+      box(X(p[0]-2),0.35,Z(p[1]),0.2,0.7,1.0,'#5a4631');box(X(p[0]+2),0.35,Z(p[1]),0.2,0.7,1.0,'#5a4631');
+      solid(X(p[0]),Z(p[1]),7.4,1.4,1.2);
+    });
+    var i;for(i=0;i<6;i++)box(X(14.8),0.2+i*0.18,Z(3+(i%2)*0.2),1.2,0.12,5,'#c9a870');solid(X(14.8),Z(3),1.4,5,1.3);
+    [[-4,4],[-1,4]].forEach(function(p){box(X(p[0]),0.5,Z(p[1]),0.6,1.0,2.4,'#6e5436');solid(X(p[0]),Z(p[1]),0.8,2.6,1.0);});
+    for(i=0;i<5;i++)box(X(-13+i*0.55),1.0,Z(4.4),0.12,2.0,0.12,'#d9c4a0',0,0,0.08*(i-2));
+    solid(X(-11.9),Z(4.4),3,0.6,2);
+    plant(X(-14),Z(-9.5));
   })();
 })();
 
@@ -4648,7 +4913,7 @@ function collideCar(){
     }
   }
   var L=LIM-1.3;
-  car.x=Math.max(XMIN+1.3,Math.min(XMAX-1.3,car.x));car.z=Math.max(-L,Math.min(L,car.z));
+  if(car.x<-2708)car.speed*=0.4;car.x=Math.max(-2708,Math.min(XMAX-1.3,car.x));car.z=Math.max(-L,Math.min(L,car.z));
   return hit;
 }
 function driveUpdate(dt,ctl){
@@ -4736,7 +5001,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-2480,XMAX=2280;
+var LIM=66,PR=0.38,XMIN=-3044,XMAX=2420;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -5546,8 +5811,8 @@ function buildOkada(){
   return b.mesh();
 }
 var LANES=[
-  {x:-2447,z:2.5,h:Math.PI/2,speed:9,b:[-2448,248]},
-  {x:247,z:-2.5,h:-Math.PI/2,speed:8,b:[-2448,248]},
+  {x:-2707,z:2.5,h:Math.PI/2,speed:9,b:[-2708,248]},
+  {x:247,z:-2.5,h:-Math.PI/2,speed:8,b:[-2708,248]},
   {x:-2,z:-63,h:0,speed:7},
   {x:2,z:63,h:Math.PI,speed:8.5},
   {x:292,z:4.4,h:Math.PI/2,speed:10,b:[289,481]},
@@ -5583,12 +5848,12 @@ function addVeh(kind,lane,p,col){
   var v={grp:grp,lane:lane,r:r,h:L.h,x:L.x+Math.sin(L.h)*p,z:L.z+Math.cos(L.h)*p,speed:L.speed,max:L.speed,honkT:2+Math.random()*3};
   grp.position.set(v.x,0,v.z);grp.rotation.y=v.h;traffic.push(v);
 }
-addVeh('danfo',0,1604);addVeh('sedan',0,1668,'#c9c9c9');
+addVeh('danfo',0,1864);addVeh('sedan',0,1928,'#c9c9c9');
 addVeh('sedan',1,26,'#8e2f2f');addVeh('okada',1,92);
 addVeh('okada',2,42);addVeh('danfo',2,100);
 addVeh('sedan',3,56,'#2f4f8e');addVeh('danfo',3,18);
-addVeh('sedan',0,1740,'#e0c040');addVeh('danfo',1,20);
-addVeh('danfo',0,1825);addVeh('sedan',1,200,'#7a3fa0');addVeh('okada',0,1860);addVeh('sedan',1,140,'#3a8f6a');
+addVeh('sedan',0,2000,'#e0c040');addVeh('danfo',1,20);
+addVeh('danfo',0,2085);addVeh('sedan',1,200,'#7a3fa0');addVeh('okada',0,2120);addVeh('sedan',1,140,'#3a8f6a');
 addVeh('sedan',4,20,'#e8e8e8');addVeh('danfo',4,90);addVeh('okada',4,150);addVeh('sedan',5,15,'#1f3f6a');addVeh('okada',5,70);addVeh('danfo',5,130);addVeh('sedan',6,30,'#c9c9c9');addVeh('sedan',7,25,'#7a2e2e');addVeh('danfo',7,70);
 addVeh('danfo',8,16);addVeh('okada',8,80);addVeh('sedan',8,140,'#e8e8e8');addVeh('sedan',9,20,'#3a8f6a');addVeh('danfo',9,85);addVeh('okada',9,140);addVeh('sedan',10,30,'#1f3f6a');addVeh('okada',10,60);addVeh('danfo',11,25);addVeh('sedan',11,70,'#c9c9c9');
 addVeh('sedan',12,20,'#14161a');addVeh('sedan',12,100,'#f1efe6');addVeh('sedan',13,40,'#8e2f2f');addVeh('sedan',13,120,'#14161a');addVeh('okada',12,150);addVeh('sedan',14,30,'#d9d9d9');addVeh('sedan',15,40,'#14161a');
@@ -5925,7 +6190,7 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';npcs[3].label='DELE';npcs[4].label='KUNLE';npcs[5].label='RONKE';npcs[6].label='OKON';
 var MW=480,MH=200,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
 mapBG.width=MW;mapBG.height=MH;
-var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338],[-2482,-1888]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
+var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338],[-2482,-1888],[-3044,-2448]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
 function MX(x){var r=MR[mapReg];return (x-r[0])/(r[1]-r[0])*MW;}
 function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 (function(){
@@ -6013,7 +6278,7 @@ function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 
 
 var mapBG6=document.createElement('canvas');mapBG6.width=MW;mapBG6.height=MH;
-function mreg(x){return x<-1892?9:(x<-1342?8:(x<-882?7:(x<-558?6:(x<-190?5:regOf(x)))));}
+function mreg(x){return x<-2452?10:(x<-1892?9:(x<-1342?8:(x<-882?7:(x<-558?6:(x<-190?5:regOf(x))))));}
 (function(){
   mapReg=5;var g=mapBG6.getContext('2d');
   g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
@@ -6092,11 +6357,29 @@ var mapBG10=document.createElement('canvas');mapBG10.width=MW;mapBG10.height=MH;
   }
   mapReg=0;
 })();
+var mapBG11=document.createElement('canvas');mapBG11.width=MW;mapBG11.height=MH;
+(function(){
+  mapReg=10;var g=mapBG11.getContext('2d');
+  g.fillStyle='#a8704a';g.fillRect(0,0,MW,MH);
+  g.fillStyle='#3d6860';g.fillRect(0,0,MX(-2712),MH);
+  g.fillStyle='#8f9094';g.fillRect(MX(-3040.5),0,MX(-3027.5)-MX(-3040.5),MH);
+  g.fillStyle='#4a4d52';g.fillRect(MX(-2712),MZ(-5),MX(-2448)-MX(-2712),MZ(5)-MZ(-5));
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(MX(-2712),MZ(0));g.lineTo(MW,MZ(0));g.stroke();g.setLineDash([]);
+  g.fillStyle='#8a6a45';
+  MKD.forEach(function(d){g.fillRect(MX(d[0]),MZ(d[2]),Math.max(1,MX(d[1])-MX(d[0])),Math.max(1,MZ(d[3])-MZ(d[2])));});
+  g.fillStyle='#c9b08a';
+  for(var i=0;i<solids.length;i++){
+    var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
+    if(q.minX<-3044||q.maxX>-2448)continue;
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(MR[10][1]-MR[10][0])*MW),Math.max(2,d/(2*LIM)*MH));
+  }
+  mapReg=0;
+})();
 function mapLabel(g,t,x,y){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(t,x,y);g.fillText(t,x,y);}
 function mapUpdate(dt){
   mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
-  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10][rg],0,0);
+  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10,mapBG11][rg],0,0);
   if(px>1250){g.fillStyle='rgba(10,10,12,0.78)';g.fillRect(0,0,MW,MH);g.fillStyle='#fff';g.font='bold 26px sans-serif';g.textAlign='center';g.fillText('INSIDE A BUILDING',MW/2,MH/2);return;}
   g.fillStyle='#1b1b1b';
   for(i=0;i<traffic.length;i++)if(mreg(traffic[i].x)===rg)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
@@ -10137,7 +10420,7 @@ function ojLamps(){
   }
 }
 /* traffic on the new stretch and on Ojuelegba Road */
-addVeh('danfo',0,1630);addVeh('sedan',0,1700,'#e0c040');addVeh('okada',0,1780);addVeh('sedan',0,1890,'#2f4f8e');
+addVeh('danfo',0,1890);addVeh('sedan',0,1960,'#e0c040');addVeh('okada',0,2040);addVeh('sedan',0,2150,'#2f4f8e');
 addVeh('danfo',1,330);addVeh('sedan',1,372,'#c9c9c9');addVeh('okada',1,416,'#14161a');addVeh('danfo',1,470);addVeh('sedan',1,505,'#8e2f2f');
 addVeh('danfo',20,26);addVeh('sedan',20,70,'#d9d9d9');addVeh('okada',20,100);
 addVeh('danfo',21,30);addVeh('sedan',21,66,'#2f6a8e');addVeh('okada',21,102);
@@ -10232,7 +10515,7 @@ function agLamps(){
   }
 }
 /* traffic: the long road west, and Agege Motor Road */
-addVeh('sedan',0,1920,'#d9d9d9');addVeh('danfo',0,1960);addVeh('okada',0,2010);addVeh('sedan',0,2060,'#7a3fa0');addVeh('danfo',0,2110);addVeh('sedan',0,2165,'#14161a');addVeh('okada',0,2230);addVeh('danfo',0,2290);
+addVeh('sedan',0,2180,'#d9d9d9');addVeh('danfo',0,2220);addVeh('okada',0,2270);addVeh('sedan',0,2320,'#7a3fa0');addVeh('danfo',0,2370);addVeh('sedan',0,2425,'#14161a');addVeh('okada',0,2490);addVeh('danfo',0,2550);
 addVeh('sedan',1,560,'#e0c040');addVeh('danfo',1,600);addVeh('okada',1,640);addVeh('sedan',1,690,'#2f6a8e');addVeh('danfo',1,730);addVeh('sedan',1,770,'#c9c9c9');
 addVeh('danfo',22,26);addVeh('sedan',22,70,'#8e2f2f');addVeh('okada',22,100);
 addVeh('sedan',23,30,'#d9d9d9');addVeh('danfo',23,66);addVeh('okada',23,102);
@@ -10618,7 +10901,7 @@ function alLamps(){
   }
 }
 /* traffic: the road west of Computer Village, and Allen Avenue */
-addVeh('sedan',0,1160,'#c9c9c9');addVeh('danfo',0,1215);addVeh('okada',0,1270);addVeh('sedan',0,1325,'#2f4f8e');addVeh('danfo',0,1382);addVeh('sedan',0,1438,'#e0c040');addVeh('okada',0,1492);addVeh('danfo',0,1545);
+addVeh('sedan',0,1420,'#c9c9c9');addVeh('danfo',0,1475);addVeh('okada',0,1530);addVeh('sedan',0,1585,'#2f4f8e');addVeh('danfo',0,1642);addVeh('sedan',0,1698,'#e0c040');addVeh('okada',0,1752);addVeh('danfo',0,1805);
 addVeh('sedan',1,1130,'#8e2f2f');addVeh('danfo',1,1185);addVeh('okada',1,1240);addVeh('sedan',1,1295,'#14161a');addVeh('danfo',1,1350);addVeh('sedan',1,1405,'#2f6a8e');addVeh('okada',1,1460);addVeh('danfo',1,1515);
 addVeh('danfo',24,26);addVeh('sedan',24,70,'#d9d9d9');addVeh('okada',24,100);
 addVeh('sedan',25,30,'#7a3fa0');addVeh('danfo',25,66);addVeh('okada',25,102);
@@ -10840,7 +11123,7 @@ function rlGap(v){
   return gs+1.5;
 }
 /* traffic: the road west of Ikeja */
-addVeh('sedan',0,600,'#d9d9d9');addVeh('danfo',0,655);addVeh('okada',0,710);addVeh('sedan',0,765,'#8e2f2f');addVeh('danfo',0,822);addVeh('sedan',0,878,'#2f6a8e');addVeh('okada',0,932);addVeh('danfo',0,985);addVeh('sedan',0,1040,'#e0c040');
+addVeh('sedan',0,860,'#d9d9d9');addVeh('danfo',0,915);addVeh('okada',0,970);addVeh('sedan',0,1025,'#8e2f2f');addVeh('danfo',0,1082);addVeh('sedan',0,1138,'#2f6a8e');addVeh('okada',0,1192);addVeh('danfo',0,1245);addVeh('sedan',0,1300,'#e0c040');
 addVeh('sedan',1,1585,'#2f4f8e');addVeh('danfo',1,1640);addVeh('okada',1,1695);addVeh('sedan',1,1750,'#14161a');addVeh('danfo',1,1805);addVeh('sedan',1,1860,'#c9c9c9');addVeh('okada',1,1915);addVeh('danfo',1,1970);addVeh('sedan',1,2030,'#7a3fa0');
 /* places */
 var AGP=[
@@ -11236,6 +11519,281 @@ function ybStudy(h,c){
   IW('aycch',[-4,-6.3],[13,-6.3],[[8,20]],0.4);IW('aycch',[13,4.5],[-9,4.5],[[8,20]],0.5);IW('aycch',[-9,-4],[-9,9],[[8,20]],0.4);IW('aycch',[11,9.5],[-4,9.5],[[8,20]],0.45);
   IW('aytec',[-12,-5],[12,-5],[[8,17]],0.4);IW('aytec',[12,6],[-12,6],[[8,17]],0.5);IW('aytec',[-9,-4],[-9,8],[[8,17]],0.4);
   IW('ayefk',[-9,-2.5],[12,-2.5],[[8,22]],0.45);IW('ayefk',[12,5.8],[-9,5.8],[[8,22]],0.5);IW('ayefk',[1,-3],[1,8],[[8,22]],0.4);
+})();
+
+/* ---- b54: Makoko people, opening hours, careers, canoe rides, moving canoes, a school and traffic ----
+   The layout, every person, shop, price and hour are invented. The facts people tell you are from public sources and are labelled. */
+/* traffic: the new stretch of the main road west of Yaba */
+(function(){
+  var kinds=['okada','danfo','sedan','okada','danfo'],cols=['#2f6a8e','#e0c040','#d9d9d9','#c1352d','#8e2f2f'],k,x,n=0;
+  function free(lane,px){for(var i=0;i<traffic.length;i++){if(traffic[i].lane===lane&&Math.abs(traffic[i].x-px)<24)return false;}return true;}
+  /* only drop a car where no other car already stands, so nothing starts overlapped and jammed */
+  for(x=-2690,k=0;x<-2480&&n<4;x+=26){if(free(0,x)){addVeh(kinds[k%5],0,x+2707,cols[k%5]);n++;k++;}}
+  for(x=-2470,k=0,n=0;x>-2690&&n<5;x-=24){if(free(1,x)){addVeh(kinds[(k+2)%5],1,247-x,cols[(k+1)%5]);n++;k++;}}
+  /* the moved road start left a few older cars standing on top of each other, which jams a lane for good; spread them out */
+  var byLane={};
+  traffic.forEach(function(v){(byLane[v.lane]=byLane[v.lane]||[]).push(v);});
+  Object.keys(byLane).forEach(function(l){
+    var a=byLane[l];if(a.length<2)return;
+    function pos(v){return v.x*Math.sin(v.h)+v.z*Math.cos(v.h);}
+    a.sort(function(p,q){return pos(q)-pos(p);});
+    for(var i=1;i<a.length;i++){
+      var gap=pos(a[i-1])-pos(a[i]),need=11;
+      if(gap<need){var d=need-gap;a[i].x-=Math.sin(a[i].h)*d;a[i].z-=Math.cos(a[i].h)*d;a[i].grp.position.set(a[i].x,0,a[i].z);}
+    }
+  });
+})();
+var MKP=[
+  {k:'mksmoked',id:'mksmoke',nm:'SMOKEHOUSE',h:[6,18],x:-2545,z:-10.9,yaw:0,bx:-2545,bz:-11.85,br:0},
+  {k:'mkmktd',id:'mkmkt',nm:'MAKOKO FISH MARKET',h:[5,15],x:-2530,z:10.9,yaw:Math.PI,bx:-2530,bz:11.85,br:Math.PI},
+  {k:'mkbaaled',id:'mkbaale',nm:"BAALE'S COMMUNITY HALL",h:[9,17],x:-2635,z:-10.9,yaw:0,bx:-2635,bz:-11.85,br:0},
+  {k:'mkboatd',id:'mkboat',nm:'BOAT WORKSHOP',h:[8,17],x:-2668,z:-10.9,yaw:0,bx:-2668,bz:-11.85,br:0},
+  {k:'mkschoold',id:'mkschool',nm:'MAKOKO FLOATING SCHOOL',h:[8,15],x:-2770,z:-16.3,yaw:0,bx:-2770,bz:-17.7,br:0}
+];
+/* ---- small helpers for facts ---- */
+function mkInfo(who,text,back){openDlg(who,text,[{label:'BACK',fn:back},{label:'DONE'}]);}
+var MKF={
+  people:'Makoko is a community on the Lagos Lagoon next to Iwaya and Yaba. Its government name is the Makoko-Iwaya Waterfront. The Egun people, who came from Badagry and from the Republic of Benin, settled here in the nineteenth century. There are six villages: four on the water (Adogbo, Migbewhe, Oko Agbon and Yanshiwhe) and two on land (Apollo and Sogunro). Only about a third of it stands on stilts. The map, the shops and the people in this game are invented.',
+  work:'Fishing is the main work. Men fish from canoes and women smoke, dry and sell the fish, and women lead much of the trade. Nearly every household has a canoe, and children learn to paddle from about five years old. Logs are floated in across the lagoon and sawn at the sawmills on the shore. The prices and shops in this game are invented.',
+  school:'The Makoko Floating School was designed by the architect Kunle Adeyemi and his studio NLE and built in 2013 on about 250 plastic barrels. It was left empty in March 2016 and collapsed on 7 June 2016, and nobody was hurt. A later version, MFS II, won the Silver Lion at the 2016 Venice Architecture Biennale. Separately, a French-medium primary school at Oko Agbon began in 1989 with about 120 pupils. The school room here is invented.',
+  hard:'Makoko was not counted in the 2007 census, so nobody knows its size for sure. Estimates run from about 85,000 people to over a million. In July 2012 demolitions left nearly 3,000 people without homes. News reports say more demolitions took place in January 2026; residents and rights groups called them unlawful, and the state said it was clearing unsafe structures. This character is invented and cannot speak for real people. The game shows Makoko as a living place.'
+};
+function mkBaaleMenu(msg){
+  openDlg('THE BAALE (INVENTED CHARACTER)',(msg?msg+'  ':'')+'Welcome to the community hall. Sit, greet, ask. What do you want to know?',[
+    {label:'PEOPLE AND VILLAGES',fn:function(){mkInfo('THE BAALE',MKF.people,mkBaaleMenu);}},
+    {label:'WORK ON THE WATER',fn:function(){mkInfo('THE BAALE',MKF.work,mkBaaleMenu);}},
+    {label:'THE FLOATING SCHOOL',fn:function(){mkInfo('THE BAALE',MKF.school,mkBaaleMenu);}},
+    {label:'HARD TIMES',fn:function(){mkInfo('THE BAALE',MKF.hard,mkBaaleMenu);}},
+    {label:'GREET WITH A GIFT '+money(1500),fn:mkGift},
+    {label:'BYE'}]);
+}
+function mkGift(){
+  if(cash<1500){buzz();mkBaaleMenu('A gift of kola and drinks costs '+money(1500)+'.');return;}
+  cash-=1500;setCash();logTx('Gift for the Baale',-1500);gain('social',14);gain('fun',4);saveGame();chime();
+  mkBaaleMenu('You greet him properly and give kola and drinks. He receives it with a smile. Your name will be remembered in Makoko.');
+}
+/* the school: cheap lessons up to Education Level 1 */
+var MKLESS={1:500,3:1400};
+function mkLessons(msg){
+  var e=life.edu|0,L=eduLevel();
+  if(!isOpen(8,15)){openDlg('MRS KEMI','Lessons run 8 AM to 3 PM. Come back tomorrow.',[{label:'OK'}]);return;}
+  if(L>=1){openDlg('MRS KEMI (TEACHER)',EDUN[L]+'. You have finished what we teach in this room. For more, study at the school in Ojuelegba or the Yabatech centre in Yaba.',[{label:'ABOUT THE SCHOOL',fn:function(){mkInfo('MRS KEMI',MKF.school,mkLessons);}},{label:'BYE'}]);return;}
+  openDlg('MRS KEMI (TEACHER)',(msg?msg+'  ':'')+'Reading, counting and a little French and English. '+e+' study hours so far, '+(3-e)+' more for Level 1. You have '+money(cash)+'.',[
+    {label:'STUDY 1 HOUR '+money(MKLESS[1]),fn:function(){mkStudy(1);}},
+    {label:'STUDY 3 HOURS '+money(MKLESS[3]),fn:function(){mkStudy(3);}},
+    {label:'ABOUT THE SCHOOL',fn:function(){mkInfo('MRS KEMI',MKF.school,mkLessons);}},
+    {label:'BYE'}]);
+}
+function mkStudy(h){
+  var c=MKLESS[h];
+  if(cash<c){buzz();mkLessons('Fees for '+h+' hour'+(h>1?'s':'')+' are '+money(c)+'.');return;}
+  if(need.energy<20||need.hunger<10){buzz();mkLessons('You look too tired or hungry to learn today. Rest and eat first.');return;}
+  var before=eduLevel();
+  cash-=c;setCash();logTx('Makoko school fees',-c);
+  applyFx({energy:-6*h,hunger:-5*h,fun:-3*h,bladder:-3*h});
+  life.edu=(life.edu|0)+h;advanceHours(h);saveGame();chime();
+  var after=eduLevel();
+  if(after>before){toast('CERTIFICATE! '+EDUN[after]);pushMsg('evt','You passed '+EDUN[after]+' at the Makoko floating school.');}
+  mkLessons('Good work today.');
+}
+/* canoe rides across the lagoon */
+var MKFARE={cross:300,tour:600};
+function mkRideMenu(here,msg){
+  var open=isOpen(5,20);
+  if(!open){openDlg('CANOE MAN','The canoes rest at night. Come back from 5 AM.',[{label:'OK'}]);return;}
+  openDlg('CANOE MAN',(msg?msg+'  ':'')+'Canoe? I take you '+(here==='jetty'?'to the far pier at the end of the walkway':'back to the jetty')+' or I paddle you round the villages. You have '+money(cash)+'.',[
+    {label:(here==='jetty'?'TO THE FAR PIER ':'BACK TO THE JETTY ')+money(MKFARE.cross),fn:function(){mkRide(here,'cross');}},
+    {label:'VILLAGE TOUR '+money(MKFARE.tour),fn:function(){mkRide(here,'tour');}},
+    {label:'ABOUT CANOES',fn:function(){mkInfo('CANOE MAN',MKF.work,function(){mkRideMenu(here);});}},
+    {label:'BYE'}]);
+}
+function mkRide(here,kind){
+  var why=phBlock();if(why){buzz();toast(why);return;}
+  var fare=MKFARE[kind];
+  if(cash<fare){buzz();mkRideMenu(here,'E no reach! That is '+money(fare)+'.');return;}
+  var other=NK[here==='jetty'?'mkcanoe2':'mkcanoe'].npc;
+  cash-=fare;setCash();logTx(kind==='tour'?'Canoe tour, Makoko':'Canoe ride, Makoko',-fare);saveGame();
+  fadeSeq(kind==='tour'?'Paddling past the villages...':'Across the lagoon...',function(){
+    if(kind==='cross'){var sp=spotNear(other);player.x=sp[0];player.z=sp[1];player.speed=0;player.yaw=Math.atan2(other.x-sp[0],other.z-sp[1]);camYaw=player.yaw+Math.PI;camSnap=true;advanceHours(0.25);}
+    else{advanceHours(0.75);gain('fun',14);gain('social',4);gain('energy',-2);}
+    saveGame();
+  },'',{mid:900,total:2200,done:function(){toast(kind==='tour'?'You passed Adogbo, Migbewhe, Oko Agbon and Yanshiwhe and the Third Mainland Bridge.':'You stepped off the canoe on the other side.');}});
+}
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  var D={
+    mksmoked:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#7a3b2a',low2:'#5a2a1c',top:'#d9c4a0',head:'gele',hc:'#7a3b2a',hc2:'#f2b705'},name:'SMOKEHOUSE KEEPER',lbl:'SMOKEHOUSE',greet:'Smokehouse. Fish smoked over the fire. Open 6 AM to 6 PM.'},
+    mkmktd:{look:{skin:sk[1],skin2:'#6a3e26',low:'#1f6f43',low2:'#14502f',top:'#f1efe6',head:'cap',hc:'#1f6f43'},name:'MARKET WARDEN',lbl:'FISH MARKET',greet:'Makoko Fish Market. Fish comes in before dawn. Open 5 AM to 3 PM.'},
+    mkbaaled:{look:{skin:sk[0],skin2:'#5a3520',low:'#7a2e65',low2:'#5a2048',top:'#e8e3d2',head:'cap',hc:'#7a2e65'},name:'HALL STEWARD',lbl:'COMMUNITY HALL',greet:"The Baale's community hall. Open 9 AM to 5 PM."},
+    mkboatd:{look:{skin:sk[3],skin2:'#774a2e',low:'#1f3a68',low2:'#14264a',top:'#d9d2c2',head:'cap',hc:'#1f3a68'},name:'WORKSHOP BOY',lbl:'BOAT WORKSHOP',greet:'Boat workshop. Paddles, models, canoes. Open 8 AM to 5 PM.'},
+    mkschoold:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#2f6fb1',low2:'#1f4f84',top:'#ffffff',head:'',hs:'low'},name:'SCHOOL PORTER',lbl:'FLOATING SCHOOL',greet:'Makoko Floating School. Lessons run 8 AM to 3 PM.'}
+  };
+  MKP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2,hs:lk.hs},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.bx,2.4,p.bz,p.br,3.2,0.6);
+    var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    OJP.push(p);
+    DEST.push([p.nm,p.k]);
+  });
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  var CL='The place is closed. ';
+  /* the fish market */
+  inside('mkmkt','mkmkt',[-9,-10.8],{skin:sk[2],skin2:'#4a2b1a',low:'#1f6f43',low2:'#14502f',top:'#f1efe6',head:'gele',hc:'#1f6f43',hc2:'#f2b705'},
+    {label:'FRESH FISH',name:'MAMA TOYIN (FRESH FISH)',svcLabel:'BUY',career:'fishtrade',hours:[5,15],closed:CL+'It opens at 5 AM.',greet:'Fresh from the lagoon this morning. Tilapia, catfish, croaker.',
+     chat:['The canoes come in before sunrise. By eight the best fish is gone.','Women run most of the selling here. The men fish and we do the rest.','Tilapia, catfish and croaker come from the lagoon.'],hangMsg:'She gives you a hot piece of fried tilapia to taste.',
+     items:[{l:'FRIED TILAPIA AND PEPPER',c:2500,food:1,fx:{hunger:58,fun:4,bladder:-3},msg:'Whole fried tilapia in hot pepper.'},{l:'CATFISH PEPPER SOUP',c:3500,food:1,fx:{hunger:55,energy:6,fun:5,bladder:-5},msg:'Hot peppery catfish soup.'},{l:'TILAPIA TO TAKE HOME',c:3000,fx:{fun:6,social:4},msg:'You wrap a big tilapia for home.'}]});
+  inside('mkmkt','mkmktc',[3,-10.8],{skin:sk[3],skin2:'#774a2e',low:'#2f6fb1',low2:'#1f4f84',top:'#f3efe2',head:'gele',hc:'#2f6fb1',hc2:'#f2b705'},
+    {label:'CRAYFISH',name:'AUNTY BOSE (CRAYFISH AND PERIWINKLE)',svcLabel:'BUY',friend:false,hours:[5,15],closed:CL+'It opens at 5 AM.',greet:'Crayfish, periwinkle, prawns. For your soup.',
+     items:[{l:'BOILED PERIWINKLE',c:800,food:1,fx:{hunger:20,fun:3,bladder:-2},msg:'A bowl of boiled periwinkle. Pick it out with a pin.'},{l:'PRAWN SKEWER',c:1200,food:1,fx:{hunger:26,fun:4,bladder:-2},msg:'Grilled prawns on a stick.'},{l:'CRAYFISH (BAG)',c:1500,fx:{fun:4,social:4},msg:'A bag of crayfish. Your soup will smell sweet.'}]});
+  inside('mkmkt','mkmkts',[13,-10.8],{skin:sk[0],skin2:'#5a3520',low:'#2a2a30',low2:'#1c1c20',top:'#e07a1f',head:'cap',hc:'#14161a'},
+    {label:'DRIED FISH',name:'BABA SEUN (DRIED FISH)',svcLabel:'BUY',friend:false,hours:[5,15],closed:CL+'It opens at 5 AM.',greet:'Dried fish, smoked fish. It keeps for weeks.',
+     items:[{l:'SMOKED BONGA',c:1800,food:1,fx:{hunger:32,fun:3,bladder:-3},msg:'Smoked bonga fish, chewy and smoky.'},{l:'DRIED SHRIMP',c:1000,food:1,fx:{hunger:12,fun:2,bladder:-2},msg:'A small bag of dried shrimp.'},{l:'DRIED CATFISH (BIG)',c:3200,fx:{fun:5,social:4},msg:'A big dried catfish. It will last all month.'}]});
+  /* the smokehouse */
+  inside('mksmoke','mksmoke',[-6,-9.8],{skin:sk[2],skin2:'#4a2b1a',low:'#7a3b2a',low2:'#5a2a1c',top:'#d9c4a0',head:'gele',hc:'#7a3b2a',hc2:'#f2b705'},
+    {label:'SMOKED FISH',name:'MAMA ABIKE (SMOKEHOUSE)',svcLabel:'BUY',career:'fishsmoke',hours:[6,18],closed:CL+'It opens at 6 AM.',greet:'Welcome to the smokehouse. The fish smokes over the fire all day.',
+     chat:['We smoke the fish so it keeps. The women of Makoko have done this for generations.','Wood for the fire comes from the sawmills. Nothing is wasted.','Smoke gets in your eyes, you get used to it.'],hangMsg:'She hands you a piece of warm smoked fish.',
+     items:[{l:'SMOKED CATFISH',c:4000,food:1,fx:{hunger:60,fun:5,bladder:-3},msg:'A thick piece of smoked catfish.'},{l:'SMOKED TILAPIA',c:2400,food:1,fx:{hunger:46,fun:4,bladder:-3},msg:'A whole smoked tilapia.'},{l:'FISH AND BOLI',c:2000,food:1,fx:{hunger:52,fun:4,bladder:-3},msg:'Smoked fish with roast plantain.'}]});
+  /* the school */
+  inside('mkschool','mkschool',[7,-5.7],{skin:sk[1],skin2:'#6a3e26',low:'#2f6fb1',low2:'#1f4f84',top:'#f3efe2',head:'gele',hc:'#2f6fb1',hc2:'#f2b705'},
+    {label:'TEACHER',name:'MRS KEMI (TEACHER)',svcLabel:'',origLabel:'LESSONS',orig:function(){mkLessons();},friend:false,career:'teachhelp',hours:[8,15],closed:'The school is closed. Lessons run 8 AM to 3 PM.',greet:'Good morning. Come and learn something.',items:[]});
+  /* the Baale */
+  inside('mkbaale','mkbaale',[0,-6.3],{skin:sk[0],skin2:'#5a3520',low:'#7a2e65',low2:'#5a2048',top:'#e8e3d2',head:'cap',hc:'#c1352d'},
+    {label:'THE BAALE',name:'THE BAALE (INVENTED CHARACTER)',svcLabel:'',origLabel:'ASK THE BAALE',orig:function(){mkBaaleMenu();},friend:false,hours:[9,17],closed:'The hall is closed. The Baale receives people from 9 AM.',greet:'You are welcome.',items:[]});
+  /* the boat workshop */
+  inside('mkboat','mkboat',[-8,-9.8],{skin:sk[3],skin2:'#774a2e',low:'#1f3a68',low2:'#14264a',top:'#d9d2c2',head:'cap',hc:'#1f3a68'},
+    {label:'BOATWRIGHT',name:'BABA SEGUN (BOATWRIGHT)',svcLabel:'BUY',career:'boatwright',hours:[8,17],closed:CL+'It opens at 8 AM.',greet:'Canoes, paddles, models. Cut from the best planks.',
+     chat:['A good canoe is cut from one plank by hand, then fitted and sealed.','Every family here needs one. Children paddle before they can read.','The wood comes from the sawmills on the shore.'],hangMsg:'He lets you run your hand along a new hull.',
+     items:[{l:'PADDLE',c:2500,fx:{fun:6,social:3},msg:'A smooth wooden paddle.'},{l:'MODEL CANOE',c:6000,fx:{fun:12,social:10},msg:'A small model canoe, painted blue and white.'}]});
+  /* exit doormen */
+  MKP.forEach(function(p){
+    var dd=INTD[p.id],c=dd.c;
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* street people */
+  addPerson('mkguide',{x:-2706,z:9.5,yaw:-Math.PI/2,skin:sk[1],skin2:'#6a3e26',low:'#2a3a52',low2:'#1c2840',top:'#2a9d5b',head:'cap',hc:'#14161a'},
+    {label:'MAKOKO',name:'WATERFRONT GUIDE',friend:false,greet:MKF.people+' Cars stop at the gate. Beyond it you walk or take a canoe.',items:[]});
+  DEST.push(['MAKOKO JETTY GATE','mkguide']);
+  addPerson('mkcanoe',{x:-2736,z:-2.8,yaw:Math.PI/2,skin:sk[0],skin2:'#5a3520',low:'#2a2a30',low2:'#1c1c20',top:'#2f6fb1',head:'cap',hc:'#14161a'},
+    {label:'CANOE',name:'CANOE MAN',friend:false,greet:'Canoe! Across the lagoon or round the villages.',items:[]});
+  NK.mkcanoe.npc.talk=function(){mkRideMenu('jetty');};
+  DEST.push(['CANOE JETTY, MAKOKO','mkcanoe']);
+  addPerson('mkcanoe2',{x:-3010,z:2.8,yaw:Math.PI/2,skin:sk[2],skin2:'#4a2b1a',low:'#1f3a68',low2:'#14264a',top:'#e0c040',head:'cap',hc:'#1f3a68'},
+    {label:'CANOE',name:'CANOE MAN',friend:false,greet:'Canoe! Back to the jetty or round the villages.',items:[]});
+  NK.mkcanoe2.npc.talk=function(){mkRideMenu('pier');};
+  DEST.push(['FAR PIER, MAKOKO','mkcanoe2']);
+  addPerson('mktilapia',{x:-2726,z:2.8,yaw:-Math.PI/2,skin:sk[3],skin2:'#774a2e',low:'#2a5a34',low2:'#1c3a24',top:'#c1352d',head:'gele',hc:'#c1352d',hc2:'#f2b705'},
+    {label:'',name:'AUNTY FELA (GRILLED TILAPIA)',svcLabel:'BUY',friend:false,hours:[6,20],closed:'Aunty Fela has packed up. Come back from 6 AM.',greet:'Hot tilapia from the fire! Fresh from the lagoon!',
+     items:[{l:'GRILLED TILAPIA',c:2200,food:1,fx:{hunger:58,fun:4,bladder:-3},msg:'Grilled tilapia with pepper on a leaf.'},{l:'TILAPIA AND BOLI',c:2600,food:1,fx:{hunger:68,fun:4,bladder:-4},msg:'Grilled tilapia with roast plantain.'},{l:'ZOBO',c:300,food:1,fx:{hunger:6,energy:5,fun:2,bladder:-7},msg:'Chilled zobo.'}]});
+  DEST.push(['TILAPIA GRILL, JETTY','mktilapia']);
+  addPerson('mksaw',{x:-2680,z:18,yaw:Math.PI,skin:sk[0],skin2:'#5a3520',low:'#3a3d40',low2:'#26282a',top:'#e07a1f',head:'cap',hc:'#f2b705'},
+    {label:'SAWMILL',name:'SAWMILL FOREMAN',svcLabel:'',friend:false,career:'sawyer',hours:[7,17],closed:'The sawmill is closed. Work starts at 7 AM.',greet:'Logs come in across the lagoon on the water. We saw them here into planks for building and boats. Mind the blade.',items:[]});
+  DEST.push(['SAWMILL, MAKOKO','mksaw']);
+  addPerson('mkmender',{x:-2836,z:-16.5,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#b8b4a8',head:'cap',hc:'#3a2a1c'},
+    {label:'NETS',name:'NET MENDER (ADOGBO)',friend:false,greet:'I mend nets all day. A good net lasts two seasons if you dry it well. '+MKF.work,items:[]});
+  DEST.push(['ADOGBO VILLAGE','mkmender']);
+  /* careers (pay and costs are invented) */
+  CARS.fishsmoke={name:'FISH SMOKER',key:'mksmoke',pay:3600,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-13,hunger:-5,hygiene:-10,fun:-5,bladder:-4}};
+  CARS.fishtrade={name:'FISH SELLER',key:'mkmkt',pay:3300,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-5,hygiene:-8,fun:-4,bladder:-4}};
+  CARS.teachhelp={name:'SCHOOL HELPER',key:'mkschool',pay:4200,secs:30,req:'Education Level 1 (study at the school here or in Ojuelegba)',ok:function(){return eduLevel()>=1;},cost:{energy:-10,hunger:-5,hygiene:-2,fun:-4,bladder:-4}};
+  CARS.boatwright={name:'BOAT BUILDER',key:'mkboat',pay:4400,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-14,hunger:-6,hygiene:-8,fun:-6,bladder:-4}};
+  CARS.sawyer={name:'SAWMILL HAND',key:'mksaw',pay:4700,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-16,hunger:-7,hygiene:-10,fun:-6,bladder:-4}};
+  ['fishsmoke','fishtrade','teachhelp','boatwright','sawyer'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  [[-2480,2.5],[-2560,-2.5],[-2640,2.5],[-2730,0],[-2850,0],[-2930,0],[-3000,0],[-2770,-13]].forEach(function(q){FSPOTS.push(q);});
+})();
+/* ---- moving canoes on the lagoon ---- */
+var MKC=[];
+(function(){
+  function hx(h){return [parseInt(h.substr(1,2),16)/255,parseInt(h.substr(3,2),16)/255,parseInt(h.substr(5,2),16)/255];}
+  function merge(list){
+    var pos=[],nor=[],col=[],idx=[],off=0,c=new THREE.Color();
+    list.forEach(function(b){
+      var g=new THREE.BoxGeometry(b[0],b[1],b[2]);g.translate(b[3],b[4],b[5]);
+      var p=g.attributes.position.array,n=g.attributes.normal.array,ix=g.index.array,rgb=hx(b[6]),i;
+      setRGBs(c,rgb[0],rgb[1],rgb[2]);
+      for(i=0;i<p.length;i++){pos.push(p[i]);nor.push(n[i]);}
+      for(i=0;i<p.length/3;i++)col.push(c.r,c.g,c.b);
+      for(i=0;i<ix.length;i++)idx.push(ix[i]+off);
+      off+=p.length/3;
+    });
+    var G=new THREE.BufferGeometry();
+    G.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+    G.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
+    G.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+    G.setIndex(idx);
+    return G;
+  }
+  var HULL=['#6a4a2a','#2f6fb1','#7a3b2a','#2a7a5a','#c9a870'],SHIRT=['#c1352d','#f2b705','#f1efe6','#2f6fb1','#e07a1f'];
+  /* ping-pong lanes in the open water: z, west end, east end, speed (m/s), start offset */
+  var defs=[{z:52,a:-2760,b:-2996,s:1.3,t:0},{z:-52,a:-2996,b:-2760,s:1.1,t:40},{z:47,a:-2780,b:-2990,s:1.0,t:90},{z:-47,a:-2770,b:-2985,s:1.4,t:20},{z:57,a:-2800,b:-2990,s:1.2,t:130}];
+  defs.forEach(function(d,i){
+    var L=[
+      [3.9,0.32,0.95,0,0,0,HULL[i%5]],[0.7,0.22,0.75,2.1,0.08,0,HULL[i%5]],[0.7,0.22,0.75,-2.1,0.08,0,HULL[i%5]],[3.7,0.06,0.9,0,0.19,0,'#8a6a3a'],
+      [0.34,0.7,0.3,-0.5,0.55,0,SHIRT[i%5]],[0.24,0.24,0.24,-0.5,1.05,0,'#5a3520'],
+      [1.9,0.06,0.07,0.1,0.7,0.5,'#c9a870'],[0.34,0.1,0.25,1.1,0.62,0.5,'#c9a870']
+    ];
+    var m=new THREE.Mesh(merge(L),carMat);m.frustumCulled=false;
+    var g=new THREE.Group();g.add(m);g.visible=false;scene.add(g);
+    MKC.push({g:g,d:d,t:d.t});
+  });
+})();
+function mkCanoeTick(dt){
+  if(!started||!MKC.length)return;
+  var near=player.x<-2640&&player.x>-3060,i,c,d,len,s,k,x;
+  for(i=0;i<MKC.length;i++){
+    c=MKC[i];c.g.visible=near;if(!near)continue;
+    c.t+=dt;d=c.d;len=Math.abs(d.b-d.a);s=(c.t*d.s)%(2*len);
+    if(s<len){k=s;c.g.rotation.y=d.b<d.a?Math.PI:0;}else{k=2*len-s;c.g.rotation.y=d.b<d.a?0:Math.PI;}
+    x=d.a+(d.b>d.a?1:-1)*k;
+    c.g.position.set(x,-0.12+Math.sin(c.t*1.3+i)*0.04,d.z+Math.sin(c.t*0.35+i)*0.4);
+    c.g.rotation.z=Math.sin(c.t*1.1+i*2)*0.04;
+  }
+}
+var _ojTick54=ojTick;
+ojTick=function(dt){_ojTick54(dt);mkCanoeTick(dt);};
+/* people on the move */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0;
+  function WK(a,b,win,sp){
+    var i=n++;
+    var w=makeWalker({fem:i%2,occ:i%2,look:i+411,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:a,b:b,sp:sp||(1.0+(i%4)*0.18)});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  var COM=[[5,9.5],[16,21]],DAY=[[6,20]],MKT=[[5,15]],SCH=[[7.5,8.5],[11.5,12.5],[14.5,15.5]];
+  /* the land road pavements */
+  WK([-2462,-5.8],[-2540,-5.8],DAY,0.9);WK([-2540,5.8],[-2462,5.8],DAY,1.0);WK([-2550,-5.8],[-2640,-5.8],COM,0.8);WK([-2640,5.8],[-2550,5.8],DAY,0.9);
+  WK([-2650,-5.8],[-2705,-5.8],DAY,0.9);WK([-2705,5.8],[-2650,5.8],DAY,0.8);
+  /* the lanes and alleys of Sogunro and Apollo */
+  WK([-2616,-27],[-2616,-60],DAY,0.7);WK([-2616,60],[-2616,27],DAY,0.7);
+  WK([-2478,-33.5],[-2690,-33.5],DAY,0.9);WK([-2690,-43.5],[-2478,-43.5],MKT,0.8);WK([-2478,-53.5],[-2690,-53.5],DAY,0.8);
+  WK([-2640,33.5],[-2478,33.5],DAY,0.9);WK([-2478,43.5],[-2640,43.5],MKT,0.8);WK([-2640,53.5],[-2478,53.5],DAY,0.8);
+  /* the sawmill yard, the jetty and the walkways */
+  WK([-2664,20],[-2664,58],[[7,17]],0.5);WK([-2682,17],[-2682,25],[[7,17]],0.5);
+  WK([-2716,0.8],[-2740,0.8],DAY,0.7);
+  WK([-2746,0],[-2996,0],DAY,1.0);WK([-2996,0.4],[-2750,0.4],DAY,0.9);
+  WK([-2755,-40],[-2998,-40],DAY,0.9);WK([-2998,40],[-2755,40],DAY,0.9);
+  WK([-2750,-37],[-2750,37],DAY,0.8);WK([-2790,37],[-2790,-37],DAY,0.8);WK([-2880,-37],[-2880,37],DAY,0.8);WK([-2960,37],[-2960,-37],DAY,0.8);
+  WK([-2780,-12],[-2760,-12],SCH,0.5);
+  /* inside the villages on stilts */
+  WK([-2868,16.5],[-2802,16.5],DAY,0.6);WK([-2948,-16.5],[-2892,-16.5],DAY,0.6);WK([-2892,16.5],[-2948,16.5],DAY,0.6);
+  /* inside the rooms */
+  function IW(id,a,b,win,sp){var d=INTD[id].c;var i=n++;var w=makeWalker({fem:i%2,occ:1,look:i+411,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});OJW.push({w:w,win:win});w.off=true;}
+  IW('mkmkt',[-14,-6.3],[15,-6.3],[[5,15]],0.5);IW('mkmkt',[15,-0.8],[-14,-0.8],[[5,15]],0.5);IW('mkmkt',[-13,8.8],[14,8.8],[[5,15]],0.5);IW('mkmkt',[-6.5,-7],[-6.5,9],[[5,15]],0.4);IW('mkmkt',[7.5,9],[7.5,-7],[[5,15]],0.4);
+  IW('mksmoke',[-10,-5.5],[3,-5.5],[[6,18]],0.4);IW('mksmoke',[10,-1.5],[-10,-1.5],[[6,18]],0.5);IW('mksmoke',[-9,5],[10.5,5],[[6,18]],0.45);IW('mksmoke',[13,8.8],[-9,8.8],[[6,18]],0.5);
+  IW('mkschool',[-12,-4.5],[3,-4.5],[[8,15]],0.4);IW('mkschool',[12,5.5],[-12,5.5],[[8,15]],0.45);IW('mkschool',[12,-4],[-12,-4],[[8,15]],0.4);
+  IW('mkbaale',[0,-3.8],[0,6.5],[[9,17]],0.4);IW('mkbaale',[10.8,-6],[10.8,6],[[9,17]],0.4);IW('mkbaale',[-10.8,6],[-10.8,-6],[[9,17]],0.4);
+  IW('mkboat',[-12,-5.5],[0.5,-5.5],[[8,17]],0.4);IW('mkboat',[12,1],[-12,1],[[8,17]],0.45);IW('mkboat',[-12,8],[12,8],[[8,17]],0.5);
 })();
 
 /* ------------------------------------------------------------------ loop */
