@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b47';
+var VERSION='GTL 0.9 b48';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -2457,18 +2457,15 @@ var OJX=-170;
   [-1,1].forEach(function(s){box(JX,7.7,s*2.7,72,0.7,0.22,'#c9c7c0');box(JX,7.2,s*2.55,72,0.12,0.12,'#555');});
   for(var fk=-2;fk<=2;fk++){var fpx=JX+fk*14;box(fpx,3.4,0,1.2,6.8,1.2,'#7e8184');box(fpx,6.3,0,2.6,0.4,2.2,'#7e8184');solid(fpx,0,1.4,1.4,7);}
   [-1,1].forEach(function(s){
-    box(JX+s*36.5,3.5,0,1.2,7,6.0,'#a8a29a');solid(JX+s*36.5,0,1.4,6,7.2);
+    box(JX+s*36.5,7.4,0,1.2,1.9,6.0,'#a8a29a');
     for(var bi=0;bi<4;bi++)box(JX+s*37.4,7.5,-2+bi*1.33,0.1,0.5,0.9,bi%2?'#f1efe6':'#e07a1f');
   });
   addSign('OJUELEGBA FLYOVER','#1d5c3a','#ffffff',JX,7.6,3.0,0,16,1.6);
   addSign('OJUELEGBA FLYOVER','#1d5c3a','#ffffff',JX,7.6,-3.0,Math.PI,16,1.6);
-  addSign('EXTENSION WORKS','#f2b705','#141414',JX-37.2,6.2,0,-Math.PI/2,5,0.9);addSign('EXTENSION WORKS','#f2b705','#141414',JX+37.2,6.2,0,Math.PI/2,5,0.9);
+  addSign('EXTENSION WORKS','#f2b705','#141414',JX-37.2,7.4,0,-Math.PI/2,5,0.9);addSign('EXTENSION WORKS','#f2b705','#141414',JX+37.2,7.4,0,Math.PI/2,5,0.9);
   /* signal poles */
   [[JX-25.6,5.9],[JX+25.6,-5.9],[JX-8,-16.6],[JX+8,16.6]].forEach(function(p){cyl(p[0],2.0,p[1],0.16,4,0.16,'#3a3d40');box(p[0],4.05,p[1],0.5,1.2,0.12,'#111114');});
   /* end of the district road */
-  [0.55,0.95].forEach(function(by,i){box(-268,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
-  box(-268,0.6,-4.7,0.3,1.2,0.3,'#555');box(-268,0.6,4.7,0.3,1.2,0.3,'#555');solid(-268,0,0.6,9.8,1.3);
-  addSign('ROAD WORKS AHEAD','#f2b705','#141414',-267.8,1.9,0,Math.PI/2,3.4,0.9);
   /* both arms of Ojuelegba Road end where the district ends */
   [-1,1].forEach(function(sg){
     barrier(JX-3.7,sg*67.5,false);barrier(JX+3.7,sg*67.5,false);
@@ -2610,6 +2607,7 @@ var OJB={};
   addSign('OJUELEGBA COMMUNITY SECONDARY SCHOOL','#2d6a4f','#ffffff',SX,3.6,SZ-21.1,Math.PI,9,1.1);
   tree(SX-24,SZ-14);tree(SX+24,SZ-14);tree(SX-24,SZ+22);tree(SX+24,SZ+22);palm(SX-20,SZ-4);palm(SX+20,SZ-4);
   OJB.school={x:SX,z:21};
+  OJB.shopHouse=shopHouse;OJB.busStop=busStop;
 })();
 
 CHK=CHK_SAVE;
@@ -2699,6 +2697,204 @@ var OJI={super:[1580,-42],buka:[1580,-14],clinic:[1580,14],school:[1580,42]};
     box(X(13),1.4,Z(-4),0.5,2.8,5,'#cfd8d4');solid(X(13),Z(-4),0.5,5,2.8);
     [[X(-14),Z(2)],[X(14),Z(2)]].forEach(function(p){box(p[0],2.3,p[1],0.1,1.2,3,'#8fc4d9');});
     addSign('SCHOOL RULES: BE ON TIME','#2d6a4f','#ffffff',X(8),3.2,Z(-9.6),0,5,0.7);
+  })();
+})();
+
+var CHK_SAVE2=CHK;CHK=40;
+/* ---- b48: OSHODI. A fictionalised mainland district inspired by the real Oshodi: a transport interchange with three terminals and a long skywalk,
+   an Oshodi market of street trade and electronics stalls, mixed shop-and-flat blocks, and the commercial block beside the interchange
+   (food court, drivers lounge, hotel, tech hub). The road continues west from Ojuelegba to the end of the district. ---- */
+var AGX=-310;
+var OSB={};
+(function(){
+  var JX=AGX,sd=48048;function jr(){sd=(sd*16807)%2147483647;return (sd-1)/2147483646;}
+  var SHP=OJB.shopHouse,wx;
+  function lb(x0,x1,y,z,h,d,col){var n=Math.ceil(Math.abs(x1-x0)/36),i,sl=(x1-x0)/n;for(i=0;i<n;i++)box(x0+sl*(i+0.5),y,z,sl+0.02,h,d,col);}
+  /* ground, road, markings and pavements continuing west */
+  box(-455,-0.1,0,210,0.2,700,'#b07a52');
+  lb(-540,-268,0.03,0,0.06,10,ROAD);
+  for(wx=-271;wx>=-537;wx-=7){if(Math.abs(wx-JX)<22)continue;box(wx,0.066,0,3,0.012,0.18,'#e9c46a');}
+  [-4.6,4.6].forEach(function(ez){lb(-540,-268,0.066,ez,0.012,0.12,'#e8e4da');});
+  [-5.8,5.8].forEach(function(sz){lb(-540,-268,0.09,sz,0.18,1.6,SH);});
+  /* Agege Motor Road crosses here: a second signalled junction */
+  box(JX,0.036,0,40,0.072,16,ROAD);
+  box(JX,0.034,0,14,0.068,132,ROAD);
+  [-8.6,8.6].forEach(function(sx){box(JX+sx,0.09,-38,1.6,0.18,56,SH);box(JX+sx,0.09,38,1.6,0.18,56,SH);});
+  [-9.6,9.6].forEach(function(sz){box(JX-30,0.09,sz,20,0.18,1.6,SH);box(JX+30,0.09,sz,20,0.18,1.6,SH);});
+  [-6.2,6.2].forEach(function(ex){box(JX+ex,0.084,-38,0.12,0.012,56,'#e8e4da');box(JX+ex,0.084,38,0.12,0.012,56,'#e8e4da');});
+  var zz,zk;
+  for(zz=12;zz<=62;zz+=6){box(JX,0.084,zz,0.18,0.012,3,'#e9c46a');box(JX,0.084,-zz,0.18,0.012,3,'#e9c46a');}
+  box(JX-27,0.085,2.6,0.5,0.012,4.6,'#f4f1e8');box(JX+27,0.085,-2.6,0.5,0.012,4.6,'#f4f1e8');
+  box(JX-3.6,0.085,-18,6.4,0.012,0.5,'#f4f1e8');box(JX+3.6,0.085,18,6.4,0.012,0.5,'#f4f1e8');
+  for(zk=-4;zk<=4;zk++){
+    box(JX-23,0.086,zk*1.0,3.4,0.012,0.5,'#f4f1e8');box(JX+23,0.086,zk*1.0,3.4,0.012,0.5,'#f4f1e8');
+    box(JX+zk*1.2,0.086,-14,0.55,0.012,3.4,'#f4f1e8');box(JX+zk*1.2,0.086,14,0.55,0.012,3.4,'#f4f1e8');
+  }
+  [[JX-25.6,5.9],[JX+25.6,-5.9],[JX-8,-16.6],[JX+8,16.6]].forEach(function(p){cyl(p[0],2.0,p[1],0.16,4,0.16,'#3a3d40');box(p[0],4.05,p[1],0.5,1.2,0.12,'#111114');});
+  addSign('AGEGE MOTOR ROAD','#1d5c3a','#ffffff',JX,4.9,-18.6,0,6,0.9);addSign('AGEGE MOTOR ROAD','#1d5c3a','#ffffff',JX,4.9,18.6,Math.PI,6,0.9);
+  /* the road ends here for now */
+  [0.55,0.95].forEach(function(by,i){box(-540,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
+  box(-540,0.6,-4.7,0.3,1.2,0.3,'#555');box(-540,0.6,4.7,0.3,1.2,0.3,'#555');solid(-540,0,0.6,9.8,1.3);
+  addSign('ROAD WORKS AHEAD','#f2b705','#141414',-539.8,1.9,0,Math.PI/2,3.4,0.9);
+  [-1,1].forEach(function(sg){
+    barrier(JX-3.7,sg*67.5,false);barrier(JX+3.7,sg*67.5,false);
+    addSign('ROAD WORKS AHEAD','#f2b705','#141414',JX,1.9,sg*67.2,sg>0?Math.PI:0,3.4,0.9);
+  });
+  /* streetlights and poles */
+  var lx;
+  for(lx=-284;lx>=-536;lx-=22){if(Math.abs(lx-JX)<24)continue;lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
+  [[JX-30,-10.6],[JX+30,-10.6],[JX-30,10.6],[JX+30,10.6],[JX-10.6,-40],[JX+10.6,-40],[JX-10.6,40],[JX+10.6,40]].forEach(function(p){lamp(p[0],p[1],p[1]>0?-Math.PI/2:Math.PI/2);ALAMPS.push([p[0],p[1]>0?p[1]-1.2:p[1]+1.2]);});
+  var pxs=[];for(lx=-290;lx>=-534;lx-=28){if(Math.abs(lx-JX)<26)continue;pxs.push(lx);}
+  poleLine(pxs,-6.4,3);
+  function inArm(x){return Math.abs(x-JX)<19;}
+  /* ---------- north side: Oshodi market blocks, then the interchange commercial block ---------- */
+  var k=0;
+  for(wx=-283;wx>=-536;wx-=9){
+    if(inArm(wx)||(wx<=-421&&wx>=-488)){continue;}
+    SHP({face:'S',x:wx,z:-16.5,floors:2+((k++)%3)});
+  }
+  var PLZ=[
+    {x:-432,nm:'OSHODI FOOD COURT',bg:'#c1352d',aw:'#c1352d',wall:'#f1efe6'},
+    {x:-447,nm:'DRIVERS LOUNGE AND TICKETS',bg:'#2f6fb1',aw:'#2f6fb1',wall:'#e8e3d2'},
+    {x:-462,nm:'INTERCHANGE TRANSIT HOTEL',bg:'#7a2e65',aw:'#7a2e65',wall:'#f1efe6'},
+    {x:-477,nm:'OSHODI TECH HUB',bg:'#1d5c3a',aw:'#1d5c3a',wall:'#e8e3d2'}
+  ];
+  OSB.plaza=PLZ.map(function(q,i){return SHP({face:'S',x:q.x,z:-16.5,w:14,d:9,floors:3,name:q.nm,sbg:q.bg,sfg:'#ffffff',aw:q.aw,wall:q.wall});});
+  /* second rank and market lane */
+  for(wx=-292;wx>=-536;wx-=18){if(Math.abs(wx-JX)<24)continue;SHP({face:'S',x:wx,z:-37,d:9,floors:2});}
+  for(wx=-286;wx>=-440;wx-=3.4){if(Math.abs(wx-JX)<13)continue;stall(wx,-27,Math.round(-wx/3.4));}
+  /* ---------- south side: market row, three terminals, stalls ---------- */
+  for(wx=-283;wx>=-352;wx-=9){if(inArm(wx))continue;SHP({face:'N',x:wx,z:16.5,floors:2+((k++)%3)});}
+  for(wx=-509;wx>=-536;wx-=9)SHP({face:'N',x:wx,z:16.5,floors:2+((k++)%3)});
+  /* Owonifari-style electronics stalls on the south lane */
+  for(wx=-283;wx>=-350;wx-=3.4){if(Math.abs(wx-JX)<13)continue;stall(wx,26,Math.round(-wx/3.4)+2);}
+  for(wx=-292;wx>=-350;wx-=18){if(Math.abs(wx-JX)<24)continue;SHP({face:'N',x:wx,z:36,d:9,floors:2});}
+  var TERM=[
+    {x:-379,nm:'TERMINAL 1  INTERSTATE',bg:'#1d5c3a'},
+    {x:-429,nm:'TERMINAL 2  INTERCITY',bg:'#2f6fb1'},
+    {x:-479,nm:'TERMINAL 3  LAGOS ISLAND AND IKORODU',bg:'#c1352d'}
+  ];
+  OSB.terms=TERM;
+  TERM.forEach(function(t,ti){
+    building({kind:'shop',face:'N',x:t.x,z:20,w:40,d:14,h:9,wall:'#e8e4da',roof:'#2d4a5a',signBg:t.bg,signFg:'#ffffff',awning:t.bg,name:t.nm});
+    /* bus bays with a long canopy */
+    box(t.x,3.7,9.6,38,0.22,4.4,'#2d4a5a');
+    for(var pi=0;pi<=4;pi++){var px=t.x-18+pi*9;box(px,1.85,7.7,0.2,3.7,0.2,'#555');solid(px,7.7,0.3,0.3,3.7);}
+    addSign('BUS BAYS  '+t.nm.split('  ')[0],t.bg,'#ffffff',t.x,3.15,7.45,Math.PI,9,0.8);
+    [-12,0,12].forEach(function(dx){danfo(t.x+dx,9.3,ti%2?Math.PI:0);});
+    /* link from the skywalk to the back of the terminal */
+    box(t.x,6.3,29.2,3.2,0.35,4.2,'#8d8f90');
+  });
+  /* the skywalk: one long raised walkway behind the terminals, on pillars */
+  lb(-504,-354,6.1,31.4,0.45,3.4,'#8d8f90');
+  [-1,1].forEach(function(s){lb(-504,-354,6.9,31.4+s*1.6,1.0,0.14,'#c9c7c0');lb(-504,-354,6.5,31.4+s*1.6,0.1,0.1,'#555');});
+  for(wx=-499;wx<=-359;wx+=14){box(wx,3.0,31.4,0.9,6.0,0.9,'#7e8184');box(wx,6.0,31.4,2.2,0.3,2.6,'#7e8184');solid(wx,31.4,1.1,1.1,6.2);}
+  addSign('OSHODI SKYWALK','#1d5c3a','#ffffff',-429,7.4,33.2,0,10,0.9);
+  /* the rear apron */
+  lb(-509,-349,0.04,48,0.06,32,'#44474c');
+  for(wx=-500;wx<=-360;wx+=10)box(wx,0.075,48,0.15,0.012,26,'#e8e4da');
+  [[-380,44],[-392,52],[-420,44],[-440,52],[-468,44],[-488,52]].forEach(function(p,i){danfo(p[0],p[1],i%2?0:Math.PI);});
+  [[-405,56],[-455,56]].forEach(function(p,i){car(p[0],p[1],0,['#c9c9c9','#2f4f8e'][i]);});
+  /* ---------- Agege Motor Road frontage on both arms ---------- */
+  [-29.5,-38.5,-47.5,-56.5].forEach(function(zc,i){
+    SHP({face:'W',x:JX+18,z:zc,w:10,d:9,floors:2+(i%2)});
+    SHP({face:'E',x:JX-18,z:zc,w:10,d:9,floors:2+((i+1)%2)});
+    SHP({face:'W',x:JX+18,z:-zc,w:10,d:9,floors:2+((i+1)%2)});
+    SHP({face:'E',x:JX-18,z:-zc,w:10,d:9,floors:2+(i%2)});
+  });
+  /* a bus stop at each end of the market */
+  OJB.busStop(-300,-8.6,0,'OSHODI MARKET');
+  OJB.busStop(-330,8.6,Math.PI,'OSHODI MARKET');
+  /* roadside traders and okada */
+  [[-292,-8.4,0.2],[-296,-8.6,0.1],[-326,8.4,3.3],[-340,8.6,3.2],[-366,-8.4,0.1],[-372,-8.6,0.2]].forEach(function(o){okada(o[0],o[1],o[2]);});
+  /* lamps over the rear apron so it is not pitch black at night */
+  [-490,-455,-420,-385].forEach(function(lx){lamp(lx,35.5,Math.PI/2);ALAMPS.push([lx,35.5]);});
+  /* quiet greenery at the far end */
+  [[-520,-24],[-526,24],[-516,40],[-512,-40]].forEach(function(p){tree(p[0],p[1]);});
+  OSB.done=1;
+})();
+
+CHK=CHK_SAVE2;
+/* ---- b48: four places in the Oshodi interchange block you can walk into: food court, drivers lounge and ticket hall, transit hotel, tech hub ---- */
+var OSI={food:[1640,-42],lounge:[1640,-14],hotel:[1640,14],hub:[1640,42]};
+(function(){
+  var GC=['#c1352d','#f2b705','#2f6fb1','#2a9d5b','#f1efe6','#e07a1f','#7a2e65'];
+  function table(x,z,col){box(x,0.75,z,1.5,0.08,0.95,col||'#8a6a45');[[-0.65,-0.38],[0.65,-0.38],[-0.65,0.38],[0.65,0.38]].forEach(function(p){box(x+p[0],0.37,z+p[1],0.08,0.74,0.08,'#3a2a1c');});solid(x,z,1.5,0.95,0.8);}
+  function plant(x,z,s){cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  function bench(x,z,len){box(x,0.45,z,len,0.1,0.7,'#2b5a9a');box(x,0.85,z+0.3,len,0.7,0.1,'#2b5a9a');box(x-len/2+0.1,0.22,z,0.1,0.44,0.6,'#555');box(x+len/2-0.1,0.22,z,0.1,0.44,0.6,'#555');solid(x,z,len,0.8,0.9);}
+  function desk(x,z,col){box(x,0.75,z,1.7,0.07,0.8,col||'#e9e4d6');[[-0.8,-0.35],[0.8,-0.35],[-0.8,0.35],[0.8,0.35]].forEach(function(p){box(x+p[0],0.37,z+p[1],0.07,0.74,0.07,'#555');});box(x,0.95,z-0.15,0.5,0.34,0.04,'#14161a');box(x,0.8,z+0.05,0.5,0.03,0.34,'#2b2d33');solid(x,z,1.7,0.8,0.8);}
+  /* ----- OSHODI FOOD COURT ----- */
+  (function(){
+    var cx=OSI.food[0],cz=OSI.food[1],W=30,D=20,H=4.6,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('ojfood',cx,cz,W,D,H,{floor:'#d9d0bd',wall:'#f4efe4',trim:'#c1352d',ceil:'#faf8f4'},{out:'ojfoodd',nm:'OSHODI FOOD COURT',doorX:cx-11});
+    for(var zi=0;zi<5;zi++)box(X(0),0.115,Z(-8+zi*4),28,0.02,0.1,'#c9c3b0');
+    [[-10.5,'JOLLOF AND CHICKEN','#c1352d'],[-3.5,'AMALA AND EWEDU','#7a4a2e'],[3.5,'BURGERS AND FRIES','#e07a1f'],[10.5,'PEPPER SOUP AND DRINKS','#2f6fb1']].forEach(function(s,si){
+      box(X(s[0]),0.55,Z(-7.4),6,1.1,0.8,'#2b2118');box(X(s[0]),1.14,Z(-7.4),6.2,0.1,1.0,'#e9e4d6');solid(X(s[0]),Z(-7.4),6.2,1.0,1.2);
+      box(X(s[0]),2.4,Z(-9.6),6,2.6,0.4,'#e9e2d3');
+      addSign(s[1],s[2],'#ffffff',X(s[0]),3.5,Z(-9.38),0,5.4,0.8);
+      [1.0,1.8].forEach(function(h,hi){box(X(s[0]),h,Z(-9.3),5.6,0.07,0.4,'#2b2118');for(var gi=0;gi<7;gi++)box(X(s[0]-2.6+gi*0.85),h+0.2,Z(-9.3),0.45,0.32,0.3,GC[(gi+hi+si)%7]);});
+    });
+    [[-6,-2],[2,-2],[10,-2],[-6,3.5],[2,3.5],[10,3.5]].forEach(function(p,i){
+      table(X(p[0]),Z(p[1]),i%2?'#8a6a45':'#7a5a38');
+      [[-1,0],[1,0]].forEach(function(s){CHAIRFN(X(p[0]+s[0]*1.3),Z(p[1]),s[0]>0?-Math.PI/2:Math.PI/2,['#c1352d','#2f6fb1','#f2b705'][(i+(s[0]>0?1:0))%3]);});
+    });
+    addSign('OSHODI FOOD COURT','#c1352d','#ffffff',X(0),4.1,Z(-9.8),0,9,0.7);
+    plant(X(-13.5),Z(-9),1.0);plant(X(13.5),Z(-9),1.0);plant(X(13.5),Z(8.5),1.0);
+  })();
+  /* ----- DRIVERS LOUNGE AND TICKET HALL ----- */
+  (function(){
+    var cx=OSI.lounge[0],cz=OSI.lounge[1],W=28,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('ojlounge',cx,cz,W,D,H,{floor:'#c9c3b0',wall:'#eef0f2',trim:'#2f6fb1',ceil:'#faf8f4'},{out:'ojloungd',nm:'DRIVERS LOUNGE AND TICKET HALL',doorX:cx-10});
+    /* ticket windows along the back wall */
+    box(X(0),0.55,Z(-6.6),20,1.1,0.8,'#2b2d33');box(X(0),1.14,Z(-6.6),20.2,0.1,1.0,'#e9e4d6');solid(X(0),Z(-6.6),20.2,1.0,1.2);
+    box(X(0),2.3,Z(-8.5),22,2.6,0.4,'#dfe4e8');
+    [[-7,'T1 INTERSTATE','#1d5c3a'],[0,'T2 INTERCITY','#2f6fb1'],[7,'T3 ISLAND AND IKORODU','#c1352d']].forEach(function(s){
+      box(X(s[0]),1.9,Z(-8.28),4.2,1.2,0.06,'#9ec3d8');
+      addSign(s[1],s[2],'#ffffff',X(s[0]),3.3,Z(-8.25),0,4.4,0.7);
+    });
+    box(X(-11),2.8,Z(-8.2),3.2,1.5,0.12,'#0b0d12');box(X(-11),2.8,Z(-8.14),3.0,1.3,0.05,'#2b6aa8');
+    addSign('DEPARTURES','#14161a','#f2b705',X(-11),3.7,Z(-8.1),0,3,0.5);
+    /* waiting benches */
+    [[-6,-1],[0,-1],[6,-1],[-6,2.4],[0,2.4],[6,2.4]].forEach(function(p){bench(X(p[0]),Z(p[1]),5.2);});
+    /* drivers rest corner */
+    SOFAFN(X(11),Z(4),-Math.PI/2,3.4,'#3b4252','#d9d2c2');solid(X(11),Z(4),1.7,3.4,1);
+    box(X(13),0.4,Z(4),0.9,0.8,2,'#1b1b1f');box(X(13),1.9,Z(4),0.08,1.0,1.8,'#0b0d12');
+    plant(X(-12.5),Z(7.5),1.0);plant(X(12.5),Z(-5),1.0);
+    addSign('DRIVERS LOUNGE','#2f6fb1','#ffffff',X(10),3.4,Z(8.7),Math.PI,5,0.7);
+  })();
+  /* ----- INTERCHANGE TRANSIT HOTEL (lobby) ----- */
+  (function(){
+    var cx=OSI.hotel[0],cz=OSI.hotel[1],W=24,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('ojhotel',cx,cz,W,D,H,{floor:'#d8cbb0',wall:'#f2ece0',trim:'#7a2e65',ceil:'#faf8f4'},{out:'ojhoteld',nm:'INTERCHANGE TRANSIT HOTEL',doorX:cx-9});
+    box(X(0),0.55,Z(-6.5),7,1.1,0.9,'#3a2a3f');box(X(0),1.14,Z(-6.5),7.2,0.1,1.1,'#e9e4d6');solid(X(0),Z(-6.5),7.2,1.1,1.2);
+    box(X(0),2.0,Z(-8.7),8,3.2,0.3,'#e9e2d3');
+    for(var ki=0;ki<8;ki++)box(X(-2.6+ki*0.75),2.2,Z(-8.5),0.3,0.5,0.1,GC[ki%7]);
+    addSign('RECEPTION','#7a2e65','#ffffff',X(0),3.8,Z(-8.5),0,4,0.6);
+    SOFAFN(X(-7),Z(1),Math.PI/2,3.6,'#7a2e65','#d9d2c2');solid(X(-7),Z(1),1.7,3.6,1);
+    SOFAFN(X(7),Z(1),-Math.PI/2,3.6,'#7a2e65','#d9d2c2');solid(X(7),Z(1),1.7,3.6,1);
+    box(X(0),0.3,Z(1),2.4,0.5,1.2,'#2b2118');solid(X(0),Z(1),2.4,1.2,0.6);
+    box(X(10.6),1.2,Z(-4),1.4,2.4,3,'#cfd8d4');solid(X(10.6),Z(-4),1.4,3,2.4);addSign('ROOMS 1 TO 40','#7a2e65','#ffffff',X(10.2),2.8,Z(-4),-Math.PI/2,2.4,0.5);
+    plant(X(-10.5),Z(-8));plant(X(10.5),Z(7.5),1.0);
+    function plant(x,z,s){cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*(s||1),1.0*(s||1),0.9*(s||1),'#2f6a34');}
+  })();
+  /* ----- OSHODI TECH HUB ----- */
+  (function(){
+    var cx=OSI.hub[0],cz=OSI.hub[1],W=28,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('ojhub',cx,cz,W,D,H,{floor:'#bfc3c6',wall:'#f4f6f7',trim:'#1d5c3a',ceil:'#ffffff'},{out:'ojhubd',nm:'OSHODI TECH HUB',doorX:cx-10});
+    box(X(0),2.3,Z(-8.7),26,0.12,0.12,'#1d5c3a');
+    addSign('OSHODI TECH HUB','#1d5c3a','#ffffff',X(-3),3.6,Z(-8.7),0,8,0.8);
+    [[-8,-3],[-4,-3],[4,-3],[8,-3],[-8,1.5],[-4,1.5],[4,1.5],[8,1.5]].forEach(function(p,i){
+      desk(X(p[0]),Z(p[1]),i%2?'#e9e4d6':'#d9c9a8');
+      CHAIRFN(X(p[0]),Z(p[1]+1.1),Math.PI,['#1d5c3a','#2f6fb1','#14161a','#e07a1f'][i%4]);
+    });
+    /* coffee bar and sofas */
+    box(X(10),0.55,Z(-6.8),6,1.1,0.8,'#2b2118');box(X(10),1.14,Z(-6.8),6.2,0.1,1.0,'#e9e4d6');solid(X(10),Z(-6.8),6.2,1.0,1.2);
+    box(X(10),1.7,Z(-8.2),2.4,0.8,0.6,'#555');
+    SOFAFN(X(-12.4),Z(4),Math.PI/2,3.4,'#2b5a9a','#d9d2c2');solid(X(-12.4),Z(4),1.7,3.4,1);
+    box(X(-12),2.4,Z(-8.5),5,2.2,0.1,'#e8e4da');box(X(-12),2.4,Z(-8.44),4.6,1.9,0.05,'#7fb2d9');
+    box(X(-5),1.4,Z(6.4),0.3,2.8,4,'#9ec3d8');solid(X(-5),Z(6.4),0.3,4,2.8);
+    plant(X(12.5),Z(7.5),1.0);plant(X(-12.5),Z(-7.5),1.0);
+    function plant(x,z,s){cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*(s||1),1.0*(s||1),0.9*(s||1),'#2f6a34');}
   })();
 })();
 
@@ -3460,7 +3656,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-300,XMAX=1600;
+var LIM=66,PR=0.38,XMIN=-560,XMAX=1700;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -4270,8 +4466,8 @@ function buildOkada(){
   return b.mesh();
 }
 var LANES=[
-  {x:-265,z:2.5,h:Math.PI/2,speed:9,b:[-266,248]},
-  {x:247,z:-2.5,h:-Math.PI/2,speed:8,b:[-266,248]},
+  {x:-537,z:2.5,h:Math.PI/2,speed:9,b:[-538,248]},
+  {x:247,z:-2.5,h:-Math.PI/2,speed:8,b:[-538,248]},
   {x:-2,z:-63,h:0,speed:7},
   {x:2,z:63,h:Math.PI,speed:8.5},
   {x:292,z:4.4,h:Math.PI/2,speed:10,b:[289,481]},
@@ -4291,7 +4487,9 @@ var LANES=[
   {x:1106.5,z:-63,h:0,speed:8,b:[1011,1207]},
   {x:1113.5,z:63,h:Math.PI,speed:8.5,b:[1011,1207]},
   {x:OJX-2,z:-63,h:0,speed:7,b:[OJX-4,OJX+4]},
-  {x:OJX+2,z:63,h:Math.PI,speed:8,b:[OJX-4,OJX+4]}
+  {x:OJX+2,z:63,h:Math.PI,speed:8,b:[OJX-4,OJX+4]},
+  {x:AGX-2,z:-63,h:0,speed:7,b:[AGX-4,AGX+4]},
+  {x:AGX+2,z:63,h:Math.PI,speed:8,b:[AGX-4,AGX+4]}
 ];
 function regOf(x){return x>1000?4:(x>730?3:(x>500?2:(x>258?1:0)));}
 function grpOf(x){var r=regOf(x);return r===3?0:(r===4?1:r);}
@@ -4645,7 +4843,7 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';npcs[3].label='DELE';npcs[4].label='KUNLE';npcs[5].label='RONKE';npcs[6].label='OKON';
 var MW=480,MH=200,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
 mapBG.width=MW;mapBG.height=MH;
-var mapReg=0,MR=[[XMIN,250],[227,543],[462,778],[702,1018],[952,1268]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
+var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-258]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
 function MX(x){var r=MR[mapReg];return (x-r[0])/(r[1]-r[0])*MW;}
 function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 (function(){
@@ -4732,26 +4930,41 @@ function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 
 
 
+var mapBG6=document.createElement('canvas');mapBG6.width=MW;mapBG6.height=MH;
+function mreg(x){return x<-262?5:regOf(x);}
+(function(){
+  mapReg=5;var g=mapBG6.getContext('2d');
+  g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
+  g.fillStyle='#4a4d52';g.fillRect(0,MZ(-5),MW,MZ(5)-MZ(-5));g.fillRect(MX(AGX-7),0,MX(AGX+7)-MX(AGX-7),MH);
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(0,MZ(0));g.lineTo(MW,MZ(0));g.moveTo(MX(AGX),0);g.lineTo(MX(AGX),MH);g.stroke();g.setLineDash([]);
+  g.fillStyle='#c9b08a';
+  for(var i=0;i<solids.length;i++){
+    var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
+    if(q.minX<-562||q.maxX>-258)continue;
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(MR[5][1]-MR[5][0])*MW),Math.max(2,d/(2*LIM)*MH));
+  }
+  mapReg=0;
+})();
 function mapLabel(g,t,x,y){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(t,x,y);g.fillText(t,x,y);}
 function mapUpdate(dt){
   mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
-  var rg=regOf(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5][rg],0,0);
+  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6][rg],0,0);
   if(px>1250){g.fillStyle='rgba(10,10,12,0.78)';g.fillRect(0,0,MW,MH);g.fillStyle='#fff';g.font='bold 26px sans-serif';g.textAlign='center';g.fillText('INSIDE A BUILDING',MW/2,MH/2);return;}
   g.fillStyle='#1b1b1b';
-  for(i=0;i<traffic.length;i++)if(regOf(traffic[i].x)===rg)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
-  g.font='bold 13px sans-serif';g.textAlign='center';
+  for(i=0;i<traffic.length;i++)if(mreg(traffic[i].x)===rg)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
+  g.font='bold 13px sans-serif';g.textAlign='center';var mlab=[];
   for(i=0;i<npcs.length;i++){
     var n=npcs[i],offer=(i===0&&!jobActive&&!!cj);
-    if(regOf(n.x)!==rg)continue;
+    if(mreg(n.x)!==rg)continue;
     g.fillStyle=offer?'#f2b705':'#f1efe6';g.beginPath();g.arc(MX(n.x),MZ(n.z),offer?6:4.5,0,6.283);g.fill();
-    if(n.label)mapLabel(g,n.label,MX(n.x),MZ(n.z)-9);
+    if(n.label){var lx=MX(n.x),ly=MZ(n.z)-9,lw=n.label.length*3.8,lok=true;for(var lq=0;lq<mlab.length;lq++){if(Math.abs(mlab[lq][0]-lx)<mlab[lq][2]+lw&&Math.abs(mlab[lq][1]-ly)<12){lok=false;break;}}if(lok){mlab.push([lx,ly,lw]);mapLabel(g,n.label,lx,ly);}}
   }
-  if(!driving&&regOf(car.x)===rg){
+  if(!driving&&mreg(car.x)===rg){
     g.fillStyle='#2f7d4f';g.strokeStyle='#fff';g.lineWidth=2;g.fillRect(MX(car.x)-5,MZ(car.z)-5,10,10);g.strokeRect(MX(car.x)-5,MZ(car.z)-5,10,10);
     mapLabel(g,'CAR',MX(car.x),MZ(car.z)-9);
   }
-  if(jobActive&&cj&&regOf(cj.stages[jobStage].x)===rg){
+  if(jobActive&&cj&&mreg(cj.stages[jobStage].x)===rg){
     var st=cj.stages[jobStage],pr=6+3*Math.sin(elapsed*5);
     g.strokeStyle='#f2b705';g.lineWidth=3;g.beginPath();g.arc(MX(st.x),MZ(st.z),pr,0,6.283);g.stroke();
     g.fillStyle='#f2b705';g.beginPath();g.arc(MX(st.x),MZ(st.z),3,0,6.283);g.fill();
@@ -8765,11 +8978,11 @@ function ojGap(v){
   else if(v.lane===1)gs=(v.x-v.r)-L.line;
   else if(v.lane===20)gs=L.line-(v.z+v.r);
   else gs=(v.z-v.r)-L.line;
-  if(gs<-0.3||gs>40)return Infinity;
+  if(gs<-1.2||gs>40)return Infinity;
   if(st==='y'&&gs<v.speed*0.9+1.5)return Infinity;
   return gs+1.5;
 }
-function sigGap(v){var a=sigGap0(v),b=ojGap(v);return a<b?a:b;}
+function sigGap(v){var a=sigGap0(v),b=ojGap(v),c=agGap(v);if(c<b)b=c;return a<b?a:b;}
 function ojLamps(){
   for(var i=0;i<SIGMO.length;i++){
     var s=sigStateO(SIGMO[i].ax);
@@ -8834,7 +9047,7 @@ var OJW=[];
 })();
 var ojT=0;
 function ojTick(dt){
-  ojLamps();
+  ojLamps();agLamps();
   if(!started||!life)return;
   ojT+=dt;if(ojT<1)return;ojT=0;
   var h=gameHour;
@@ -8843,6 +9056,151 @@ function ojTick(dt){
   if(inInt()){var id=intId(),p=OJP.filter(function(q){return q.id===id;})[0];if(p&&!isOpen(p.h[0],p.h[1])&&!ojKick){ojKick=true;toast(nice(p.nm)+' is closing. Time to go.');exitInt();setTimeout(function(){ojKick=false;},4000);}}
 }
 var ojKick=false;
+
+/* ---- b48: Oshodi people, hours, careers, signals and traffic ---- */
+/* the Agege Motor Road junction has its own lights, running the same phases as the Origin crossroad */
+var SIGMA=[];
+[{x:AGX-25.6,z:5.9,a:-Math.PI/2,ax:'EW'},{x:AGX+25.6,z:-5.9,a:Math.PI/2,ax:'EW'},{x:AGX-8,z:-16.6,a:Math.PI,ax:'NS'},{x:AGX+8,z:16.6,a:0,ax:'NS'}].forEach(function(h){
+  var m=new THREE.Mesh(new THREE.PlaneGeometry(0.36,0.96),new THREE.MeshBasicMaterial({map:SIGTEX.r,toneMapped:false}));
+  m.position.set(h.x+Math.sin(h.a)*0.3,4.05,h.z+Math.cos(h.a)*0.3);m.rotation.y=h.a;scene.add(m);
+  SIGMA.push({m:m,ax:h.ax,st:'r'});
+});
+var SIGLA={0:{ax:'EW',line:AGX-27},1:{ax:'EW',line:AGX+27},22:{ax:'NS',line:-18},23:{ax:'NS',line:18}};
+function agGap(v){
+  var L=SIGLA[v.lane];if(!L)return Infinity;
+  var st=sigState(L.ax);if(st==='g')return Infinity;
+  var gs;
+  if(v.lane===0)gs=L.line-(v.x+v.r);
+  else if(v.lane===1)gs=(v.x-v.r)-L.line;
+  else if(v.lane===22)gs=L.line-(v.z+v.r);
+  else gs=(v.z-v.r)-L.line;
+  if(gs<-1.2||gs>40)return Infinity;
+  if(st==='y'&&gs<v.speed*0.9+1.5)return Infinity;
+  return gs+1.5;
+}
+function agLamps(){
+  for(var i=0;i<SIGMA.length;i++){
+    var s=sigState(SIGMA[i].ax);
+    if(s!==SIGMA[i].st){SIGMA[i].st=s;SIGMA[i].m.material.map=SIGTEX[s];SIGMA[i].m.material.needsUpdate=true;}
+  }
+}
+/* traffic: the long road west, and Agege Motor Road */
+addVeh('sedan',0,330,'#d9d9d9');addVeh('danfo',0,370);addVeh('okada',0,420);addVeh('sedan',0,470,'#7a3fa0');addVeh('danfo',0,520);addVeh('sedan',0,575,'#14161a');addVeh('okada',0,640);addVeh('danfo',0,700);
+addVeh('sedan',1,560,'#e0c040');addVeh('danfo',1,600);addVeh('okada',1,640);addVeh('sedan',1,690,'#2f6a8e');addVeh('danfo',1,730);addVeh('sedan',1,770,'#c9c9c9');
+addVeh('danfo',22,26);addVeh('sedan',22,70,'#8e2f2f');addVeh('okada',22,100);
+addVeh('sedan',23,30,'#d9d9d9');addVeh('danfo',23,66);addVeh('okada',23,102);
+/* places */
+var OSP=[
+  {k:'ojfoodd',id:'ojfood',nm:'OSHODI FOOD COURT',h:[6,22],x:-432,z:-10.9,yaw:0},
+  {k:'ojloungd',id:'ojlounge',nm:'DRIVERS LOUNGE AND TICKETS',h:[5,23],x:-447,z:-10.9,yaw:0},
+  {k:'ojhoteld',id:'ojhotel',nm:'INTERCHANGE TRANSIT HOTEL',h:[0,24],x:-462,z:-10.9,yaw:0},
+  {k:'ojhubd',id:'ojhub',nm:'OSHODI TECH HUB',h:[8,20],x:-477,z:-10.9,yaw:0}
+];
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  var D={
+    ojfoodd:{look:{skin:sk[1],skin2:'#6a3e26',low:'#c1352d',low2:'#7a1f1f',top:'#f2d36b',head:'gele',hc:'#c1352d',hc2:'#f2b705'},name:'FOOD COURT HOST',lbl:'FOOD',greet:'Welcome to the Oshodi Food Court. Open 6 AM to 10 PM.'},
+    ojloungd:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#1c2a44',low2:'#121c30',top:'#2f6fb1',head:'cap',hc:'#2f6fb1'},name:'TERMINAL GUARD',lbl:'TICKETS',greet:'Drivers lounge and ticket hall. Open 5 AM to 11 PM.'},
+    ojhoteld:{look:{skin:sk[0],skin2:'#5a3520',low:'#2a2030',low2:'#1c1620',top:'#f1efe6',head:'cap',hc:'#7a2e65'},name:'HOTEL BELLBOY',lbl:'HOTEL',greet:'Interchange Transit Hotel. Rooms open all day and night.'},
+    ojhubd:{look:{skin:sk[3],skin2:'#774a2e',low:'#2a2a30',low2:'#1c1c20',top:'#1d5c3a',head:'',hs:'low'},name:'HUB SECURITY',lbl:'TECH HUB',greet:'Oshodi Tech Hub. Doors open 8 AM to 8 PM.'}
+  };
+  OSP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2,hs:lk.hs},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    if(p.h[1]-p.h[0]<24){
+      addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.x,2.4,-11.85,0,3.2,0.6);
+      var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    }
+    OJP.push(p);
+    DEST.push([p.nm,p.k]);
+  });
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  inside('ojfood','ojfood',[-3.5,-8.35],{skin:sk[1],skin2:'#6a3e26',low:'#f0f3f2',low2:'#cfd8d4',top:'#c1352d',head:'cap',hc:'#c1352d'},
+    {label:'FOOD',name:'CHEF OBI (FOOD COURT)',svcLabel:'EAT',friend:false,career:'kitchen',hours:[6,22],closed:'The kitchen has closed for the night.',greet:'Chop well! Which stall you want?',
+     items:[{l:'JOLLOF AND CHICKEN',c:2800,food:1,fx:{hunger:75,fun:5,bladder:-7},msg:'Smoky jollof with fried chicken. Done.'},{l:'AMALA AND EWEDU',c:2000,food:1,fx:{hunger:70,fun:4,bladder:-6},msg:'Hot amala, ewedu and gbegiri.'},{l:'BURGER AND FRIES',c:3200,food:1,fx:{hunger:60,fun:8,bladder:-6},msg:'A big burger and a pile of fries.'},{l:'PEPPER SOUP',c:1800,food:1,fx:{hunger:45,energy:6,fun:4,bladder:-6},msg:'Peppery goat meat soup. It clears your head.'},{l:'SOBO',c:400,food:1,fx:{hunger:6,energy:4,bladder:-6},msg:'Cold sobo.'}]});
+  inside('ojlounge','ojlounge',[0,-7.55],{skin:sk[2],skin2:'#4a2b1a',low:'#1c2a44',low2:'#121c30',top:'#2f6fb1',head:'cap',hc:'#2f6fb1'},
+    {label:'TICKETS',name:'TICKET CLERK ADA',friend:false,career:'ticket',hours:[5,23],closed:'The ticket windows are closed.',greet:'Terminal 1 goes interstate, Terminal 2 intercity and Abule Egba, Terminal 3 to Lagos Island and Ikorodu. Which one you want?',items:[]});
+  inside('ojlounge','ojrest',[10.5,-1.6],{skin:sk[0],skin2:'#5a3520',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'cap',hc:'#2a2a30'},
+    {label:'REST',name:'LOUNGE ATTENDANT',svcLabel:'REST',friend:false,hours:[5,23],closed:'The lounge is closed.',greet:'Drivers and travellers can rest here.',
+     items:[{l:'REST ON A BENCH',c:300,fx:{energy:18,bladder:-2},t:1,msg:'You rest your eyes on a quiet bench for an hour.'},{l:'TEA AND BREAD',c:900,food:1,fx:{hunger:30,energy:5,bladder:-3},msg:'Hot tea with buttered bread.'}]});
+  inside('ojhotel','ojhotel',[0,-7.5],{skin:sk[1],skin2:'#6a3e26',low:'#2a2030',low2:'#1c1620',top:'#7a2e65',head:'cap',hc:'#7a2e65'},
+    {label:'ROOMS',name:'RECEPTIONIST LOLA',svcLabel:'ROOMS',friend:false,greet:'Welcome to Interchange Transit Hotel. Need a bed between buses?',
+     items:[{l:'ROOM 8 HOURS',c:7500,fx:{energy:100,hunger:-12,hygiene:25,bladder:-25},t:8,msg:'You sleep well and wake up fresh.'},{l:'DAY ROOM 3 HOURS',c:3500,fx:{energy:45,hunger:-4,bladder:-8},t:3,msg:'A short nap in a clean room.'},{l:'SHOWER',c:1200,fx:{hygiene:70,bladder:-3},msg:'A hot shower. You feel brand new.'}]});
+  inside('ojhub','ojhub',[10,-7.8],{skin:sk[3],skin2:'#774a2e',low:'#2a3a52',low2:'#1c2840',top:'#1d5c3a',head:'',hs:'low'},
+    {label:'HUB',name:'MS TOYIN (HUB MANAGER)',svcLabel:'HUB',friend:false,career:'dev',hours:[8,20],closed:'The hub is closed. Doors open 8 AM to 8 PM.',greet:'Welcome to the hub. Desks, coffee and people building things.',
+     items:[{l:'COFFEE',c:600,food:1,fx:{energy:8,hunger:3,bladder:-2},msg:'A strong coffee.'},{l:'DAY PASS',c:2500,fx:{social:25,fun:8,energy:-6},t:2,msg:'Two hours at a desk, talking to people building apps.'},{l:'MEETUP',c:1000,fx:{social:20,fun:5},msg:'You join a founders meetup by the sofas.'}]});
+  /* exit guards */
+  OSP.forEach(function(p){
+    var dd=INTD[p.id],c=dd.c;
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* street people */
+  addPerson('ojmkt',{x:-345,z:-10.6,yaw:0,skin:sk[1],skin2:'#6a3e26',low:'#2f6fb1',low2:'#1f4a7a',top:'#e7a6b3',head:'gele',hc:'#2f6fb1',hc2:'#f2b705'},
+    {label:'GADGETS',name:'MAMA NGOZI (ELECTRONICS)',svcLabel:'BUY',friend:false,hours:[7,19],closed:'Market is closed. Come back from 7 AM.',greet:'Phone, charger, earphone, everything! Original, no fake.',
+     items:[{l:'PHONE CHARGER',c:2500,fx:{fun:6},msg:'A solid charger. Your phone is happy.'},{l:'EARPHONES',c:1800,fx:{fun:8,social:3},msg:'Clear sound. You nod along to the radio.'},{l:'POWER BANK',c:6500,fx:{fun:12},msg:'A heavy power bank. No more dead phone.'}]});
+  DEST.push(['OSHODI MARKET, MAMA NGOZI','ojmkt']);
+  addPerson('ojsuya',{x:-350,z:10.6,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#f3efe2',head:'cap',hc:'#1d5c3a'},
+    {label:'SUYA',name:'ALHAJI GANIYU (SUYA)',svcLabel:'EAT',friend:false,hours:[16,23],closed:'The grill starts at 4 PM.',greet:'Hot suya, extra pepper! Evening only.',
+     items:[{l:'SUYA',c:1000,food:1,fx:{hunger:38,fun:4,bladder:-3},msg:'Spicy suya wrapped in paper. Mouth dey burn.'},{l:'ROASTED CORN',c:400,food:1,fx:{hunger:18,bladder:-2},msg:'Smoky roasted corn.'}]});
+  DEST.push(['SUYA SPOT, OSHODI','ojsuya']);
+  addPerson('ojbay',{x:-404,z:11.9,yaw:Math.PI,skin:sk[0],skin2:'#5a3520',low:'#1c2a44',low2:'#121c30',top:'#e07a1f',head:'cap',hc:'#14161a'},
+    {label:'BUSES',name:'BAY ATTENDANT',friend:false,greet:'Welcome to Oshodi Interchange. Terminal 1 interstate, Terminal 2 intercity, Terminal 3 Island and Ikorodu. A skywalk joins them behind.',items:[]});
+  DEST.push(['OSHODI INTERCHANGE BAYS','ojbay']);
+  addPerson('ojagege',{x:AGX+11,z:-10.6,yaw:0,skin:sk[0],skin2:'#5a3520',low:'#2f7d4f',low2:'#1f5a35',top:'#f2f2f2',head:'cap',hc:'#2f7d4f'},
+    {label:'WARDEN',name:'LASTMA OFFICER TUNDE',friend:false,greet:'Agege Motor Road. Obey the lights o, and no stop under the skywalk.',items:[]});
+  DEST.push(['AGEGE MOTOR ROAD JUNCTION','ojagege']);
+  /* careers */
+  CARS.kitchen={name:'FOOD COURT KITCHEN HAND',key:'ojfood',pay:2600,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-5,hygiene:-9,fun:-6,bladder:-4}};
+  CARS.ticket={name:'TICKET CLERK',key:'ojlounge',pay:4200,secs:30,req:'Education Level 1 (study at the school in Ojuelegba)',ok:function(){return eduLevel()>=1;},cost:{energy:-12,hunger:-7,hygiene:-3,fun:-6,bladder:-5}};
+  CARS.dev={name:'JUNIOR DEVELOPER',key:'ojhub',pay:7200,secs:30,req:'Education Level 2 (study at the school in Ojuelegba)',ok:function(){return eduLevel()>=2;},cost:{energy:-13,hunger:-7,hygiene:-2,fun:-7,bladder:-5}};
+  ['kitchen','ticket','dev'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  /* spots for gigs and deliveries */
+  [[-330,2.5],[-380,-2.5],[-430,2.5],[-480,-2.5],[-520,2.5],[AGX,-30],[AGX,30],[-405,11],[-455,-10.5],[-380,40],[-300,-10],[-345,10]].forEach(function(q){FSPOTS.push(q);});
+})();
+/* people on the move */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0;
+  function WK(a,b,win,sp,u){
+    var i=n++;
+    var w=makeWalker({fem:i%2,occ:i%2,look:i+11,shirt:u?u[0]:cl[i%8],pants:u?u[1]:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:a,b:b,sp:sp||(1.1+(i%4)*0.2)});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  var COM=[[5,9.5],[16,21]],MKT=[[7,19]],ALL=[[5,23]],NIGHT=[[16,23]],OFFC=[[8,20]];
+  var A=AGX;
+  /* road sidewalks */
+  WK([-285,-6.2],[-420,-6.2],COM);WK([-420,6.2],[-290,6.2],COM);WK([-425,-6.2],[-535,-6.2],COM);WK([-535,6.2],[-425,6.2],COM);
+  WK([-300,6.2],[-360,6.2],ALL);WK([-500,-6.2],[-440,-6.2],ALL);
+  /* Agege Motor Road */
+  WK([A+8.4,-18],[A+8.4,-60],COM);WK([A-8.4,60],[A-8.4,18],COM);WK([A-8.4,-60],[A-8.4,-18],COM);WK([A+8.4,18],[A+8.4,60],COM);
+  /* the market lane and the electronics lane */
+  WK([-290,-24.4],[-440,-24.4],MKT);WK([-430,-24.4],[-300,-24.4],MKT);WK([-300,-24.4],[-380,-24.4],MKT,0.8);
+  WK([-285,23.8],[-350,23.8],MKT);WK([-350,23.8],[-290,23.8],MKT,0.7);
+  WK([-336,10.2],[-300,10.2],NIGHT,0.8);
+  /* bus bays and forecourts */
+  WK([-396,11.8],[-362,11.8],ALL);WK([-362,11.8],[-396,11.8],ALL,0.9);
+  WK([-446,11.8],[-412,11.8],ALL);WK([-412,11.8],[-446,11.8],ALL,0.9);
+  WK([-496,11.8],[-462,11.8],ALL);WK([-462,11.8],[-496,11.8],ALL,0.9);
+  WK([-425,-10.4],[-486,-10.4],ALL,0.7);WK([-486,-10.4],[-425,-10.4],ALL,0.9);
+  /* the apron behind the terminals */
+  WK([-370,40],[-490,40],ALL,1.0);WK([-490,56],[-370,56],ALL,0.9);WK([-380,38],[-400,38],ALL,0.7);
+  /* inside */
+  function IW(id,a,b,win,sp,u){var d=INTD[id].c;var i=n++;var w=makeWalker({fem:i%2,occ:1,look:i+11,shirt:u?u[0]:cl[i%8],pants:u?u[1]:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});OJW.push({w:w,win:win});w.off=true;}
+  IW('ojfood',[-13,-4.5],[13,-4.5],[[6,22]],0.6);IW('ojfood',[13,0.6],[-13,0.6],[[11,21]],0.5);IW('ojfood',[-4,6.8],[12,6.8],[[12,15],[18,21]],0.5);
+  IW('ojlounge',[-12,-4.2],[12,-4.2],[[5,23]],0.6);IW('ojlounge',[-12,5.6],[3,5.6],[[5,23]],0.5);IW('ojlounge',[-3,5.6],[-12,5.6],[[5,10],[15,22]],0.55);IW('ojlounge',[2,-4.2],[-6,-4.2],[[6,20]],0.4);
+  IW('ojhotel',[-4,-4],[4,-4],[[0,24]],0.4);IW('ojhotel',[-3,5.5],[8,5.5],[[0,24]],0.5);
+  IW('ojhub',[-12,-5.2],[12,-5.2],[[8,20]],0.5);IW('ojhub',[-12,6],[-6.5,6],[[8,20]],0.35);IW('ojhub',[0,6],[11,6],[[9,19]],0.5);
+})();
 
 /* ------------------------------------------------------------------ loop */
 function update(dt){
