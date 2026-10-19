@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b50';
+var VERSION='GTL 0.9 b51';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -2944,9 +2944,6 @@ var CVB={};
   for(wx=-865;wx<=-560;wx+=3)box(wx,0.1,-63,0.4,0.05,2.8,'#4a3a2a');
   addSign('RAILWAY LINE. NO ENTRY','#c1352d','#ffffff',JX,1.9,-66.4,0,4.6,0.8);
   /* the ends of the district: the road works barrier, and the two arms of Otigba Street */
-  [0.55,0.95].forEach(function(by,i){box(-860,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
-  box(-860,0.6,-4.7,0.3,1.2,0.3,'#555');box(-860,0.6,4.7,0.3,1.2,0.3,'#555');solid(-860,0,0.6,9.8,1.3);
-  addSign('ROAD WORKS AHEAD','#f2b705','#141414',-859.8,1.9,0,Math.PI/2,3.4,0.9);
   [-1,1].forEach(function(sg){barrier(JX-2.4,sg*67.5,false);barrier(JX+2.4,sg*67.5,false);});
   /* lamps and poles */
   var lx;
@@ -3213,6 +3210,291 @@ var MSI={parts:[1830,-42],food:[1830,-14],fab:[1830,14],music:[1830,42]};
     addSign('IDI-ORO MUSIC HOUSE','#f2b705','#14161a',X(6),3.4,Z(-10.9),0,10,0.9);
     addSign('LIVE BAND EVERY NIGHT','#c1352d','#ffffff',X(-10),3.9,Z(-10.7),0,6,0.6);
     plant(X(-16),Z(8.8));plant(X(16),Z(8.8));
+  })();
+})();
+
+var CHK_SAVE5=CHK;CHK=40;
+/* ---- b51: IKEJA. A fictionalised version of the real Ikeja: Allen Avenue (a 24-hour commercial street of banks, hotels, shops and nightlife)
+   crossing the main road at Allen Junction, a leafy Government Reserved Area (GRA) street of walled villas, a golf club lawn,
+   and a big shopping mall at the far end. The road continues west from Computer Village. The layout is invented, not surveyed. ---- */
+var ALX=-1000,GRX=-1175;
+var IKB={};
+(function(){
+  var JX=ALX,SHP=OJB.shopHouse,wx,k=0,nn=0;
+  var NMS=['ALLEN BOUTIQUE','SUYA SPOT','CHEMIST AND PHARMACY','BUREAU DE CHANGE','HAIR AND BEAUTY','AUTO CARE CENTRE','PIZZA CORNER','CYBER CAFE','SHAWARMA HOUSE','POS AND AIRTIME','FASHION HOUSE','LAUNDRY AND DRY CLEAN','ELECTRONICS PLAZA','FURNITURE GALLERY','PERFUME WORLD','BOOKS AND STATIONERY'];
+  function S(o){o.name=NMS[(nn++)%NMS.length];return SHP(o);}
+  function lb(x0,x1,y,z,h,d,col){var n=Math.ceil(Math.abs(x1-x0)/36),i,sl=(x1-x0)/n;for(i=0;i<n;i++)box(x0+sl*(i+0.5),y,z,sl+0.02,h,d,col);}
+  function lawn(x,z,w,d,col){box(x,0.02,z,w,0.04,d,col||'#5b8f3e');}
+  function nearJ(x,r){return Math.abs(x-JX)<r;}
+  function nearG(x,r){return Math.abs(x-GRX)<r;}
+  /* ground */
+  box(-1110,-0.1,0,480,0.2,700,'#b07a52');
+  /* the main road continues west: edge lines, centre dashes and pavements (pavements stop at the two side streets) */
+  lb(-1332,-860,0.03,0,0.06,10,ROAD);
+  for(wx=-867;wx>=-1327;wx-=7){if(nearJ(wx,22)||nearG(wx,8))continue;box(wx,0.066,0,3,0.012,0.18,'#e9c46a');}
+  [-4.6,4.6].forEach(function(ez){lb(-1332,-860,0.066,ez,0.012,0.12,'#e8e4da');});
+  [-5.8,5.8].forEach(function(sz){
+    lb(-1332,-1184.5,0.09,sz,0.18,1.6,SH);
+    lb(-1165.5,-1020,0.09,sz,0.18,1.6,SH);
+    lb(-980,-860,0.09,sz,0.18,1.6,SH);
+  });
+  /* ---------- Allen Junction: Allen Avenue crosses the main road with its own traffic lights ---------- */
+  box(JX,0.036,0,40,0.072,16,ROAD);
+  box(JX,0.034,0,14,0.068,132,ROAD);
+  [-8.6,8.6].forEach(function(sx){box(JX+sx,0.09,-38,1.6,0.18,56,SH);box(JX+sx,0.09,38,1.6,0.18,56,SH);});
+  [-6.2,6.2].forEach(function(ex){box(JX+ex,0.084,-38,0.12,0.012,56,'#e8e4da');box(JX+ex,0.084,38,0.12,0.012,56,'#e8e4da');});
+  var zz,zk;
+  for(zz=12;zz<=62;zz+=6){box(JX,0.084,zz,0.18,0.012,3,'#e9c46a');box(JX,0.084,-zz,0.18,0.012,3,'#e9c46a');}
+  box(JX-27,0.085,2.6,0.5,0.012,4.6,'#f4f1e8');box(JX+27,0.085,-2.6,0.5,0.012,4.6,'#f4f1e8');
+  box(JX-3.6,0.085,-18,6.4,0.012,0.5,'#f4f1e8');box(JX+3.6,0.085,18,6.4,0.012,0.5,'#f4f1e8');
+  for(zk=-4;zk<=4;zk++){
+    box(JX-23,0.086,zk*1.0,3.4,0.012,0.5,'#f4f1e8');box(JX+23,0.086,zk*1.0,3.4,0.012,0.5,'#f4f1e8');
+    box(JX+zk*1.2,0.086,-14,0.55,0.012,3.4,'#f4f1e8');box(JX+zk*1.2,0.086,14,0.55,0.012,3.4,'#f4f1e8');
+  }
+  [[JX-25.6,5.9],[JX+25.6,-5.9],[JX-8,-16.6],[JX+8,16.6]].forEach(function(p){cyl(p[0],2.0,p[1],0.16,4,0.16,'#3a3d40');box(p[0],4.05,p[1],0.5,1.2,0.12,'#111114');});
+  addSign('ALLEN AVENUE','#1d5c3a','#ffffff',JX,4.9,-18.6,0,6,0.9);addSign('ALLEN AVENUE','#1d5c3a','#ffffff',JX,4.9,18.6,Math.PI,6,0.9);
+  /* the two ends of Allen Avenue */
+  [-1,1].forEach(function(sg){
+    barrier(JX-3.7,sg*67.5,false);barrier(JX+3.7,sg*67.5,false);
+    addSign('ROAD WORKS AHEAD','#f2b705','#141414',JX,1.9,sg*67.2,sg>0?Math.PI:0,3.4,0.9);
+  });
+  /* a gantry over Allen Avenue, north of the junction */
+  [-10.6,10.6].forEach(function(gx){box(JX+gx,3.4,-60,0.5,6.8,0.5,'#555');solid(JX+gx,-60,0.6,0.6,6.8);});
+  box(JX,6.9,-60,21.4,0.5,0.5,'#555');
+  addSign('ALLEN AVENUE. IKEJA','#14161a','#f2d36b',JX,6.9,-59.6,0,10,0.9);
+  /* ---------- the main road's far end ---------- */
+  [0.55,0.95].forEach(function(by,i){box(-1332,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
+  box(-1332,0.6,-4.7,0.3,1.2,0.3,'#555');box(-1332,0.6,4.7,0.3,1.2,0.3,'#555');solid(-1332,0,0.6,9.8,1.3);
+  addSign('ROAD WORKS AHEAD','#f2b705','#141414',-1331.8,1.9,0,Math.PI/2,3.4,0.9);
+  /* ---------- GRA street: a quiet tree-lined road north from the main road ---------- */
+  box(GRX,0.034,-35.5,9,0.068,61,ROAD);
+  for(zz=-12;zz>=-62;zz-=6)box(GRX,0.088,zz,0.18,0.012,2.4,'#e9c46a');
+  [-1,1].forEach(function(sg){box(GRX+sg*4.9,0.07,-35.5,0.12,0.012,61,'#e8e4da');});
+  box(GRX,0.034,-6.4,14,0.068,3,ROAD);
+  box(GRX,0.06,-65.2,10,1.2,0.3,'#c1352d');box(GRX,0.6,-65.2,10,0.3,0.3,'#f1efe6');
+  [-5.6,5.6].forEach(function(px){box(GRX+px,2.8,-12.6,0.3,5.6,0.3,'#d9d2c2');solid(GRX+px,-12.6,0.4,0.4,5.6);});
+  box(GRX,5.3,-12.6,11.5,0.25,0.25,'#d9d2c2');
+  addSign('GRA. GOVERNMENT RESERVED AREA','#1d5c3a','#ffffff',GRX,4.5,-12.4,0,9.4,0.9);
+  /* compounds on both sides of GRA street: walls with a gate, a lawn, a villa and a tree */
+  var VW=['#f1efe6','#e8d9bf','#e6dccb','#f0e4cf','#dfe6df'],VR=['#7a3b2a','#3a4a5a','#5a3a2a','#2d4a3a','#6b3a2a'],vi=0;
+  function villa(face,x,z,w,d){building({kind:'multi',face:face,x:x,z:z,w:w,d:d,h:7,floors:2,balcony:true,wall:VW[vi%5],roof:VR[vi%5]});vi++;}
+  [[-31,-14],[-48,-31],[-65,-48]].forEach(function(r){
+    var zc=(r[0]+r[1])/2;
+    wallZ(GRX-9,r[0],r[1],zc,5);
+    wallX(r[0],GRX-39,GRX-9);
+    lawn(GRX-24,zc,28,r[1]-r[0]-0.8);
+    villa('E',GRX-19,zc,11,14);
+    tree(GRX-33,zc-4);tree(GRX-13,zc+5);
+  });
+  wallX(-14,GRX-39,GRX-9);wallZ(GRX-39,-65,-14);
+  [[-45.5,-26],[-65,-45.5]].forEach(function(r){
+    var zc=(r[0]+r[1])/2;
+    wallZ(GRX+9,r[0],r[1],zc,5);
+    wallX(r[0],GRX+9,GRX+39);
+    lawn(GRX+24,zc,28,r[1]-r[0]-0.8);
+    villa('W',GRX+19,zc,11,14);
+    tree(GRX+33,zc-4);tree(GRX+13,zc+5);
+  });
+  wallX(-26,GRX+9,GRX+39);wallZ(GRX+39,-65,-26);
+  /* a security hut at the street mouth and street lamps */
+  box(GRX+6.6,1.3,-10.5,2.0,2.6,2.0,'#cfd8d4');box(GRX+6.6,2.7,-10.5,2.4,0.2,2.4,'#2d4a5a');solid(GRX+6.6,-10.5,2.0,2.0,2.7);
+  [[GRX-5.5,-24],[GRX+5.5,-38],[GRX-5.5,-52],[GRX+5.5,-62]].forEach(function(p){lamp(p[0],p[1],p[0]<GRX?Math.PI/2:-Math.PI/2);ALAMPS.push([p[0],p[1]]);});
+  [-20,-34,-48,-60].forEach(function(z){tree(GRX-6.8,z);tree(GRX+6.8,z-7);});
+  /* ---------- main road, north side: shops, the GRA garden restaurant, then walled villas ---------- */
+  for(wx=-869;wx>=-1095;wx-=9){if(nearJ(wx,19))continue;S({face:'S',x:wx,z:-16.5,floors:2+((k++)%3)});}
+  IKB.gra=SHP({face:'S',x:-1110,z:-16.5,w:18,d:9,floors:2,name:'GRA GARDEN RESTAURANT',sbg:'#1d5c3a',sfg:'#f2d36b',aw:'#1d5c3a',wall:'#f1efe6'});
+  [-1128,-1137,-1146].forEach(function(sx){S({face:'S',x:sx,z:-16.5,floors:2+((k++)%3)});});
+  [-1222,-1252,-1282].forEach(function(bx,i){
+    var cx=bx-15;
+    wallX(-13,bx-30,bx,cx,5);wallZ(bx,-40,-13);
+    lawn(cx,-26.8,29,26,'#5b8f3e');
+    villa('S',cx,-29,14,11);
+    tree(cx-10,-18);tree(cx+10,-35);
+    car(cx+7,-19,Math.PI,['#14161a','#c9c9c9','#2f4f8e'][i]);solid(cx+7,-19,1.9,4.4,1.5);
+  });
+  wallZ(-1312,-40,-13);wallX(-40,-1312,-1222);
+  /* ---------- main road, south side: shops, the golf club lawn, the mall, more shops ---------- */
+  for(wx=-869;wx>=-1121;wx-=9){if(nearJ(wx,19))continue;S({face:'N',x:wx,z:16.5,floors:2+((k++)%3)});}
+  /* golf club: lawn, fairway, bunkers, a pond, flags and a clubhouse (inspired by the real Ikeja Golf Club; the location here is invented) */
+  lawn(-1177,38,100,52,'#4f8a3a');lawn(-1177,30,92,10,'#68a04a');
+  [[-1150,44,8,5],[-1196,52,7,4.5],[-1168,26,5,3]].forEach(function(b){cyl(b[0],0.055,b[1],b[2],0.03,b[3],'#e8d8a8');});
+  cyl(-1200,0.06,34,12,0.03,7,'#3f7fb0');
+  [[-1146,46],[-1204,30],[-1172,56]].forEach(function(f){cyl(f[0],1.5,f[1],0.06,3,0.06,'#eeeeee');box(f[0]+0.45,2.7,f[1],0.9,0.5,0.04,'#c1352d');});
+  lb(-1227,-1180,0.5,13.2,1.0,0.12,'#f1efe6');lb(-1174,-1127,0.5,13.2,1.0,0.12,'#f1efe6');solid(-1203.5,13.2,47,0.2,1.0);solid(-1150.5,13.2,47,0.2,1.0);box(-1177,0.5,13.2,6,1.0,0.12,'#8a8f94');solid(-1177,13.2,6,0.2,1.0);
+  building({kind:'multi',face:'N',x:-1177,z:60,w:28,d:10,h:7,floors:2,balcony:true,wall:'#f1efe6',roof:'#2d6a4f'});
+  addSign('IKEJA GOLF CLUB','#1d5c3a','#f2d36b',-1177,3.5,54.8,Math.PI,12,1.0);
+  [[-1130,18],[-1224,18],[-1228,44],[-1126,50],[-1140,62],[-1212,62]].forEach(function(p){tree(p[0],p[1]);});
+  /* the mall */
+  IKB.mall=SHP({face:'N',x:-1262,z:22,w:50,d:20,floors:2,name:'IKEJA CITY MALL',sbg:'#c1352d',sfg:'#ffffff',aw:'#c1352d',wall:'#f1efe6'});
+  lb(-1290,-1234,0.05,10,0.1,3.4,'#a9a39a');
+  [-1296,-1305,-1314,-1323].forEach(function(sx){S({face:'N',x:sx,z:16.5,floors:2+((k++)%3)});});
+  /* the car park behind the mall */
+  lb(-1290,-1234,0.04,46,0.06,26,'#3f4246');
+  for(wx=-1286;wx<=-1238;wx+=6)box(wx,0.075,46,0.15,0.012,18,'#e8e4da');
+  [[-1284,40,0],[-1272,52,Math.PI],[-1260,40,0],[-1248,52,Math.PI],[-1242,40,0]].forEach(function(c,i){car(c[0],c[1],c[2],['#d9d9d9','#2f4f8e','#8e2f2f','#14161a','#e0c040'][i]);solid(c[0],c[1],1.9,4.4,1.5);});
+  /* ---------- Allen Avenue frontage on both arms ---------- */
+  /* north arm: the supermarket and hotel (east side), the bank and the night lounge (west side) */
+  IKB.super=SHP({face:'W',x:JX+18,z:-34,w:12,d:14,floors:2,name:'ALLEN SUPERMARKET',sbg:'#e07a1f',sfg:'#ffffff',aw:'#e07a1f',wall:'#f1efe6'});
+  IKB.hotel=SHP({face:'W',x:JX+18,z:-52,w:12,d:18,floors:4,name:'ALLEN AVENUE HOTEL',sbg:'#7a2e65',sfg:'#ffffff',aw:'#7a2e65',wall:'#e8e3d2'});
+  IKB.bank=SHP({face:'E',x:JX-18,z:-34,w:12,d:14,floors:3,name:'ALLEN AVENUE BANK',sbg:'#1f3a68',sfg:'#f2d36b',aw:'#1f3a68',wall:'#e8e4da'});
+  IKB.lounge=SHP({face:'E',x:JX-18,z:-52,w:12,d:18,floors:2,name:'ALLEN NIGHT LOUNGE',sbg:'#14161a',sfg:'#ff5fa8',aw:'#14161a',wall:'#4a3a5a'});
+  /* south arm: a long row of shops, restaurants and boutiques */
+  [30.5,39.5,48.5,57.5].forEach(function(zc,i){
+    S({face:'W',x:JX+18,z:zc,w:10,d:9,floors:2+(i%3)});
+    S({face:'E',x:JX-18,z:zc,w:10,d:9,floors:2+((i+1)%3)});
+  });
+  /* neon colour for the night lounge front */
+  box(JX-11.9,3.5,-52,0.1,0.18,16,'#ff5fa8');box(JX-11.9,3.8,-52,0.1,0.18,16,'#5fd0ff');
+  /* ---------- street furniture ---------- */
+  var lx;
+  for(lx=-868;lx>=-1328;lx-=22){if(nearJ(lx,24)||nearG(lx,9))continue;lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
+  [[JX-30,-10.6],[JX+30,-10.6],[JX-30,10.6],[JX+30,10.6],[JX-10.6,-40],[JX+10.6,-40],[JX-10.6,40],[JX+10.6,40],[JX-10.6,-24],[JX+10.6,24]].forEach(function(p){lamp(p[0],p[1],p[1]>0?-Math.PI/2:Math.PI/2);ALAMPS.push([p[0],p[1]>0?p[1]-1.2:p[1]+1.2]);});
+  var pxs=[];for(lx=-870;lx>=-1328;lx-=28){if(nearJ(lx,26)||nearG(lx,9))continue;pxs.push(lx);}
+  poleLine(pxs,-6.4,3);
+  OJB.busStop(-912,-8.6,0,'ALLEN');OJB.busStop(-1040,8.6,Math.PI,'ALLEN');OJB.busStop(-1152,-8.6,0,'GRA');OJB.busStop(-1236,8.6,Math.PI,'IKEJA CITY MALL');
+  [[-905,-8.4,0.2],[-910,-8.6,0.1],[-980,8.4,3.3],[-985,8.6,3.2],[-1018,-8.4,0.1],[-1024,-8.6,0.2],[JX+9.9,-12,1.6],[JX-9.9,16,-1.6]].forEach(function(o){okada(o[0],o[1],o[2]);});
+  /* roadside trees along the pavements in the leafy half */
+  for(lx=-1192;lx>=-1326;lx-=20){if(nearG(lx,12))continue;tree(lx,-8.4);}
+  IKB.done=1;
+})();
+
+CHK=CHK_SAVE5;
+/* ---- b51: six places in Ikeja you can walk into: the bank, the supermarket, the night lounge, the hotel, the GRA garden restaurant and the mall ---- */
+var ALI={bank:[1915,-42],super:[1915,-14],lounge:[1915,14],hotel:[1915,42],gra:[1980,-30],mall:[1980,6]};
+(function(){
+  var GC=['#c1352d','#f2b705','#2f6fb1','#2a9d5b','#f1efe6','#e07a1f','#7a2e65'];
+  function table(x,z,col,w,d){w=w||1.5;d=d||0.95;box(x,0.75,z,w,0.08,d,col||'#8a6a45');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.37,z+p[1]*(d/2-0.1),0.08,0.74,0.08,'#3a2a1c');});solid(x,z,w,d,0.8);}
+  function plant(x,z,s){s=s||1;cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  function counter(x,z,w,col){box(x,0.55,z,w,1.1,0.8,col||'#2b2118');box(x,1.14,z,w+0.2,0.1,1.0,'#e9e4d6');solid(x,z,w+0.2,1.0,1.2);}
+  /* a supermarket gondola: shelves stocked on both sides */
+  function gondola(x,z,len,i){
+    box(x,0.8,z,len,1.6,0.9,'#cfd3d6');box(x,0.05,z,len+0.1,0.1,1.0,'#5a626c');
+    var n=Math.floor(len/0.9),q,l;
+    for(l=0;l<3;l++)for(q=0;q<n;q++){var c=GC[(q+l*2+i)%7];box(x-len/2+0.5+q*0.9,0.4+l*0.45,z-0.5,0.7,0.34,0.14,c);box(x-len/2+0.5+q*0.9,0.4+l*0.45,z+0.5,0.7,0.34,0.14,GC[(q+l+i+3)%7]);}
+    solid(x,z,len,1.0,1.6);
+  }
+  /* a round restaurant table with a white cloth, a candle and four chairs */
+  function dtable(x,z,i){
+    cyl(x,0.4,z,0.22,0.8,0.22,'#2b2118');cyl(x,0.8,z,2.0,0.05,2.0,'#f6f3ea');cyl(x,0.5,z,2.1,0.7,2.1,'#f6f3ea');
+    cyl(x,0.9,z,0.12,0.2,0.12,'#e9e4d6');lump(x,1.05,z,0.06,0.09,0.06,'#f2b705');
+    solid(x,z,1.9,1.9,0.8);
+    CHAIRFN(x-1.45,z,Math.PI/2,'#7a2e3a');CHAIRFN(x+1.45,z,-Math.PI/2,'#7a2e3a');CHAIRFN(x,z-1.45,0,'#7a2e3a');CHAIRFN(x,z+1.45,Math.PI,'#7a2e3a');
+  }
+  /* ----- ALLEN AVENUE BANK ----- */
+  (function(){
+    var cx=ALI.bank[0],cz=ALI.bank[1],W=28,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('albank',cx,cz,W,D,H,{floor:'#d9d6cc',wall:'#f4f3ee',trim:'#1f3a68',ceil:'#faf8f4'},{out:'albankd',nm:'ALLEN AVENUE BANK',doorX:cx-9});
+    counter(X(0),Z(-5.6),14,'#1f3a68');
+    box(X(0),1.6,Z(-8.7),26,3.2,0.4,'#e8e4da');box(X(0),3.0,Z(-8.45),26,0.12,0.1,'#1f3a68');
+    addSign('ALLEN AVENUE BANK','#1f3a68','#f2d36b',X(0),3.7,Z(-8.8),0,10,0.9);
+    for(var a=0;a<3;a++){box(X(13.1),1.0,Z(-3+a*3.2),1.2,2.0,1.0,'#1f3a68');box(X(12.5),1.35,Z(-3+a*3.2),0.04,0.7,0.8,'#0b0d12');solid(X(13.1),Z(-3+a*3.2),1.2,1.0,2.0);}
+    addSign('ATM','#2a9d5b','#ffffff',X(13.3),2.4,Z(-1.4),-Math.PI/2,2.6,0.5);
+    SOFAFN(X(-12.3),Z(3),Math.PI/2,3.6,'#1f3a68','#d9d2c2');solid(X(-12.3),Z(3),1.7,3.6,1);
+    SOFAFN(X(-12.3),Z(-1.5),Math.PI/2,3.6,'#1f3a68','#d9d2c2');solid(X(-12.3),Z(-1.5),1.7,3.6,1);
+    table(X(6),Z(3.5),'#6a5a44',3.0,1.4);CHAIRFN(X(6),Z(2.1),0,'#1f3a68');CHAIRFN(X(6),Z(5),Math.PI,'#1f3a68');
+    box(X(6),0.95,Z(3.5),0.7,0.25,0.5,'#14161a');
+    addSign('LOANS. SAVINGS. INVESTMENTS','#c1352d','#ffffff',X(-13.8),3.2,Z(0.5),Math.PI/2,5,0.6);
+    plant(X(-12),Z(-6.5));plant(X(12),Z(6.5));
+  })();
+  /* ----- ALLEN SUPERMARKET ----- */
+  (function(){
+    var cx=ALI.super[0],cz=ALI.super[1],W=32,D=20,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('alsuper',cx,cz,W,D,H,{floor:'#e2ded0',wall:'#f4f1e8',trim:'#e07a1f',ceil:'#faf8f4'},{out:'alsuperd',nm:'ALLEN SUPERMARKET',doorX:cx-10});
+    counter(X(2),Z(-5.6),10,'#e07a1f');
+    box(X(2),1.6,Z(-9.5),12,3.2,0.4,'#f1efe6');
+    addSign('ALLEN SUPERMARKET','#e07a1f','#ffffff',X(2),3.7,Z(-9.8),0,10,0.9);
+    for(var l=0;l<3;l++)for(var i=0;i<22;i++)box(X(-13.4+i*1.0),0.55+l*0.55,Z(-9.25),0.7,0.4,0.14,GC[(i+l*2)%7]);
+    [[8.5,-1.2],[8.5,2.4],[8.5,6.0]].forEach(function(p,i){gondola(X(p[0]),Z(p[1]),12,i);});
+    for(var f=0;f<4;f++){box(X(-15.3),0.9,Z(-2.5+f*2.1),1.2,1.8,2.0,'#e9eef0');box(X(-14.68),1.1,Z(-2.5+f*2.1),0.04,1.4,1.8,'#9ec3d8');solid(X(-15.3),Z(-2.5+f*2.1),1.2,2.0,1.8);}
+    [-5,0].forEach(function(tx,ti){box(X(tx),0.55,Z(7.2),1.6,1.1,0.9,'#cfd3d6');box(X(tx),1.14,Z(7.2),1.7,0.06,1.0,'#14161a');box(X(tx),1.5,Z(7.2),0.5,0.5,0.4,'#2b2b2f');solid(X(tx),Z(7.2),1.7,1.0,1.2);});
+    addSign('CHECKOUT','#e07a1f','#ffffff',X(-2.5),3.2,Z(8.2),Math.PI,3.4,0.6);
+    for(var t=0;t<3;t++){box(X(-8+t*0.5),0.55,Z(4.4),0.45,0.8,0.7,'#9aa0a6');}
+    plant(X(-13),Z(8));
+  })();
+  /* ----- ALLEN NIGHT LOUNGE ----- */
+  (function(){
+    var cx=ALI.lounge[0],cz=ALI.lounge[1],W=30,D=20,H=5.0,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('allounge',cx,cz,W,D,H,{floor:'#2a2433',wall:'#4a3a5a',trim:'#ff5fa8',ceil:'#1e1826'},{out:'alloungd',nm:'ALLEN NIGHT LOUNGE',doorX:cx-10});
+    counter(X(-8),Z(-5.6),10,'#14161a');
+    box(X(-8),1.4,Z(-9.5),10,2.8,0.5,'#2a2420');solid(X(-8),Z(-9.5),10,0.5,2.8);
+    for(var b=0;b<14;b++)box(X(-12.2+b*0.65),1.9+(b%2)*0.45,Z(-9.15),0.25,0.5,0.2,['#7a2f2f','#2f6a4a','#d9b24a','#3a5a9a','#c1352d'][b%5]);
+    /* the DJ booth and speakers */
+    box(X(8),0.6,Z(-8.2),8,1.2,2.0,'#14161a');solid(X(8),Z(-8.2),8,2.0,1.2);
+    box(X(6.4),1.3,Z(-8.2),1.6,0.14,1.1,'#2b2b2f');box(X(9.6),1.3,Z(-8.2),1.6,0.14,1.1,'#2b2b2f');cyl(X(6.4),1.4,Z(-8.2),0.9,0.03,0.9,'#c1352d');cyl(X(9.6),1.4,Z(-8.2),0.9,0.03,0.9,'#2f6fb1');
+    [[2.6,-7.2],[13,-7.2]].forEach(function(p){box(X(p[0]),1.2,Z(p[1]),1.3,2.4,1.1,'#14161a');solid(X(p[0]),Z(p[1]),1.3,1.1,2.4);cyl(X(p[0]),1.6,Z(p[1]+0.58),0.8,0.05,0.8,'#2b2b2f');});
+    /* the dance floor */
+    var qi=0;for(var fx=-1;fx<=1;fx++)for(var fz=-1;fz<=1;fz++){box(X(5+fx*2.6),0.06,Z(0.2+fz*2.6),2.5,0.04,2.5,['#ff5fa8','#5fd0ff','#f2d36b'][(qi++)%3]);}
+    lump(X(5),4.3,Z(0.2),0.55,0.55,0.55,'#cfd8e8');cyl(X(5),4.7,Z(0.2),0.04,0.8,0.04,'#888');
+    [[1.5,'#ff5fa8'],[8.5,'#5fd0ff'],[5,'#f2d36b']].forEach(function(p){lump(X(p[0]),4.5,Z(-4.5),0.35,0.25,0.35,p[1]);});
+    /* booths and tables */
+    SOFAFN(X(-13.5),Z(-1),Math.PI/2,4,'#7a2e65','#14161a');solid(X(-13.5),Z(-1),1.7,4,1);
+    SOFAFN(X(-13.5),Z(4.5),Math.PI/2,4,'#7a2e65','#14161a');solid(X(-13.5),Z(4.5),1.7,4,1);
+    [[-11.4,-1],[-11.4,3.5],[13,5],[13,-0.5]].forEach(function(p,i){cyl(X(p[0]),0.74,Z(p[1]),1.1,0.08,1.1,'#7a5a38');cyl(X(p[0]),0.37,Z(p[1]),0.16,0.74,0.16,'#2b2118');lump(X(p[0]),0.92,Z(p[1]),0.18,0.14,0.18,i%2?'#ff5fa8':'#5fd0ff');solid(X(p[0]),Z(p[1]),1.1,1.1,0.8);});
+    CHAIRFN(X(10.7),Z(5),-Math.PI/2,'#7a2e65');CHAIRFN(X(10.7),Z(-0.5),-Math.PI/2,'#7a2e65');
+    addSign('ALLEN NIGHT LOUNGE','#14161a','#ff5fa8',X(-8),3.5,Z(-9.8),0,8,0.9);
+    addSign('DJ NIGHT. ALL NIGHT','#ff5fa8','#14161a',X(8),3.4,Z(-9.8),0,6,0.7);
+    plant(X(-14),Z(8.8));plant(X(14),Z(8.8));
+  })();
+  /* ----- ALLEN AVENUE HOTEL (lobby) ----- */
+  (function(){
+    var cx=ALI.hotel[0],cz=ALI.hotel[1],W=26,D=22,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('alhotel',cx,cz,W,D,H,{floor:'#d8cbb0',wall:'#f2ece0',trim:'#7a2e65',ceil:'#faf8f4'},{out:'alhoteld',nm:'ALLEN AVENUE HOTEL',doorX:cx-9});
+    counter(X(0),Z(-5.6),7,'#3a2a3f');
+    box(X(0),2.0,Z(-10.5),8,3.2,0.3,'#e9e2d3');
+    for(var ki=0;ki<8;ki++)box(X(-2.6+ki*0.75),2.2,Z(-10.3),0.3,0.5,0.1,GC[ki%7]);
+    addSign('RECEPTION','#7a2e65','#ffffff',X(0),3.8,Z(-10.3),0,4,0.6);
+    SOFAFN(X(-8),Z(1),Math.PI/2,3.6,'#7a2e65','#d9d2c2');solid(X(-8),Z(1),1.7,3.6,1);
+    SOFAFN(X(8),Z(1),-Math.PI/2,3.6,'#7a2e65','#d9d2c2');solid(X(8),Z(1),1.7,3.6,1);
+    box(X(0),0.3,Z(2),2.4,0.5,1.2,'#2b2118');solid(X(0),Z(2),2.4,1.2,0.6);
+    box(X(11.6),1.2,Z(-5),1.4,2.4,3,'#cfd8d4');solid(X(11.6),Z(-5),1.4,3,2.4);addSign('ROOMS 1 TO 60','#7a2e65','#ffffff',X(10.8),2.8,Z(-5),-Math.PI/2,2.6,0.5);
+    /* the breakfast buffet and a few tables */
+    box(X(-8),0.8,Z(-8),6,0.1,1.1,'#f1efe6');box(X(-8),0.4,Z(-8),5.8,0.8,1.0,'#6a5a44');solid(X(-8),Z(-8),6,1.1,0.9);
+    for(var d=0;d<5;d++)cyl(X(-10+d*1.0),1.0,Z(-8),0.55,0.14,0.55,['#e8dfc8','#c9b88a','#e07a1f','#2a9d5b','#c1352d'][d]);
+    table(X(7),Z(7),'#b8a888',1.4,1.4);CHAIRFN(X(5.7),Z(7),Math.PI/2,'#7a2e65');CHAIRFN(X(8.3),Z(7),-Math.PI/2,'#7a2e65');
+    plant(X(-11),Z(-6.5));plant(X(11),Z(8.5));
+  })();
+  /* ----- GRA GARDEN RESTAURANT ----- */
+  (function(){
+    var cx=ALI.gra[0],cz=ALI.gra[1],W=28,D=20,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('algra',cx,cz,W,D,H,{floor:'#c9b690',wall:'#f2ecd8',trim:'#1d5c3a',ceil:'#faf8f4'},{out:'algrad',nm:'GRA GARDEN RESTAURANT',doorX:cx-9});
+    counter(X(0),Z(-5.6),6,'#1d5c3a');
+    box(X(0),1.8,Z(-9.5),12,3.4,0.3,'#e9e2d3');
+    addSign('GRA GARDEN RESTAURANT','#1d5c3a','#f2d36b',X(0),3.7,Z(-9.8),0,10,0.9);
+    [[5.5,-1.5],[10.5,-1.5],[5.5,3.5],[10.5,3.5],[10.5,8]].forEach(function(p,i){dtable(X(p[0]),Z(p[1]),i);});
+    /* the garden corner */
+    box(X(-12.2),0.2,Z(1.5),2.2,0.4,8.5,'#6a5a44');
+    [[-12.2,-1.5],[-12.2,1.5],[-12.2,4.5]].forEach(function(p){lump(X(p[0]),1.0,Z(p[1]),0.9,0.9,0.9,'#2f6a34');});
+    solid(X(-12.2),Z(1.5),2.2,8.5,0.5);
+    /* kitchen pass-through */
+    box(X(-8.5),1.0,Z(-9.0),5,2.0,0.8,'#cfd3d6');solid(X(-8.5),Z(-9.0),5,0.8,2.0);box(X(-8.5),2.4,Z(-9.4),4.6,0.9,0.1,'#14161a');
+    addSign('MENU. JOLLOF. PEPPER SOUP. GRILLED FISH','#14161a','#f2d36b',X(8),3.3,Z(-9.8),0,8,0.6);
+    cyl(X(0),4.0,Z(2),3.4,0.12,3.4,'#d9b24a');
+    plant(X(-13),Z(-6));plant(X(13),Z(-6.5));
+  })();
+  /* ----- IKEJA CITY MALL ----- */
+  (function(){
+    var cx=ALI.mall[0],cz=ALI.mall[1],W=32,D=28,H=6.0,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('almall',cx,cz,W,D,H,{floor:'#e8e4da',wall:'#f4f1ea',trim:'#c1352d',ceil:'#ffffff'},{out:'almalld',nm:'IKEJA CITY MALL',doorX:cx-11});
+    /* three counters along the back: cinema, boutique and the food court */
+    counter(X(-10),Z(-10.6),7,'#14161a');
+    counter(X(0),Z(-10.6),6,'#7a2e65');
+    counter(X(10),Z(-10.6),8,'#c1352d');
+    box(X(-10),2.2,Z(-13.4),8,3.8,0.3,'#14161a');addSign('CINEMA. NOW SHOWING','#14161a','#f2d36b',X(-10),3.9,Z(-13.2),0,7,0.8);
+    [[-12.2,'#c1352d'],[-10,'#2f6fb1'],[-7.8,'#2a9d5b']].forEach(function(p){box(X(p[0]),2.2,Z(-13.2),1.6,2.2,0.06,p[1]);});
+    box(X(0),2.2,Z(-13.4),7,3.8,0.3,'#e9e2d3');addSign('FASHION BOUTIQUE','#7a2e65','#ffffff',X(0),3.9,Z(-13.2),0,6,0.8);
+    box(X(10),2.2,Z(-13.4),9,3.8,0.3,'#e9e2d3');addSign('FOOD COURT','#c1352d','#ffffff',X(10),3.9,Z(-13.2),0,7,0.8);
+    /* clothes racks beside the boutique */
+    [-4.2,4.2].forEach(function(rx){box(X(rx),0.9,Z(-8.8),2.4,0.06,0.5,'#8a8f94');[-1,1].forEach(function(s){box(X(rx+s*1.1),0.45,Z(-8.8),0.06,0.9,0.5,'#8a8f94');});for(var c=0;c<6;c++)box(X(rx-1+c*0.4),0.55,Z(-8.8),0.28,0.8,0.1,GC[c%7]);solid(X(rx),Z(-8.8),2.4,0.6,1.1);});
+    /* a fountain in the middle of the atrium */
+    cyl(X(0),0.3,Z(2),5.2,0.6,5.2,'#9aa0a6');cyl(X(0),0.55,Z(2),4.6,0.1,4.6,'#3f7fb0');cyl(X(0),1.2,Z(2),0.5,1.6,0.5,'#cfd8e8');lump(X(0),2.1,Z(2),0.6,0.35,0.6,'#cfe3ea');solid(X(0),Z(2),5.4,5.4,0.7);
+    /* food court tables on the right */
+    [[8,-2.5],[13,-2.5],[8,2.5],[13,2.5],[13,7.5]].forEach(function(p,i){table(X(p[0]),Z(p[1]),'#e9e4d6',1.5,1.5);CHAIRFN(X(p[0]-1.3),Z(p[1]),Math.PI/2,GC[i%7]);CHAIRFN(X(p[0]+1.3),Z(p[1]),-Math.PI/2,GC[(i+2)%7]);});
+    /* benches and plants */
+    SOFAFN(X(-6),Z(5),Math.PI/2,3.6,'#c1352d','#d9d2c2');solid(X(-6),Z(5),1.7,3.6,1);
+    SOFAFN(X(-6),Z(-1),Math.PI/2,3.6,'#c1352d','#d9d2c2');solid(X(-6),Z(-1),1.7,3.6,1);
+    /* shop windows on the left wall */
+    [-5,2,9].forEach(function(wz,i){box(X(-15.7),1.8,Z(wz),0.1,3.0,5,'#9ec3d8');addSign(['SHOES','PHONES','BOOKS'][i],['#2f6fb1','#1d5c3a','#e07a1f'][i],'#ffffff',X(-15.55),4.0,Z(wz),Math.PI/2,3.6,0.6);});
+    plant(X(-8),Z(-7.5),1.2);plant(X(7),Z(-7),1.2);plant(X(-8),Z(11),1.1);plant(X(8),Z(11),1.1);
   })();
 })();
 
@@ -3974,7 +4256,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-880,XMAX=1900;
+var LIM=66,PR=0.38,XMIN=-1340,XMAX=2020;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -4784,8 +5066,8 @@ function buildOkada(){
   return b.mesh();
 }
 var LANES=[
-  {x:-857,z:2.5,h:Math.PI/2,speed:9,b:[-858,248]},
-  {x:247,z:-2.5,h:-Math.PI/2,speed:8,b:[-858,248]},
+  {x:-1327,z:2.5,h:Math.PI/2,speed:9,b:[-1328,248]},
+  {x:247,z:-2.5,h:-Math.PI/2,speed:8,b:[-1328,248]},
   {x:-2,z:-63,h:0,speed:7},
   {x:2,z:63,h:Math.PI,speed:8.5},
   {x:292,z:4.4,h:Math.PI/2,speed:10,b:[289,481]},
@@ -4807,7 +5089,9 @@ var LANES=[
   {x:OJX-2,z:-63,h:0,speed:7,b:[OJX-4,OJX+4]},
   {x:OJX+2,z:63,h:Math.PI,speed:8,b:[OJX-4,OJX+4]},
   {x:AGX-2,z:-63,h:0,speed:7,b:[AGX-4,AGX+4]},
-  {x:AGX+2,z:63,h:Math.PI,speed:8,b:[AGX-4,AGX+4]}
+  {x:AGX+2,z:63,h:Math.PI,speed:8,b:[AGX-4,AGX+4]},
+  {x:-1002,z:-63,h:0,speed:7,b:[-1004,-996]},
+  {x:-998,z:63,h:Math.PI,speed:8,b:[-1004,-996]}
 ];
 function regOf(x){return x>1000?4:(x>730?3:(x>500?2:(x>258?1:0)));}
 function grpOf(x){var r=regOf(x);return r===3?0:(r===4?1:r);}
@@ -4819,12 +5103,12 @@ function addVeh(kind,lane,p,col){
   var v={grp:grp,lane:lane,r:r,h:L.h,x:L.x+Math.sin(L.h)*p,z:L.z+Math.cos(L.h)*p,speed:L.speed,max:L.speed,honkT:2+Math.random()*3};
   grp.position.set(v.x,0,v.z);grp.rotation.y=v.h;traffic.push(v);
 }
-addVeh('danfo',0,14);addVeh('sedan',0,78,'#c9c9c9');
+addVeh('danfo',0,484);addVeh('sedan',0,548,'#c9c9c9');
 addVeh('sedan',1,26,'#8e2f2f');addVeh('okada',1,92);
 addVeh('okada',2,42);addVeh('danfo',2,100);
 addVeh('sedan',3,56,'#2f4f8e');addVeh('danfo',3,18);
-addVeh('sedan',0,150,'#e0c040');addVeh('danfo',1,20);
-addVeh('danfo',0,235);addVeh('sedan',1,200,'#7a3fa0');addVeh('okada',0,270);addVeh('sedan',1,140,'#3a8f6a');
+addVeh('sedan',0,620,'#e0c040');addVeh('danfo',1,20);
+addVeh('danfo',0,705);addVeh('sedan',1,200,'#7a3fa0');addVeh('okada',0,740);addVeh('sedan',1,140,'#3a8f6a');
 addVeh('sedan',4,20,'#e8e8e8');addVeh('danfo',4,90);addVeh('okada',4,150);addVeh('sedan',5,15,'#1f3f6a');addVeh('okada',5,70);addVeh('danfo',5,130);addVeh('sedan',6,30,'#c9c9c9');addVeh('sedan',7,25,'#7a2e2e');addVeh('danfo',7,70);
 addVeh('danfo',8,16);addVeh('okada',8,80);addVeh('sedan',8,140,'#e8e8e8');addVeh('sedan',9,20,'#3a8f6a');addVeh('danfo',9,85);addVeh('okada',9,140);addVeh('sedan',10,30,'#1f3f6a');addVeh('okada',10,60);addVeh('danfo',11,25);addVeh('sedan',11,70,'#c9c9c9');
 addVeh('sedan',12,20,'#14161a');addVeh('sedan',12,100,'#f1efe6');addVeh('sedan',13,40,'#8e2f2f');addVeh('sedan',13,120,'#14161a');addVeh('okada',12,150);addVeh('sedan',14,30,'#d9d9d9');addVeh('sedan',15,40,'#14161a');
@@ -5161,7 +5445,7 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';npcs[3].label='DELE';npcs[4].label='KUNLE';npcs[5].label='RONKE';npcs[6].label='OKON';
 var MW=480,MH=200,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
 mapBG.width=MW;mapBG.height=MH;
-var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
+var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
 function MX(x){var r=MR[mapReg];return (x-r[0])/(r[1]-r[0])*MW;}
 function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 (function(){
@@ -5249,7 +5533,7 @@ function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 
 
 var mapBG6=document.createElement('canvas');mapBG6.width=MW;mapBG6.height=MH;
-function mreg(x){return x<-558?6:(x<-190?5:regOf(x));}
+function mreg(x){return x<-882?7:(x<-558?6:(x<-190?5:regOf(x)));}
 (function(){
   mapReg=5;var g=mapBG6.getContext('2d');
   g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
@@ -5279,11 +5563,26 @@ var mapBG7=document.createElement('canvas');mapBG7.width=MW;mapBG7.height=MH;
   }
   mapReg=0;
 })();
+var mapBG8=document.createElement('canvas');mapBG8.width=MW;mapBG8.height=MH;
+(function(){
+  mapReg=7;var g=mapBG8.getContext('2d');
+  g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
+  g.fillStyle='#5b8f3e';g.fillRect(MX(-1227),MZ(12),MX(-1127)-MX(-1227),MZ(64)-MZ(12));
+  g.fillStyle='#4a4d52';g.fillRect(0,MZ(-5),MW,MZ(5)-MZ(-5));g.fillRect(MX(ALX-7),0,MX(ALX+7)-MX(ALX-7),MH);g.fillRect(MX(GRX-4.5),MZ(-66),MX(GRX+4.5)-MX(GRX-4.5),MZ(-5)-MZ(-66));
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(0,MZ(0));g.lineTo(MW,MZ(0));g.moveTo(MX(ALX),0);g.lineTo(MX(ALX),MH);g.stroke();g.setLineDash([]);
+  g.fillStyle='#c9b08a';
+  for(var i=0;i<solids.length;i++){
+    var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
+    if(q.minX<-1342||q.maxX>-878)continue;
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(MR[7][1]-MR[7][0])*MW),Math.max(2,d/(2*LIM)*MH));
+  }
+  mapReg=0;
+})();
 function mapLabel(g,t,x,y){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(t,x,y);g.fillText(t,x,y);}
 function mapUpdate(dt){
   mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
-  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7][rg],0,0);
+  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8][rg],0,0);
   if(px>1250){g.fillStyle='rgba(10,10,12,0.78)';g.fillRect(0,0,MW,MH);g.fillStyle='#fff';g.font='bold 26px sans-serif';g.textAlign='center';g.fillText('INSIDE A BUILDING',MW/2,MH/2);return;}
   g.fillStyle='#1b1b1b';
   for(i=0;i<traffic.length;i++)if(mreg(traffic[i].x)===rg)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
@@ -9316,7 +9615,7 @@ function ojGap(v){
   if(st==='y'&&gs<v.speed*0.9+1.5)return Infinity;
   return gs+1.5;
 }
-function sigGap(v){var a=sigGap0(v),b=ojGap(v),c=agGap(v);if(c<b)b=c;return a<b?a:b;}
+function sigGap(v){var a=sigGap0(v),b=ojGap(v),c=agGap(v),d=alGap(v);if(c<b)b=c;if(d<b)b=d;return a<b?a:b;}
 function ojLamps(){
   for(var i=0;i<SIGMO.length;i++){
     var s=sigStateO(SIGMO[i].ax);
@@ -9324,7 +9623,7 @@ function ojLamps(){
   }
 }
 /* traffic on the new stretch and on Ojuelegba Road */
-addVeh('danfo',0,40);addVeh('sedan',0,110,'#e0c040');addVeh('okada',0,190);addVeh('sedan',0,300,'#2f4f8e');
+addVeh('danfo',0,510);addVeh('sedan',0,580,'#e0c040');addVeh('okada',0,660);addVeh('sedan',0,770,'#2f4f8e');
 addVeh('danfo',1,330);addVeh('sedan',1,372,'#c9c9c9');addVeh('okada',1,416,'#14161a');addVeh('danfo',1,470);addVeh('sedan',1,505,'#8e2f2f');
 addVeh('danfo',20,26);addVeh('sedan',20,70,'#d9d9d9');addVeh('okada',20,100);
 addVeh('danfo',21,30);addVeh('sedan',21,66,'#2f6a8e');addVeh('okada',21,102);
@@ -9381,7 +9680,7 @@ var OJW=[];
 })();
 var ojT=0;
 function ojTick(dt){
-  ojLamps();agLamps();
+  ojLamps();agLamps();alLamps();
   if(!started||!life)return;
   ojT+=dt;if(ojT<1)return;ojT=0;
   var h=gameHour;
@@ -9419,7 +9718,7 @@ function agLamps(){
   }
 }
 /* traffic: the long road west, and Agege Motor Road */
-addVeh('sedan',0,330,'#d9d9d9');addVeh('danfo',0,370);addVeh('okada',0,420);addVeh('sedan',0,470,'#7a3fa0');addVeh('danfo',0,520);addVeh('sedan',0,575,'#14161a');addVeh('okada',0,640);addVeh('danfo',0,700);
+addVeh('sedan',0,800,'#d9d9d9');addVeh('danfo',0,840);addVeh('okada',0,890);addVeh('sedan',0,940,'#7a3fa0');addVeh('danfo',0,990);addVeh('sedan',0,1045,'#14161a');addVeh('okada',0,1110);addVeh('danfo',0,1170);
 addVeh('sedan',1,560,'#e0c040');addVeh('danfo',1,600);addVeh('okada',1,640);addVeh('sedan',1,690,'#2f6a8e');addVeh('danfo',1,730);addVeh('sedan',1,770,'#c9c9c9');
 addVeh('danfo',22,26);addVeh('sedan',22,70,'#8e2f2f');addVeh('okada',22,100);
 addVeh('sedan',23,30,'#d9d9d9');addVeh('danfo',23,66);addVeh('okada',23,102);
@@ -9754,6 +10053,182 @@ var MSP=[
   IW('mshfood',[-12,3],[12,3],[[6,17]],0.5);IW('mshfood',[11,3.2],[-12,3.2],[[7,16]],0.5);IW('mshfood',[-8,-3],[8,-3],[[6,17]],0.45);
   IW('mshfab',[-12,3],[12,3],[[9,18]],0.5);IW('mshfab',[-4,4.2],[2,4.2],[[10,17]],0.4);IW('mshfab',[-4,-3],[-9,-3],[[9,18]],0.4);
   IW('mshmusic',[-14,5],[14,5],NIGHT,0.5);IW('mshmusic',[15,-4],[-3,-4],NIGHT,0.5);IW('mshmusic',[-4,0],[10,0],NIGHT,0.45);IW('mshmusic',[11,-2],[-5,-2],NIGHT,0.4);
+})();
+
+/* ---- b51: Ikeja people, opening hours, careers, the Allen Junction traffic lights and traffic ---- */
+/* the bank teller: invest, withdraw and lock savings, using the same money the phone's NairaPay app shows */
+function alBankMenu(msg){
+  var btns=[];
+  [20000,100000].forEach(function(a){btns.push({label:'INVEST '+money(a),fn:function(){alBankDo('inv',a);}});});
+  if(life.inv>0)btns.push({label:'WITHDRAW '+money(life.inv),fn:function(){alBankDo('wd',0);}});
+  [20000,50000].forEach(function(a){btns.push({label:'LOCK '+money(a)+' 6 DAYS',fn:function(){alBankDo('fix',a);}});});
+  btns.push({label:'BYE'});
+  openDlg('MS ADAEZE (BANK TELLER)',(msg?msg+'  ':'')+'Invested: '+money(life.inv)+'. Locked deals: '+life.fix.length+'. You have '+money(cash)+'. A locked deal pays 6% after 6 days. Invested money moves with the market every payday.',btns);
+}
+function alBankDo(k,a){
+  if(k==='wd'){
+    var w=life.inv;if(w<=0){alBankMenu('Nothing invested yet.');return;}
+    cash+=w;life.inv=0;logTx('Withdrawn',w);setCash();saveGame();chime();alBankMenu('Withdrawn '+money(w)+'.');return;
+  }
+  if(cash<a){buzz();alBankMenu('E no reach! You need '+money(a)+'.');return;}
+  cash-=a;
+  if(k==='inv'){life.inv+=a;logTx('Invested',-a);}
+  else{life.fix.push({a:a,u:life.day+6});logTx('Fixed savings locked',-a);}
+  setCash();saveGame();chime();
+  alBankMenu(k==='inv'?'Invested '+money(a)+'.':'Locked '+money(a)+' for 6 days.');
+}
+/* ---- Allen Junction signals: the same phases as the Origin crossroad ---- */
+var SIGMAL=[];
+[{x:ALX-25.6,z:5.9,a:-Math.PI/2,ax:'EW'},{x:ALX+25.6,z:-5.9,a:Math.PI/2,ax:'EW'},{x:ALX-8,z:-16.6,a:Math.PI,ax:'NS'},{x:ALX+8,z:16.6,a:0,ax:'NS'}].forEach(function(h){
+  var m=new THREE.Mesh(new THREE.PlaneGeometry(0.36,0.96),new THREE.MeshBasicMaterial({map:SIGTEX.r,toneMapped:false}));
+  m.position.set(h.x+Math.sin(h.a)*0.3,4.05,h.z+Math.cos(h.a)*0.3);m.rotation.y=h.a;scene.add(m);
+  SIGMAL.push({m:m,ax:h.ax,st:'r'});
+});
+var SIGLAL={0:{ax:'EW',line:ALX-27},1:{ax:'EW',line:ALX+27},24:{ax:'NS',line:-18},25:{ax:'NS',line:18}};
+function alGap(v){
+  var L=SIGLAL[v.lane];if(!L)return Infinity;
+  var st=sigState(L.ax);if(st==='g')return Infinity;
+  var gs;
+  if(v.lane===0)gs=L.line-(v.x+v.r);
+  else if(v.lane===1)gs=(v.x-v.r)-L.line;
+  else if(v.lane===24)gs=L.line-(v.z+v.r);
+  else gs=(v.z-v.r)-L.line;
+  if(gs<-1.2||gs>40)return Infinity;
+  if(st==='y'&&gs<v.speed*0.9+1.5)return Infinity;
+  return gs+1.5;
+}
+function alLamps(){
+  for(var i=0;i<SIGMAL.length;i++){
+    var s=sigState(SIGMAL[i].ax);
+    if(s!==SIGMAL[i].st){SIGMAL[i].st=s;SIGMAL[i].m.material.map=SIGTEX[s];SIGMAL[i].m.material.needsUpdate=true;}
+  }
+}
+/* traffic: the road west of Computer Village, and Allen Avenue */
+addVeh('sedan',0,40,'#c9c9c9');addVeh('danfo',0,95);addVeh('okada',0,150);addVeh('sedan',0,205,'#2f4f8e');addVeh('danfo',0,262);addVeh('sedan',0,318,'#e0c040');addVeh('okada',0,372);addVeh('danfo',0,425);
+addVeh('sedan',1,1130,'#8e2f2f');addVeh('danfo',1,1185);addVeh('okada',1,1240);addVeh('sedan',1,1295,'#14161a');addVeh('danfo',1,1350);addVeh('sedan',1,1405,'#2f6a8e');addVeh('okada',1,1460);addVeh('danfo',1,1515);
+addVeh('danfo',24,26);addVeh('sedan',24,70,'#d9d9d9');addVeh('okada',24,100);
+addVeh('sedan',25,30,'#7a3fa0');addVeh('danfo',25,66);addVeh('okada',25,102);
+/* places */
+var ALP=[
+  {k:'albankd',id:'albank',nm:'ALLEN AVENUE BANK',h:[8,16],x:ALX-10.9,z:-34,yaw:Math.PI/2,bx:ALX-11.85,bz:-34,br:Math.PI/2},
+  {k:'alsuperd',id:'alsuper',nm:'ALLEN SUPERMARKET',h:[8,21],x:ALX+10.9,z:-34,yaw:-Math.PI/2,bx:ALX+11.85,bz:-34,br:-Math.PI/2},
+  {k:'alloungd',id:'allounge',nm:'ALLEN NIGHT LOUNGE',h:[20,5],x:ALX-10.9,z:-52,yaw:Math.PI/2,bx:ALX-11.85,bz:-52,br:Math.PI/2},
+  {k:'alhoteld',id:'alhotel',nm:'ALLEN AVENUE HOTEL',h:[0,24],x:ALX+10.9,z:-52,yaw:-Math.PI/2,bx:ALX+11.85,bz:-52,br:-Math.PI/2},
+  {k:'algrad',id:'algra',nm:'GRA GARDEN RESTAURANT',h:[11,23],x:-1110,z:-10.9,yaw:0,bx:-1110,bz:-11.85,br:0},
+  {k:'almalld',id:'almall',nm:'IKEJA CITY MALL',h:[9,22],x:-1262,z:10.9,yaw:Math.PI,bx:-1262,bz:11.85,br:Math.PI}
+];
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  var D={
+    albankd:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#1c2a44',low2:'#121c30',top:'#1f3a68',head:'cap',hc:'#14161a'},name:'BANK SECURITY',lbl:'BANK',greet:'Allen Avenue Bank. Open 8 AM to 4 PM.'},
+    alsuperd:{look:{skin:sk[3],skin2:'#774a2e',low:'#2a2a30',low2:'#1c1c20',top:'#e07a1f',head:'cap',hc:'#e07a1f'},name:'SUPERMARKET GUARD',lbl:'SUPER',greet:'Allen Supermarket. Open 8 AM to 9 PM.'},
+    alloungd:{look:{skin:sk[0],skin2:'#5a3520',low:'#14161a',low2:'#0c0e12',top:'#ff5fa8',head:'cap',hc:'#14161a'},name:'LOUNGE BOUNCER',lbl:'LOUNGE',greet:'Allen Night Lounge. Open 8 PM to 5 AM.'},
+    alhoteld:{look:{skin:sk[1],skin2:'#6a3e26',low:'#2a2030',low2:'#1c1620',top:'#f1efe6',head:'cap',hc:'#7a2e65'},name:'HOTEL BELLBOY',lbl:'HOTEL',greet:'Allen Avenue Hotel. Rooms open all day and night.'},
+    algrad:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#14161a',low2:'#0c0e12',top:'#f1efe6',head:'',hs:'low'},name:'RESTAURANT HOST',lbl:'GRA',greet:'GRA Garden Restaurant. Open 11 AM to 11 PM.'},
+    almalld:{look:{skin:sk[3],skin2:'#774a2e',low:'#2a2a30',low2:'#1c1c20',top:'#c1352d',head:'cap',hc:'#c1352d'},name:'MALL SECURITY',lbl:'MALL',greet:'Ikeja City Mall. Open 9 AM to 10 PM.'}
+  };
+  ALP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2,hs:lk.hs},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.bx,2.4,p.bz,p.br,3.2,0.6);
+    var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    OJP.push(p);
+    DEST.push([p.nm,p.k]);
+  });
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  inside('albank','albank',[0,-6.9],{skin:sk[1],skin2:'#6a3e26',low:'#2a2030',low2:'#1c1620',top:'#1f3a68',head:'',hs:'low'},
+    {label:'BANK',name:'MS ADAEZE (BANK TELLER)',svcLabel:'',origLabel:'BANK',orig:function(){alBankMenu();},friend:false,career:'teller',hours:[8,16],closed:'The bank is closed. Counters open at 8 AM and close at 4 PM.',greet:'Welcome to Allen Avenue Bank. Savings, investments, fixed deals. How can I help?',items:[]});
+  inside('alsuper','alsuper',[2,-6.9],{skin:sk[3],skin2:'#774a2e',low:'#2a2a30',low2:'#1c1c20',top:'#e07a1f',head:'gele',hc:'#e07a1f',hc2:'#f2b705'},
+    {label:'SUPERMARKET',name:'MRS BUKKY (SUPERMARKET)',svcLabel:'BUY',friend:false,career:'stockclerk',hours:[8,21],closed:'The supermarket is closed. It opens at 8 AM.',greet:'Welcome to Allen Supermarket. Food, drinks and household things under one roof.',
+     items:[{l:'LOAF OF BREAD',c:1200,food:1,fx:{hunger:34,bladder:-2},msg:'Soft sliced bread. It fills you up.'},{l:'INDOMIE NOODLES PACK',c:1500,food:1,fx:{hunger:48,fun:2,bladder:-4},msg:'A pack of noodles with egg. Cooked quickly.'},{l:'MILK AND CEREAL',c:2800,food:1,fx:{hunger:50,energy:6,bladder:-4},msg:'Cold milk over crunchy cereal.'},{l:'BOTTLED WATER',c:300,food:1,fx:{hunger:2,energy:2,bladder:-6},msg:'Cold bottled water.'},{l:'SNACK PACK',c:800,food:1,fx:{hunger:18,fun:4,bladder:-2},msg:'Biscuits and chin chin.'},{l:'TOILETRIES SET',c:3500,fx:{hygiene:45,fun:2},msg:'Soap, toothpaste, deodorant. You feel fresh.'}]});
+  inside('allounge','allounge',[-8,-6.9],{skin:sk[0],skin2:'#5a3520',low:'#14161a',low2:'#0c0e12',top:'#ff5fa8',head:'cap',hc:'#14161a'},
+    {label:'LOUNGE',name:'MR TUNDE (BARTENDER)',svcLabel:'ORDER',career:'barman',hours:[20,5],closed:'The lounge is closed. It opens at 8 PM.',greet:'Welcome to Allen Avenue. The street never sleeps and neither do we.',
+     chat:['Allen Avenue is known all over Lagos for its nightlife. It stays busy around the clock.','Offices, shops and banks by day. Music, lounges and late food by night.','Mind your phone, mind your wallet, enjoy your night.'],hangMsg:'The DJ plays your request.',
+     items:[{l:'CHAPMAN',c:1500,food:1,fx:{hunger:4,fun:6,social:4,bladder:-6},msg:'A cold chapman with ice and a slice of orange.'},{l:'COLD BEER',c:1800,food:1,fx:{fun:10,social:8,energy:-3,bladder:-8},msg:'A cold bottle. The music gets better.'},{l:'PEPPER SOUP',c:2500,food:1,fx:{hunger:35,fun:3,bladder:-4},msg:'Hot goat meat pepper soup.'},{l:'DANCE FLOOR NIGHT',c:2000,fx:{fun:30,social:15,energy:-8},t:2,msg:'Two hours of dancing under the lights.'},{l:'VIP TABLE',c:12000,fx:{fun:40,social:30,energy:-10},t:3,msg:'Bottle service, a private booth and the best night.'}]});
+  inside('alhotel','alhotel',[0,-6.9],{skin:sk[1],skin2:'#6a3e26',low:'#2a2030',low2:'#1c1620',top:'#7a2e65',head:'cap',hc:'#7a2e65'},
+    {label:'ROOMS',name:'RECEPTIONIST TOLU',svcLabel:'ROOMS',friend:false,career:'recep',greet:'Welcome to Allen Avenue Hotel. A clean bed, a hot shower, breakfast included.',
+     items:[{l:'ROOM 8 HOURS',c:12000,fx:{energy:100,hunger:-12,hygiene:25,bladder:-25},t:8,msg:'You sleep well and wake up fresh.'},{l:'DAY ROOM 3 HOURS',c:5000,fx:{energy:45,hunger:-4,bladder:-8},t:3,msg:'A short nap in a clean room.'},{l:'SHOWER',c:1500,fx:{hygiene:70,bladder:-3},msg:'A hot shower. You feel brand new.'},{l:'BREAKFAST BUFFET',c:3500,food:1,fx:{hunger:70,fun:4,bladder:-5},msg:'Eggs, pastries, fruit and tea.'}]});
+  inside('algra','algra',[0,-6.9],{skin:sk[2],skin2:'#4a2b1a',low:'#14161a',low2:'#0c0e12',top:'#f1efe6',head:'',hs:'low'},
+    {label:'RESTAURANT',name:'MR BISI (HEAD WAITER)',svcLabel:'ORDER',career:'gwaiter',hours:[11,23],closed:'The restaurant is closed. It opens at 11 AM.',greet:'Good day. A table in the garden? Our jollof and grilled fish are the best in the GRA.',
+     chat:['The GRA, the Government Reserved Area, was first set aside for senior government officials.','Today it is mixed. Offices, hotels, lounges and restaurants like ours sit beside the homes.','Many company head offices are here. Lunch time is busy.'],hangMsg:'He finds you a window table.',
+     items:[{l:'JOLLOF RICE AND CHICKEN',c:4500,food:1,fx:{hunger:70,fun:6,bladder:-6},msg:'Smoky party jollof with grilled chicken.'},{l:'GRILLED FISH AND PLANTAIN',c:6500,food:1,fx:{hunger:75,fun:8,bladder:-6},msg:'Whole grilled tilapia with fried plantain.'},{l:'EGUSI AND POUNDED YAM',c:4800,food:1,fx:{hunger:72,fun:5,bladder:-6},msg:'Rich egusi soup with soft pounded yam.'},{l:'PEPPER SOUP',c:3500,food:1,fx:{hunger:34,fun:3,bladder:-4},msg:'Hot catfish pepper soup.'},{l:'CANDLELIT DINNER',c:15000,food:1,fx:{hunger:80,fun:35,social:35,bladder:-8},t:2,msg:'Three courses by candlelight. An evening to remember.'}]});
+  inside('almall','almall',[-10,-11.9],{skin:sk[2],skin2:'#4a2b1a',low:'#14161a',low2:'#0c0e12',top:'#c1352d',head:'cap',hc:'#14161a'},
+    {label:'CINEMA',name:'MR SEGUN (CINEMA TICKETS)',svcLabel:'TICKETS',friend:false,career:'usher',hours:[9,22],closed:'The mall is closed. It opens at 9 AM.',greet:'Five screens, big sound. What do you want to watch?',
+     items:[{l:'MOVIE TICKET',c:3500,fx:{fun:35,social:8,energy:-4},t:2,msg:'Two hours in the dark with a great film.'},{l:'MOVIE AND POPCORN',c:5500,food:1,fx:{fun:40,hunger:15,social:8,energy:-4,bladder:-4},t:2,msg:'A movie with a bucket of popcorn and a drink.'},{l:'POPCORN AND SODA',c:2000,food:1,fx:{hunger:20,fun:5,bladder:-5},msg:'Sweet popcorn and a cold soda.'}]});
+  inside('almall','almalls',[0,-11.9],{skin:sk[1],skin2:'#6a3e26',low:'#2a2030',low2:'#1c1620',top:'#7a2e65',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},
+    {label:'BOUTIQUE',name:'MISS DAYO (BOUTIQUE)',svcLabel:'BUY',friend:false,hours:[9,22],closed:'The mall is closed. It opens at 9 AM.',greet:'New in this week! Shirts, shoes and perfume.',
+     items:[{l:'NEW SHIRT',c:8000,fx:{fun:10,social:10},msg:'A crisp new shirt. You look sharp.'},{l:'NEW SHOES',c:14000,fx:{fun:14,social:14},msg:'Fresh sneakers. People will notice.'},{l:'PERFUME',c:6500,fx:{social:12,hygiene:10},msg:'A strong perfume that lasts all day.'}]});
+  inside('almall','almallf',[10,-11.9],{skin:sk[3],skin2:'#774a2e',low:'#2a5a34',low2:'#1c3a24',top:'#f3efe2',head:'gele',hc:'#c1352d',hc2:'#f2b705'},
+    {label:'FOOD',name:'MAMA CHIOMA (FOOD COURT)',svcLabel:'EAT',friend:false,hours:[9,22],closed:'The food court is closed. It opens at 9 AM.',greet:'Shawarma, pizza, smoothies. Sit anywhere.',
+     items:[{l:'CHICKEN SHAWARMA',c:2500,food:1,fx:{hunger:55,fun:4,bladder:-4},msg:'A fat chicken shawarma, wrapped and hot.'},{l:'PIZZA SLICE',c:2200,food:1,fx:{hunger:45,fun:4,bladder:-3},msg:'A cheesy pizza slice.'},{l:'FRUIT SMOOTHIE',c:1800,food:1,fx:{hunger:12,energy:6,bladder:-6},msg:'A cold mixed fruit smoothie.'},{l:'ICE CREAM',c:1200,food:1,fx:{hunger:8,fun:6,bladder:-2},msg:'Two scoops of ice cream.'}]});
+  ALP.forEach(function(p){
+    var dd=INTD[p.id],c=dd.c;
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* street people */
+  addPerson('alhawker',{x:ALX+10.6,z:-24,yaw:-Math.PI/2,skin:sk[0],skin2:'#5a3520',low:'#2a3a52',low2:'#1c2840',top:'#2f6fb1',head:'cap',hc:'#14161a'},
+    {label:'',name:'ALLEN HAWKER',svcLabel:'BUY',friend:false,hours:[6,23],closed:'The hawker has gone home. Come back from 6 AM.',greet:'Oga, water! Plantain chips! Groundnut! Cold sachet water!',
+     items:[{l:'SACHET WATER',c:100,food:1,fx:{hunger:2,energy:2,bladder:-5},msg:'Cold pure water.'},{l:'PLANTAIN CHIPS',c:400,food:1,fx:{hunger:16,fun:2,bladder:-2},msg:'Crunchy plantain chips.'},{l:'GROUNDNUT',c:300,food:1,fx:{hunger:12,bladder:-2},msg:'Salted roasted groundnut in a small bag.'}]});
+  DEST.push(['ALLEN JUNCTION','alhawker']);
+  addPerson('alsuya',{x:ALX-10.6,z:36,yaw:Math.PI/2,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#e7e0d0',head:'cap',hc:'#c1352d'},
+    {label:'',name:'MALLAM SUYA',svcLabel:'EAT',friend:false,hours:[17,4],closed:'The fire is out. Mallam comes at 5 PM.',greet:'Suya! Hot from the fire. Pepper, onions, everything!',
+     items:[{l:'BEEF SUYA',c:1500,food:1,fx:{hunger:38,fun:3,bladder:-4},msg:'Spicy suya wrapped in paper.'},{l:'KILISHI',c:1000,food:1,fx:{hunger:22,fun:2,bladder:-3},msg:'Dry spiced kilishi.'},{l:'MALT DRINK',c:500,food:1,fx:{hunger:6,energy:6,fun:3,bladder:-5},msg:'A cold malt drink.'}]});
+  DEST.push(['MALLAM SUYA, ALLEN AVENUE','alsuya']);
+  addPerson('algate',{x:GRX+6.6,z:-8.2,yaw:0,skin:sk[0],skin2:'#5a3520',low:'#1c2a44',low2:'#121c30',top:'#2d4a5a',head:'cap',hc:'#14161a'},
+    {label:'GRA',name:'GRA GATE SECURITY',friend:false,greet:'Welcome to Ikeja GRA, the Government Reserved Area. It was first reserved for senior government officials. Today it has homes, offices, hotels and restaurants. Keep to the road, please.',items:[]});
+  DEST.push(['IKEJA GRA','algate']);
+  addPerson('algolf',{x:-1177,z:14.7,yaw:Math.PI,skin:sk[3],skin2:'#774a2e',low:'#f1efe6',low2:'#d9d2c2',top:'#1d5c3a',head:'cap',hc:'#1d5c3a'},
+    {label:'GOLF',name:'GOLF CLUB MARSHAL',friend:false,greet:'This is the golf club lawn, inspired by the real Ikeja Golf Club. Members only past this fence, I am afraid.',items:[]});
+  DEST.push(['IKEJA GOLF CLUB','algolf']);
+  /* careers */
+  CARS.teller={name:'BANK TELLER',key:'albank',pay:5200,secs:30,req:'Education Level 1 (study at the school in Ojuelegba)',ok:function(){return eduLevel()>=1;},cost:{energy:-12,hunger:-6,hygiene:-2,fun:-6,bladder:-5}};
+  CARS.stockclerk={name:'SUPERMARKET STOCK CLERK',key:'alsuper',pay:3500,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-13,hunger:-7,hygiene:-5,fun:-6,bladder:-4}};
+  CARS.barman={name:'LOUNGE BARTENDER',key:'allounge',pay:4400,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-14,hunger:-7,hygiene:-4,fun:-4,bladder:-4}};
+  CARS.recep={name:'HOTEL RECEPTIONIST',key:'alhotel',pay:4000,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-11,hunger:-6,hygiene:-2,fun:-6,bladder:-4}};
+  CARS.gwaiter={name:'GARDEN RESTAURANT WAITER',key:'algra',pay:4200,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-6,hygiene:-6,fun:-6,bladder:-4}};
+  CARS.usher={name:'CINEMA USHER',key:'almall',pay:3200,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-11,hunger:-6,hygiene:-2,fun:-5,bladder:-4}};
+  ['teller','stockclerk','barman','recep','gwaiter','usher'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  [[ALX,-30],[ALX,30],[ALX-40,2.5],[ALX+40,-2.5],[-1100,2.5],[-1262,-2.5],[GRX,-30],[-940,-2.5]].forEach(function(q){FSPOTS.push(q);});
+})();
+/* people on the move */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0;
+  function WK(a,b,win,sp){
+    var i=n++;
+    var w=makeWalker({fem:i%2,occ:i%2,look:i+131,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:a,b:b,sp:sp||(1.0+(i%4)*0.18)});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  var COM=[[5,9.5],[16,21]],DAY=[[7,20]],ALL=[[0,24]],NIGHT=[[19,24],[0,5]],GRAW=[[5,9],[16,20]];
+  /* Allen Avenue: busy day and night */
+  WK([ALX+8.6,-14],[ALX+8.6,-64],DAY,0.9);WK([ALX+8.2,-64],[ALX+8.2,-14],DAY,1.0);WK([ALX-8.6,-14],[ALX-8.6,-64],DAY,0.8);WK([ALX-8.2,-64],[ALX-8.2,-14],DAY,0.9);
+  WK([ALX+8.6,14],[ALX+8.6,64],ALL,0.9);WK([ALX+8.2,64],[ALX+8.2,14],ALL,1.0);WK([ALX-8.6,14],[ALX-8.6,64],ALL,0.8);WK([ALX-8.2,64],[ALX-8.2,14],NIGHT,0.9);
+  WK([ALX-8.4,-20],[ALX-8.4,-62],NIGHT,0.8);WK([ALX+8.4,-62],[ALX+8.4,-20],COM,0.9);
+  /* the main road pavements either side of the junction */
+  WK([-872,-5.8],[-978,-5.8],DAY,0.9);WK([-978,5.8],[-872,5.8],DAY,1.0);WK([-1022,-5.8],[-1120,-5.8],DAY,0.9);WK([-1120,5.8],[-1022,5.8],COM,0.8);
+  /* GRA street: morning and evening walkers and joggers */
+  WK([GRX-5.2,-14],[GRX-5.2,-62],GRAW,1.3);WK([GRX+5.2,-62],[GRX+5.2,-14],GRAW,1.5);WK([GRX-5.0,-20],[GRX-5.0,-56],[[7,19]],0.7);
+  WK([-1160,-5.8],[-1328,-5.8],[[7,19]],0.9);
+  /* the mall front */
+  WK([-1242,8.4],[-1292,8.4],[[9,22]],0.8);WK([-1292,8.2],[-1242,8.2],[[9,22]],0.9);
+  /* inside */
+  function IW(id,a,b,win,sp){var d=INTD[id].c;var i=n++;var w=makeWalker({fem:i%2,occ:1,look:i+131,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});OJW.push({w:w,win:win});w.off=true;}
+  IW('albank',[-5,-2],[8,-2],[[8,16]],0.5);IW('albank',[8,5.5],[-6,5.5],[[8,16]],0.5);IW('albank',[-3,2.2],[-3,-3],[[9,15]],0.4);
+  IW('alsuper',[-10,3],[-2,3],[[8,21]],0.5);IW('alsuper',[-2,5],[-12,5],[[8,21]],0.5);IW('alsuper',[-5,-3],[3,-3],[[9,20]],0.45);IW('alsuper',[-11,-1],[-11,8],[[8,21]],0.4);
+  IW('allounge',[-4,-2],[-4,6],NIGHT,0.5);IW('allounge',[0,6],[11,6],NIGHT,0.5);IW('allounge',[9,2],[1,-3],NIGHT,0.45);IW('allounge',[-5,2],[11,2],NIGHT,0.4);
+  IW('alhotel',[-4,-2.5],[5,-2.5],ALL,0.4);IW('alhotel',[-3,5.5],[8,5.5],ALL,0.5);
+  IW('algra',[-5,-1],[-5,5],[[11,23]],0.5);IW('algra',[1,-3],[4,7],[[11,23]],0.45);IW('algra',[-12,-4.5],[-4,-4.5],[[11,23]],0.4);
+  IW('almall',[-12,2],[-4,2],[[9,22]],0.5);IW('almall',[5,10.5],[13,10.5],[[9,22]],0.5);IW('almall',[-4,-5],[5,-5],[[9,22]],0.45);IW('almall',[10.5,-6],[10.5,10],[[9,22]],0.4);IW('almall',[-12,8],[-2,8],[[9,22]],0.5);
 })();
 
 /* ------------------------------------------------------------------ loop */
