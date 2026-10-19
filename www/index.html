@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b51';
+var VERSION='GTL 0.9 b52';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -3263,9 +3263,6 @@ var IKB={};
   box(JX,6.9,-60,21.4,0.5,0.5,'#555');
   addSign('ALLEN AVENUE. IKEJA','#14161a','#f2d36b',JX,6.9,-59.6,0,10,0.9);
   /* ---------- the main road's far end ---------- */
-  [0.55,0.95].forEach(function(by,i){box(-1332,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
-  box(-1332,0.6,-4.7,0.3,1.2,0.3,'#555');box(-1332,0.6,4.7,0.3,1.2,0.3,'#555');solid(-1332,0,0.6,9.8,1.3);
-  addSign('ROAD WORKS AHEAD','#f2b705','#141414',-1331.8,1.9,0,Math.PI/2,3.4,0.9);
   /* ---------- GRA street: a quiet tree-lined road north from the main road ---------- */
   box(GRX,0.034,-35.5,9,0.068,61,ROAD);
   for(zz=-12;zz>=-62;zz-=6)box(GRX,0.088,zz,0.18,0.012,2.4,'#e9c46a');
@@ -3495,6 +3492,265 @@ var ALI={bank:[1915,-42],super:[1915,-14],lounge:[1915,14],hotel:[1915,42],gra:[
     /* shop windows on the left wall */
     [-5,2,9].forEach(function(wz,i){box(X(-15.7),1.8,Z(wz),0.1,3.0,5,'#9ec3d8');addSign(['SHOES','PHONES','BOOKS'][i],['#2f6fb1','#1d5c3a','#e07a1f'][i],'#ffffff',X(-15.55),4.0,Z(wz),Math.PI/2,3.6,0.6);});
     plant(X(-8),Z(-7.5),1.2);plant(X(7),Z(-7),1.2);plant(X(-8),Z(11),1.1);plant(X(8),Z(11),1.1);
+  })();
+})();
+
+var CHK_SAVE6=CHK;CHK=40;
+/* ---- b52: AGEGE. A fictionalised version of the real Agege: a railway line crossing the main road (Agege grew around its railway station),
+   a station, a bakery for the famous Agege bread, Alade market, a stadium with a gym, a canteen, and Orile Agege, the old town street.
+   The layout is invented, not surveyed. ---- */
+var RLX=-1575,ORX=-1800;
+var AGB={};
+var RL={closed:false,state:'idle',z:-200,dir:1,next:14,arm:0,len:61,grp:null,armW:null,armE:null,lampsA:[],lampsB:[],fl:0,sp:15};
+(function(){
+  var SHP=OJB.shopHouse,wx,k=0,nn=0;
+  var NMS=['ISALE EKO PROVISIONS','AGEGE TAILORS','KOLA AND SPICES','HAUSA SUYA CENTRE','PHONE ACCESSORIES','TYRE AND WHEEL','POS AND AIRTIME','BUILDING MATERIALS','PEPPER AND TOMATO','CHEMIST','IRON AND ZINC','BARBING SALON','FROZEN FOODS','CYBER CAFE','FABRIC HOUSE','HARDWARE STORE'];
+  function S(o){o.name=NMS[(nn++)%NMS.length];return SHP(o);}
+  function lb(x0,x1,y,z,h,d,col){var n=Math.ceil(Math.abs(x1-x0)/36),i,sl=(x1-x0)/n;for(i=0;i<n;i++)box(x0+sl*(i+0.5),y,z,sl+0.02,h,d,col);}
+  function lbz(z0,z1,x,y,w,h,col){var n=Math.ceil(Math.abs(z1-z0)/36),i,sl=(z1-z0)/n;for(i=0;i<n;i++)box(x,y,z0+sl*(i+0.5),w,h,sl+0.02,col);}
+  function lawn(x,z,w,d,col){box(x,0.02,z,w,0.04,d,col||'#5b8f3e');}
+  function nearR(x,r){return Math.abs(x-RLX)<r;}
+  function nearO(x,r){return Math.abs(x-ORX)<r;}
+  var zz,zk;
+  /* ground */
+  box(-1625,-0.1,0,600,0.2,700,'#a8704a');
+  /* the main road carries on west: carriageway, edge lines, dashes and pavements */
+  lb(-1892,-1332,0.03,0,0.06,10,ROAD);
+  for(wx=-1339;wx>=-1887;wx-=7){if(nearR(wx,9)||nearO(wx,8))continue;box(wx,0.066,0,3,0.012,0.18,'#e9c46a');}
+  [-4.6,4.6].forEach(function(ez){lb(-1892,-1332,0.066,ez,0.012,0.12,'#e8e4da');});
+  [[-1892,-1805],[-1795,-1581],[-1569,-1332]].forEach(function(s){lb(s[0],s[1],0.09,-5.8,0.18,1.6,SH);});
+  [[-1892,-1581],[-1569,-1332]].forEach(function(s){lb(s[0],s[1],0.09,5.8,0.18,1.6,SH);});
+  /* the far end of the road */
+  [0.55,0.95].forEach(function(by,i){box(-1892,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
+  box(-1892,0.6,-4.7,0.3,1.2,0.3,'#555');box(-1892,0.6,4.7,0.3,1.2,0.3,'#555');solid(-1892,0,0.6,9.8,1.3);
+  addSign('ROAD WORKS AHEAD','#f2b705','#141414',-1891.8,1.9,0,Math.PI/2,3.4,0.9);
+  /* ---------- the railway line: ballast, sleepers, two rails; it crosses the main road at a level crossing ---------- */
+  box(RLX,0.04,-35.6,5.2,0.08,61,'#8d867c');box(RLX,0.04,35.6,5.2,0.08,61,'#8d867c');
+  for(zz=-65.5;zz<=65.6;zz+=1.1){box(RLX,0.1,zz,2.7,0.07,0.26,Math.abs(zz)<5.6?'#6a5a48':'#5a4a3a');}
+  [-0.72,0.72].forEach(function(rx){lbz(-66,66,RLX+rx,0.16,0.12,0.12,'#7d848c');});
+  /* crossing deck: dark planks across the carriageway */
+  box(RLX,0.075,0,5.2,0.03,10,'#3d3f43');
+  /* level crossing: masts, warning signs and the flashing lamps */
+  [[RLX-5.0,6.9],[RLX+5.0,-6.9]].forEach(function(p){
+    box(p[0],1.5,p[1],0.3,3.0,0.3,'#e8e4da');solid(p[0],p[1],0.4,0.4,3.0);
+    box(p[0],2.85,p[1],0.1,0.9,0.9,'#f1efe6');
+  });
+  addSign('LEVEL CROSSING','#c1352d','#ffffff',RLX-5.0,3.6,6.9,-Math.PI/2,2.6,0.6);
+  addSign('LEVEL CROSSING','#c1352d','#ffffff',RLX+5.0,3.6,-6.9,Math.PI/2,2.6,0.6);
+  addSign('LEVEL CROSSING. TRAINS','#f2b705','#141414',RLX-48,2.2,8.0,-Math.PI/2,3.4,0.9);
+  addSign('LEVEL CROSSING. TRAINS','#f2b705','#141414',RLX+48,2.2,-8.0,Math.PI/2,3.4,0.9);
+  /* ---------- the station: building on the main road, platform beside the line ---------- */
+  AGB.stn=SHP({face:'S',x:-1553,z:-16.5,w:18,d:9,floors:2,name:'AGEGE STATION',sbg:'#1d5c3a',sfg:'#ffffff',aw:'#1d5c3a',wall:'#e8e3d2'});
+  box(-1568.5,0.1,-36,6.4,0.2,52,'#9a958a');box(-1565.4,0.205,-36,0.3,0.012,52,'#f2b705');
+  [-52,-22].forEach(function(pz){[-1571,-1566].forEach(function(px){box(px,1.6,pz,0.18,3.2,0.18,'#555');solid(px,pz,0.3,0.3,3.2);});});
+  box(-1568.5,3.3,-37,6.6,0.18,34,'#2d6a4f');
+  box(-1567.4,0.55,-37,0.5,0.1,6,'#6b4a3a');[-39.5,-34.5].forEach(function(bz){box(-1567.4,0.28,bz,0.4,0.56,0.12,'#3a3d40');});
+  addSign('AGEGE. PLATFORM 1','#1d5c3a','#ffffff',-1565.2,2.6,-37,Math.PI/2,5,0.7);
+  addSign('AGEGE. PLATFORM 1','#1d5c3a','#ffffff',-1571.8,2.6,-37,-Math.PI/2,5,0.7);
+  lawn(-1553,-34,28,22,'#7a8f4a');
+  /* ---------- the Pen Cinema landmark and a bus stop ---------- */
+  AGB.pen=SHP({face:'S',x:-1520,z:-16.5,w:18,d:9,floors:3,name:'PEN CINEMA',sbg:'#14161a',sfg:'#f2d36b',aw:'#14161a',wall:'#d9c9a8'});
+  /* ---------- main road, north side, east to west ---------- */
+  for(wx=-1347;wx>=-1413;wx-=9){S({face:'S',x:wx,z:-16.5,floors:2+((k++)%3)});}
+  AGB.bak=SHP({face:'S',x:-1432,z:-16.5,w:16,d:9,floors:2,name:'AGEGE BREAD BAKERY',sbg:'#b8741f',sfg:'#ffffff',aw:'#b8741f',wall:'#f1e6c8'});
+  [-1449,-1458,-1467,-1476,-1485,-1494].forEach(function(sx){S({face:'S',x:sx,z:-16.5,floors:2+((k++)%3)});});
+  /* the old railway-line side of the road: shops west of the line */
+  [-1596,-1605,-1614,-1623,-1632,-1641].forEach(function(sx){S({face:'S',x:sx,z:-16.5,floors:2+((k++)%3)});});
+  AGB.buka=SHP({face:'S',x:-1662,z:-16.5,w:14,d:9,floors:2,name:'MAMA BOLU BUKA',sbg:'#c1352d',sfg:'#ffffff',aw:'#c1352d',wall:'#e8d9b8'});
+  [-1678,-1687,-1696,-1705,-1714,-1723,-1732,-1741,-1750,-1759,-1768,-1777,-1786].forEach(function(sx){S({face:'S',x:sx,z:-16.5,floors:2+((k++)%3)});});
+  /* ---------- Orile Agege: the old town street north from the main road ---------- */
+  box(ORX,0.034,-35.5,9,0.068,61,ROAD);
+  for(zz=-12;zz>=-62;zz-=6)box(ORX,0.088,zz,0.18,0.012,2.4,'#e9c46a');
+  [-1,1].forEach(function(sg){box(ORX+sg*4.9,0.07,-35.5,0.12,0.012,61,'#e8e4da');});
+  box(ORX,0.034,-6.4,14,0.068,3,ROAD);
+  box(ORX,0.06,-65.2,10,1.2,0.3,'#c1352d');box(ORX,0.6,-65.2,10,0.3,0.3,'#f1efe6');
+  [-5.6,5.6].forEach(function(px){box(ORX+px,2.8,-12.6,0.3,5.6,0.3,'#7a4a2e');solid(ORX+px,-12.6,0.4,0.4,5.6);});
+  box(ORX,5.3,-12.6,11.5,0.25,0.25,'#7a4a2e');
+  addSign('ORILE AGEGE. THE OLD TOWN','#7a3b2a','#f2d36b',ORX,4.5,-12.4,0,9.4,0.9);
+  var CW=['#e8d9bf','#d9c4a0','#e6dccb','#cfae82','#e0cfae'],CR=['#8a5a3a','#6a4a3a','#7a3b2a','#8a6a4a','#5a4a3a'],ci=0;
+  function house(face,x,z,w,d){building({kind:'multi',face:face,x:x,z:z,w:w,d:d,h:5.4,floors:1,balcony:false,wall:CW[ci%5],roof:CR[ci%5]});ci++;}
+  [[-44,-26],[-65,-44]].forEach(function(r){
+    var zc=(r[0]+r[1])/2;
+    wallZ(ORX+9,r[0],r[1],zc,5);wallX(r[0],ORX+9,ORX+33);
+    lawn(ORX+21,zc,24,r[1]-r[0]-0.8,'#a88a5a');
+    house('W',ORX+17,zc,10,12);tree(ORX+29,zc-4);
+    wallZ(ORX-9,r[0],r[1],zc,5);wallX(r[0],ORX-33,ORX-9);
+    lawn(ORX-21,zc,24,r[1]-r[0]-0.8,'#a88a5a');
+    house('E',ORX-17,zc,10,12);tree(ORX-29,zc+4);
+  });
+  wallX(-26,ORX+9,ORX+33);wallZ(ORX+33,-65,-26);wallX(-26,ORX-33,ORX-9);wallZ(ORX-33,-65,-26);
+  [-24,-38,-52,-62].forEach(function(z,i){lamp(ORX+(i%2?5.5:-5.5),z,i%2?-Math.PI/2:Math.PI/2);ALAMPS.push([ORX+(i%2?5.5:-5.5),z]);});
+  [-22,-36,-50].forEach(function(z){tree(ORX-6.6,z);tree(ORX+6.6,z-7);});
+  /* old compounds west of the old-town street, on the main road */
+  [-1840,-1870].forEach(function(bx,i){
+    var cx=bx-15;
+    wallX(-13,bx-30,bx,cx,5);wallZ(bx,-40,-13);
+    lawn(cx,-26.8,29,26,'#a88a5a');
+    house('S',cx,-29,14,11);
+    tree(cx-10,-18);tree(cx+10,-35);
+  });
+  wallZ(-1900,-40,-13);wallX(-40,-1900,-1840);
+  /* ---------- main road, south side, east to west ---------- */
+  for(wx=-1347;wx>=-1383;wx-=9){S({face:'N',x:wx,z:16.5,floors:2+((k++)%3)});}
+  /* the Oba statue plaza and the Planters Union hall */
+  box(-1401,0.03,28,28,0.06,30,'#c9c1b0');
+  cyl(-1401,0.8,28,2.8,1.6,2.8,'#8a8f94');solid(-1401,28,2.8,2.8,1.6);
+  cyl(-1401,2.3,28,1.1,1.8,1.1,'#7a4a2e');lump(-1401,3.5,28,0.55,0.55,0.55,'#5a3520');cyl(-1401,3.1,28,1.5,0.2,1.5,'#d9b24a');
+  addSign('OBA AGEGE','#14161a','#f2d36b',-1401,1.1,26.55,Math.PI,2.4,0.5);
+  [-1413,-1389].forEach(function(px){[17,39].forEach(function(pz){tree(px,pz);});});
+  AGB.plant=SHP({face:'N',x:-1428,z:16.5,w:14,d:9,floors:2,name:"AGEGE PLANTERS' UNION",sbg:'#3a2a1c',sfg:'#f2d36b',aw:'#3a2a1c',wall:'#d9c4a0'});
+  /* Alade market: the hall and the stall yard beside it */
+  AGB.mkt=SHP({face:'N',x:-1500,z:16.5,w:40,d:9,floors:2,name:'ALADE MARKET',sbg:'#1f8a4c',sfg:'#f6ecd9',aw:'#1f8a4c',wall:'#f1efe6'});
+  [[-1450,24],[-1454,31],[-1458,24],[-1462,31],[-1466,24],[-1470,31],[-1446,31],[-1442,24]].forEach(function(p,i){stall(p[0],p[1],i+1);});
+  lb(-1520,-1480,0.03,30,0.06,18,'#8a7a60');
+  /* the station bus park: parked danfos, okadas and a covered waiting area */
+  lb(-1565,-1525,0.04,34,0.06,36,'#3f4246');
+  [[-1548,24,Math.PI/2],[-1548,32,Math.PI/2],[-1534,24,Math.PI/2]].forEach(function(p){danfo(p[0],p[1],p[2]);solid(p[0],p[1],5.4,2.3,2.5);});
+  okada(-1560,40,0.3);okada(-1556,41,0.1);okada(-1540,46,3.2);
+  addSign('AGEGE STATION BUS PARK','#f2b705','#141414',-1545,3.2,15.2,Math.PI,6,0.7);
+  /* the stadium: pitch, stands, floodlights and a gym building */
+  AGB.gym=SHP({face:'N',x:-1606,z:16.5,w:16,d:9,floors:2,name:'AGEGE STADIUM GYM',sbg:'#1f3a68',sfg:'#ffffff',aw:'#1f3a68',wall:'#e8e4da'});
+  lawn(-1643,43,92,44,'#4f8a3a');
+  [-1,0,1].forEach(function(i){box(-1643+i*15,0.045,43,7,0.01,44,'#5b9a45');});
+  lbz(22,64,-1597,0.06,0.18,0.012,'#f4f1e8');lbz(22,64,-1689,0.06,0.18,0.012,'#f4f1e8');
+  lb(-1689,-1597,0.06,22.4,0.012,0.18,'#f4f1e8');lb(-1689,-1597,0.06,63.6,0.012,0.18,'#f4f1e8');
+  box(-1643,0.06,43,0.18,0.012,41,'#f4f1e8');cyl(-1643,0.065,43,7,0.012,7,'#f4f1e8');cyl(-1643,0.07,43,6.7,0.014,6.7,'#4f8a3a');
+  [[-1688,43],[-1598,43]].forEach(function(g){box(g[0],1.2,g[1]-3.3,0.12,2.4,0.12,'#f1efe6');box(g[0],1.2,g[1]+3.3,0.12,2.4,0.12,'#f1efe6');box(g[0],2.4,g[1],0.12,0.12,6.7,'#f1efe6');solid(g[0],g[1]-3.3,0.3,0.3,2.4);solid(g[0],g[1]+3.3,0.3,0.3,2.4);});
+  /* stands on the west and south sides, a fence round the rest, a gated front */
+  [0,1,2].forEach(function(s){box(-1698-s*1.6,0.8+s*0.8,43,1.6,1.6+s*1.6,40,['#8a8f94','#7a7f84','#6a6f74'][s]);});
+  solid(-1699.6,43,4.8,40,4.8);
+  [-1650,-1660].forEach(function(px){box(px,2.6,21,0.35,5.2,0.35,'#6f7479');solid(px,21,0.45,0.45,5.2);});
+  box(-1655,5.0,21,11,0.4,0.35,'#6f7479');
+  addSign('AGEGE STADIUM. IJAIYE','#1f3a68','#ffffff',-1655,4.6,20.7,Math.PI,9,0.9);
+  lb(-1690,-1614,0.03,14,0.05,15,'#bdb5a5');
+  [[-1614,-1650],[-1660,-1690]].forEach(function(s){lb(s[0],s[1],0.8,21,1.6,0.2,'#6f7479');solid((s[0]+s[1])/2,21,Math.abs(s[1]-s[0]),0.3,1.6);});
+  lb(-1692,-1598,0.8,65.4,1.6,0.2,'#6f7479');solid(-1645,65.4,94,0.3,1.6);
+  lbz(24,64,-1593,0.8,0.2,1.6,'#6f7479');solid(-1593,44,0.3,40,1.6);
+  [[-1598,26],[-1688,26],[-1598,61],[-1688,61]].forEach(function(p){cyl(p[0],7,p[1],0.3,14,0.3,'#555');box(p[0],14.2,p[1],1.8,0.9,0.5,'#e9e4d6');solid(p[0],p[1],0.5,0.5,14);});
+  /* houses and shops further west on the south side */
+  [-1706,-1715,-1724,-1733,-1742,-1751,-1760,-1769,-1778,-1787].forEach(function(sx){S({face:'N',x:sx,z:16.5,floors:2+((k++)%3)});});
+  [-1812,-1842,-1872].forEach(function(bx,i){
+    wallX(13,bx-14,bx+14,bx,5);
+    wallZ(bx-14,13,40);wallZ(bx+14,13,40);wallX(40,bx-14,bx+14);
+    lawn(bx,26.6,27,26,'#a88a5a');
+    house('N',bx,27,14,11);
+    tree(bx-9,20);tree(bx+9,35);
+  });
+  /* ---------- street furniture ---------- */
+  var lx;
+  for(lx=-1346;lx>=-1888;lx-=22){if(nearR(lx,12)||nearO(lx,9))continue;lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
+  var pxs=[];for(lx=-1346;lx>=-1888;lx-=28){if(nearR(lx,14)||nearO(lx,9))continue;pxs.push(lx);}
+  poleLine(pxs,-6.4,3);
+  OJB.busStop(-1472,-8.6,0,'PEN CINEMA');OJB.busStop(-1512,8.6,Math.PI,'ALADE MARKET');OJB.busStop(-1700,-8.6,0,'OBA OGUNJI ROAD');OJB.busStop(-1650,8.6,Math.PI,'AGEGE STADIUM');
+  [[-1380,-8.4,0.2],[-1386,-8.6,0.1],[-1440,8.4,3.3],[-1446,8.6,3.2],[-1586,-8.4,0.1],[-1590,-8.6,0.2],[-1760,8.4,3.3],[-1764,8.6,3.2]].forEach(function(o){okada(o[0],o[1],o[2]);});
+  for(lx=-1352;lx>=-1888;lx-=20){if(nearR(lx,12)||nearO(lx,12))continue;tree(lx,-8.4);}
+  AGB.done=1;
+})();
+
+CHK=CHK_SAVE6;
+/* ---- b52: five places in Agege you can walk into: the station, the bakery, Alade market, the stadium gym and the canteen ---- */
+var AGI={stn:[2045,-42],bak:[2045,-14],mkt:[2045,14],gym:[2045,42],buka:[2110,-30]};
+(function(){
+  var GC=['#c1352d','#f2b705','#2f6fb1','#2a9d5b','#f1efe6','#e07a1f','#7a2e65'];
+  function table(x,z,col,w,d){w=w||1.5;d=d||0.95;box(x,0.75,z,w,0.08,d,col||'#8a6a45');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.37,z+p[1]*(d/2-0.1),0.08,0.74,0.08,'#3a2a1c');});solid(x,z,w,d,0.8);}
+  function plant(x,z,s){s=s||1;cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  function counter(x,z,w,col){box(x,0.55,z,w,1.1,0.8,col||'#2b2118');box(x,1.14,z,w+0.2,0.1,1.0,'#e9e4d6');solid(x,z,w+0.2,1.0,1.2);}
+  /* ----- AGEGE STATION: ticket hall ----- */
+  (function(){
+    var cx=AGI.stn[0],cz=AGI.stn[1],W=28,D=20,H=4.6,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('agstn',cx,cz,W,D,H,{floor:'#cfc8b8',wall:'#efe9d8',trim:'#1d5c3a',ceil:'#faf8f4'},{out:'agstnd',nm:'AGEGE STATION',doorX:cx-9});
+    counter(X(0),Z(-5.6),12,'#1d5c3a');
+    box(X(0),1.7,Z(-9.0),26,3.4,0.4,'#e8e3d2');box(X(0),3.1,Z(-8.75),26,0.12,0.1,'#1d5c3a');
+    addSign('TICKETS','#1d5c3a','#ffffff',X(0),3.6,Z(-8.8),0,6,0.8);
+    [-4,0,4].forEach(function(wx){box(X(wx),2.0,Z(-8.78),2.4,1.1,0.06,'#9ec3d8');});
+    box(X(-9.5),2.6,Z(-8.7),5,1.3,0.16,'#14161a');
+    addSign('TRAINS 7 AM TO 8:30 PM','#14161a','#f2b705',X(-9.5),2.6,Z(-8.55),0,4.6,0.7);
+    SOFAFN(X(-12.3),Z(3),Math.PI/2,3.6,'#1d5c3a','#d9d2c2');solid(X(-12.3),Z(3),1.7,3.6,1);
+    SOFAFN(X(-12.3),Z(-1.5),Math.PI/2,3.6,'#1d5c3a','#d9d2c2');solid(X(-12.3),Z(-1.5),1.7,3.6,1);
+    SOFAFN(X(-4),Z(4.5),0,3.6,'#1d5c3a','#d9d2c2');solid(X(-4),Z(4.5),3.6,1.7,1);
+    SOFAFN(X(4),Z(4.5),0,3.6,'#1d5c3a','#d9d2c2');solid(X(4),Z(4.5),3.6,1.7,1);
+    /* the gate to the platform on the east wall */
+    box(X(13.2),0.55,Z(-1.5),1.0,1.1,0.5,'#8a8f94');box(X(13.2),0.55,Z(1.5),1.0,1.1,0.5,'#8a8f94');solid(X(13.2),Z(-1.5),1.0,0.5,1.1);solid(X(13.2),Z(1.5),1.0,0.5,1.1);
+    addSign('TO PLATFORM 1','#1d5c3a','#ffffff',X(13.9),2.6,Z(0),-Math.PI/2,3.4,0.6);
+    addSign('AGEGE. LAGOS RAIL','#1d5c3a','#f2d36b',X(-13.8),3.2,Z(0.5),Math.PI/2,5,0.6);
+    plant(X(-12),Z(-6.5));plant(X(12),Z(6.5));
+  })();
+  /* ----- AGEGE BREAD BAKERY ----- */
+  (function(){
+    var cx=AGI.bak[0],cz=AGI.bak[1],W=26,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('agbak',cx,cz,W,D,H,{floor:'#d8cdb4',wall:'#f5ecd6',trim:'#b8741f',ceil:'#faf6ea'},{out:'agbakd',nm:'AGEGE BREAD BAKERY',doorX:cx-9});
+    counter(X(3),Z(-5.6),10,'#b8741f');
+    box(X(3),1.7,Z(-8.7),12,3.4,0.4,'#f1e6c8');
+    addSign('AGEGE BREAD','#b8741f','#ffffff',X(3),3.7,Z(-8.8),0,8,0.9);
+    /* shelves of loaves behind the counter */
+    for(var l=0;l<3;l++)for(var i=0;i<9;i++)box(X(-1+i*0.9),0.7+l*0.55,Z(-8.3),0.72,0.36,0.4,['#d9a45a','#c98f45','#e0b06a'][(i+l)%3]);
+    /* the brick oven and fire, flour sacks and a dough table */
+    box(X(-8),1.5,Z(-7.5),4.2,3.0,3,'#7a3b2a');solid(X(-8),Z(-7.5),4.2,3,3.0);
+    box(X(-8),0.9,Z(-5.95),2.4,1.1,0.12,'#14161a');box(X(-8),0.8,Z(-5.9),1.6,0.5,0.1,'#e07a1f');
+    cyl(X(-8),3.9,Z(-7.5),0.8,1.8,0.8,'#5a2a1c');
+    [[-12.2,-4.4],[-12.2,-3.0],[-11.4,-3.7]].forEach(function(p){lump(X(p[0]),0.45,Z(p[1]),0.6,0.45,0.5,'#f1efe6');});
+    table(X(7),Z(1.5),'#9a7a52',3.4,1.6);
+    for(var d=0;d<5;d++)lump(X(5.8+d*0.6),0.95,Z(1.5),0.28,0.2,0.22,'#d9a45a');
+    box(X(-12.4),0.9,Z(2.5),1.0,1.8,3.4,'#8a6a45');solid(X(-12.4),Z(2.5),1.0,3.4,1.8);
+    for(var t=0;t<4;t++)for(var tt=0;tt<3;tt++)lump(X(-12.4),0.7+tt*0.5,Z(1.2+t*0.8),0.3,0.18,0.3,'#d9a45a');
+    addSign('HOT BREAD EVERY MORNING','#c1352d','#ffffff',X(12.8),3.2,Z(0.5),-Math.PI/2,5,0.6);
+    plant(X(12),Z(6.5));
+  })();
+  /* ----- ALADE MARKET ----- */
+  (function(){
+    var cx=AGI.mkt[0],cz=AGI.mkt[1],W=36,D=26,H=5.0,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('agmkt',cx,cz,W,D,H,{floor:'#bfb49a',wall:'#efe6cf',trim:'#1f8a4c',ceil:'#faf6ea'},{out:'agmktd',nm:'ALADE MARKET',doorX:cx-11});
+    counter(X(-10),Z(-10.6),7,'#7a3b2a');counter(X(0),Z(-10.6),6,'#c1352d');counter(X(10),Z(-10.6),8,'#7a2e65');
+    box(X(-10),2.2,Z(-13.4),8,3.8,0.3,'#e9e2d3');addSign('FOODSTUFF','#7a3b2a','#ffffff',X(-10),3.9,Z(-13.2),0,6,0.8);
+    box(X(0),2.2,Z(-13.4),7,3.8,0.3,'#e9e2d3');addSign('MEAT SECTION','#c1352d','#ffffff',X(0),3.9,Z(-13.2),0,5.4,0.8);
+    box(X(10),2.2,Z(-13.4),9,3.8,0.3,'#e9e2d3');addSign('FABRIC AND ASO-OKE','#7a2e65','#ffffff',X(10),3.9,Z(-13.2),0,7.6,0.8);
+    /* two rows of stalls and baskets */
+    [-11.5,-6.9,-2.3,2.3,6.9,11.5].forEach(function(sx,i){stall(X(sx),Z(-2),i);stall(X(sx),Z(3),i+3);});
+    /* hanging cloth on the left wall, sacks and kola baskets */
+    for(var f=0;f<6;f++)box(X(-17.6),2.2,Z(-4+f*1.6),0.1,2.6,1.3,['#c1352d','#2f6fb1','#f2b705','#2a9d5b','#7a2e65','#e07a1f'][f]);
+    [[-16.6,-9],[-16.6,-7.4],[-15.6,-8.2]].forEach(function(p){lump(X(p[0]),0.45,Z(p[1]),0.6,0.45,0.5,'#d9c9a0');});
+    [[15.8,-8],[15.8,-6.6]].forEach(function(p){cyl(X(p[0]),0.4,Z(p[1]),0.9,0.8,0.9,'#a8741f');lump(X(p[0]),0.9,Z(p[1]),0.3,0.2,0.3,'#7a3b2a');});
+    box(X(16.8),1.0,Z(5),0.8,2.0,3,'#8a6a45');solid(X(16.8),Z(5),0.8,3,2.0);
+    plant(X(-16.8),Z(11));
+  })();
+  /* ----- AGEGE STADIUM GYM ----- */
+  (function(){
+    var cx=AGI.gym[0],cz=AGI.gym[1],W=30,D=22,H=5.0,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('aggym',cx,cz,W,D,H,{floor:'#7a7e84',wall:'#e8e4da',trim:'#1f3a68',ceil:'#f4f1ea'},{out:'aggymd',nm:'AGEGE STADIUM GYM',doorX:cx-10});
+    counter(X(0),Z(-7.6),8,'#1f3a68');
+    box(X(0),2.4,Z(-10.7),28,4.6,0.3,'#9ec3d8');
+    addSign('AGEGE STADIUM GYM','#1f3a68','#ffffff',X(0),4.0,Z(-10.5),0,10,0.9);
+    for(var tm=0;tm<3;tm++){var tx=X(-10+tm*3.6);box(tx,0.4,Z(-2),1.0,0.8,2.0,'#14161a');box(tx,1.1,Z(-2.9),0.9,1.0,0.12,'#3a3d40');box(tx,0.9,Z(-1.2),0.7,0.12,1.3,'#5a626c');solid(tx,Z(-2),1.1,2.1,1.2);}
+    /* weights: a rack, a bench and dumbbells */
+    box(X(9),0.8,Z(-3),3.4,1.6,0.8,'#3a3d40');for(var dk=0;dk<7;dk++){cyl(X(7.6+dk*0.45),1.7,Z(-3),0.3,0.18,0.3,'#14161a');}solid(X(9),Z(-3),3.4,0.9,1.7);
+    box(X(9),0.45,Z(1.5),1.6,0.2,0.7,'#8e2f2f');box(X(9),0.2,Z(1.5),1.8,0.4,0.2,'#3a3d40');solid(X(9),Z(1.5),1.8,0.9,0.7);
+    /* the boxing ring */
+    box(X(10.5),0.35,Z(6.5),7,0.7,7,'#1f3a68');box(X(10.5),0.72,Z(6.5),6.6,0.06,6.6,'#e8e4da');
+    [[-3.3,-3.3],[3.3,-3.3],[-3.3,3.3],[3.3,3.3]].forEach(function(p){cyl(X(10.5+p[0]),1.4,Z(6.5+p[1]),0.18,2.2,0.18,'#c1352d');});
+    [1.0,1.5].forEach(function(ry){box(X(10.5),ry+0.3,Z(3.2),6.6,0.05,0.05,'#f1efe6');box(X(10.5),ry+0.3,Z(9.8),6.6,0.05,0.05,'#f1efe6');box(X(7.2),ry+0.3,Z(6.5),0.05,0.05,6.6,'#f1efe6');box(X(13.8),ry+0.3,Z(6.5),0.05,0.05,6.6,'#f1efe6');});
+    solid(X(10.5),Z(6.5),7,7,0.9);
+    /* a mirror wall, a bench and a shake bar */
+    box(X(-14.8),2.4,Z(4),0.1,3.4,10,'#b8d6e4');
+    SOFAFN(X(-12.5),Z(8.5),Math.PI/2,3.6,'#1f3a68','#14161a');solid(X(-12.5),Z(8.5),1.7,3.6,1);
+    box(X(-5),0.55,Z(7.6),3,1.1,0.8,'#2a9d5b');box(X(-5),1.14,Z(7.6),3.2,0.1,1.0,'#e9e4d6');solid(X(-5),Z(7.6),3.2,1.0,1.2);
+    addSign('SHAKES','#2a9d5b','#ffffff',X(-5),2.6,Z(8.1),Math.PI,2.4,0.5);
+    plant(X(-13),Z(-8.6));
+  })();
+  /* ----- MAMA BOLU BUKA (canteen) ----- */
+  (function(){
+    var cx=AGI.buka[0],cz=AGI.buka[1],W=26,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('agbuka',cx,cz,W,D,H,{floor:'#d9cfb8',wall:'#f2e4c4',trim:'#c1352d',ceil:'#faf6ea'},{out:'agbukad',nm:'MAMA BOLU BUKA',doorX:cx-9});
+    counter(X(-2),Z(-5.6),11,'#c1352d');
+    box(X(-2),1.6,Z(-8.7),13,3.2,0.4,'#f1e6c8');
+    addSign('MAMA BOLU BUKA','#c1352d','#ffffff',X(-2),3.7,Z(-8.8),0,10,0.9);
+    /* pots and trays on the hot counter */
+    [-6,-3,0,3,6].forEach(function(px,i){cyl(X(px-2),1.5,Z(-5.6),0.8,0.4,0.8,['#3a3d40','#7a7f84','#3a3d40','#8a8f94','#3a3d40'][i]);cyl(X(px-2),1.76,Z(-5.6),0.6,0.1,0.6,['#e0b06a','#c1352d','#6a4a2a','#2a7a3a','#e07a1f'][i]);});
+    addSign('AMALA. EWEDU. GBEGIRI. EBA. EGUSI','#14161a','#f2d36b',X(8),3.3,Z(-8.8),0,8,0.6);
+    /* tables with plastic chairs */
+    [[5,-0.5],[5,4],[10.5,-0.5],[10.5,4],[8.5,7.6]].forEach(function(p,i){table(X(p[0]),Z(p[1]),'#e9e4d6',1.5,1.5);CHAIRFN(X(p[0]-1.3),Z(p[1]),Math.PI/2,GC[i%7]);CHAIRFN(X(p[0]+1.3),Z(p[1]),-Math.PI/2,GC[(i+2)%7]);});
+    SOFAFN(X(-12.3),Z(2),Math.PI/2,3.6,'#7a2e3a','#d9d2c2');solid(X(-12.3),Z(2),1.7,3.6,1);
+    box(X(12.8),2.5,Z(-4),0.2,1.0,1.8,'#14161a');addSign('TV','#14161a','#5fd0ff',X(12.65),2.5,Z(-4),-Math.PI/2,1.2,0.5);
+    plant(X(-12),Z(-6.5));plant(X(12),Z(8));
   })();
 })();
 
@@ -4256,7 +4512,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-1340,XMAX=2020;
+var LIM=66,PR=0.38,XMIN=-1920,XMAX=2150;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -5066,8 +5322,8 @@ function buildOkada(){
   return b.mesh();
 }
 var LANES=[
-  {x:-1327,z:2.5,h:Math.PI/2,speed:9,b:[-1328,248]},
-  {x:247,z:-2.5,h:-Math.PI/2,speed:8,b:[-1328,248]},
+  {x:-1887,z:2.5,h:Math.PI/2,speed:9,b:[-1888,248]},
+  {x:247,z:-2.5,h:-Math.PI/2,speed:8,b:[-1888,248]},
   {x:-2,z:-63,h:0,speed:7},
   {x:2,z:63,h:Math.PI,speed:8.5},
   {x:292,z:4.4,h:Math.PI/2,speed:10,b:[289,481]},
@@ -5103,12 +5359,12 @@ function addVeh(kind,lane,p,col){
   var v={grp:grp,lane:lane,r:r,h:L.h,x:L.x+Math.sin(L.h)*p,z:L.z+Math.cos(L.h)*p,speed:L.speed,max:L.speed,honkT:2+Math.random()*3};
   grp.position.set(v.x,0,v.z);grp.rotation.y=v.h;traffic.push(v);
 }
-addVeh('danfo',0,484);addVeh('sedan',0,548,'#c9c9c9');
+addVeh('danfo',0,1044);addVeh('sedan',0,1108,'#c9c9c9');
 addVeh('sedan',1,26,'#8e2f2f');addVeh('okada',1,92);
 addVeh('okada',2,42);addVeh('danfo',2,100);
 addVeh('sedan',3,56,'#2f4f8e');addVeh('danfo',3,18);
-addVeh('sedan',0,620,'#e0c040');addVeh('danfo',1,20);
-addVeh('danfo',0,705);addVeh('sedan',1,200,'#7a3fa0');addVeh('okada',0,740);addVeh('sedan',1,140,'#3a8f6a');
+addVeh('sedan',0,1180,'#e0c040');addVeh('danfo',1,20);
+addVeh('danfo',0,1265);addVeh('sedan',1,200,'#7a3fa0');addVeh('okada',0,1300);addVeh('sedan',1,140,'#3a8f6a');
 addVeh('sedan',4,20,'#e8e8e8');addVeh('danfo',4,90);addVeh('okada',4,150);addVeh('sedan',5,15,'#1f3f6a');addVeh('okada',5,70);addVeh('danfo',5,130);addVeh('sedan',6,30,'#c9c9c9');addVeh('sedan',7,25,'#7a2e2e');addVeh('danfo',7,70);
 addVeh('danfo',8,16);addVeh('okada',8,80);addVeh('sedan',8,140,'#e8e8e8');addVeh('sedan',9,20,'#3a8f6a');addVeh('danfo',9,85);addVeh('okada',9,140);addVeh('sedan',10,30,'#1f3f6a');addVeh('okada',10,60);addVeh('danfo',11,25);addVeh('sedan',11,70,'#c9c9c9');
 addVeh('sedan',12,20,'#14161a');addVeh('sedan',12,100,'#f1efe6');addVeh('sedan',13,40,'#8e2f2f');addVeh('sedan',13,120,'#14161a');addVeh('okada',12,150);addVeh('sedan',14,30,'#d9d9d9');addVeh('sedan',15,40,'#14161a');
@@ -5445,7 +5701,7 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';npcs[3].label='DELE';npcs[4].label='KUNLE';npcs[5].label='RONKE';npcs[6].label='OKON';
 var MW=480,MH=200,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
 mapBG.width=MW;mapBG.height=MH;
-var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
+var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
 function MX(x){var r=MR[mapReg];return (x-r[0])/(r[1]-r[0])*MW;}
 function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 (function(){
@@ -5533,7 +5789,7 @@ function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 
 
 var mapBG6=document.createElement('canvas');mapBG6.width=MW;mapBG6.height=MH;
-function mreg(x){return x<-882?7:(x<-558?6:(x<-190?5:regOf(x)));}
+function mreg(x){return x<-1342?8:(x<-882?7:(x<-558?6:(x<-190?5:regOf(x))));}
 (function(){
   mapReg=5;var g=mapBG6.getContext('2d');
   g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
@@ -5578,11 +5834,28 @@ var mapBG8=document.createElement('canvas');mapBG8.width=MW;mapBG8.height=MH;
   }
   mapReg=0;
 })();
+var mapBG9=document.createElement('canvas');mapBG9.width=MW;mapBG9.height=MH;
+(function(){
+  mapReg=8;var g=mapBG9.getContext('2d');
+  g.fillStyle='#a8704a';g.fillRect(0,0,MW,MH);
+  g.fillStyle='#4f8a3a';g.fillRect(MX(-1689),MZ(21),MX(-1597)-MX(-1689),MZ(65)-MZ(21));
+  g.fillStyle='#4a4d52';g.fillRect(0,MZ(-5),MW,MZ(5)-MZ(-5));g.fillRect(MX(ORX-4.5),MZ(-66),MX(ORX+4.5)-MX(ORX-4.5),MZ(-5)-MZ(-66));
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(0,MZ(0));g.lineTo(MW,MZ(0));g.stroke();g.setLineDash([]);
+  g.fillStyle='#3d3f43';g.fillRect(MX(RLX-1.6),MZ(-66),MX(RLX+1.6)-MX(RLX-1.6),MZ(66)-MZ(-66));
+  g.strokeStyle='#cfcfcf';g.lineWidth=1;g.beginPath();g.moveTo(MX(RLX),MZ(-66));g.lineTo(MX(RLX),MZ(66));g.stroke();
+  g.fillStyle='#c9b08a';
+  for(var i=0;i<solids.length;i++){
+    var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
+    if(q.minX<-1922||q.maxX>-1338)continue;
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(MR[8][1]-MR[8][0])*MW),Math.max(2,d/(2*LIM)*MH));
+  }
+  mapReg=0;
+})();
 function mapLabel(g,t,x,y){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(t,x,y);g.fillText(t,x,y);}
 function mapUpdate(dt){
   mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
-  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8][rg],0,0);
+  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9][rg],0,0);
   if(px>1250){g.fillStyle='rgba(10,10,12,0.78)';g.fillRect(0,0,MW,MH);g.fillStyle='#fff';g.font='bold 26px sans-serif';g.textAlign='center';g.fillText('INSIDE A BUILDING',MW/2,MH/2);return;}
   g.fillStyle='#1b1b1b';
   for(i=0;i<traffic.length;i++)if(mreg(traffic[i].x)===rg)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
@@ -9615,7 +9888,7 @@ function ojGap(v){
   if(st==='y'&&gs<v.speed*0.9+1.5)return Infinity;
   return gs+1.5;
 }
-function sigGap(v){var a=sigGap0(v),b=ojGap(v),c=agGap(v),d=alGap(v);if(c<b)b=c;if(d<b)b=d;return a<b?a:b;}
+function sigGap(v){var a=sigGap0(v),b=ojGap(v),c=agGap(v),d=alGap(v),e=rlGap(v);if(c<b)b=c;if(d<b)b=d;if(e<b)b=e;return a<b?a:b;}
 function ojLamps(){
   for(var i=0;i<SIGMO.length;i++){
     var s=sigStateO(SIGMO[i].ax);
@@ -9623,7 +9896,7 @@ function ojLamps(){
   }
 }
 /* traffic on the new stretch and on Ojuelegba Road */
-addVeh('danfo',0,510);addVeh('sedan',0,580,'#e0c040');addVeh('okada',0,660);addVeh('sedan',0,770,'#2f4f8e');
+addVeh('danfo',0,1070);addVeh('sedan',0,1140,'#e0c040');addVeh('okada',0,1220);addVeh('sedan',0,1330,'#2f4f8e');
 addVeh('danfo',1,330);addVeh('sedan',1,372,'#c9c9c9');addVeh('okada',1,416,'#14161a');addVeh('danfo',1,470);addVeh('sedan',1,505,'#8e2f2f');
 addVeh('danfo',20,26);addVeh('sedan',20,70,'#d9d9d9');addVeh('okada',20,100);
 addVeh('danfo',21,30);addVeh('sedan',21,66,'#2f6a8e');addVeh('okada',21,102);
@@ -9680,7 +9953,7 @@ var OJW=[];
 })();
 var ojT=0;
 function ojTick(dt){
-  ojLamps();agLamps();alLamps();
+  ojLamps();agLamps();alLamps();rlTick(dt);
   if(!started||!life)return;
   ojT+=dt;if(ojT<1)return;ojT=0;
   var h=gameHour;
@@ -9718,7 +9991,7 @@ function agLamps(){
   }
 }
 /* traffic: the long road west, and Agege Motor Road */
-addVeh('sedan',0,800,'#d9d9d9');addVeh('danfo',0,840);addVeh('okada',0,890);addVeh('sedan',0,940,'#7a3fa0');addVeh('danfo',0,990);addVeh('sedan',0,1045,'#14161a');addVeh('okada',0,1110);addVeh('danfo',0,1170);
+addVeh('sedan',0,1360,'#d9d9d9');addVeh('danfo',0,1400);addVeh('okada',0,1450);addVeh('sedan',0,1500,'#7a3fa0');addVeh('danfo',0,1550);addVeh('sedan',0,1605,'#14161a');addVeh('okada',0,1670);addVeh('danfo',0,1730);
 addVeh('sedan',1,560,'#e0c040');addVeh('danfo',1,600);addVeh('okada',1,640);addVeh('sedan',1,690,'#2f6a8e');addVeh('danfo',1,730);addVeh('sedan',1,770,'#c9c9c9');
 addVeh('danfo',22,26);addVeh('sedan',22,70,'#8e2f2f');addVeh('okada',22,100);
 addVeh('sedan',23,30,'#d9d9d9');addVeh('danfo',23,66);addVeh('okada',23,102);
@@ -10104,7 +10377,7 @@ function alLamps(){
   }
 }
 /* traffic: the road west of Computer Village, and Allen Avenue */
-addVeh('sedan',0,40,'#c9c9c9');addVeh('danfo',0,95);addVeh('okada',0,150);addVeh('sedan',0,205,'#2f4f8e');addVeh('danfo',0,262);addVeh('sedan',0,318,'#e0c040');addVeh('okada',0,372);addVeh('danfo',0,425);
+addVeh('sedan',0,600,'#c9c9c9');addVeh('danfo',0,655);addVeh('okada',0,710);addVeh('sedan',0,765,'#2f4f8e');addVeh('danfo',0,822);addVeh('sedan',0,878,'#e0c040');addVeh('okada',0,932);addVeh('danfo',0,985);
 addVeh('sedan',1,1130,'#8e2f2f');addVeh('danfo',1,1185);addVeh('okada',1,1240);addVeh('sedan',1,1295,'#14161a');addVeh('danfo',1,1350);addVeh('sedan',1,1405,'#2f6a8e');addVeh('okada',1,1460);addVeh('danfo',1,1515);
 addVeh('danfo',24,26);addVeh('sedan',24,70,'#d9d9d9');addVeh('okada',24,100);
 addVeh('sedan',25,30,'#7a3fa0');addVeh('danfo',25,66);addVeh('okada',25,102);
@@ -10229,6 +10502,278 @@ var ALP=[
   IW('alhotel',[-4,-2.5],[5,-2.5],ALL,0.4);IW('alhotel',[-3,5.5],[8,5.5],ALL,0.5);
   IW('algra',[-5,-1],[-5,5],[[11,23]],0.5);IW('algra',[1,-3],[4,7],[[11,23]],0.45);IW('algra',[-12,-4.5],[-4,-4.5],[[11,23]],0.4);
   IW('almall',[-12,2],[-4,2],[[9,22]],0.5);IW('almall',[5,10.5],[13,10.5],[[9,22]],0.5);IW('almall',[-4,-5],[5,-5],[[9,22]],0.45);IW('almall',[10.5,-6],[10.5,10],[[9,22]],0.4);IW('almall',[-12,8],[-2,8],[[9,22]],0.5);
+})();
+
+/* ---- b52: Agege people, opening hours, careers, the railway crossing with its train and gates, and traffic ---- */
+/* the train and the level crossing gates */
+(function(){
+  function hx(h){return [parseInt(h.substr(1,2),16)/255,parseInt(h.substr(3,2),16)/255,parseInt(h.substr(5,2),16)/255];}
+  function merge(list){
+    var pos=[],nor=[],col=[],idx=[],off=0,c=new THREE.Color();
+    list.forEach(function(b){
+      var g=new THREE.BoxGeometry(b[0],b[1],b[2]);g.translate(b[3],b[4],b[5]);
+      var p=g.attributes.position.array,n=g.attributes.normal.array,ix=g.index.array,rgb=hx(b[6]),i;
+      setRGBs(c,rgb[0],rgb[1],rgb[2]);
+      for(i=0;i<p.length;i++){pos.push(p[i]);nor.push(n[i]);}
+      for(i=0;i<p.length/3;i++)col.push(c.r,c.g,c.b);
+      for(i=0;i<ix.length;i++)idx.push(ix[i]+off);
+      off+=p.length/3;
+    });
+    var G=new THREE.BufferGeometry();
+    G.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+    G.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
+    G.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+    G.setIndex(idx);
+    return G;
+  }
+  var L=[],ci;
+  /* loco at the front (+z), then four coaches */
+  L.push([3.1,3.4,9,0,2.6,26,'#1f6f43'],[3.14,0.5,9,0,2.0,26,'#f1efe6'],[3.0,0.9,1.2,0,3.6,30.2,'#1c2a44'],[3.4,0.3,9.4,0,4.5,26,'#2d3a33'],[2.7,0.7,8,0,0.6,26,'#2b2b2f'],[2.4,0.5,2.2,0,0.4,23.6,'#14161a'],[2.4,0.5,2.2,0,0.4,28.4,'#14161a']);
+  [14.9,2.3,-10.3,-22.9].forEach(function(cz){
+    L.push([3.0,3.1,12,0,2.45,cz,'#e8e4d8'],[3.06,0.4,11.8,0,1.55,cz,'#1f6f43'],[3.08,0.95,10.6,0,3.0,cz,'#1c2a44'],[2.8,0.3,11.6,0,4.15,cz,'#9aa0a6'],[2.6,0.7,10,0,0.6,cz,'#2b2b2f'],[2.4,0.5,2.2,0,0.4,cz-3.8,'#14161a'],[2.4,0.5,2.2,0,0.4,cz+3.8,'#14161a']);
+  });
+  var tm=new THREE.Mesh(merge(L),carMat);tm.frustumCulled=false;
+  var g=new THREE.Group();g.add(tm);g.visible=false;scene.add(g);RL.grp=g;
+  /* gate arms (striped) and the flashing lamps, one pair per mast */
+  var mR=new THREE.MeshBasicMaterial({color:0xc1352d}),mW=new THREE.MeshBasicMaterial({color:0xf1efe6});
+  function arm(px,pz,dirz){
+    var p=new THREE.Group();p.position.set(px,1.1,pz);
+    for(var i=0;i<6;i++){var s=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.14,1.12),i%2?mW:mR);s.position.set(0,0,dirz*(0.56+i*1.12));p.add(s);}
+    scene.add(p);return p;
+  }
+  RL.armW=arm(RLX-5.0,6.9,-1);RL.armE=arm(RLX+5.0,-6.9,1);
+  var lampOff=new THREE.MeshBasicMaterial({color:0x3a1a1a}),lampOn=new THREE.MeshBasicMaterial({color:0xff2a2a,toneMapped:false});
+  RL.lampOn=lampOn;RL.lampOff=lampOff;
+  [[RLX-5.0,6.9,-Math.PI/2],[RLX+5.0,-6.9,Math.PI/2]].forEach(function(p,mi){
+    [-0.28,0.28].forEach(function(o,li){
+      var m=new THREE.Mesh(new THREE.CircleGeometry(0.2,14),lampOff);
+      m.position.set(p[0]+Math.sin(p[2])*0.12,2.85,p[1]+o);m.rotation.y=p[2];scene.add(m);
+      (li?RL.lampsB:RL.lampsA).push(m);
+    });
+  });
+  RL.armW.rotation.x=1.35;RL.armE.rotation.x=-1.35;RL.up=1;
+})();
+function rlTick(dt){
+  if(!started)return;
+  if(RL.state==='idle'){
+    RL.next-=dt;
+    if(RL.next<=0){
+      if(!isOpen(7,20.5)){RL.next=8;}
+      else{
+        RL.state='run';RL.dir=Math.random()<0.5?1:-1;RL.z=-RL.dir*125;RL.closed=true;
+        RL.grp.visible=true;RL.grp.rotation.y=RL.dir>0?0:Math.PI;
+      }
+    }
+  }else{
+    RL.z+=RL.dir*RL.sp*dt;
+    RL.grp.position.set(RLX,0,RL.z);
+    if(RL.closed&&RL.dir*RL.z>RL.len/2+10)RL.closed=false;
+    if(RL.dir*RL.z>130){RL.state='idle';RL.grp.visible=false;RL.next=45+Math.random()*50;}
+    /* the train does not stop for anyone standing on the line */
+    if(!inInt()){
+      var hf=RL.len/2+0.5;
+      if(driving){
+        if(Math.abs(car.x-RLX)<2.8&&Math.abs(car.z-RL.z)<hf+2){car.x=RLX+(car.x>=RLX?3.8:-3.8);car.speed*=0.2;setCarPose();toast('The train horn blares. You are pushed clear.');}
+      }else if(Math.abs(player.x-RLX)<2.2&&Math.abs(player.z-RL.z)<hf){
+        player.x=RLX+(player.x>=RLX?3.6:-3.6);player.speed=0;toast('The train horn blares. Stay off the line.');
+      }
+    }
+  }
+  /* gates come down while the crossing is closed */
+  var tgt=RL.closed?0:1;
+  if(RL.up<tgt)RL.up=Math.min(tgt,RL.up+dt*0.5);else if(RL.up>tgt)RL.up=Math.max(tgt,RL.up-dt*0.5);
+  RL.armW.rotation.x=1.35*RL.up;RL.armE.rotation.x=-1.35*RL.up;
+  var flash=(RL.closed||RL.up<0.99);
+  RL.fl+=dt;
+  var a=flash&&((RL.fl%0.9)<0.45),b=flash&&!a;
+  RL.lampsA.forEach(function(m){m.material=a?RL.lampOn:RL.lampOff;});
+  RL.lampsB.forEach(function(m){m.material=b?RL.lampOn:RL.lampOff;});
+}
+function rlGap(v){
+  if(!RL.closed)return Infinity;
+  var gs;
+  if(v.lane===0)gs=(RLX-6.5)-(v.x+v.r);
+  else if(v.lane===1)gs=(v.x-v.r)-(RLX+6.5);
+  else return Infinity;
+  if(gs<-1.2||gs>40)return Infinity;
+  return gs+1.5;
+}
+/* traffic: the road west of Ikeja */
+addVeh('sedan',0,40,'#d9d9d9');addVeh('danfo',0,95);addVeh('okada',0,150);addVeh('sedan',0,205,'#8e2f2f');addVeh('danfo',0,262);addVeh('sedan',0,318,'#2f6a8e');addVeh('okada',0,372);addVeh('danfo',0,425);addVeh('sedan',0,480,'#e0c040');
+addVeh('sedan',1,1585,'#2f4f8e');addVeh('danfo',1,1640);addVeh('okada',1,1695);addVeh('sedan',1,1750,'#14161a');addVeh('danfo',1,1805);addVeh('sedan',1,1860,'#c9c9c9');addVeh('okada',1,1915);addVeh('danfo',1,1970);addVeh('sedan',1,2030,'#7a3fa0');
+/* places */
+var AGP=[
+  {k:'agstnd',id:'agstn',nm:'AGEGE STATION',h:[7,20.5],x:-1553,z:-10.9,yaw:0,bx:-1553,bz:-11.85,br:0},
+  {k:'agbakd',id:'agbak',nm:'AGEGE BREAD BAKERY',h:[5,21],x:-1432,z:-10.9,yaw:0,bx:-1432,bz:-11.85,br:0},
+  {k:'agmktd',id:'agmkt',nm:'ALADE MARKET',h:[6,19],x:-1500,z:10.9,yaw:Math.PI,bx:-1500,bz:11.85,br:Math.PI},
+  {k:'aggymd',id:'aggym',nm:'AGEGE STADIUM GYM',h:[7,21],x:-1606,z:10.9,yaw:Math.PI,bx:-1606,bz:11.85,br:Math.PI},
+  {k:'agbukad',id:'agbuka',nm:'MAMA BOLU BUKA',h:[8,22],x:-1662,z:-10.9,yaw:0,bx:-1662,bz:-11.85,br:0}
+];
+/* station tickets: the train to Oshodi */
+var AGFARE=300;
+function agStnMenu(msg){
+  openDlg('MR EMEKA (TICKET CLERK)',(msg?msg+'  ':'')+'Babatunde Fashola Station, Agege. Trains run from 7 AM to 8:30 PM. A ticket to Oshodi is '+money(AGFARE)+'. You have '+money(cash)+'.',[
+    {label:'TICKET TO OSHODI '+money(AGFARE),fn:agTrain},
+    {label:'ABOUT THIS LINE',fn:function(){agStnMenu('The railway came first and the town grew around the station. The line joined Lagos to Abeokuta, then Ibadan, then the north. Cocoa and kola nuts went out by rail.');}},
+    {label:'BYE'}]);
+}
+function agTrain(){
+  var why=phBlock();if(why){buzz();toast(why);return;}
+  if(cash<AGFARE){buzz();agStnMenu('E no reach! The ticket is '+money(AGFARE)+'.');return;}
+  var n=NK.ojbay.npc;
+  cash-=AGFARE;setCash();logTx('Train ticket to Oshodi',-AGFARE);saveGame();
+  fadeSeq('The train to Oshodi...',function(){
+    var sp=spotNear(n);player.x=sp[0];player.z=sp[1];player.speed=0;player.yaw=Math.atan2(n.x-sp[0],n.z-sp[1]);camYaw=player.yaw+Math.PI;camSnap=true;
+    advanceHours(0.5);gain('energy',-2);saveGame();
+  },'',{mid:900,total:2200,done:function(){toast('You took the train to Oshodi for '+money(AGFARE));}});
+}
+/* the stadium gym: sessions raise fitness, which makes you run a little faster */
+var AGGYM={cardio:{c:1500,e:14,h:10,y:9,f:2,t:'Treadmill',hr:1},weights:{c:2500,e:20,h:12,y:11,f:3,t:'Weights',hr:1.2},boxing:{c:3500,e:26,h:16,y:14,f:4,t:'Boxing',hr:1.5}};
+function agGymTalk(msg){
+  var f=life.fit||0;
+  openDlg('COACH SEUN',(msg?msg+'  ':'')+'Welcome to the stadium gym. Fitness '+f+' of 100. '+(f>=50?'You are looking strong. ':'Let us get you in shape. ')+'Fit people run faster.',[
+    {label:'TREADMILL '+money(AGGYM.cardio.c),fn:function(){agGymTrain('cardio');}},
+    {label:'WEIGHTS '+money(AGGYM.weights.c),fn:function(){agGymTrain('weights');}},
+    {label:'BOXING '+money(AGGYM.boxing.c),fn:function(){agGymTrain('boxing');}},
+    {label:'SHAKE '+money(800),fn:function(){
+      if(cash<800){buzz();agGymTalk('A shake costs '+money(800)+'.');return;}
+      cash-=800;setCash();logTx('Gym: shake',-800);gain('hunger',26);gain('energy',6);chime();saveGame();agGymTalk('A cold banana shake. Strong!');}},
+    {label:'BYE'}]);
+}
+function agGymTrain(k){
+  var t=AGGYM[k];
+  if(need.energy<t.e+5){agGymTalk('You look tired. Rest first, or take a shake.');return;}
+  if(cash<t.c){buzz();agGymTalk(t.t+' costs '+money(t.c)+'.');return;}
+  cash-=t.c;setCash();logTx('Gym: '+t.t,-t.c);
+  fadeSeq(t.t+' session...',function(){
+    gain('energy',-t.e);gain('hunger',-t.h);gain('hygiene',-t.y);gain('fun',12);
+    life.fit=Math.min(100,(life.fit||0)+t.f);advanceHours(t.hr);saveGame();chime();
+  },'',{mid:1200,total:2400,done:function(){toast('Fitness '+life.fit+' of 100');setTimeout(function(){agGymTalk();},300);}});
+}
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  var D={
+    agstnd:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#1c2a44',low2:'#121c30',top:'#1d5c3a',head:'cap',hc:'#1d5c3a'},name:'STATION GUARD',lbl:'STATION',greet:'Agege Station. Trains run from 7 AM to 8:30 PM.'},
+    agbakd:{look:{skin:sk[3],skin2:'#774a2e',low:'#2a2a30',low2:'#1c1c20',top:'#f1efe6',head:'cap',hc:'#b8741f'},name:'BAKERY BOY',lbl:'BAKERY',greet:'Agege Bread Bakery. Open 5 AM to 9 PM. The bread is hot.'},
+    agmktd:{look:{skin:sk[0],skin2:'#5a3520',low:'#2a3a52',low2:'#1c2840',top:'#1f8a4c',head:'cap',hc:'#14161a'},name:'MARKET MARSHAL',lbl:'MARKET',greet:'Alade Market. Open 6 AM to 7 PM.'},
+    aggymd:{look:{skin:sk[1],skin2:'#6a3e26',low:'#14161a',low2:'#0c0e12',top:'#1f3a68',head:'cap',hc:'#14161a'},name:'GYM DOORMAN',lbl:'GYM',greet:'Agege Stadium Gym. Open 7 AM to 9 PM.'},
+    agbukad:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#14161a',low2:'#0c0e12',top:'#c1352d',head:'',hs:'low'},name:'BUKA HOST',lbl:'BUKA',greet:'Mama Bolu Buka. Open 8 AM to 10 PM. Come and eat.'}
+  };
+  AGP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2,hs:lk.hs},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.bx,2.4,p.bz,p.br,3.2,0.6);
+    var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    OJP.push(p);
+    DEST.push([p.nm,p.k]);
+  });
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  inside('agstn','agstn',[0,-6.9],{skin:sk[1],skin2:'#6a3e26',low:'#2a2030',low2:'#1c1620',top:'#1d5c3a',head:'cap',hc:'#1d5c3a'},
+    {label:'TICKETS',name:'MR EMEKA (TICKET CLERK)',svcLabel:'',origLabel:'TICKETS',orig:function(){agStnMenu();},friend:false,career:'ticketclk',hours:[7,20.5],closed:'The ticket office is closed. It opens at 7 AM.',greet:'Welcome to Agege Station. Where are you going today?',items:[]});
+  inside('agbak','agbak',[3,-6.9],{skin:sk[3],skin2:'#774a2e',low:'#2a2a30',low2:'#1c1c20',top:'#f1efe6',head:'gele',hc:'#b8741f',hc2:'#f2b705'},
+    {label:'BREAD',name:'MAMA TOYIN (BAKER)',svcLabel:'BUY',career:'baker',hours:[5,21],closed:'The bakery is closed. The ovens light again at 5 AM.',greet:'Welcome. The bread is just out of the oven. Soft, warm, nothing like it.',
+     chat:['Agege bread is unsliced. It is soft, and it keeps well for days.','Nobody named it at first. People loved it so much that they called it Agege bread, and the name stuck.','We start before dawn. The oven must be hot when the first buyers come.'],hangMsg:'She lets you watch the dough go into the oven.',
+     items:[{l:'AGEGE BREAD LOAF',c:600,food:1,fx:{hunger:40,bladder:-2},msg:'A big soft loaf, still warm.'},{l:'BREAD AND AKARA',c:1100,food:1,fx:{hunger:58,fun:3,bladder:-3},msg:'Warm bread with crunchy bean cakes.'},{l:'BREAD AND TEA',c:900,food:1,fx:{hunger:46,energy:8,bladder:-4},msg:'Bread and sweet hot tea. A proper breakfast.'},{l:'BREAD AND EGG',c:1400,food:1,fx:{hunger:62,fun:3,bladder:-3},msg:'Bread with a fried egg and pepper sauce.'},{l:'SUGAR BREAD',c:700,food:1,fx:{hunger:34,fun:6,bladder:-2},msg:'Sweet bread, soft and golden.'}]});
+  inside('agmkt','agmkt',[-10,-11.9],{skin:sk[0],skin2:'#5a3520',low:'#2a5a34',low2:'#1c3a24',top:'#f3efe2',head:'gele',hc:'#7a3b2a',hc2:'#f2b705'},
+    {label:'FOODSTUFF',name:'MAMA ALADE (FOODSTUFF)',svcLabel:'BUY',career:'mktseller',hours:[6,19],closed:'The market is closed. It opens at 6 AM.',greet:'Oya, come and buy. Fresh from the farm this morning.',
+     chat:['Alade is one of the big markets in Agege. People come from all over.','Agege has long been a trading town. Cocoa and kola nuts used to pass through here.','Buy early. By afternoon the best things are gone.'],hangMsg:'She gives you a free orange to hold you.',
+     items:[{l:'ROAST PLANTAIN (BOLE)',c:700,food:1,fx:{hunger:40,fun:3,bladder:-3},msg:'Roast plantain with groundnut.'},{l:'BEANS AND PLANTAIN',c:1200,food:1,fx:{hunger:60,fun:3,bladder:-5},msg:'Hot beans with fried plantain.'},{l:'FRESH ORANGES',c:500,food:1,fx:{hunger:10,energy:5,bladder:-4},msg:'Sweet juicy oranges.'},{l:'GARRI AND GROUNDNUT',c:600,food:1,fx:{hunger:34,bladder:-4},msg:'Cold garri with groundnut and sugar.'},{l:'BAG OF RICE FOR HOME',c:7000,fx:{fun:8,social:6},msg:'You carry home a bag of rice. Home feels safe.'}]});
+  inside('agmkt','agmktm',[0,-11.9],{skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#e7e0d0',head:'cap',hc:'#c1352d'},
+    {label:'MEAT',name:'MALLAM HAMZA (MEAT SECTION)',svcLabel:'EAT',friend:false,hours:[6,19],closed:'The market is closed. It opens at 6 AM.',greet:'Fresh meat from the abattoir this morning. Roasted to order.',
+     items:[{l:'GRILLED BEEF',c:2800,food:1,fx:{hunger:55,fun:4,bladder:-4},msg:'Smoky grilled beef on a stick.'},{l:'ASUN (SPICY GOAT)',c:3000,food:1,fx:{hunger:50,fun:6,bladder:-4},msg:'Hot peppery goat meat.'},{l:'PONMO IN PEPPER SAUCE',c:1500,food:1,fx:{hunger:28,fun:4,bladder:-3},msg:'Soft ponmo in a hot sauce.'}]});
+  inside('agmkt','agmktf',[10,-11.9],{skin:sk[1],skin2:'#6a3e26',low:'#2a2030',low2:'#1c1620',top:'#7a2e65',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},
+    {label:'FABRIC',name:'AUNTY SIDI (FABRIC)',svcLabel:'BUY',friend:false,hours:[6,19],closed:'The market is closed. It opens at 6 AM.',greet:'Ankara, lace and aso-oke. Choose your colour.',
+     items:[{l:'ANKARA FABRIC',c:6000,fx:{fun:10,social:10},msg:'Bright Ankara cloth. A tailor can sew you something proud.'},{l:'LACE FOR OWAMBE',c:12000,fx:{fun:14,social:18},msg:'Fine lace for the next big party.'},{l:'HEAD TIE (GELE)',c:3500,fx:{fun:8,social:10},msg:'A tall gele, tied just right.'}]});
+  inside('aggym','aggym',[0,-9.0],{skin:sk[1],skin2:'#6a3e26',low:'#14161a',low2:'#0c0e12',top:'#1f3a68',head:'cap',hc:'#14161a'},
+    {label:'GYM',name:'COACH SEUN',svcLabel:'',origLabel:'TRAIN',orig:function(){agGymTalk();},friend:false,career:'gymcoach',hours:[7,21],closed:'The gym is closed. It opens at 7 AM.',greet:'Welcome to the stadium gym. Treadmills, weights, boxing ring.',items:[]});
+  inside('agbuka','agbuka',[-2,-6.9],{skin:sk[3],skin2:'#774a2e',low:'#2a5a34',low2:'#1c3a24',top:'#f3efe2',head:'gele',hc:'#c1352d',hc2:'#f2b705'},
+    {label:'BUKA',name:'MAMA BOLU (BUKA)',svcLabel:'EAT',career:'bukacook',hours:[8,22],closed:'The buka is closed. It opens at 8 AM.',greet:'Welcome, come and eat. The soup is hot and the amala is soft.',
+     chat:['A buka is a small roadside canteen. Many Lagos workers eat in one every day.','Amala with ewedu and gbegiri. That is the real Lagos plate.','Agege people eat well. Bread in the morning, amala in the afternoon.'],hangMsg:'She sets a plate in front of you.',
+     items:[{l:'AMALA, EWEDU AND GBEGIRI',c:2200,food:1,fx:{hunger:72,fun:6,bladder:-6},msg:'Dark amala with ewedu, gbegiri and stew.'},{l:'EBA AND EGUSI',c:2000,food:1,fx:{hunger:68,fun:5,bladder:-6},msg:'Soft eba with rich egusi soup.'},{l:'POUNDED YAM AND EFO',c:2400,food:1,fx:{hunger:72,fun:5,bladder:-6},msg:'Pounded yam with efo riro.'},{l:'JOLLOF RICE AND FISH',c:2300,food:1,fx:{hunger:66,fun:5,bladder:-5},msg:'Jollof with fried fish.'},{l:'PEPPER SOUP',c:2500,food:1,fx:{hunger:34,fun:3,bladder:-4},msg:'Hot catfish pepper soup.'}]});
+  AGP.forEach(function(p){
+    var dd=INTD[p.id],c=dd.c;
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* street people */
+  addPerson('agrail',{x:RLX-3.4,z:-8.6,yaw:Math.PI/2,skin:sk[0],skin2:'#5a3520',low:'#1c2a44',low2:'#121c30',top:'#e07a1f',head:'cap',hc:'#e07a1f'},
+    {label:'RAIL',name:'CROSSING WATCHMAN',friend:false,greet:'The train comes through every minute or two between 7 AM and 8:30 PM. When the lamps flash, the gates come down. Never cross, and never stand on the line. In real life a big flyover lifts cars over the railway at Pen Cinema. Here the road meets the line level, so we have gates.',items:[]});
+  DEST.push(['AGEGE LEVEL CROSSING','agrail']);
+  addPerson('agbread',{x:-1464.5,z:-8.4,yaw:Math.PI,skin:sk[3],skin2:'#774a2e',low:'#2a3a52',low2:'#1c2840',top:'#c1352d',head:'cap',hc:'#14161a'},
+    {label:'',name:'BREAD HAWKER',svcLabel:'BUY',friend:false,hours:[5,20],closed:'The hawker has gone home. Come back from 5 AM.',greet:'Agege bread! Hot, hot, hot!',
+     items:[{l:'AGEGE BREAD LOAF',c:700,food:1,fx:{hunger:40,bladder:-2},msg:'A soft loaf from the tray on his head.'},{l:'SACHET WATER',c:100,food:1,fx:{hunger:2,energy:2,bladder:-5},msg:'Cold pure water.'}]});
+  DEST.push(['PEN CINEMA BUS STOP','agbread']);
+  addPerson('agkola',{x:-1456,z:27.5,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#e7e0d0',head:'cap',hc:'#f1efe6'},
+    {label:'',name:'KOLA SELLER',svcLabel:'BUY',friend:false,hours:[6,19],closed:'The kola seller has packed up. Come back from 6 AM.',greet:'Kola nut, bitter kola, groundnut. Agege has traded kola for over a century.',
+     items:[{l:'KOLA NUT',c:300,food:1,fx:{hunger:4,energy:8,fun:2,bladder:-1},msg:'A pod of kola nut. Bitter, then bright.'},{l:'BITTER KOLA',c:400,food:1,fx:{hunger:4,energy:6,fun:2,bladder:-1},msg:'Bitter kola. Chew slowly.'},{l:'GROUNDNUT',c:300,food:1,fx:{hunger:12,bladder:-2},msg:'Roasted groundnut in a small bag.'}]});
+  DEST.push(['ALADE MARKET YARD','agkola']);
+  addPerson('agsuya',{x:-1626,z:-8.4,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#e7e0d0',head:'cap',hc:'#c1352d'},
+    {label:'',name:'MALLAM SUYA',svcLabel:'EAT',friend:false,hours:[17,4],closed:'The fire is out. Mallam comes at 5 PM.',greet:'Suya! Hot from the fire. Pepper, onions, everything!',
+     items:[{l:'BEEF SUYA',c:1500,food:1,fx:{hunger:38,fun:3,bladder:-4},msg:'Spicy suya wrapped in paper.'},{l:'KILISHI',c:1000,food:1,fx:{hunger:22,fun:2,bladder:-3},msg:'Dry spiced kilishi.'},{l:'MALT DRINK',c:500,food:1,fx:{hunger:6,energy:6,fun:3,bladder:-5},msg:'A cold malt drink.'}]});
+  DEST.push(['MALLAM SUYA, AGEGE','agsuya']);
+  addPerson('agplant',{x:-1428,z:10.9,yaw:Math.PI,skin:sk[0],skin2:'#5a3520',low:'#3a2a1c',low2:'#2a1c10',top:'#d9c4a0',head:'cap',hc:'#3a2a1c'},
+    {label:'HISTORY',name:'ELDER OF THE PLANTERS UNION',friend:false,greet:"In 1907 Jacob Coker founded the Agege Planters' Union. It is described as the first agricultural cooperative in West Africa. Farmers around Agege grew cocoa, and it was collected, sorted and graded here for export. This hall is named for it. The building here is invented. The history is real.",items:[]});
+  DEST.push(["AGEGE PLANTERS' UNION",'agplant']);
+  addPerson('agguide',{x:-1401,z:22.5,yaw:0,skin:sk[1],skin2:'#6a3e26',low:'#2a3a52',low2:'#1c2840',top:'#2a9d5b',head:'cap',hc:'#14161a'},
+    {label:'AGEGE',name:'TOUR GUIDE',friend:false,greet:'Welcome to Agege. The name is believed to come from Aige, a hunter and warrior from Otta who settled the land. Another story says Hausa traders named it after the tree cutters hired to clear it. The old town is Orile Agege. Agege Station grew beside the railway in the late nineteenth century, and by 1912 about 60 percent of its people were Hausa traders. In the middle of the twentieth century about 70 percent of the kola sent north went through the rail-head here, so they say. The statue is of the Oba. The plaza is invented.',items:[]});
+  DEST.push(['OBA STATUE PLAZA','agguide']);
+  addPerson('aggate',{x:-1655,z:17.8,yaw:Math.PI,skin:sk[3],skin2:'#774a2e',low:'#14161a',low2:'#0c0e12',top:'#1f3a68',head:'cap',hc:'#1f3a68'},
+    {label:'STADIUM',name:'STADIUM GATE MARSHAL',friend:false,greet:'Agege Stadium, in Ijaiye. It is a multipurpose stadium, used for local and international games, and it has a gym. Walk in and enjoy the pitch. The gym is the building on the road.',items:[]});
+  DEST.push(['AGEGE STADIUM','aggate']);
+  addPerson('agbaale',{x:ORX+2.6,z:-30,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#e8e4da',low2:'#cfc9bb',top:'#7a2e65',head:'cap',hc:'#7a2e65'},
+    {label:'ORILE',name:'CHIEF OF ORILE AGEGE',friend:false,greet:'This is Orile Agege, the old settlement. The word orile means the proper home. Awori people founded it, under a Baale, and today there are three recognised Obas in the area. Orile Agege is known for its Egungun and Gelede festivals. The houses on this street are invented.',items:[]});
+  DEST.push(['ORILE AGEGE','agbaale']);
+  addPerson('agegun',{x:ORX-2.6,z:-48,yaw:0,skin:sk[0],skin2:'#5a3520',low:'#c1352d',low2:'#8e2a22',top:'#f2b705',head:'gele',hc:'#2a9d5b',hc2:'#c1352d'},
+    {label:'',name:'EGUNGUN DANCER',friend:false,hours:[16,19.5],closed:'The dancer has gone to rest. The festival dancing is in the evening.',greet:'Egungun is a masquerade that honours the ancestors. Orile Agege is known for it, and for Gelede. We dance in the evening. Look, but keep your distance.',items:[]});
+  DEST.push(['EGUNGUN DANCER, ORILE AGEGE','agegun']);
+  (function(){var d0=NK.agegun.npc.talk;NK.agegun.npc.talk=function(){if(!isOpen(16,19.5)){openDlg('EGUNGUN DANCER','The dancer has gone to rest. The festival dancing is in the evening.',[{label:'OK'}]);return;}return d0.apply(this,arguments);};})();
+  /* careers */
+  CARS.baker={name:'BAKERY ASSISTANT',key:'agbak',pay:3800,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-14,hunger:-6,hygiene:-8,fun:-5,bladder:-4}};
+  CARS.mktseller={name:'MARKET SELLER',key:'agmkt',pay:3000,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-7,hygiene:-5,fun:-5,bladder:-4}};
+  CARS.gymcoach={name:'GYM ATTENDANT',key:'aggym',pay:4200,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-6,hygiene:-4,fun:-3,bladder:-4}};
+  CARS.bukacook={name:'BUKA COOK',key:'agbuka',pay:3600,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-13,hunger:-4,hygiene:-8,fun:-6,bladder:-4}};
+  CARS.ticketclk={name:'STATION TICKET CLERK',key:'agstn',pay:4600,secs:30,req:'Education Level 1 (study at the school in Ojuelegba)',ok:function(){return eduLevel()>=1;},cost:{energy:-11,hunger:-6,hygiene:-2,fun:-6,bladder:-5}};
+  ['baker','mktseller','gymcoach','bukacook','ticketclk'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  [[-1420,2.5],[-1520,-2.5],[-1640,2.5],[-1760,-2.5],[ORX,-30],[-1470,2.5]].forEach(function(q){FSPOTS.push(q);});
+})();
+/* people on the move */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0;
+  function WK(a,b,win,sp){
+    var i=n++;
+    var w=makeWalker({fem:i%2,occ:i%2,look:i+211,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:a,b:b,sp:sp||(1.0+(i%4)*0.18)});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  var COM=[[5,9.5],[16,21]],DAY=[[6,20]],TRN=[[7,20.5]],JOG=[[6,9],[16,19]];
+  /* the main road pavements */
+  WK([-1350,-5.8],[-1440,-5.8],DAY,0.9);WK([-1440,5.8],[-1350,5.8],DAY,1.0);WK([-1450,-5.8],[-1565,-5.8],DAY,0.9);WK([-1565,5.8],[-1450,5.8],COM,0.8);
+  WK([-1585,-5.8],[-1700,-5.8],DAY,0.9);WK([-1700,5.8],[-1585,5.8],DAY,1.0);WK([-1710,-5.8],[-1790,-5.8],DAY,0.9);WK([-1790,5.8],[-1710,5.8],COM,0.8);
+  WK([-1810,-5.8],[-1888,-5.8],DAY,0.9);WK([-1888,5.8],[-1810,5.8],DAY,1.0);
+  /* the platform and the plaza */
+  WK([-1568.5,-58],[-1568.5,-14],TRN,0.7);WK([-1569.4,-14],[-1569.4,-58],TRN,0.6);WK([-1567.6,-30],[-1567.6,-50],TRN,0.5);
+  WK([-1412,18],[-1412,38],DAY,0.5);WK([-1390,38],[-1390,18],DAY,0.6);
+  /* the market yard, the bus park and the stadium pitch */
+  WK([-1445,36],[-1475,36],[[6,19]],0.6);WK([-1475,37],[-1445,37],[[6,19]],0.7);WK([-1560,18],[-1530,18],TRN,0.7);
+  WK([-1685,25],[-1600,25],JOG,1.8);WK([-1600,61],[-1685,61],JOG,1.6);WK([-1650,43],[-1620,43],[[16,19]],0.7);
+  /* Orile Agege, the old town */
+  WK([ORX-3.4,-14],[ORX-3.4,-62],DAY,0.8);WK([ORX+3.4,-62],[ORX+3.4,-14],DAY,0.9);WK([ORX+3.6,-20],[ORX+3.6,-58],[[7,19]],0.6);
+  /* inside */
+  function IW(id,a,b,win,sp){var d=INTD[id].c;var i=n++;var w=makeWalker({fem:i%2,occ:1,look:i+211,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});OJW.push({w:w,win:win});w.off=true;}
+  IW('agstn',[-9,-2],[11,-2],[[7,20.5]],0.5);IW('agstn',[6,2.2],[-8,2.2],[[7,20.5]],0.5);IW('agstn',[8,7],[-6,7],[[7,20.5]],0.45);
+  IW('agbak',[-9,-1],[10,-1],[[5,21]],0.5);IW('agbak',[10,5.5],[-8,5.5],[[5,21]],0.5);IW('agbak',[2,4],[2,-3.5],[[5,21]],0.4);
+  IW('agmkt',[-14,0.5],[14,0.5],[[6,19]],0.5);IW('agmkt',[14,-6],[-14,-6],[[6,19]],0.5);IW('agmkt',[-8,7.5],[14,7.5],[[6,19]],0.45);IW('agmkt',[9.2,-6],[9.2,7.5],[[7,18]],0.4);
+  IW('aggym',[-12,2.5],[5,2.5],[[7,21]],0.5);IW('aggym',[12,-5.5],[-12,-5.5],[[7,21]],0.5);IW('aggym',[-3,5],[5,5],[[7,21]],0.45);
+  IW('agbuka',[-9,-1],[2,-1],[[8,22]],0.5);IW('agbuka',[-9,5.5],[2.5,5.5],[[8,22]],0.5);IW('agbuka',[3,2],[11,2],[[8,22]],0.4);
 })();
 
 /* ------------------------------------------------------------------ loop */
