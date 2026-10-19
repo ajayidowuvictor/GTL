@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b49';
+var VERSION='GTL 0.9 b50';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -3070,6 +3070,152 @@ var CVI={plaza:[1740,-42],repair:[1740,-14],online:[1740,14],canteen:[1740,42]};
   })();
 })();
 
+var CHK_SAVE4=CHK;CHK=40;
+/* ---- b50: MUSHIN. A fictionalised version of the real Lagos mainland district, built in the free ground between Oshodi and Ojuelegba.
+   Ladipo Street (an auto spare parts street, after the real Ladipo Market in Papa Ajao) runs north from the main road, with
+   Idi-Oro Lane crossing it. Tyres, engines and bumpers are everywhere, with a foodstuff market, a fabric market and a music house. ---- */
+var MSX=-273;
+var MSB={};
+(function(){
+  var SHP=OJB.shopHouse,k,wx,wz;
+  var NMS=['LADIPO TYRE KING','TOKUNBO ENGINES','BRAKE PAD CENTRE','AUTO GLASS HOUSE','RADIATOR WORKS','GEARBOX HOUSE','USED BUMPERS','SPARK PLUG STORE','BATTERY WORLD','SHOCK ABSORBER SHOP','CLUTCH AND DISC','ALTERNATOR STORE','AUTO LIGHTS PLUS','OIL AND FILTERS','WHEEL RIM CENTRE','MUSHIN TOKUNBO MOTORS'];
+  var nn=0;
+  function S(o){o.name=NMS[(nn++)%NMS.length];return SHP(o);}
+  function lb(x0,x1,y,z,h,d,col){var n=Math.ceil(Math.abs(x1-x0)/36),i,sl=(x1-x0)/n;for(i=0;i<n;i++)box(x0+sl*(i+0.5),y,z,sl+0.02,h,d,col);}
+  /* a stack of tyres */
+  function tyres(x,z,n,col){var H=0.2*n;cyl(x,H/2,z,0.85,H,0.85,col||'#17171b');cyl(x,H+0.01,z,0.5,0.02,0.5,'#8b8f94');solid(x,z,0.9,0.9,H);}
+  /* an engine block on a pallet */
+  function engine(x,z,i){box(x,0.08,z,1.3,0.16,1.0,'#8a6a45');box(x,0.5,z,1.0,0.7,0.7,i%2?'#4a4d52':'#6b3a2a');cyl(x,1.0,z,0.55,0.35,0.55,'#7a7e84');solid(x,z,1.3,1.0,1.2);}
+  /* used bumpers and car doors leaning in a row */
+  function bumpers(x,z,n,i){var BC=['#c9c9c9','#2f4f8e','#8e2f2f','#14161a','#e0c040'];for(var q=0;q<n;q++)box(x+q*0.5,0.65,z,0.3,1.2,1.6,BC[(q+i)%5],0,0,0.15);solid(x+n*0.25-0.25,z,n*0.5+0.2,1.7,1.3);}
+  /* a parts table under a canopy */
+  var CAN=['#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e07a1f'];
+  function pstall(x,z,i){
+    box(x,0.8,z,2.4,0.08,1.1,'#8a6a45');[[-1.1,-0.45],[1.1,-0.45],[-1.1,0.45],[1.1,0.45]].forEach(function(p){box(x+p[0],0.4,z+p[1],0.07,0.8,0.07,'#3a2a1c');});
+    box(x-0.6,0.98,z,0.5,0.3,0.5,'#7a7e84');box(x,0.95,z,0.4,0.24,0.5,'#e0c040');box(x+0.6,1.0,z,0.5,0.34,0.4,'#2f4f8e');cyl(x+0.9,1.0,z+0.2,0.35,0.3,0.35,'#17171b');
+    cyl(x-1.25,1.25,z-0.5,0.07,2.5,0.07,'#555');cyl(x+1.25,1.25,z-0.5,0.07,2.5,0.07,'#555');
+    box(x,2.55,z-0.1,2.9,0.1,2.2,CAN[i%5],0,0.1);
+    AOQ(x,z,3.4,2.4);solid(x,z,2.4,1.1,0.9);
+  }
+  /* roads */
+  box(MSX,0.04,-36.1,8,0.08,58.6,ROAD);
+  lb(-269,-194,0.04,-48,0.08,7,ROAD);
+  for(wz=-14;wz>=-62;wz-=6)box(MSX,0.088,wz,0.18,0.012,2.4,'#e9c46a');
+  for(wx=-264;wx<=-198;wx+=6)box(wx,0.088,-48,2.4,0.012,0.18,'#e9c46a');
+  /* the back wall of the block (also the edge of the world) */
+  lb(-287,-193,1.2,-65.8,2.4,0.4,'#a8a29a');
+  /* gate over the street mouth */
+  [-277.4,-268.6].forEach(function(gx){box(gx,2.4,-11,0.7,4.8,0.7,'#d9d2c2');});
+  box(MSX,5.1,-11,9.5,0.5,0.7,'#d9d2c2');
+  addSign('LADIPO STREET. AUTO SPARE PARTS','#2f4f8e','#ffffff',MSX,5.1,-10.6,0,8.6,0.8);
+  /* lamps */
+  [[-276.4,-24],[-269.6,-38],[-276.4,-52],[-262,-45],[-238,-45],[-214,-45]].forEach(function(p){lamp(p[0],p[1],p[0]<MSX?-Math.PI/2:Math.PI/2);ALAMPS.push([p[0],p[1]]);});
+  /* ---------- north row along Idi-Oro Lane: the auto parts market, the fabric market, then parts shops ---------- */
+  MSB.parts=SHP({face:'S',x:-259.5,z:-56.4,w:18,d:9,floors:3,name:'LADIPO AUTO PARTS MARKET',sbg:'#2f4f8e',sfg:'#ffffff',aw:'#2f4f8e',wall:'#e8e3d2'});
+  MSB.fab=SHP({face:'S',x:-242.5,z:-56.4,w:16,d:9,floors:3,name:'OJUWOYE FABRIC AND TAILORS',sbg:'#7a2e65',sfg:'#ffffff',aw:'#7a2e65',wall:'#f1efe6'});
+  [-229.5,-220.5,-211.5,-202.5].forEach(function(sx,i){S({face:'S',x:sx,z:-56.4,w:9,d:9,floors:2+(i%3)});});
+  /* ---------- west row along Ladipo Street: the music house, the foodstuff market, a shop ---------- */
+  MSB.music=SHP({face:'E',x:-282,z:-58,w:10,d:14,floors:2,name:'IDI-ORO MUSIC HOUSE',sbg:'#14161a',sfg:'#f2d36b',aw:'#c1352d',wall:'#d9c9a8'});
+  MSB.food=SHP({face:'E',x:-282,z:-44.25,w:10,d:13.5,floors:2,name:'MUSHIN FOODSTUFF MARKET',sbg:'#1f8a4c',sfg:'#ffffff',aw:'#1f8a4c',wall:'#f1efe6'});
+  S({face:'E',x:-282,z:-33.25,w:10,d:8.5,floors:3});
+  /* ---------- parts everywhere: tyre stacks, engines, bumpers and table stalls ---------- */
+  [[-253,-43.2,5],[-250.6,-43.2,4],[-248,-43.2,6],[-232.5,-43.2,5],[-230,-43.2,3],[-216,-43.2,6],[-213.4,-43.2,4],[-201,-43.2,5]].forEach(function(p,i){tyres(p[0],p[1],p[2],i%3?'#17171b':'#26262b');});
+  [[-238,-43.1],[-225,-43.1],[-207,-43.1]].forEach(function(p,i){engine(p[0],p[1],i);});
+  [[-244,-43.5],[-220,-43.5],[-197,-43.5]].forEach(function(p,i){bumpers(p[0],p[1],5,i);});
+  [[-270.6,-23],[-270.6,-29],[-270.6,-36],[-270.6,-57],[-270.6,-62]].forEach(function(p,i){pstall(p[0],p[1],i+1);});
+  /* tyre mounds and old engines in the yard behind the north row, and the water tanks */
+  [-262,-250,-238,-226,-214,-202].forEach(function(bx,i){tyres(bx,-63.6,6+(i%3),'#26262b');engine(bx+2.6,-63.4,i);});
+  /* parked cars waiting for repairs and the parts-hunters' own */
+  car(-275.2,-30,-Math.PI/2,'#d9d9d9');solid(-275.2,-30,1.9,4.4,1.5);
+  car(-275.2,-22,Math.PI/2,'#7a3fa0');solid(-275.2,-22,1.9,4.4,1.5);
+  /* trees and a bus stop board for the lane */
+  tree(-196,-64);tree(-284,-66);
+  MSB.done=1;
+})();
+
+CHK=CHK_SAVE4;
+/* ---- b50: four places in Mushin you can walk into: the auto parts market, the foodstuff market, the fabric market and the music house ---- */
+var MSI={parts:[1830,-42],food:[1830,-14],fab:[1830,14],music:[1830,42]};
+(function(){
+  var GC=['#c1352d','#f2b705','#2f6fb1','#2a9d5b','#f1efe6','#e07a1f','#7a2e65'];
+  function table(x,z,col,w,d){w=w||1.5;d=d||0.95;box(x,0.75,z,w,0.08,d,col||'#8a6a45');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.37,z+p[1]*(d/2-0.1),0.08,0.74,0.08,'#3a2a1c');});solid(x,z,w,d,0.8);}
+  function plant(x,z,s){s=s||1;cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  function counter(x,z,w){box(x,0.55,z,w,1.1,0.8,'#2b2118');box(x,1.14,z,w+0.2,0.1,1.0,'#e9e4d6');solid(x,z,w+0.2,1.0,1.2);}
+  function tyres(x,z,n){var H=0.2*n;cyl(x,H/2,z,0.85,H,0.85,'#17171b');cyl(x,H+0.01,z,0.5,0.02,0.5,'#8b8f94');solid(x,z,0.9,0.9,H);}
+  function engine(x,z,i){box(x,0.08,z,1.3,0.16,1.0,'#8a6a45');box(x,0.5,z,1.0,0.7,0.7,i%2?'#4a4d52':'#6b3a2a');cyl(x,1.0,z,0.55,0.35,0.55,'#7a7e84');solid(x,z,1.3,1.0,1.2);}
+  function rack(x,z,w,col){var n=Math.floor(w/1.1),l,i;for(i=0;i<=3;i++)box(x-w/2+0.05+i*(w-0.1)/3,1.0,z,0.1,2.0,0.9,'#3a4048');for(l=0;l<4;l++)box(x,0.08+l*0.6,z,w,0.06,0.9,'#5a626c');box(x,2.0,z,w,0.08,0.9,'#3a4048');for(l=0;l<3;l++)for(i=0;i<n;i++)box(x-w/2+0.7+i*1.1,0.08+l*0.6+0.22,z,0.75,0.38,0.7,GC[(i+l*2+Math.floor(x))%7]);solid(x,z,w,0.9,2.0);}
+  /* ----- LADIPO AUTO PARTS MARKET ----- */
+  (function(){
+    var cx=MSI.parts[0],cz=MSI.parts[1],W=34,D=20,H=4.6,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('mshparts',cx,cz,W,D,H,{floor:'#bdb8aa',wall:'#eceae2',trim:'#2f4f8e',ceil:'#faf8f4'},{out:'mshpartsd',nm:'LADIPO AUTO PARTS MARKET',doorX:cx-12});
+    counter(X(0),Z(-5.6),8);
+    box(X(0),1.4,Z(-9.5),31,2.8,0.8,'#3a4048');solid(X(0),Z(-9.5),31,0.8,2.8);
+    for(var l=0;l<3;l++)for(var i=0;i<26;i++)box(X(-15+i*1.2),0.7+l*0.85,Z(-9.05),0.8,0.5,0.14,GC[(i+l*3)%7]);
+    rack(X(8.5),Z(-0.8),10,0);rack(X(8.5),Z(4.2),10,1);
+    [[-15.6,-8.6,5],[-14.1,-8.6,4],[-15.6,-6.9,6],[-14.1,-6.9,3],[-15.6,-5.2,4]].forEach(function(p){tyres(X(p[0]),Z(p[1]),p[2]);});
+    engine(X(-9.5),Z(-8.4),0);engine(X(-7.4),Z(-8.4),1);engine(X(-11.6),Z(-8.4),2);
+    [-8.4,-6.8,-5.2,-3.6,-2.0,-0.4].forEach(function(z,i){box(X(16.6),1.6,Z(z),0.25,1.0,1.3,['#c9c9c9','#2f4f8e','#8e2f2f','#14161a','#e0c040','#c9c9c9'][i]);});
+    addSign('LADIPO AUTO PARTS MARKET','#2f4f8e','#ffffff',X(0),3.7,Z(-9.9),0,12,0.9);
+    plant(X(-16.2),Z(8.6));plant(X(16.2),Z(8.6));
+  })();
+  /* ----- MUSHIN FOODSTUFF MARKET ----- */
+  (function(){
+    var cx=MSI.food[0],cz=MSI.food[1],W=30,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('mshfood',cx,cz,W,D,H,{floor:'#cdc3ad',wall:'#f2eee2',trim:'#1f8a4c',ceil:'#faf8f4'},{out:'mshfoodd',nm:'MUSHIN FOODSTUFF MARKET',doorX:cx-10});
+    counter(X(2),Z(-5.6),10);
+    box(X(0),0.9,Z(-8.4),25,1.8,1.0,'#6a5a44');solid(X(0),Z(-8.4),25,1.0,1.8);
+    for(var i=0;i<15;i++){box(X(-11.5+i*1.65),1.35,Z(-8.4),1.3,0.9,0.8,['#e8dfc8','#c9b88a','#8a6a45','#f1efe6'][i%4]);box(X(-11.5+i*1.65),0.45,Z(-8.4),1.3,0.9,0.8,['#c9b88a','#e8dfc8','#f1efe6','#8a6a45'][i%4]);}
+    [-4,3,10].forEach(function(tx,ti){[0.5,5.5].forEach(function(tz,zi){
+      table(X(tx),Z(tz),'#8a6a45',4.0,1.0);
+      for(var b=0;b<4;b++){var col=['#c1352d','#e07a1f','#2a9d5b','#f2b705'][(b+ti+zi)%4];cyl(X(tx-1.4+b*0.95),0.98,Z(tz),0.7,0.3,0.7,'#8a5a3a');lump(X(tx-1.4+b*0.95),1.2,Z(tz),0.6,0.3,0.6,col);}
+    });});
+    for(var y=0;y<6;y++)box(X(12.6),0.2+0.34*Math.floor(y/2),Z(-6.2+(y%2)*0.5),1.4,0.34,0.4,'#8a6a45');
+    solid(X(12.6),Z(-6),1.6,1.2,1.0);
+    box(X(-12.5),0.9,Z(-1.5),1.1,1.8,1.1,'#d9d2c2');solid(X(-12.5),Z(-1.5),1.1,1.1,1.8);
+    addSign('MUSHIN FOODSTUFF MARKET','#1f8a4c','#ffffff',X(2),3.5,Z(-8.9),0,10,0.8);
+    plant(X(-14),Z(-7));plant(X(14),Z(7.5));plant(X(-14),Z(7.5));
+  })();
+  /* ----- OJUWOYE FABRIC AND TAILORS ----- */
+  (function(){
+    var cx=MSI.fab[0],cz=MSI.fab[1],W=28,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('mshfab',cx,cz,W,D,H,{floor:'#d8cbb0',wall:'#f2ece0',trim:'#7a2e65',ceil:'#faf8f4'},{out:'mshfabd',nm:'OJUWOYE FABRIC AND TAILORS',doorX:cx-9});
+    counter(X(-4),Z(-5.6),7);
+    box(X(0),1.35,Z(-8.7),26,2.7,0.6,'#d9cfb8');solid(X(0),Z(-8.7),26,0.6,2.7);
+    for(var l=0;l<3;l++)for(var i=0;i<21;i++)cyl(X(-12.2+i*1.22),0.55+l*0.85,Z(-8.2),0.5,0.55,0.5,GC[(i*2+l)%7]);
+    [[6,-4],[10.5,-4],[6,0.5],[10.5,0.5]].forEach(function(p,i){table(X(p[0]),Z(p[1]),'#b8a888',2.4,1.1);box(X(p[0]),1.0,Z(p[1]),0.6,0.35,0.5,'#14161a');cyl(X(p[0]),0.3,Z(p[1]+1.1),0.45,0.6,0.45,'#6b4f33');});
+    [[11.5,5],[13,5],[5,5.5]].forEach(function(p){cyl(X(p[0]),0.8,Z(p[1]),0.5,1.6,0.5,'#e8e0cf');lump(X(p[0]),1.78,Z(p[1]),0.28,0.34,0.28,'#e8e0cf');solid(X(p[0]),Z(p[1]),0.6,0.6,1.9);});
+    table(X(-6),Z(1.2),'#d9c9a8',3.2,1.2);
+    for(var c=0;c<4;c++)box(X(-7+c*0.9),1.05+(c%2)*0.1,Z(1.2),0.8,0.28,0.9,GC[(c+2)%7]);
+    box(X(-13.7),1.9,Z(2),0.1,2.2,1.6,'#9ec3d8');
+    addSign('OJUWOYE FABRIC AND TAILORS','#7a2e65','#ffffff',X(0),3.7,Z(-8.85),0,10,0.8);
+    plant(X(-13),Z(-7.5));plant(X(13),Z(7.6));
+  })();
+  /* ----- IDI-ORO MUSIC HOUSE ----- */
+  (function(){
+    var cx=MSI.music[0],cz=MSI.music[1],W=34,D=22,H=5.0,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('mshmusic',cx,cz,W,D,H,{floor:'#4a4054',wall:'#5b4863',trim:'#f2b705',ceil:'#3a3242'},{out:'mshmusicd',nm:'IDI-ORO MUSIC HOUSE',doorX:cx-12});
+    counter(X(-10),Z(-7.6),9);
+    box(X(-10),1.4,Z(-10.5),9.6,2.8,0.5,'#2a2420');solid(X(-10),Z(-10.5),9.6,0.5,2.8);
+    for(var b=0;b<14;b++)box(X(-14.2+b*0.66),2.0+(b%2)*0.5,Z(-10.15),0.25,0.5,0.2,['#7a2f2f','#2f6a4a','#d9b24a','#3a5a9a'][b%4]);
+    /* stage */
+    box(X(6),0.35,Z(-8.5),15,0.7,5,'#8a6a45');box(X(6),2.4,Z(-10.7),15,3.6,0.1,'#7a2e65');[1,3.5,6,8.5,11].forEach(function(lx,li){box(X(lx),4.6,Z(-6.2),1.6,0.12,0.2,['#c1352d','#f2b705','#2f6fb1','#2a9d5b','#e07a1f'][li]);});solid(X(6),Z(-8.5),15,5,0.7);
+    [[-1.2],[13.2]].forEach(function(p){box(X(p[0]),1.3,Z(-9.2),1.3,2.6,1.2,'#14161a');solid(X(p[0]),Z(-9.2),1.3,1.2,2.6);box(X(p[0]),2.0,Z(-8.55),0.9,0.9,0.05,'#2b2b2f');});
+    cyl(X(3),1.1,Z(-9),0.9,0.5,0.9,'#c1352d');cyl(X(2),1.1,Z(-8),0.6,0.5,0.6,'#e9e4d6');cyl(X(4),1.5,Z(-8.2),0.55,0.05,0.55,'#d9b24a');
+    box(X(9),1.0,Z(-8.8),2.0,0.25,0.7,'#1b1b1f');box(X(9),0.75,Z(-8.8),1.8,0.1,0.5,'#555');
+    [[6],[11]].forEach(function(p){cyl(X(p[0]),1.6,Z(-7),0.05,1.8,0.05,'#222');});
+    [[1.5,'#c1352d'],[5,'#2f6fb1'],[8.5,'#2a9d5b'],[12,'#f2b705']].forEach(function(p){lump(X(p[0]),4.3,Z(-7.5),0.4,0.3,0.4,p[1]);});
+    box(X(6),0.08,Z(-2.5),11,0.03,6,'#3a3446');
+    /* tables */
+    [-5,1,7,13].forEach(function(tx,ti){[2.5,7.5].forEach(function(tz,zi){
+      cyl(X(tx),0.74,Z(tz),1.3,0.08,1.3,'#7a5a38');lump(X(tx),0.92,Z(tz),0.22,0.18,0.22,'#f3d27a');cyl(X(tx),0.37,Z(tz),0.18,0.74,0.18,'#2b2118');solid(X(tx),Z(tz),1.3,1.3,0.8);
+      CHAIRFN(X(tx-1.35),Z(tz),Math.PI/2,['#c1352d','#2f6fb1','#f2b705'][(ti+zi)%3]);CHAIRFN(X(tx+1.35),Z(tz),-Math.PI/2,['#2f6fb1','#f2b705','#c1352d'][(ti+zi)%3]);
+    });});
+    addSign('IDI-ORO MUSIC HOUSE','#f2b705','#14161a',X(6),3.4,Z(-10.9),0,10,0.9);
+    addSign('LIVE BAND EVERY NIGHT','#c1352d','#ffffff',X(-10),3.9,Z(-10.7),0,6,0.6);
+    plant(X(-16),Z(8.8));plant(X(16),Z(8.8));
+  })();
+})();
+
 var WORLD_TRIS=0;
 Object.keys(BK).forEach(function(k){
   var B=BK[k],g=new THREE.BufferGeometry();
@@ -3828,7 +3974,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-880,XMAX=1800;
+var LIM=66,PR=0.38,XMIN=-880,XMAX=1900;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -5015,7 +5161,7 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';npcs[3].label='DELE';npcs[4].label='KUNLE';npcs[5].label='RONKE';npcs[6].label='OKON';
 var MW=480,MH=200,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
 mapBG.width=MW;mapBG.height=MH;
-var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-258],[-882,-558]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
+var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
 function MX(x){var r=MR[mapReg];return (x-r[0])/(r[1]-r[0])*MW;}
 function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 (function(){
@@ -5103,16 +5249,17 @@ function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 
 
 var mapBG6=document.createElement('canvas');mapBG6.width=MW;mapBG6.height=MH;
-function mreg(x){return x<-558?6:(x<-262?5:regOf(x));}
+function mreg(x){return x<-558?6:(x<-190?5:regOf(x));}
 (function(){
   mapReg=5;var g=mapBG6.getContext('2d');
   g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
   g.fillStyle='#4a4d52';g.fillRect(0,MZ(-5),MW,MZ(5)-MZ(-5));g.fillRect(MX(AGX-7),0,MX(AGX+7)-MX(AGX-7),MH);
+  g.fillRect(MX(OJX-4.5),0,MX(OJX+4.5)-MX(OJX-4.5),MH);g.fillRect(MX(MSX-4),MZ(-66),MX(MSX+4)-MX(MSX-4),MZ(-6.8)-MZ(-66));g.fillRect(MX(-269),MZ(-51.5),MX(-194)-MX(-269),MZ(-44.5)-MZ(-51.5));
   g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(0,MZ(0));g.lineTo(MW,MZ(0));g.moveTo(MX(AGX),0);g.lineTo(MX(AGX),MH);g.stroke();g.setLineDash([]);
   g.fillStyle='#c9b08a';
   for(var i=0;i<solids.length;i++){
     var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
-    if(q.minX<-562||q.maxX>-258)continue;
+    if(q.minX<-562||q.maxX>-170)continue;
     if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(MR[5][1]-MR[5][0])*MW),Math.max(2,d/(2*LIM)*MH));
   }
   mapReg=0;
@@ -9499,6 +9646,114 @@ var CVP=[
   IW('cvrepair',[-12,-2.8],[12,-2.8],[[8,19]],0.5);IW('cvrepair',[-11,8],[-4,8],[[8,19]],0.4);IW('cvrepair',[12,-2.8],[3,-2.8],[[9,18]],0.5);
   IW('cvonline',[-12,-6.2],[-1,-6.2],[[9,20]],0.5);IW('cvonline',[11,0.7],[-11,0.7],[[9,20]],0.5);IW('cvonline',[-12,6.4],[11,6.4],[[10,19]],0.5);
   IW('cvcanteen',[-11,-3.8],[11,-3.8],[[7,21]],0.5);IW('cvcanteen',[11,4.5],[-10,4.5],[[11,15],[17,20]],0.5);
+})();
+
+/* ---- b50: Mushin people, opening hours, careers and the cheaper tokunbo parts counter ---- */
+/* Ladipo parts: used (tokunbo) engines and tyres cost 20% less than at Kunle's workshop and give the same upgrade */
+function mshPartsMenu(msg){
+  var btns=[],ep=ups.eng<2?Math.round(ENG_P[ups.eng]*0.8):0,tp=ups.tyre<2?Math.round(TYR_P[ups.tyre]*0.8):0;
+  if(ups.eng<2)btns.push({label:'TOKUNBO ENGINE '+money(ep),fn:function(){mshBuyPart('eng',ep);}});
+  if(ups.tyre<2)btns.push({label:'TOKUNBO TYRES '+money(tp),fn:function(){mshBuyPart('tyre',tp);}});
+  btns.push({label:'BACK',fn:function(){hub('mshparts');}});
+  openDlg('MR EMEKA (PARTS DEALER)',(msg?msg+'  ':'')+'Tokunbo parts, straight from the port. Engine '+ups.eng+'/2, tyres '+ups.tyre+'/2.'+((ups.eng>=2&&ups.tyre>=2)?' Your ride is fully fitted.':' The upgrade carries over to any ride.')+' You get '+money(cash)+'.',btns);
+}
+function mshBuyPart(k,price){
+  if(cash<price){buzz();mshPartsMenu('E no reach! You need '+money(price)+'.');return;}
+  cash-=price;setCash();ups[k]++;applyUps();saveGame();chime();
+  mshPartsMenu(k==='eng'?'Engine fitted. Your ride dey fly now.':'New tyres fitted. Better grip.');
+}
+var MSP=[
+  {k:'mshpartsd',id:'mshparts',nm:'LADIPO AUTO PARTS MARKET',h:[8,18],x:-259.5,z:-50.8,yaw:0,bx:-259.5,bz:-51.75,br:0},
+  {k:'mshfoodd',id:'mshfood',nm:'MUSHIN FOODSTUFF MARKET',h:[6,17],x:-275.9,z:-44.25,yaw:Math.PI/2,bx:-276.85,bz:-44.25,br:Math.PI/2},
+  {k:'mshfabd',id:'mshfab',nm:'OJUWOYE FABRIC AND TAILORS',h:[9,18],x:-242.5,z:-50.8,yaw:0,bx:-242.5,bz:-51.75,br:0},
+  {k:'mshmusicd',id:'mshmusic',nm:'IDI-ORO MUSIC HOUSE',h:[17,3],x:-275.9,z:-58,yaw:Math.PI/2,bx:-276.85,bz:-58,br:Math.PI/2}
+];
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  var D={
+    mshpartsd:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#1c2a44',low2:'#121c30',top:'#2f4f8e',head:'cap',hc:'#14161a'},name:'PARTS MARKET GUARD',lbl:'PARTS',greet:'Ladipo Auto Parts Market. Open 8 AM to 6 PM.'},
+    mshfoodd:{look:{skin:sk[3],skin2:'#774a2e',low:'#2a5a34',low2:'#1c3a24',top:'#f3efe2',head:'gele',hc:'#1f8a4c',hc2:'#f2b705'},name:'FOODSTUFF MARKET GATEKEEPER',lbl:'MARKET',greet:'Mushin Foodstuff Market. Open 6 AM to 5 PM.'},
+    mshfabd:{look:{skin:sk[1],skin2:'#6a3e26',low:'#2a2030',low2:'#1c1620',top:'#7a2e65',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},name:'FABRIC MARKET GREETER',lbl:'FABRIC',greet:'Ojuwoye Fabric and Tailors. Open 9 AM to 6 PM.'},
+    mshmusicd:{look:{skin:sk[0],skin2:'#5a3520',low:'#14161a',low2:'#0c0e12',top:'#f2b705',head:'cap',hc:'#14161a'},name:'MUSIC HOUSE DOORMAN',lbl:'MUSIC',greet:'Idi-Oro Music House. Live band, open 5 PM to 3 AM.'}
+  };
+  MSP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2,hs:lk.hs},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.bx,2.4,p.bz,p.br,3.2,0.6);
+    var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    OJP.push(p);
+    DEST.push([p.nm,p.k]);
+  });
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  inside('mshparts','mshparts',[0,-6.9],{skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#2f4f8e',head:'cap',hc:'#2f4f8e'},
+    {label:'PARTS',name:'MR EMEKA (PARTS DEALER)',svcLabel:'',origLabel:'PARTS',orig:function(){mshPartsMenu();},friend:false,career:'parts',hours:[8,18],closed:'The market is closed. Come back at 8 AM.',greet:'Oga, wetin your car need? Tokunbo or new, we get am.',items:[]});
+  inside('mshfood','mshfood',[2,-6.9],{skin:sk[3],skin2:'#774a2e',low:'#2a5a34',low2:'#1c3a24',top:'#f3efe2',head:'gele',hc:'#1f8a4c',hc2:'#f2b705'},
+    {label:'FOODSTUFF',name:'MAMA RISIKAT (FOODSTUFF)',svcLabel:'BUY',friend:false,career:'foodtr',hours:[6,17],closed:'The market has closed for the day. It opens at 6 AM.',greet:'Fresh from Mile 12 this morning. Rice, beans, yam, pepper. Come and see.',
+     items:[{l:'BOILED YAM AND SAUCE',c:1500,food:1,fx:{hunger:60,fun:3,bladder:-6},msg:'Soft yam with pepper sauce.'},{l:'BEANS AND DODO',c:1400,food:1,fx:{hunger:58,fun:3,bladder:-6},msg:'Beans and fried plantain.'},{l:'GARRI AND GROUNDNUT',c:400,food:1,fx:{hunger:28,bladder:-3},msg:'Cold garri, sugar and groundnut.'},{l:'COCONUT WATER',c:300,food:1,fx:{hunger:6,energy:5,bladder:-6},msg:'Cool coconut water.'}]});
+  inside('mshfab','mshfab',[-4,-6.9],{skin:sk[1],skin2:'#6a3e26',low:'#2a2030',low2:'#1c1620',top:'#7a2e65',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},
+    {label:'FABRICS',name:'MADAM TAIWO (TAILOR)',svcLabel:'BUY',friend:false,career:'tailor',hours:[9,18],closed:'The fabric market is closed. Doors open 9 AM.',greet:'Ankara, lace, aso-oke. Choose your cloth and I will sew am.',
+     items:[{l:'ANKARA FABRIC (6 YARDS)',c:9000,fx:{fun:12,social:6},msg:'Bright ankara. People will notice you.'},{l:'SEW AN OUTFIT',c:18000,fx:{fun:20,social:20},t:2,msg:'Measured, cut and sewn. A perfect fit.'},{l:'ALTERATION',c:1500,fx:{fun:4},msg:'Taken in and pressed. It fits better now.'}]});
+  inside('mshmusic','mshmusic',[-10,-8.9],{skin:sk[0],skin2:'#5a3520',low:'#14161a',low2:'#0c0e12',top:'#f2b705',head:'cap',hc:'#14161a'},
+    {label:'MUSIC',name:'MR KEHINDE (BAND LEADER)',svcLabel:'ORDER',career:'stage',hours:[17,3],closed:'The music house is closed. It opens at 5 PM.',greet:'Welcome to Idi-Oro. The band plays all night.',
+     chat:['The Kalakuta Republic compound stood on Agege Motor Road, here in Idi-Oro. It had a recording studio and a free clinic.','Soldiers attacked and burned that compound in 1977. Today it is a museum, with a restaurant and a hotel.','Afrobeat is still our heartbeat. Come on a Saturday night.'],hangMsg:'The band plays a request for you.',
+     items:[{l:'LIVE BAND NIGHT',c:2500,fx:{fun:45,social:22,energy:-8},t:2,msg:'The horns, the drums, the dancing. A great night.'},{l:'SUYA',c:1500,food:1,fx:{hunger:38,fun:3,bladder:-4},msg:'Spicy suya wrapped in paper.'},{l:'MALT DRINK',c:500,food:1,fx:{hunger:6,energy:6,fun:3,bladder:-5},msg:'A cold malt drink.'},{l:'ZOBO',c:300,food:1,fx:{hunger:6,energy:4,bladder:-6},msg:'Cold zobo.'}]});
+  MSP.forEach(function(p){
+    var dd=INTD[p.id],c=dd.c;
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* street people */
+  addPerson('mshagent',{x:-271.2,z:-41.5,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#e07a1f',head:'cap',hc:'#14161a'},
+    {label:'',name:'LADIPO PARTS AGENT',friend:false,greet:'Oga, wetin you dey find? Engine, gearbox, brake pad? The big parts market is on Idi-Oro Lane. Tokunbo engines and tyres there cost less than at Kunle.',items:[]});
+  DEST.push(['LADIPO STREET','mshagent']);
+  addPerson('mshboli',{x:-262,z:-45,yaw:Math.PI,skin:sk[3],skin2:'#774a2e',low:'#2a3a52',low2:'#1c2840',top:'#c1352d',head:'gele',hc:'#c1352d',hc2:'#f2b705'},
+    {label:'',name:'MAMA BOLI (ROAST PLANTAIN)',svcLabel:'EAT',friend:false,hours:[10,21],closed:'The fire is out. Come back from 10 AM.',greet:'Hot boli and groundnut! Roasted corn too!',
+     items:[{l:'BOLI AND GROUNDNUT',c:600,food:1,fx:{hunger:38,fun:3,bladder:-4},msg:'Roasted plantain with groundnut and pepper.'},{l:'ROASTED CORN',c:300,food:1,fx:{hunger:22,bladder:-3},msg:'Smoky roasted corn.'},{l:'SACHET WATER',c:100,food:1,fx:{hunger:2,energy:2,bladder:-5},msg:'Cold pure water.'}]});
+  DEST.push(['MAMA BOLI, IDI-ORO LANE','mshboli']);
+  addPerson('mshlane',{x:-200,z:-48,yaw:-Math.PI/2,skin:sk[1],skin2:'#6a3e26',low:'#2a2a30',low2:'#1c1c20',top:'#2f6fb1',head:'cap',hc:'#14161a'},
+    {label:'LANE',name:'IDI-ORO LANE GUIDE',friend:false,greet:'Idi-Oro Lane. The Ladipo parts market and the fabric market are on this side, the music house is on Ladipo Street. Mind the tyres.',items:[]});
+  DEST.push(['IDI-ORO LANE','mshlane']);
+  /* careers */
+  CARS.parts={name:'SPARE PARTS SALESMAN',key:'mshparts',pay:3600,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-13,hunger:-7,hygiene:-6,fun:-6,bladder:-4}};
+  CARS.foodtr={name:'FOODSTUFF TRADER',key:'mshfood',pay:2800,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-13,hunger:-8,hygiene:-6,fun:-6,bladder:-4}};
+  CARS.tailor={name:"TAILOR'S ASSISTANT",key:'mshfab',pay:3300,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-6,hygiene:-3,fun:-6,bladder:-4}};
+  CARS.stage={name:'STAGE HAND',key:'mshmusic',pay:3800,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-14,hunger:-7,hygiene:-4,fun:-4,bladder:-4}};
+  ['parts','foodtr','tailor','stage'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  [[-273,-18],[-273,-30],[-273,-56],[-262,-47],[-240,-47],[-215,-47]].forEach(function(q){FSPOTS.push(q);});
+})();
+/* people on the move */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0;
+  function WK(a,b,win,sp){
+    var i=n++;
+    var w=makeWalker({fem:i%2,occ:i%2,look:i+71,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:a,b:b,sp:sp||(1.0+(i%4)*0.18)});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  var COM=[[5,9.5],[16,21]],MKT=[[8,19]],ALL=[[5,23]],NIGHT=[[17,24],[0,3]];
+  /* Ladipo Street: buyers, agents and mechanics, all day in market hours */
+  WK([-273.3,-14],[-273.3,-62],MKT,0.8);WK([-272.8,-62],[-272.8,-14],MKT,0.9);WK([-273.1,-26],[-273.1,-42],MKT,0.7);WK([-273.0,-44],[-273.0,-20],MKT,0.6);
+  WK([-273.2,-14],[-273.2,-62],COM,1.0);
+  /* Idi-Oro Lane */
+  WK([-266,-50.2],[-203,-50.2],MKT,0.8);WK([-203,-48.4],[-266,-48.4],MKT,0.9);WK([-250,-49.3],[-215,-49.3],MKT,0.6);WK([-215,-48.8],[-250,-48.8],MKT,0.7);
+  WK([-266,-49.6],[-203,-49.6],COM,1.0);
+  /* the night crowd at the music house */
+  WK([-273.0,-58],[-273.0,-30],NIGHT,0.8);WK([-272.8,-30],[-272.8,-58],NIGHT,0.9);
+  /* inside */
+  function IW(id,a,b,win,sp){var d=INTD[id].c;var i=n++;var w=makeWalker({fem:i%2,occ:1,look:i+71,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});OJW.push({w:w,win:win});w.off=true;}
+  IW('mshparts',[-3,-1.5],[1,-1.5],[[8,18]],0.5);IW('mshparts',[-4,2.4],[-14,2.4],[[8,18]],0.5);IW('mshparts',[-14,-3.5],[0,-3.5],[[9,17]],0.5);IW('mshparts',[14,7.2],[-4,7.2],[[8,18]],0.5);
+  IW('mshfood',[-12,3],[12,3],[[6,17]],0.5);IW('mshfood',[11,3.2],[-12,3.2],[[7,16]],0.5);IW('mshfood',[-8,-3],[8,-3],[[6,17]],0.45);
+  IW('mshfab',[-12,3],[12,3],[[9,18]],0.5);IW('mshfab',[-4,4.2],[2,4.2],[[10,17]],0.4);IW('mshfab',[-4,-3],[-9,-3],[[9,18]],0.4);
+  IW('mshmusic',[-14,5],[14,5],NIGHT,0.5);IW('mshmusic',[15,-4],[-3,-4],NIGHT,0.5);IW('mshmusic',[-4,0],[10,0],NIGHT,0.45);IW('mshmusic',[11,-2],[-5,-2],NIGHT,0.4);
 })();
 
 /* ------------------------------------------------------------------ loop */
