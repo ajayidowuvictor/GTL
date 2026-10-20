@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b58';
+var VERSION='GTL 0.9 b59';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -5363,10 +5363,6 @@ var TJB={};
   box(-6262,6.9,0,0.5,0.5,15.4,'#555');
   addSign('AMUWO ODOFIN. BADAGRY','#1f6f43','#ffffff',-6261.7,5.6,-3.2,Math.PI/2,6,0.9);addSign('MILE 2. APAPA','#1f6f43','#ffffff',-6261.7,5.6,3.4,Math.PI/2,5,0.9);
   addSign('ORILE. IGANMU. LAGOS ISLAND','#1f6f43','#ffffff',-6262.3,5.6,0,-Math.PI/2,9,0.9);
-  [0.55,0.95].forEach(function(by,i){box(-6285,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
-  [-4.7,4.7].forEach(function(bz){box(-6285,0.6,bz,0.3,1.2,0.3,'#555');});
-  solid(-6288,0,6,134,2);box(-6287,1.2,0,0.4,2.4,134,'#8a7a60');
-  addSign('LAGOS-BADAGRY EXPRESSWAY. WORKS AHEAD. ROAD CLOSED','#f2b705','#141414',-6284.7,1.9,0,Math.PI/2,3.8,0.9);
   /* ---------- street furniture ---------- */
   var lx;
   for(lx=-5406;lx>=-6280;lx-=22){if(lx<-6092&&lx>-6140)continue;if(lx<-6254&&lx>-6270)continue;lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
@@ -5507,6 +5503,304 @@ var TJR={etagent:[2830,-42],eboundary:[2830,-14],efball:[2830,14],egalala:[2830,
     [-1,1].forEach(function(s){box(X(13+s*1.2),0.55,Z(1),0.15,1.1,1.2,'#8a8f94');solid(X(13+s*1.2),Z(1),0.2,1.3,1.1);});
     addSign('TO THE PLATFORM','#14161a','#f2d36b',X(13),2.4,Z(0.3),0,3,0.5);
     plant(X(-15.5),Z(-9.5));plant(X(15.5),Z(9.5));
+  })();
+})();
+
+var CHK_SAVE13=CHK;CHK=40;
+/* ---- b59: FESTAC TOWN, THE TRADE FAIR AND ALABA. A fictionalised west end of the road: the gated Festac estate with its three gates, the Festival-style mall and cinema, Agboju market, the Trade Fair complex
+   with its auto parts hall and motel, the Alaba electronics market, Okokomaiko with its market and bus park, and the Blue Line Phase 2 station site. The layout is invented, not surveyed. ---- */
+var FZB={};
+(function(){
+  var SHP=OJB.shopHouse,wx,k=0,nn=0,i,j,r;
+  var NMF=['BANK','CHEMIST','PROVISIONS','CYBER CAFE','POS AND AIRTIME','BOOKSHOP','SALON','BUKA','LAUNDRY','ELECTRICALS'];
+  var NMT=['AUTO PARTS','TYRE CENTRE','CAR PARTS','ENGINE OIL','BRAKE PADS','BATTERIES','PRINTING','JEWELLERY'];
+  var NML=['TV AND DECODER','FRIDGE REPAIRS','PHONE ACCESSORIES','GENERATORS','SOUND SYSTEMS','AIR CONDITIONERS','INVERTERS','CCTV','LAPTOPS','HOME APPLIANCES'];
+  var NMO=['PROVISIONS','PHONE REPAIRS','TAILOR','BARBER','FABRICS','CHEMIST','POS AND AIRTIME','VIEWING CENTRE','SALON','BUKA','HARDWARE','ELECTRICALS'];
+  function S(o,nm){o.name=nm[(nn++)%nm.length];return SHP(o);}
+  function lb(x0,x1,y,z,h,d,col){var n=Math.ceil(Math.abs(x1-x0)/36),i,sl=(x1-x0)/n;for(i=0;i<n;i++)box(x0+sl*(i+0.5),y,z,sl+0.02,h,d,col);}
+  function pave(x,z,w,d,col){box(x,0.04,z,w,0.06,d,col||'#b7ad98');}
+  function row(face,xs,nm){xs.forEach(function(x){S({face:face,x:x,z:face==='S'?-16.5:16.5,floors:2+((k++)%2)},nm);});}
+  function rowStep(face,xa,xb,nm,st){var xs=[],x;for(x=xa;x>=xb;x-=(st||9))xs.push(x);row(face,xs,nm);}
+  var GR='#a39a86';
+  function gl(x0,x1,z0,z1){var n=Math.ceil((x1-x0)/60),sl=(x1-x0)/n,q;for(q=0;q<n;q++)box(x0+sl*(q+0.5),-0.1,(z0+z1)/2,sl+0.02,0.2,z1-z0,GR);}
+  gl(-7215,-6300,-67,67);
+  /* ---------- the road, on from the Mile 2 end ---------- */
+  lb(-6290,-7190,0.03,0,0.06,10,ROAD);
+  for(wx=-6293;wx>=-7185;wx-=7)box(wx,0.066,0,3,0.012,0.18,'#e9c46a');
+  [-4.6,4.6].forEach(function(ez){lb(-6290,-7190,0.066,ez,0.012,0.12,'#e8e4da');});
+  lb(-6290,-7190,0.09,-5.8,0.18,1.6,SH);lb(-6290,-7190,0.09,5.8,0.18,1.6,SH);
+  /* ---------- FESTAC TOWN, north side ---------- */
+  row('S',[-6300,-6309,-6318],NMF);
+  FZB.estate=SHP({face:'S',x:-6345,z:-16.5,w:26,d:9,floors:2,name:'FESTAC TOWN ESTATE OFFICE',sbg:'#1f6f43',sfg:'#f2d36b',aw:'#1f6f43',wall:'#f4efe0'});
+  (function(){
+    var x0=-6582,x1=-6362,gates=[-6397,-6472,-6547],ge=['FIRST GATE. 1ST AVENUE','SECOND GATE. 2ND AVENUE','THIRD GATE. 7TH AVENUE'];
+    wallX(-13,-6432,x1,gates[0],12);wallX(-13,-6507,-6432,gates[1],12);wallX(-13,x0,-6507,gates[2],12);
+    wallZ(x0,-62,-13);wallZ(x1,-62,-13);wallX(-62,x0,x1);
+    gates.forEach(function(gx,gi){
+      addSign('FESTAC TOWN. '+ge[gi],'#1f6f43','#f2d36b',gx,4.2,-12.6,0,11,0.9);
+      box(gx,0.05,-37.5,8,0.08,49,'#4a4d52');
+      box(gx+7.4,1.4,-15.4,2.4,2.8,2.4,'#e8e4da');box(gx+7.4,2.9,-15.4,2.8,0.2,2.8,'#1f6f43');solid(gx+7.4,-15.4,2.6,2.6,3);
+      for(i=0;i<5;i++)box(gx,0.07,-20-i*9,0.2,0.012,3,'#e9c46a');
+    });
+    var PAL=['#e8dcc0','#d9c9a0','#cfd8c4','#e4d0c0','#d6dce6'];
+    var bz=[-26,-38,-50],bx,bi=0;
+    bz.forEach(function(z,ri){
+      for(bx=-6376;bx>=-6578;bx-=13){
+        var skip=false;gates.forEach(function(gx){if(Math.abs(bx-gx)<9)skip=true;});
+        if(skip)continue;
+        bi++;
+        box(bx,4.5,z,9,9,7,PAL[(bi+ri)%5]);box(bx,9.15,z,9.5,0.3,7.5,'#7a7468');box(bx,5.6,z+3.55,8,1.1,0.1,'#4a5a6a');
+        solid(bx,z,9,7,9.4);
+      }
+    });
+    addSign('FESTAC TOWN. 5000 HOMES. 7 AVENUES','#14161a','#f2d36b',-6472,6.2,-61.6,0,14,0.9);
+    [[-6377,-17],[-6578,-17],[-6377,-58],[-6578,-58],[-6434,-17],[-6510,-17]].forEach(function(p){tree(p[0],p[1]);});
+    FZB.estGates=gates;
+  })();
+  row('S',[-6592,-6601],NMF);
+  FZB.agboju=SHP({face:'S',x:-6630,z:-16.5,w:36,d:9,floors:3,name:'AGBOJU MARKET',sbg:'#c1352d',sfg:'#ffffff',aw:'#c1352d',wall:'#efe7d4'});
+  FZB.alaba=SHP({face:'S',x:-6668,z:-16.5,w:28,d:9,floors:3,name:'ALABA ELECTRONICS PLAZA',sbg:'#2f6fb1',sfg:'#ffffff',aw:'#2f6fb1',wall:'#f4f1e8'});
+  /* ---------- ALABA: the walled electronics market yard on the north side ---------- */
+  (function(){
+    var x0=-6802,x1=-6692,gc=-6747;
+    wallX(-13,x0,x1,gc,12);wallZ(x0,-62,-13);wallZ(x1,-62,-13);wallX(-62,x0,x1);
+    pave((x0+x1)/2,-37.5,x1-x0,49,'#a89d86');
+    [-24,-34,-44].forEach(function(sz,ri){for(j=0;j<17;j++){var sx=-6697-j*6.4;if(sx<-6797)break;if(Math.abs(sx-gc)<3.8)continue;stall(sx,sz,j+ri*2+4);}});
+    addSign('ALABA INTERNATIONAL MARKET. ELECTRONICS','#2f6fb1','#ffffff',gc,4.6,-12.6,0,12,0.9);
+    [[-6798,-17],[-6696,-17],[-6798,-58],[-6696,-58]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  rowStep('S',-6815,-6842,NML);
+  rowStep('S',-6860,-6968,NMO,13);
+  /* ---------- OKOKOMAIKO: a market yard on the north side ---------- */
+  (function(){
+    var x0=-7125,x1=-7040,gc=-7082;
+    wallX(-13,x0,x1,gc,10);wallZ(x0,-62,-13);wallZ(x1,-62,-13);wallX(-62,x0,x1);
+    pave((x0+x1)/2,-37.5,x1-x0,49,'#a89d86');
+    [-26,-37].forEach(function(sz,ri){for(j=0;j<14;j++){var sx=-7044-j*6;if(sx<-7121)break;if(Math.abs(sx-gc)<3.4)continue;stall(sx,sz,j+ri*3+2);}});
+    addSign('OKOKOMAIKO MARKET','#7a3b2a','#f2d36b',gc,4.6,-12.6,0,8,0.9);
+    [[-7121,-17],[-7044,-17]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  row('S',[-7140,-7149,-7158],NMO);
+  /* ---------- FESTAC, south side: the mall with its car park, the Trade Fair front ---------- */
+  row('N',[-6290,-6299,-6308],NMF);
+  FZB.mall=SHP({face:'N',x:-6345,z:16.5,w:40,d:9,floors:3,name:'FESTIVAL MALL. CINEMA. SUPERMARKET',sbg:'#7a2e65',sfg:'#f2d36b',aw:'#7a2e65',wall:'#f1ede2'});
+  (function(){
+    pave(-6345,31,60,18,'#8a8576');
+    var cc=['#e8e4da','#c1352d','#2f6fb1','#1c1c1e','#9ea3a8','#d9a520'];
+    for(r=0;r<2;r++)for(i=0;i<7;i++){var cxp=-6368+i*7.6;box(cxp,0.7,26+r*7,4.3,1.1,1.8,cc[(i+r*3)%6]);box(cxp,1.4,26+r*7,2.4,0.7,1.6,'#9ec3d8');}
+    [26,33].forEach(function(rz){solid(-6345,rz,56,2.0,1.6);});
+    [-6374,-6316].forEach(function(px){box(px,1.5,22.4,0.3,3.0,0.3,'#555');});
+    addSign('FESTIVAL MALL. CINEMA. FREE PARKING','#7a2e65','#f2d36b',-6345,3.4,22.4,Math.PI,14,0.9);
+    [[-6376,40],[-6314,40]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  row('N',[-6376,-6385],NMF);
+  FZB.tfair=SHP({face:'N',x:-6420,z:16.5,w:30,d:9,floors:2,name:'TRADE FAIR AUTO PARTS HALL',sbg:'#e07a1f',sfg:'#14161a',aw:'#e07a1f',wall:'#e8e4da'});
+  FZB.motel=SHP({face:'N',x:-6458,z:16.5,w:24,d:9,floors:2,name:'TRADE FAIR MOTEL',sbg:'#1f3a68',sfg:'#f2d36b',aw:'#1f3a68',wall:'#f4efe0'});
+  /* ---------- the Trade Fair Complex: a walled compound with halls, chalets and a fountain ---------- */
+  (function(){
+    var x0=-6640,x1=-6480,gc=-6560;
+    wallX(13,x0,x1,gc,12);wallZ(x0,13,40);wallZ(x1,13,40);wallX(40,x0,x1);
+    pave((x0+x1)/2,26.5,x1-x0,27,'#b2a88f');
+    addSign('LAGOS INTERNATIONAL TRADE FAIR COMPLEX','#1f6f43','#ffffff',gc,4.6,12.6,Math.PI,13,0.9);
+    [[-6500,'HALL 1'],[-6530,'HALL 2'],[-6590,'HALL 3'],[-6620,'HALL 4']].forEach(function(h){
+      box(h[0],3.2,33.5,24,6.4,8,'#d9d4c8');box(h[0],6.6,33.5,24.6,0.4,8.6,'#7a7468');box(h[0],2.4,29.4,18,3.2,0.1,'#6e8aa0');
+      addSign(h[1],'#14161a','#f2d36b',h[0],5.4,29.3,Math.PI,5,0.7);solid(h[0],33.5,24,8,6.8);
+    });
+    for(i=0;i<5;i++){[-6628+i*9,-6538+i*9].forEach(function(cx){box(cx,1.4,20.4,4.4,2.8,3.4,'#f1ede2');box(cx,2.95,20.4,4.8,0.3,3.8,'#c1352d');box(cx,1.1,18.6,0.9,1.6,0.1,'#6b4a2a');solid(cx,20.4,4.4,3.4,3);});}
+    cyl(-6560,0.4,28,6,0.8,6,'#8a8576');cyl(-6560,0.82,28,5.2,0.1,5.2,'#3d6860');cyl(-6560,1.6,28,0.6,1.6,0.6,'#d9d2c2');solid(-6560,28,6,6,0.9);
+    addSign('MOTEL. 100 CHALETS','#1f3a68','#f2d36b',-6583,3.4,22.5,Math.PI,8,0.8);
+    [[-6636,16],[-6484,16],[-6636,38],[-6484,38]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  /* ---------- ALABA, south side ---------- */
+  rowStep('N',-6652,-6742,NML);
+  /* an arch over the road: Ojo and Alaba */
+  [-7.6,7.6].forEach(function(az){box(-6770,3.2,az,0.8,6.4,0.8,'#6f6c64');solid(-6770,az,1,1,6.4);});
+  box(-6770,6.6,0,0.8,0.9,16.4,'#2f6fb1');
+  addSign('ALABA. OJO. OKOKOMAIKO','#2f6fb1','#ffffff',-6769.55,6.6,0,Math.PI/2,10,0.8);
+  addSign('FESTAC. MILE 2. LAGOS','#2f6fb1','#ffffff',-6770.45,6.6,0,-Math.PI/2,10,0.8);
+  rowStep('N',-6790,-6988,NMO,12);
+  /* ---------- OKOKOMAIKO: the bus park ---------- */
+  FZB.park=SHP({face:'N',x:-7050,z:16.5,w:30,d:9,floors:2,name:'OKOKOMAIKO BUS PARK OFFICE',sbg:'#f2b705',sfg:'#14161a',aw:'#f2b705',wall:'#f1ede2'});
+  (function(){
+    var cx=-7050;
+    pave(cx,31,104,18,'#8a8576');
+    for(r=0;r<2;r++)for(i=0;i<5;i++)danfo(cx-44+i*20+r*3,26+r*8,(i+r)%2?0:Math.PI);
+    [26,34].forEach(function(rz){solid(cx+1,rz,90,2.4,2.6);});
+    [-7100,-7000].forEach(function(px){box(px,1.5,22.4,0.3,3.0,0.3,'#555');});
+    addSign('OKOKOMAIKO BUS PARK. BUSES TO MILE 2 AND LAGOS','#f2b705','#14161a',cx,3.4,22.4,Math.PI,18,0.9);
+    [[-7102,39],[-6998,39]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  rowStep('N',-7085,-7094,NMO);
+  /* ---------- the Blue Line Phase 2 station site at Okokomaiko ---------- */
+  (function(){
+    var x0=-7182,x1=-7108,gc=-7145;
+    wallX(13,x0,x1,gc,12);wallZ(x0,13,60);wallZ(x1,13,60);wallX(60,x0,x1);
+    pave((x0+x1)/2,36.5,x1-x0,47,'#a8906a');
+    addSign('OKOKOMAIKO STATION. BLUE LINE PHASE 2. WORKS','#e0a020','#14161a',gc,3.0,12.6,Math.PI,18,0.9);
+    /* the platform skeleton: columns, a slab and a roof frame */
+    for(i=0;i<6;i++){box(x0+12+i*10,2.0,38.5,0.7,4.0,0.7,'#8a8f94');solid(x0+12+i*10,38.5,0.8,0.8,4);}
+    box(-7145,4.1,38.5,60,0.5,5.4,'#b7ad98');
+    for(i=0;i<6;i++)box(x0+12+i*10,7.4,38.5,0.3,6.0,0.3,'#e0a020');
+    box(-7145,10.4,38.5,60,0.3,5.4,'#e0a020');
+    lb(x1,x0+4,0.04,43.6,0.06,0.15,'#555');lb(x1,x0+4,0.04,45.4,0.06,0.15,'#555');
+    box(x0+3.5,1.0,44.5,0.8,2.0,3,'#c1352d');solid(x0+3.5,44.5,0.8,3,2);
+    box(-7140,18,22,1.6,36,1.6,'#e0a020');solid(-7140,22,2,2,36);box(-7140,37,22,40,1.2,1.2,'#e0a020');box(-7120,35.4,22,1.4,2.6,1.4,'#7a7468');
+    [[-7170,52],[-7155,52]].forEach(function(p){box(p[0],1.4,p[1],8,2.8,3.2,'#e8e4da');box(p[0],2.9,p[1],8.4,0.2,3.6,'#7a7468');solid(p[0],p[1],8,3.2,3);});
+    for(i=0;i<3;i++){box(-7120,0.35+i*0.4,52,10,0.3,1.4,'#7a3b2a');}solid(-7120,52,10,1.6,1.2);
+    addSign('OKOKOMAIKO. PHASE 2 TERMINUS','#1f5fa8','#ffffff',-7145,3.6,15.6,Math.PI,12,0.8);
+  })();
+  /* ---------- the Phase 2 track works along the back of the south side, from the Mile 2 platform on to Okokomaiko ---------- */
+  lb(-6284,-7108,0.04,43.6,0.06,0.15,'#555');lb(-6284,-7108,0.04,45.4,0.06,0.15,'#555');
+  for(wx=-6289;wx>=-7106;wx-=4.8)box(wx,0.02,44.5,0.5,0.05,2.6,'#6b5a45');
+  for(wx=-6320;wx>=-7090;wx-=140)lump(wx,0.5,49,4,1,2.2,'#b79a6a');
+  [-6330,-6560,-6850].forEach(function(px){box(px,1.2,50.4,0.2,2.4,0.2,'#555');addSign('BLUE LINE PHASE 2. MILE 2 TO OKOKOMAIKO. TRACK WORKS','#e0a020','#14161a',px,2.2,50.4,Math.PI,10,0.8);});
+  /* a gantry with the directions, and the end of the road */
+  [-7.4,7.4].forEach(function(gz){box(-6965,3.4,gz,0.5,6.8,0.5,'#555');solid(-6965,gz,0.6,0.6,6.8);});
+  box(-6965,6.9,0,0.5,0.5,15.4,'#555');
+  addSign('OKOKOMAIKO. AGBOJU. BADAGRY','#1f6f43','#ffffff',-6964.7,5.6,-3.2,Math.PI/2,6,0.9);addSign('FESTAC. MILE 2. APAPA','#1f6f43','#ffffff',-6964.7,5.6,3.4,Math.PI/2,5,0.9);
+  addSign('ALABA. FESTAC. LAGOS ISLAND','#1f6f43','#ffffff',-6965.3,5.6,0,-Math.PI/2,9,0.9);
+  [0.55,0.95].forEach(function(by,i){box(-7185,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
+  [-4.7,4.7].forEach(function(bz){box(-7185,0.6,bz,0.3,1.2,0.3,'#555');});
+  solid(-7188,0,6,134,2);box(-7187,1.2,0,0.4,2.4,134,'#8a7a60');
+  addSign('LAGOS-BADAGRY EXPRESSWAY. WORKS AHEAD. ROAD CLOSED','#f2b705','#141414',-7184.7,1.9,0,Math.PI/2,3.8,0.9);
+  /* ---------- street furniture ---------- */
+  var lx;
+  for(lx=-6286;lx>=-7180;lx-=22){if(lx<-6954&&lx>-6976)continue;if(Math.abs(lx+6770)<4||Math.abs(lx-11+6770)<4)continue;lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
+  var pxs=[];for(lx=-6306;lx>=-7180;lx-=28){if(lx<-6950&&lx>-6980)continue;pxs.push(lx);}
+  poleLine(pxs,-6.4,3);
+  OJB.busStop(-6340,8.6,Math.PI,'FESTIVAL MALL');OJB.busStop(-6397,-8.6,0,'FESTAC FIRST GATE');OJB.busStop(-6430,8.6,Math.PI,'TRADE FAIR');OJB.busStop(-6550,-8.6,0,'FESTAC THIRD GATE');
+  OJB.busStop(-6635,-8.6,0,'AGBOJU');OJB.busStop(-6700,8.6,Math.PI,'ALABA');OJB.busStop(-6747,-8.6,0,'ALABA MARKET');OJB.busStop(-6900,8.6,Math.PI,'OJO ROAD');
+  OJB.busStop(-7050,-8.6,0,'OKOKOMAIKO');OJB.busStop(-7060,8.6,Math.PI,'BUS PARK');
+  [[-6330,-8.4,0.2],[-6500,8.6,3.2],[-6680,-8.6,0.1],[-6850,8.4,3.3],[-7000,-8.4,0.2],[-7150,8.4,3.2]].forEach(function(o){okada(o[0],o[1],o[2]);});
+  FZB.done=1;
+})();
+
+CHK=CHK_SAVE13;
+/* ---- b59: seven places in Festac, the Trade Fair, Alaba and Okokomaiko you can walk into: the estate office, the mall and cinema, the auto parts hall, the motel, Agboju market, the electronics plaza and the bus park office ---- */
+var FZR={efest:[2960,-42],efmall:[2960,-14],etfair:[2960,14],etmotel:[2960,42],eagboju:[3025,-42],ealaba:[3025,-14],eokpark:[3025,14]};
+(function(){
+  function table(x,z,col,w,d){w=w||1.5;d=d||0.95;box(x,0.75,z,w,0.08,d,col||'#8a6a45');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.37,z+p[1]*(d/2-0.1),0.08,0.74,0.08,'#3a2a1c');});solid(x,z,w,d,0.8);}
+  function plant(x,z,s){s=s||1;cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  function counter(x,z,w,col){box(x,0.55,z,w,1.1,0.8,col||'#2b2118');box(x,1.14,z,w+0.2,0.1,1.0,'#e9e4d6');solid(x,z,w+0.2,1.0,1.2);}
+  function bench(x,z,w,col){box(x,0.45,z,w,0.1,0.6,col||'#8a6a45');box(x-w/2+0.2,0.22,z,0.1,0.44,0.5,'#5a4631');box(x+w/2-0.2,0.22,z,0.1,0.44,0.5,'#5a4631');solid(x,z,w,0.6,0.5);}
+  function disc(x,y,z,r,col){cyl(x,y,z,r*2,0.1,r*2,col,Math.PI/2);}
+  var WARE=['#c1352d','#e07a1f','#2f6fb1','#d9a520','#2a7a4a','#7a2e65'];
+  function wares(x,z,w,i){box(x,0.5,z,w,1.0,1.5,'#8a6a45');box(x,1.04,z,w-0.2,0.08,1.3,'#d9d2c2');var n=Math.floor(w/1.1),q;for(q=0;q<n;q++)lump(x-w/2+0.65+q*1.1,1.3,z,0.8,0.5,0.9,WARE[(i+q)%6]);solid(x,z,w,1.5,1.2);}
+  /* a shelf unit along a wall: a frame with three shelves of goods */
+  function shelf(x,z,w,d,seed){box(x,1.1,z,w,2.2,d,'#6e6a60');[0.5,1.1,1.7].forEach(function(h,hi){var n=Math.floor(w/0.7),q;for(q=0;q<n;q++)box(x-w/2+0.45+q*0.7,h+0.3,z+(d>0.8?0:0),0.5,0.4,d+0.06,WARE[(q+hi*2+seed)%6]);});solid(x,z,w,d,2.2);}
+  /* ----- THE FESTAC TOWN ESTATE OFFICE ----- */
+  (function(){
+    var cx=FZR.efest[0],cz=FZR.efest[1],W=28,D=22,H=4.8,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('efest',cx,cz,W,D,H,{floor:'#c9c2b0',wall:'#edf1e8',trim:'#1f6f43',ceil:'#f6f3ea'},{out:'efestd',nm:'FESTAC TOWN ESTATE OFFICE',doorX:cx-10});
+    box(X(0),1.9,Z(-10.7),W-2,3.8,0.3,'#dcd7c8');
+    counter(X(-7),Z(-8),9,'#1f6f43');box(X(-7),1.9,Z(-8.2),9,1.4,0.06,'#9ec3d8');
+    counter(X(9),Z(-8),6,'#7a3b2a');
+    addSign('ESTATE RECORDS','#1f6f43','#ffffff',X(-7),3.0,Z(-10.4),0,5,0.6);
+    addSign('TEA AND SNACKS','#7a3b2a','#f2d36b',X(9),3.0,Z(-10.4),0,4.4,0.6);
+    addSign('FESTAC TOWN ESTATE OFFICE','#14161a','#f2d36b',X(1),4.0,Z(-10.4),0,12,0.7);
+    /* the festival wall: a board with the seven avenues */
+    box(X(-13.8),2.2,Z(-0.5),0.1,2.6,9,'#e8e4da');addSign('FESTAC 77. THE SECOND WORLD BLACK AND AFRICAN FESTIVAL OF ARTS AND CULTURE','#1f6f43','#f2d36b',X(-13.7),3.2,Z(-0.5),Math.PI/2,8.4,0.7);
+    for(i=0;i<7;i++)addSign((i+1)+(i===0?'ST':i===1?'ND':i===2?'RD':'TH')+' AVENUE','#e8e4da','#14161a',X(-13.7),2.3-i*0.0,Z(-4+i*1.3),Math.PI/2,1.2,0.5);
+    /* a model of the estate on a table: seven streets and many little blocks */
+    box(X(0),0.75,Z(3.4),7,0.12,3.2,'#d9d2c2');for(i=0;i<7;i++)box(X(-2.8+i*0.93),0.84,Z(3.4),0.12,0.04,3.0,'#4a4d52');
+    for(i=0;i<5;i++)for(var j=0;j<6;j++)box(X(-2.4+j*0.93),0.98,Z(2.4+i*0.5),0.55,0.25,0.3,'#c9b08a');
+    solid(X(0),Z(3.4),7,3.2,1.2);
+    [[-8,-1],[-8,1.2],[8,-1],[8,1.2],[8,3.4]].forEach(function(p){bench(X(p[0]),Z(p[1]+6),3.4,'#1f6f43');});
+    plant(X(-13),Z(-9.5));plant(X(13),Z(9));
+  })();
+  /* ----- THE FESTIVAL MALL, CINEMA AND SUPERMARKET ----- */
+  (function(){
+    var cx=FZR.efmall[0],cz=FZR.efmall[1],W=36,D=24,H=6,X=function(v){return cx+v;},Z=function(v){return cz+v;},i,j;
+    ROOMFN('efmall',cx,cz,W,D,H,{floor:'#d8d2c6',wall:'#f4eef2',trim:'#7a2e65',ceil:'#faf6fa'},{out:'efmalld',nm:'FESTIVAL MALL. CINEMA. SUPERMARKET',doorX:cx-10});
+    box(X(0),2.4,Z(-11.7),W-2,4.8,0.3,'#e6dde4');
+    counter(X(-11),Z(-10),8,'#7a2e65');counter(X(0),Z(-10),8,'#c1352d');counter(X(12.5),Z(-10),8,'#2a7a4a');
+    addSign('CINEMA TICKETS','#7a2e65','#f2d36b',X(-11),3.4,Z(-11.5),0,6.4,0.7);addSign('POPCORN AND DRINKS','#c1352d','#ffffff',X(0),3.4,Z(-11.5),0,7,0.7);addSign('SUPERMARKET TILL','#2a7a4a','#ffffff',X(12.5),3.4,Z(-11.5),0,7,0.7);
+    addSign('FESTIVAL MALL','#14161a','#f2d36b',X(0),5.2,Z(-11.5),0,14,0.8);
+    /* the screen doors and posters on the left wall */
+    box(X(-17.8),1.7,Z(-3),0.12,3.4,3.6,'#3a2448');addSign('SCREEN 1. OPENING SOON','#7a2e65','#f2d36b',X(-17.7),3.6,Z(-3),Math.PI/2,4.4,0.6);
+    box(X(-17.8),1.7,Z(3),0.12,3.4,3.6,'#3a2448');addSign('SCREEN 2. OPENING SOON','#7a2e65','#f2d36b',X(-17.7),3.6,Z(3),Math.PI/2,4.4,0.6);
+    /* supermarket shelves on the right */
+    shelf(X(10),Z(-2),9,0.9,0);shelf(X(10),Z(1.6),9,0.9,2);shelf(X(10),Z(5.2),9,0.9,4);
+    /* lobby seating and a column of plants */
+    [[-9,-1],[-9,3],[-4,-1],[-4,3]].forEach(function(p){bench(X(p[0]),Z(p[1]+2),3.4,'#7a2e65');});
+    plant(X(-16.5),Z(-10.5));plant(X(16.5),Z(10.5));plant(X(-16.5),Z(10.5));
+  })();
+  /* ----- THE TRADE FAIR AUTO PARTS HALL ----- */
+  (function(){
+    var cx=FZR.etfair[0],cz=FZR.etfair[1],W=30,D=22,H=5,X=function(v){return cx+v;},Z=function(v){return cz+v;},i,j;
+    ROOMFN('etfair',cx,cz,W,D,H,{floor:'#b9b3a6',wall:'#e8e4da',trim:'#e07a1f',ceil:'#f1eee6'},{out:'etfaird',nm:'TRADE FAIR AUTO PARTS HALL',doorX:cx-10});
+    box(X(0),2.0,Z(-10.7),W-2,4.0,0.3,'#d6d1c4');
+    counter(X(-7),Z(-8),9,'#e07a1f');counter(X(9),Z(-8),6,'#b8860b');
+    addSign('SPARE PARTS DESK','#e07a1f','#14161a',X(-7),3.0,Z(-10.4),0,6.4,0.6);addSign('JEWELLERY','#b8860b','#14161a',X(9),3.0,Z(-10.4),0,4,0.6);
+    addSign('TRADE FAIR AUTO PARTS HALL','#14161a','#f2d36b',X(1),4.0,Z(-10.4),0,12,0.7);
+    /* tyre stacks and oil drums along the side walls */
+    for(j=0;j<3;j++){for(i=0;i<5;i++)cyl(X(-12.5+j*1.3),0.2+i*0.34,Z(-1+0.0),1.1,0.32,1.1,'#1c1c20');solid(X(-12.5+j*1.3),Z(-1),1.2,1.2,1.7);}
+    for(i=0;i<6;i++){cyl(X(13),0.5,Z(-4+i*1.1),0.85,1.0,0.85,['#c1352d','#2f6fb1','#2a7a4a'][i%3]);}solid(X(13),Z(-1.5),1.0,6.4,1.0);
+    /* shelves of batteries and brake parts, and two cars up on blocks */
+    shelf(X(-6),Z(2.5),8,0.9,1);shelf(X(5),Z(2.5),8,0.9,3);
+    [-1,1].forEach(function(s){var bx=X(-4+s*8.5),bz=Z(6.4);box(bx,0.5,bz,4.2,0.8,1.8,['#9ea3a8','#2f6fb1'][s>0?1:0]);box(bx,1.1,bz,2.4,0.6,1.6,'#9ec3d8');solid(bx,bz,4.2,1.8,1.4);});
+    addSign('BALOGUN TRADERS MOVED HERE IN 2002','#14161a','#f2d36b',X(-14.7),2.6,Z(6),Math.PI/2,6,0.6);
+    plant(X(-13.5),Z(-9.5));plant(X(13.5),Z(9.5));
+  })();
+  /* ----- THE TRADE FAIR MOTEL ----- */
+  (function(){
+    var cx=FZR.etmotel[0],cz=FZR.etmotel[1],W=24,D=18,H=4.4,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('etmotel',cx,cz,W,D,H,{floor:'#d8cbb0',wall:'#f2ece0',trim:'#1f3a68',ceil:'#faf8f4'},{out:'etmoteld',nm:'TRADE FAIR MOTEL',doorX:cx-9});
+    box(X(0),1.8,Z(-8.7),W-2,3.6,0.3,'#e4dccb');
+    counter(X(-6),Z(-6),8,'#1f3a68');counter(X(7),Z(-6),6,'#7a3b2a');
+    addSign('RECEPTION. CHALETS','#1f3a68','#f2d36b',X(-6),2.9,Z(-8.4),0,6,0.6);addSign('BREAKFAST','#7a3b2a','#ffffff',X(7),2.9,Z(-8.4),0,3.4,0.5);
+    addSign('TRADE FAIR MOTEL. 100 CHALETS','#14161a','#f2d36b',X(0),3.9,Z(-8.4),0,11,0.6);
+    /* a key board and the chalet doors down the right wall */
+    box(X(-6),2.3,Z(-8.5),2.2,0.9,0.08,'#6e4a2a');for(i=0;i<8;i++)box(X(-6.9+i*0.26),2.3,Z(-8.43),0.08,0.3,0.05,'#d9a520');
+    for(i=0;i<4;i++){box(X(11.8),1.1,Z(-2+i*2.6),0.12,2.2,1.4,'#5a3a1c');addSign('CHALET '+(i+1),'#e8e4da','#14161a',X(11.7),2.5,Z(-2+i*2.6),-Math.PI/2,1.3,0.4);}
+    [[-5,2.5],[-5,4.8],[2,2.5],[2,4.8]].forEach(function(p){bench(X(p[0]),Z(p[1]),3.4,'#1f3a68');});
+    plant(X(-10.5),Z(-7.4));plant(X(10.5),Z(7.4));
+  })();
+  /* ----- AGBOJU MARKET HALL ----- */
+  (function(){
+    var cx=FZR.eagboju[0],cz=FZR.eagboju[1],W=34,D=24,H=5.4,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('eagboju',cx,cz,W,D,H,{floor:'#cdbfa6',wall:'#f1e9d8',trim:'#c1352d',ceil:'#faf6ea'},{out:'eagbojud',nm:'AGBOJU MARKET',doorX:cx-10});
+    box(X(0),2.0,Z(-11.7),W-2,4.0,0.3,'#eadfc8');
+    [[-10,'#2f6fb1','FROZEN FISH AND MEAT',9],[2,'#d9a520','FRIED FOOD',8],[12,'#7a3b2a','HOUSEHOLD',8]].forEach(function(c){
+      counter(X(c[0]),Z(-10),c[3],c[1]);addSign(c[2],c[1],c[1]==='#d9a520'?'#14161a':'#ffffff',X(c[0]),3.9,Z(-11.5),0,c[3]+0.8,0.8);
+    });
+    addSign('AGBOJU MARKET. FESTAC','#14161a','#f2d36b',X(0),4.8,Z(-11.5),0,14,0.6);
+    [[-11,-3.5],[-4,-3.5],[3,-3.5],[10,-3.5],[-11,2.6],[-4,2.6],[3,2.6],[10,2.6]].forEach(function(t,ti){wares(X(t[0]),Z(t[1]),4.4,ti+2);});
+    [[-15.5,7],[15.5,7]].forEach(function(p){for(i=0;i<3;i++)box(X(p[0]),0.4+i*0.5,Z(p[1]),1.4,0.45,0.9,'#d9c9a0');solid(X(p[0]),Z(p[1]),1.4,0.9,1.5);});
+    plant(X(-16),Z(-10.5));plant(X(16),Z(10.5));
+  })();
+  /* ----- THE ALABA ELECTRONICS PLAZA ----- */
+  (function(){
+    var cx=FZR.ealaba[0],cz=FZR.ealaba[1],W=32,D=22,H=5,X=function(v){return cx+v;},Z=function(v){return cz+v;},i,j;
+    ROOMFN('ealaba',cx,cz,W,D,H,{floor:'#c9ced4',wall:'#e8eef4',trim:'#2f6fb1',ceil:'#f6f9fc'},{out:'ealabad',nm:'ALABA ELECTRONICS PLAZA',doorX:cx-10});
+    box(X(0),2.0,Z(-10.7),W-2,4.0,0.3,'#d6dde6');
+    counter(X(-8),Z(-8),9,'#2f6fb1');counter(X(8),Z(-8),9,'#14161a');
+    addSign('PHONE ACCESSORIES','#2f6fb1','#ffffff',X(-8),3.0,Z(-10.4),0,6.4,0.6);addSign('TV AND APPLIANCES','#14161a','#f2d36b',X(8),3.0,Z(-10.4),0,6.4,0.6);
+    addSign('ALABA ELECTRONICS PLAZA','#14161a','#f2d36b',X(0),4.2,Z(-10.4),0,12,0.7);
+    /* a wall of television screens and fridges against the left side */
+    for(i=0;i<4;i++)for(j=0;j<2;j++){box(X(-14.7),1.2+j*1.4,Z(-4+i*2.2),0.12,1.0,1.9,'#14161a');box(X(-14.62),1.2+j*1.4,Z(-4+i*2.2),0.04,0.85,1.7,['#2f6fb1','#7a2e65','#2a7a4a','#c1352d'][(i+j)%4]);}
+    solid(X(-14.7),Z(0.5),0.3,9.2,2.6);
+    for(i=0;i<3;i++){box(X(14.5),1.0,Z(-2+i*1.6),1.0,2.0,1.4,'#e8e4da');box(X(13.98),1.0,Z(-2+i*1.6),0.04,1.8,1.3,'#cfd6dc');}
+    solid(X(14.5),Z(0.4),1.2,4.8,2.0);
+    /* a repair bench with parts, and display tables of gadgets */
+    table(X(-4),Z(1.5),'#3a3a40',5,1.2);table(X(5),Z(1.5),'#3a3a40',5,1.2);
+    for(i=0;i<5;i++){box(X(-6+i*1.0),0.9,Z(1.5),0.4,0.1,0.7,['#14161a','#c1352d','#2f6fb1'][i%3]);box(X(3+i*1.0),0.9,Z(1.5),0.4,0.1,0.7,['#14161a','#2a7a4a','#d9a520'][i%3]);}
+    addSign('WE REPAIR HOME APPLIANCES','#c1352d','#ffffff',X(0),2.6,Z(7.5),Math.PI,10,0.6);
+    plant(X(-13.5),Z(-9.5));plant(X(13.5),Z(9.5));
+  })();
+  /* ----- THE OKOKOMAIKO BUS PARK OFFICE ----- */
+  (function(){
+    var cx=FZR.eokpark[0],cz=FZR.eokpark[1],W=28,D=20,H=4.6,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('eokpark',cx,cz,W,D,H,{floor:'#c4bfae',wall:'#f1ede2',trim:'#f2b705',ceil:'#f8f5ec'},{out:'eokparkd',nm:'OKOKOMAIKO BUS PARK OFFICE',doorX:cx-10});
+    box(X(0),1.8,Z(-9.7),W-2,3.6,0.3,'#dcd7c8');
+    counter(X(-7),Z(-7),9,'#f2b705');counter(X(9),Z(-7),6,'#7a3b2a');
+    addSign('TICKETS AND INFORMATION','#f2b705','#14161a',X(-7),2.9,Z(-9.4),0,7,0.6);addSign('SNACKS AND DRINKS','#7a3b2a','#ffffff',X(9),2.9,Z(-9.4),0,5,0.6);
+    addSign('OKOKOMAIKO BUS PARK','#14161a','#f2d36b',X(1),3.9,Z(-9.4),0,12,0.7);
+    /* the timetable board and the Blue Line Phase 2 map */
+    box(X(-13.8),2.2,Z(-1),0.1,1.8,6,'#e8e4da');addSign('BUSES TO MILE 2 AND LAGOS. 5 AM TO 9 PM','#14161a','#f2d36b',X(-13.7),2.7,Z(-1),Math.PI/2,5.6,0.6);
+    addSign('BLUE LINE PHASE 2. MILE 2 TO OKOKOMAIKO','#1f5fa8','#ffffff',X(-13.7),1.9,Z(-1),Math.PI/2,5.6,0.6);
+    [[-6,2.4],[-6,4.8],[0,2.4],[0,4.8],[6,2.4],[6,4.8]].forEach(function(p){bench(X(p[0]),Z(p[1]),3.4,'#f2b705');});
+    plant(X(-12.5),Z(-8.5));plant(X(12.5),Z(8));
   })();
 })();
 
@@ -6268,7 +6562,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-6300,XMAX=2960;
+var LIM=66,PR=0.38,XMIN=-7200,XMAX=3090;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -7104,8 +7398,8 @@ var LANES=[
   {x:AGX+2,z:63,h:Math.PI,speed:8,b:[AGX-4,AGX+4]},
   {x:-1002,z:-63,h:0,speed:7,b:[-1004,-996]},
   {x:-998,z:63,h:Math.PI,speed:8,b:[-1004,-996]},
-  {x:-6215,z:2.5,h:Math.PI/2,speed:8,b:[-6231,-3068]},
-  {x:-3080,z:-2.5,h:-Math.PI/2,speed:8,b:[-6231,-3068]}
+  {x:-7115,z:2.5,h:Math.PI/2,speed:8,b:[-7131,-3068]},
+  {x:-3080,z:-2.5,h:-Math.PI/2,speed:8,b:[-7131,-3068]}
 ];
 function regOf(x){return x>1000?4:(x>730?3:(x>500?2:(x>258?1:0)));}
 function grpOf(x){var r=regOf(x);return r===3?0:(r===4?1:r);}
@@ -7459,7 +7753,7 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';npcs[3].label='DELE';npcs[4].label='KUNLE';npcs[5].label='RONKE';npcs[6].label='OKON';
 var MW=480,MH=200,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
 mapBG.width=MW;mapBG.height=MH;
-var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338],[-2482,-1888],[-3044,-2448],[-3430,-3040],[-3790,-3400],[-4170,-3780],[-4580,-4160],[-5000,-4570],[-5430,-4990],[-5860,-5420],[-6300,-5860]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
+var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338],[-2482,-1888],[-3044,-2448],[-3430,-3040],[-3790,-3400],[-4170,-3780],[-4580,-4160],[-5000,-4570],[-5430,-4990],[-5860,-5420],[-6300,-5860],[-6740,-6300],[-7180,-6740]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
 function MX(x){var r=MR[mapReg];return (x-r[0])/(r[1]-r[0])*MW;}
 function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 (function(){
@@ -7547,7 +7841,7 @@ function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 
 
 var mapBG6=document.createElement('canvas');mapBG6.width=MW;mapBG6.height=MH;
-function mreg(x){return x<-5855?18:x<-5425?17:x<-4995?16:x<-4570?15:x<-4165?14:x<-3790?13:x<-3410?12:x<-3050?11:x<-2452?10:(x<-1892?9:(x<-1342?8:(x<-882?7:(x<-558?6:(x<-190?5:regOf(x))))));}
+function mreg(x){return x<-6735?20:x<-6295?19:x<-5855?18:x<-5425?17:x<-4995?16:x<-4570?15:x<-4165?14:x<-3790?13:x<-3410?12:x<-3050?11:x<-2452?10:(x<-1892?9:(x<-1342?8:(x<-882?7:(x<-558?6:(x<-190?5:regOf(x))))));}
 (function(){
   mapReg=5;var g=mapBG6.getContext('2d');
   g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
@@ -7714,8 +8008,8 @@ function drawTJ(mr,cv){
   g.fillStyle='#a8a08c';
   [[-5442,-5420,-67,67],[-5640,-5442,-58,67],[-6300,-5640,-67,67]].forEach(function(q){g.fillRect(MX(q[0]),MZ(q[2]),MX(q[1])-MX(q[0]),MZ(q[3])-MZ(q[2]));});
   g.fillStyle='#8d8a82';g.fillRect(MX(-6126),MZ(-67),MX(-6104)-MX(-6126),MZ(67)-MZ(-67));
-  g.fillStyle='#4a4d52';g.fillRect(MX(-6290),MZ(-5),MX(-5410)-MX(-6290),MZ(5)-MZ(-5));
-  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(MX(-6290),MZ(0));g.lineTo(MX(-5410),MZ(0));g.stroke();g.setLineDash([]);
+  g.fillStyle='#4a4d52';g.fillRect(MX(-7190),MZ(-5),MX(-5410)-MX(-7190),MZ(5)-MZ(-5));
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(MX(-7190),MZ(0));g.lineTo(MX(-5410),MZ(0));g.stroke();g.setLineDash([]);
   g.fillStyle='#c9b08a';
   for(i=0;i<solids.length;i++){
     var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
@@ -7725,11 +8019,28 @@ function drawTJ(mr,cv){
   mapReg=0;
 }
 drawTJ(17,mapBG18);drawTJ(18,mapBG19);
+var mapBG20=document.createElement('canvas');mapBG20.width=MW;mapBG20.height=MH;
+var mapBG21=document.createElement('canvas');mapBG21.width=MW;mapBG21.height=MH;
+function drawFZ(mr,cv){
+  mapReg=mr;var g=cv.getContext('2d'),r=MR[mr],i;
+  g.fillStyle='#a8a08c';g.fillRect(0,0,MW,MH);
+  g.fillStyle='#4a4d52';g.fillRect(MX(-7190),MZ(-5),MX(-6290)-MX(-7190),MZ(5)-MZ(-5));
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(MX(-7190),MZ(0));g.lineTo(MX(-6290),MZ(0));g.stroke();g.setLineDash([]);
+  g.fillStyle='#555';g.fillRect(MX(-7108),MZ(43.5),MX(-6284)-MX(-7108),MZ(45.5)-MZ(43.5));
+  g.fillStyle='#c9b08a';
+  for(i=0;i<solids.length;i++){
+    var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
+    if(q.maxX<r[0]||q.minX>r[1])continue;
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(r[1]-r[0])*MW),Math.max(2,d/(2*LIM)*MH));
+  }
+  mapReg=0;
+}
+drawFZ(19,mapBG20);drawFZ(20,mapBG21);
 function mapLabel(g,t,x,y){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(t,x,y);g.fillText(t,x,y);}
 function mapUpdate(dt){
   mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
-  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10,mapBG11,mapBG12,mapBG13,mapBG14,mapBG15,mapBG16,mapBG17,mapBG18,mapBG19][rg],0,0);
+  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10,mapBG11,mapBG12,mapBG13,mapBG14,mapBG15,mapBG16,mapBG17,mapBG18,mapBG19,mapBG20,mapBG21][rg],0,0);
   if(px>1250){g.fillStyle='rgba(10,10,12,0.78)';g.fillRect(0,0,MW,MH);g.fillStyle='#fff';g.font='bold 26px sans-serif';g.textAlign='center';g.fillText('INSIDE A BUILDING',MW/2,MH/2);return;}
   g.fillStyle='#1b1b1b';
   for(i=0;i<traffic.length;i++)if(mreg(traffic[i].x)===rg)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
@@ -13154,7 +13465,7 @@ ojTick=function(dt){_ojTick54(dt);mkCanoeTick(dt);};
    The layout, every person, shop, price and hour are invented. The facts people tell you are from public sources and are labelled. */
 (function(){
   var kinds=['danfo','okada','sedan','danfo','okada'],cols=['#e0c040','#2f6a8e','#d9d9d9','#c1352d','#8e2f2f'],k;
-  [2505,2640,2775,2915,3055].forEach(function(p,i){addVeh(kinds[i%5],26,p,cols[i%5]);});
+  [3405,3540,3675,3815,3955].forEach(function(p,i){addVeh(kinds[i%5],26,p,cols[i%5]);});
   [70,205,340,480,610].forEach(function(p,i){addVeh(kinds[(i+2)%5],27,p,cols[(i+1)%5]);});
 })();
 var ISP=[
@@ -13422,7 +13733,7 @@ function lhTour(){
    The layout, every person, shop, price and hour are invented. The facts people tell you are from public sources and are labelled. */
 (function(){
   var kinds=['danfo','okada','sedan','danfo','okada'],cols=['#e0c040','#2f6a8e','#d9d9d9','#c1352d','#8e2f2f'];
-  [1740,1910,2080,2250].forEach(function(p,i){addVeh(kinds[(i+1)%5],26,p,cols[(i+2)%5]);});
+  [2640,2810,2980,3150].forEach(function(p,i){addVeh(kinds[(i+1)%5],26,p,cols[(i+2)%5]);});
   [760,910,1060,1210,1360].forEach(function(p,i){addVeh(kinds[(i+3)%5],27,p,cols[(i+3)%5]);});
 })();
 var EBP=[
@@ -13688,7 +13999,7 @@ function buildTruck(col){
 }
 (function(){
   var kinds=['truck','danfo','sedan','truck','okada','sedan'],cols=['#e0c040','#2f6a8e','#d9d9d9','#c1352d','#8e2f2f','#f1efe6'];
-  [890,1020,1160,1300,1440,1580].forEach(function(p,i){addVeh(kinds[i%6],26,p,cols[(i+1)%6]);});
+  [1790,1920,2060,2200,2340,2480].forEach(function(p,i){addVeh(kinds[i%6],26,p,cols[(i+1)%6]);});
   [1520,1680,1830,1980,2130,2260].forEach(function(p,i){addVeh(kinds[(i+3)%6],27,p,cols[(i+2)%6]);});
 })();
 var APP=[
@@ -13956,7 +14267,7 @@ function thTour(){
    The layout, every person, shop, price, fare and hour are invented. The facts people tell you are from public sources and are labelled. */
 (function(){
   var kinds=['truck','danfo','sedan','truck','okada','sedan'],cols=['#e0c040','#2f6a8e','#d9d9d9','#c1352d','#8e2f2f','#f1efe6'];
-  [40,180,320,460,600,740].forEach(function(p,i){addVeh(kinds[(i+2)%6],26,p,cols[(i+3)%6]);});
+  [940,1080,1220,1360,1500,1640].forEach(function(p,i){addVeh(kinds[(i+2)%6],26,p,cols[(i+3)%6]);});
   [2380,2520,2660,2800,2940,3080].forEach(function(p,i){addVeh(kinds[(i+1)%6],27,p,cols[(i+4)%6]);});
 })();
 var TJP=[
@@ -14087,8 +14398,9 @@ function m2Ride(from){
 /* the bus attendant at Mile 2 */
 function m2BusMenu(msg){
   if(!isOpen(5,22)){openDlg('BUS ATTENDANT','The buses rest at night. They leave from 5 AM to 10 PM.',[{label:'OK'}]);return;}
-  openDlg('BUS ATTENDANT',(msg?msg+'  ':'')+'Mile 2 bus stop. Buses to Apapa Station take about half an hour. You have '+money(cash)+'.',[
+  openDlg('BUS ATTENDANT',(msg?msg+'  ':'')+'Mile 2 bus stop. Buses to Apapa Station take about half an hour. Buses to Okokomaiko take about forty-five minutes. You have '+money(cash)+'.',[
     {label:'BUS TO APAPA STATION '+money(TJFARE.bus),fn:function(){m2Bus('apapa');}},
+    {label:'BUS TO OKOKOMAIKO '+money(FZFARE.bus),fn:function(){okBus('ok');}},
     {label:'ABOUT MILE 2',fn:function(){isInfo('BUS ATTENDANT',TJF.mile2,m2BusMenu);}},
     {label:'ABOUT THE BUS',fn:function(){isInfo('BUS ATTENDANT',TJF.bus,m2BusMenu);}},
     {label:'BYE'}]);
@@ -14272,6 +14584,255 @@ function m2Bus(dest){
   IW('edigi',[-12,-0.5],[12,-0.5],[[9,17]],0.45);IW('edigi',[2,6],[12,6],[[9,17]],0.45);IW('edigi',[12.5,-6],[12.5,6],[[9,17]],0.4);
   IW('eajlg',[-15,-4.5],[15,-4.5],[[8,16]],0.45);IW('eajlg',[-15,0],[8,0],[[8,16]],0.45);IW('eajlg',[14.6,-6],[14.6,6.5],[[8,16]],0.4);
   IW('em2stn',[-14,-5],[14,-5],[[7,20]],0.45);IW('em2stn',[-14,-1],[6,-1],[[7,20]],0.45);IW('em2stn',[15.9,-6],[15.9,6.5],[[7,20]],0.4);
+})();
+
+/* ---- b59: Festac, the Trade Fair, Alaba and Okokomaiko people, opening hours, careers, the bus to Mile 2 and the traffic ----
+   The layout, every person, shop, price, fare and hour are invented. The facts people tell you are from public sources and are labelled. */
+(function(){
+  var kinds=['truck','danfo','sedan','truck','okada','sedan'],cols=['#e0c040','#2f6a8e','#d9d9d9','#c1352d','#8e2f2f','#f1efe6'];
+  [40,175,310,450,590,730,850].forEach(function(p,i){addVeh(kinds[(i+1)%6],26,p,cols[(i+2)%6]);});
+  [3150,3290,3430,3570,3710,3850,3990].forEach(function(p,i){addVeh(kinds[(i+3)%6],27,p,cols[(i+1)%6]);});
+})();
+var FZP=[
+  {k:'efestd',id:'efest',nm:'FESTAC TOWN ESTATE OFFICE',h:[8,16],x:-6345,z:-10.9,yaw:0,bx:-6345,bz:-11.85,br:0},
+  {k:'efmalld',id:'efmall',nm:'FESTIVAL MALL. CINEMA. SUPERMARKET',h:[10,22],x:-6345,z:10.9,yaw:Math.PI,bx:-6345,bz:11.85,br:Math.PI},
+  {k:'etfaird',id:'etfair',nm:'TRADE FAIR AUTO PARTS HALL',h:[8,18],x:-6420,z:10.9,yaw:Math.PI,bx:-6420,bz:11.85,br:Math.PI},
+  {k:'etmoteld',id:'etmotel',nm:'TRADE FAIR MOTEL',h:[0,24],x:-6458,z:10.9,yaw:Math.PI,bx:-6458,bz:11.85,br:Math.PI},
+  {k:'eagbojud',id:'eagboju',nm:'AGBOJU MARKET',h:[5,19],x:-6630,z:-10.9,yaw:0,bx:-6630,bz:-11.85,br:0},
+  {k:'ealabad',id:'ealaba',nm:'ALABA ELECTRONICS PLAZA',h:[8,19],x:-6668,z:-10.9,yaw:0,bx:-6668,bz:-11.85,br:0},
+  {k:'eokparkd',id:'eokpark',nm:'OKOKOMAIKO BUS PARK OFFICE',h:[5,21],x:-7050,z:10.9,yaw:Math.PI,bx:-7050,bz:11.85,br:Math.PI}
+];
+/* ---- facts (public sources, wording kept careful) ---- */
+var FZF={
+  festac:'Festac Town is a federal housing estate in Lagos, in Amuwo-Odofin Local Government Area. It was built to house visitors to FESTAC 77, the Second World Black and African Festival of Arts and Culture held in 1977. It has 5,000 dwelling units and seven major avenues, and was designed for up to 45,000 visitors. After the festival the Federal Government gave out the homes by ballot. The office, the clerks and the exhibition in this game are invented.',
+  gates:'Three main gates, the First, Second and Third, open from the Lagos-Badagry Expressway into the 1st, 2nd and 7th Avenues. The avenues are numbered 1st to 7th, minor roads branch from them, and the cul-de-sacs, called closes, are named alphabetically. The 6th Avenue is reached by a bridge from the 1st Avenue. The street plan in this game is invented.',
+  today:'In recent years Festac has gained commercial banks, shopping complexes, hotels and nightlife spots. A source says it is unclear who manages the estate, since the federal, state and local governments all claim it.',
+  mall:'A travel guide lists a large mall in Festac with cinemas. It says the cinema opens 10 AM to 10 PM and tickets cost about 800 to 2,500 naira. The mall, the films, the prices and the staff in this game are invented.',
+  markets:'A travel guide lists markets in Festac: Ahonsi market, also called the 23rd market and named as the biggest, Agboju market on 2nd Avenue, and Oyinlola Ifelodun market. It says bargaining is expected in the markets and that designer goods sold there are likely fake. The stalls, the traders and the prices in this game are invented.',
+  satellite:'Satellite Town lies along the Lagos-Badagry Expressway in Amuwo-Odofin. Lagos State set it up in early 1960 to help low-income earners own homes. Festac Town is its neighbour.',
+  tradefair:'The Lagos International Trade Fair Complex opened in 1977, to coincide with the first Lagos International Trade Fair. It covers 350 hectares in Satellite Town along the Lagos-Badagry Expressway, with twelve exhibition halls and a motel complex of 100 chalets. Traders in jewellery, auto spare parts and consumer goods moved there from Balogun Market on Lagos Island in 2002. The Federal Government owns it. Its infrastructure has been poorly maintained. The halls, the traders and the staff in this game are invented.',
+  alaba:'Alaba International Market is in Ojo, Lagos. It is called the largest electronics market in Nigeria, where traders sell electronic goods and repair home appliances. In June 2023 officials announced that structurally defective buildings there would be pulled down, and the Lagos State Building Control Agency named 17 buildings as beyond redemption. The plaza, the traders and the prices in this game are invented.',
+  ojo:'A 2020 report said the roads to the Alaba market, including Alaba, Aka and Okoko roads, were full of craters and flooded when it rained. People it interviewed said a drive of 20 minutes could take an hour and a half. Okokomaiko, Ajangbadi and Sabo are communities near the market.',
+  phase2:'Blue Line Phase 2 will run from Mile 2 to Okokomaiko. Construction began in 2023 and was expected to be finished in 2027. It will connect the line with the future Purple Line. The whole line is 27 km with 13 stations. West of Iganmu the line runs at ground level in the middle of the Lagos-Badagry Expressway. The station site, the stops and the trains here are invented, and no trains run yet.',
+  transport:'Yellow danfo buses and LAMATA buses run along the Lagos-Badagry Expressway, which is the main road and is often jammed. A travel guide gives danfo fares of about 100 to 1,000 naira depending on where you start. The park, the bus and the fare in this game are invented.'
+};
+var FZFARE={ticket:1500,bus:600};
+/* the estate office */
+function feMenu(msg){
+  openDlg('MRS ADAEZE (ESTATE CLERK)',(msg?msg+'  ':'')+'Festac Town Estate Office. Ask about the avenues, the gates and the festival.',[
+    {label:'SIT IN THE LOUNGE (FREE, 30 MIN)',fn:feSit},
+    {label:'ABOUT FESTAC TOWN',fn:function(){isInfo('MRS ADAEZE (ESTATE CLERK)',FZF.festac,feMenu);}},
+    {label:'ABOUT THE GATES AND AVENUES',fn:function(){isInfo('MRS ADAEZE (ESTATE CLERK)',FZF.gates,feMenu);}},
+    {label:'ABOUT FESTAC TODAY',fn:function(){isInfo('MRS ADAEZE (ESTATE CLERK)',FZF.today,feMenu);}},
+    {label:'BYE'}]);
+}
+function feSit(){applyFx({energy:2,fun:2,social:3});advanceHours(0.5);saveGame();chime();feMenu('You sit in the lounge and look over the model of the estate while others queue for their papers. Half an hour passes.');}
+/* the mall and the cinema */
+function mlMenu(msg){
+  openDlg('MISS LOLA (TICKET SELLER)',(msg?msg+'  ':'')+'Festival Mall cinema. A ticket is '+money(FZFARE.ticket)+' and the film runs two hours. You have '+money(cash)+'.',[
+    {label:'WATCH A FILM '+money(FZFARE.ticket),fn:mlWatch},
+    {label:'ABOUT THE MALL',fn:function(){isInfo('MISS LOLA (TICKET SELLER)',FZF.mall,mlMenu);}},
+    {label:'ABOUT THE MARKETS OF FESTAC',fn:function(){isInfo('MISS LOLA (TICKET SELLER)',FZF.markets,mlMenu);}},
+    {label:'BYE'}]);
+}
+function mlWatch(){
+  if(cash<FZFARE.ticket){buzz();mlMenu('A ticket is '+money(FZFARE.ticket)+'.');return;}
+  if(need.energy<12){buzz();mlMenu('You look too tired for a film. Rest first.');return;}
+  cash-=FZFARE.ticket;setCash();logTx('Cinema ticket',-FZFARE.ticket);
+  applyFx({fun:30,social:4,energy:-4,hunger:-6,bladder:-8});advanceHours(2);saveGame();chime();
+  mlMenu('The lights go down. You laugh in the funny parts and clap at the end with everyone else. Two hours go by.');
+}
+/* the Trade Fair auto parts hall */
+function tfMenu(msg){
+  openDlg('MR OKEY (SPARE PARTS DEALER)',(msg?msg+'  ':'')+'Trade Fair Auto Parts Hall. Brake pads, batteries, tyres. Ask for the price.',[
+    {label:'WALK THE HALL (FREE, 30 MIN)',fn:tfWalk},
+    {label:'ABOUT THE TRADE FAIR COMPLEX',fn:function(){isInfo('MR OKEY (SPARE PARTS DEALER)',FZF.tradefair,tfMenu);}},
+    {label:'ABOUT SATELLITE TOWN',fn:function(){isInfo('MR OKEY (SPARE PARTS DEALER)',FZF.satellite,tfMenu);}},
+    {label:'BYE'}]);
+}
+function tfWalk(){applyFx({energy:-2,fun:2,social:2});advanceHours(0.5);saveGame();chime();tfMenu('You walk the aisles past stacks of tyres, crates of batteries and traders calling out prices. Half an hour passes.');}
+/* the Alaba electronics plaza */
+function alMenu(msg){
+  openDlg('MR EMEKA (TV AND APPLIANCES)',(msg?msg+'  ':'')+'Alaba Electronics Plaza. Television, fridges, generators. We repair too.',[
+    {label:'LOOK AROUND THE PLAZA (FREE, 30 MIN)',fn:alLook},
+    {label:'ABOUT ALABA MARKET',fn:function(){isInfo('MR EMEKA (TV AND APPLIANCES)',FZF.alaba,alMenu);}},
+    {label:'ABOUT THE ROADS TO OJO',fn:function(){isInfo('MR EMEKA (TV AND APPLIANCES)',FZF.ojo,alMenu);}},
+    {label:'BYE'}]);
+}
+function alLook(){applyFx({energy:-2,fun:3,social:2});advanceHours(0.5);saveGame();chime();alMenu('You pass rows of screens playing the same football match and fridges stacked to the ceiling. Half an hour passes.');}
+/* the Okokomaiko bus park */
+function okMenu(msg){
+  if(!isOpen(5,21)){openDlg('MR LADI (BUS CLERK)','The park is quiet at night. Buses leave from 5 AM to 9 PM.',[{label:'OK'}]);return;}
+  openDlg('MR LADI (BUS CLERK)',(msg?msg+'  ':'')+'Okokomaiko Bus Park. Buses to Mile 2 take about forty-five minutes. You have '+money(cash)+'.',[
+    {label:'BUS TO MILE 2 '+money(FZFARE.bus),fn:function(){okBus('mile2');}},
+    {label:'ABOUT BLUE LINE PHASE 2',fn:function(){isInfo('MR LADI (BUS CLERK)',FZF.phase2,okMenu);}},
+    {label:'ABOUT THE BUSES',fn:function(){isInfo('MR LADI (BUS CLERK)',FZF.transport,okMenu);}},
+    {label:'BYE'}]);
+}
+function okBus(dest){
+  var why=phBlock();if(why){buzz();toast(why);return;}
+  if(!isOpen(5,21)){buzz();toast('The buses rest at night. They leave from 5 AM to 9 PM.');return;}
+  var fare=FZFARE.bus,toM=dest==='mile2';
+  if(cash<fare){buzz();if(toM)okMenu('E no reach! That ticket is '+money(fare)+'.');else m2BusMenu('E no reach! That ticket is '+money(fare)+'.');return;}
+  var n=toM?NK.m2bus.npc:NK.okbus.npc,nm=toM?'Mile 2':'Okokomaiko';
+  cash-=fare;setCash();logTx('Bus ticket to '+nm,-fare);saveGame();
+  fadeSeq('The bus to '+nm+'...',function(){
+    var sp=spotNear(n);player.x=sp[0];player.z=sp[1];player.speed=0;player.yaw=Math.atan2(n.x-sp[0],n.z-sp[1]);camYaw=player.yaw+Math.PI;camSnap=true;
+    advanceHours(0.75);gain('energy',-2);gain('fun',1);saveGame();
+  },'',{mid:900,total:2200,done:function(){toast('You took the bus to '+nm+' for '+money(fare));}});
+}
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  var D={
+    efestd:{look:{skin:sk[1],skin2:'#6a3e26',low:'#1f6f43',low2:'#14502f',top:'#e8e4da',head:'cap',hc:'#1f6f43'},name:'OFFICE GUARD',lbl:'ESTATE OFFICE',greet:'Festac Town Estate Office. Open 8 AM to 4 PM.'},
+    efmalld:{look:{skin:sk[3],skin2:'#774a2e',low:'#7a2e65',low2:'#561f46',top:'#f1efe6',head:'cap',hc:'#7a2e65'},name:'MALL SECURITY',lbl:'FESTIVAL MALL',greet:'Festival Mall, cinema and supermarket. Open 10 AM to 10 PM.'},
+    etfaird:{look:{skin:sk[0],skin2:'#5a3520',low:'#e07a1f',low2:'#a85612',top:'#f4f1e8',head:'cap',hc:'#e07a1f'},name:'HALL GUARD',lbl:'AUTO PARTS HALL',greet:'Trade Fair Auto Parts Hall. Open 8 AM to 6 PM.'},
+    etmoteld:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#1f3a68',low2:'#14264a',top:'#e8e4da',head:'cap',hc:'#1f3a68'},name:'MOTEL BELLBOY',lbl:'TRADE FAIR MOTEL',greet:'Trade Fair Motel. Rooms open all day and night.'},
+    eagbojud:{look:{skin:sk[3],skin2:'#774a2e',low:'#c1352d',low2:'#8a2020',top:'#f1efe6',head:'gele',hc:'#c1352d',hc2:'#f2b705'},name:'HALL WARDEN',lbl:'AGBOJU MARKET',greet:'Agboju Market. Fish, fried food and household goods. Open 5 AM to 7 PM.'},
+    ealabad:{look:{skin:sk[1],skin2:'#6a3e26',low:'#2f6fb1',low2:'#1c4a7a',top:'#e8e4da',head:'cap',hc:'#2f6fb1'},name:'PLAZA GUARD',lbl:'ELECTRONICS PLAZA',greet:'Alaba Electronics Plaza. Open 8 AM to 7 PM.'},
+    eokparkd:{look:{skin:sk[0],skin2:'#5a3520',low:'#2a2a30',low2:'#1c1c20',top:'#f2b705',head:'cap',hc:'#14161a'},name:'PARK WELFARE',lbl:'BUS PARK OFFICE',greet:'Okokomaiko Bus Park Office. Open 5 AM to 9 PM.'}
+  };
+  FZP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2,hs:lk.hs},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.bx,2.4,p.bz,p.br,3.2,0.6);
+    var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    OJP.push(p);
+    DEST.push([p.nm,p.k]);
+  });
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  var CL='The place is closed. ';
+  /* the estate office */
+  inside('efest','efest',[-7,-8.8],{skin:sk[2],skin2:'#4a2b1a',low:'#1f6f43',low2:'#14502f',top:'#f1efe6',head:'gele',hc:'#1f6f43',hc2:'#f2b705'},
+    {label:'ESTATE RECORDS',name:'MRS ADAEZE (ESTATE CLERK)',svcLabel:'',origLabel:'FACTS AND THE LOUNGE',orig:function(){feMenu();},friend:false,career:'estclerk',hours:[8,16],closed:'The office is closed. It opens at 8 AM.',greet:'Allottee or visitor? Take a seat.',items:[]});
+  inside('efest','efest2',[9,-8.8],{skin:sk[3],skin2:'#774a2e',low:'#7a3b2a',low2:'#5a2a1c',top:'#efe0bc',head:'gele',hc:'#7a3b2a',hc2:'#f2b705'},
+    {label:'TEA AND SNACKS',name:'MAMA NKEM (TEA AND SNACKS)',svcLabel:'BUY',friend:false,hours:[8,16],closed:'The office is closed. It opens at 8 AM.',greet:'Tea, bread and chin-chin for the waiting.',
+     items:[{l:'TEA AND BREAD',c:900,food:1,fx:{hunger:26,energy:6,fun:3,bladder:-3},msg:'Hot tea with buttered bread.'},{l:'CHIN-CHIN',c:500,food:1,fx:{hunger:12,fun:3},msg:'A small bag of crunchy chin-chin.'},{l:'SACHET WATER',c:100,food:1,fx:{energy:2,bladder:-3},msg:'A sachet of cold water.'}]});
+  /* the mall */
+  inside('efmall','efmall',[-11,-10.8],{skin:sk[3],skin2:'#774a2e',low:'#7a2e65',low2:'#561f46',top:'#f2d36b',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},
+    {label:'CINEMA TICKETS',name:'MISS LOLA (TICKET SELLER)',svcLabel:'',origLabel:'FILM AND FACTS',orig:function(){mlMenu();},friend:false,career:'fzusher',hours:[10,22],closed:'The mall is closed. It opens at 10 AM.',greet:'Which show? The next one starts soon.',items:[]});
+  inside('efmall','efmall2',[0,-10.8],{skin:sk[0],skin2:'#5a3520',low:'#c1352d',low2:'#8a2020',top:'#f1efe6',head:'cap',hc:'#c1352d'},
+    {label:'POPCORN AND DRINKS',name:'MR DAMI (POPCORN AND DRINKS)',svcLabel:'BUY',friend:false,hours:[10,22],closed:CL+'It opens at 10 AM.',greet:'Popcorn, cold drink, meat pie. Add pepper?',
+     items:[{l:'POPCORN',c:1200,food:1,fx:{hunger:12,fun:5,bladder:-1},msg:'A paper tub of sweet popcorn.'},{l:'COLD DRINK',c:400,food:1,fx:{hunger:4,energy:4,fun:3,bladder:-5},msg:'A cold bottled drink.'},{l:'MEAT PIE',c:700,food:1,fx:{hunger:24,fun:3,bladder:-1},msg:'A warm meat pie.'}]});
+  inside('efmall','efmall3',[12.5,-10.8],{skin:sk[2],skin2:'#4a2b1a',low:'#2a7a4a',low2:'#14502f',top:'#e8e3d2',head:'gele',hc:'#2a7a4a',hc2:'#f2b705'},
+    {label:'SUPERMARKET TILL',name:'MRS EKE (SUPERMARKET TILL)',svcLabel:'BUY',friend:false,hours:[10,22],closed:CL+'It opens at 10 AM.',greet:'Bread, noodles, soap. Fixed prices, no bargaining.',
+     items:[{l:'LOAF OF BREAD',c:1000,food:1,fx:{hunger:24,fun:2,bladder:-1},msg:'A fresh loaf in a nylon bag.'},{l:'NOODLES (PACK)',c:2800,food:1,fx:{hunger:22,fun:2},msg:'A pack of noodles, ready for the pot.'},{l:'BAR OF SOAP',c:300,fx:{hygiene:6,fun:1},msg:'A bar of blue soap.'}]});
+  /* the auto parts hall */
+  inside('etfair','etfair',[-7,-8.8],{skin:sk[0],skin2:'#5a3520',low:'#e07a1f',low2:'#a85612',top:'#f4f1e8',head:'cap',hc:'#e07a1f'},
+    {label:'SPARE PARTS DESK',name:'MR OKEY (SPARE PARTS DEALER)',svcLabel:'',origLabel:'WALK THE HALL AND FACTS',orig:function(){tfMenu();},friend:false,career:'partsclerk',hours:[8,18],closed:'The hall is closed. It opens at 8 AM.',greet:'Original or tokunbo? Tell me the car.',items:[]});
+  inside('etfair','etfair2',[9,-8.8],{skin:sk[3],skin2:'#774a2e',low:'#b8860b',low2:'#7a5a08',top:'#f2d36b',head:'gele',hc:'#b8860b',hc2:'#f2b705'},
+    {label:'JEWELLERY',name:'MRS FOLA (JEWELLERY)',svcLabel:'BUY',friend:false,hours:[8,18],closed:'The hall is closed. It opens at 8 AM.',greet:'Beads, bracelets and chains. Come and see the shine.',
+     items:[{l:'COLOURED BEADS',c:2500,fx:{fun:4,social:3},msg:'A string of bright coral-coloured beads.'},{l:'BRACELET',c:6000,fx:{fun:6,social:4},msg:'A shiny bracelet in a velvet pouch.'},{l:'WRIST WATCH',c:9500,fx:{fun:8,social:5},msg:'A neat wrist watch with a metal strap.'}]});
+  /* the motel */
+  inside('etmotel','etmotel',[-6,-6.8],{skin:sk[3],skin2:'#774a2e',low:'#1f3a68',low2:'#14264a',top:'#f1efe6',head:'gele',hc:'#1f3a68',hc2:'#f2b705'},
+    {label:'CHALETS',name:'MISS RITA (RECEPTIONIST)',svcLabel:'ROOMS',friend:false,career:'motelporter',greet:'Welcome to the Trade Fair Motel. A chalet for the night?',
+     items:[{l:'CHALET 8 HOURS',c:6500,fx:{energy:100,hunger:-12,hygiene:25,bladder:-25},t:8,msg:'You sleep well in your chalet and wake up fresh.'},{l:'DAY CHALET 3 HOURS',c:3000,fx:{energy:45,hunger:-4,bladder:-8},t:3,msg:'A short nap in a quiet chalet.'},{l:'SHOWER',c:1000,fx:{hygiene:70,bladder:-3},msg:'A hot shower. You feel brand new.'}]});
+  inside('etmotel','etmotel2',[7,-6.8],{skin:sk[1],skin2:'#6a3e26',low:'#7a3b2a',low2:'#5a2a1c',top:'#e8e3d2',head:'cap',hc:'#14161a'},
+    {label:'BREAKFAST',name:'MR JIDE (BREAKFAST)',svcLabel:'BUY',friend:false,greet:'Egg and bread, tea, pap. Breakfast any time.',
+     items:[{l:'EGG AND BREAD',c:1500,food:1,fx:{hunger:30,energy:4,fun:2,bladder:-2},msg:'Fried egg between thick slices of bread.'},{l:'TEA',c:500,food:1,fx:{hunger:4,energy:8,fun:2,bladder:-3},msg:'A hot cup of milk tea.'},{l:'SACHET WATER',c:100,food:1,fx:{energy:2,bladder:-3},msg:'A sachet of cold water.'}]});
+  /* Agboju market hall */
+  inside('eagboju','eagboju',[-10,-10.8],{skin:sk[2],skin2:'#4a2b1a',low:'#2f6fb1',low2:'#1c4a7a',top:'#f1efe6',head:'gele',hc:'#2f6fb1',hc2:'#f2b705'},
+    {label:'FROZEN FISH AND MEAT',name:'MAMA ESTHER (FISH AND MEAT)',svcLabel:'BUY',career:'fishseller',hours:[5,19],closed:CL+'It opens at 5 AM.',greet:'Titus, panla, kilishi! Fresh from the cold room.',
+     chat:['I have sold fish in Agboju for years. '+FZF.markets,'The cold room is the only place in this market where nobody shouts.','If light goes off, we sell fast before the fish turn.'],hangMsg:'She lifts a titus by the tail to show you how fresh it is.',
+     items:[{l:'SMOKED FISH',c:2500,food:1,fx:{hunger:14,fun:2},msg:'A piece of smoked fish wrapped in newspaper.'},{l:'KILISHI',c:1500,food:1,fx:{hunger:12,fun:4,bladder:-1},msg:'Spiced dried beef, peppery and chewy.'},{l:'FROZEN FISH (1 KG)',c:4200,fx:{fun:2,social:1},msg:'A kilo of frozen fish in a nylon bag.'}]});
+  inside('eagboju','eagboju2',[2,-10.8],{skin:sk[3],skin2:'#774a2e',low:'#d9a520',low2:'#8a6a10',top:'#f1efe6',head:'gele',hc:'#d9a520',hc2:'#c1352d'},
+    {label:'FRIED FOOD',name:'MAMA TOYIN (FRIED FOOD)',svcLabel:'BUY',friend:false,hours:[5,19],closed:CL+'It opens at 5 AM.',greet:'Akara, moi-moi, fried yam! Hot hot hot.',
+     items:[{l:'AKARA AND PAP',c:1200,food:1,fx:{hunger:22,energy:3,fun:3,bladder:-2},msg:'Hot akara with a cup of pap.'},{l:'MOI-MOI',c:900,food:1,fx:{hunger:18,fun:3},msg:'A leaf-wrapped moi-moi.'},{l:'FRIED YAM AND PEPPER',c:1600,food:1,fx:{hunger:28,fun:4,bladder:-1},msg:'Fried yam slices with pepper sauce.'}]});
+  inside('eagboju','eagboju3',[12,-10.8],{skin:sk[0],skin2:'#5a3520',low:'#7a3b2a',low2:'#5a2a1c',top:'#e8e3d2',head:'cap',hc:'#14161a'},
+    {label:'HOUSEHOLD',name:'MR NAZ (HOUSEHOLD)',svcLabel:'BUY',friend:false,hours:[5,19],closed:CL+'It opens at 5 AM.',greet:'Bucket, bowl, broom, spoon. Everything for the house.',
+     items:[{l:'PLASTIC BUCKET',c:1800,fx:{fun:1,social:1},msg:'A bright plastic bucket.'},{l:'BROOM',c:700,fx:{fun:1},msg:'A soft broom, bound with wire.'},{l:'COOKING SPOON',c:300,fx:{fun:1},msg:'A long wooden spoon.'}]});
+  /* the Alaba plaza */
+  inside('ealaba','ealaba',[-8,-8.8],{skin:sk[1],skin2:'#6a3e26',low:'#2f6fb1',low2:'#1c4a7a',top:'#f4f1e8',head:'cap',hc:'#2f6fb1'},
+    {label:'PHONE ACCESSORIES',name:'MR CHIDI (PHONE ACCESSORIES)',svcLabel:'BUY',career:'electech',hours:[8,19],closed:'The plaza is closed. It opens at 8 AM.',greet:'Earphones, chargers, power banks. Original quality!',
+     chat:['Everything you need for a phone is on this table. '+FZF.alaba,'The road to Alaba is hard. Some customers send a rider with the money instead.','A fake charger will cost you a phone. Buy from a man you know.'],hangMsg:'He tests a charger on a spare phone and nods when the light comes on.',
+     items:[{l:'EARPHONES',c:2500,fx:{fun:6,social:2},msg:'A pair of wired earphones in a pouch.'},{l:'PHONE POUCH',c:1500,fx:{fun:3},msg:'A tough phone pouch.'},{l:'POWER BANK',c:9500,fx:{fun:8,social:2},msg:'A power bank with a short cable.'}]});
+  inside('ealaba','ealaba2',[8,-8.8],{skin:sk[0],skin2:'#5a3520',low:'#14161a',low2:'#0a0a0c',top:'#e0c040',head:'cap',hc:'#14161a'},
+    {label:'TV AND APPLIANCES',name:'MR EMEKA (TV AND APPLIANCES)',svcLabel:'',origLabel:'LOOK AROUND AND FACTS',orig:function(){alMenu();},friend:false,hours:[8,19],closed:'The plaza is closed. It opens at 8 AM.',greet:'Television, fridge, generator. Warranty on everything.',items:[]});
+  /* the bus park office */
+  inside('eokpark','eokpark',[-7,-7.8],{skin:sk[0],skin2:'#5a3520',low:'#2a2a30',low2:'#1c1c20',top:'#f2b705',head:'cap',hc:'#14161a'},
+    {label:'TICKETS AND INFORMATION',name:'MR LADI (BUS CLERK)',svcLabel:'',origLabel:'BUSES AND FACTS',orig:function(){okMenu();},friend:false,career:'parkclerk',hours:[5,21],closed:'The park is closed. It opens at 5 AM.',greet:'Mile 2? Next bus soon. Pay here.',items:[]});
+  inside('eokpark','eokpark2',[9,-7.8],{skin:sk[3],skin2:'#774a2e',low:'#7a3b2a',low2:'#5a2a1c',top:'#f1efe6',head:'gele',hc:'#7a3b2a',hc2:'#f2b705'},
+    {label:'SNACKS AND DRINKS',name:'MAMA NGOZI (SNACKS)',svcLabel:'BUY',friend:false,hours:[5,21],closed:CL+'It opens at 5 AM.',greet:'Gala, pure water, boiled groundnut. For the road.',
+     items:[{l:'GALA SAUSAGE ROLL',c:500,food:1,fx:{hunger:14,fun:2},msg:'A sausage roll in a plastic wrap.'},{l:'BOILED GROUNDNUT',c:300,food:1,fx:{hunger:8,fun:2},msg:'A small bag of boiled groundnut.'},{l:'SACHET WATER',c:100,food:1,fx:{energy:2,bladder:-3},msg:'A sachet of cold water.'}]});
+  /* exit doormen */
+  FZP.forEach(function(p){
+    var dd=INTD[p.id],c=dd.c;
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* street people */
+  addPerson('fgate',{x:-6404,z:-10.2,yaw:0,skin:sk[1],skin2:'#6a3e26',low:'#1f3a68',low2:'#14264a',top:'#e8e4da',head:'cap',hc:'#1f3a68'},
+    {label:'FIRST GATE',name:'GATE GUARD (INVENTED)',friend:false,greet:FZF.gates,items:[]});
+  DEST.push(['FESTAC FIRST GATE','fgate']);
+  addPerson('tfguard',{x:-6567,z:10.2,yaw:Math.PI,skin:sk[0],skin2:'#5a3520',low:'#1f6f43',low2:'#14502f',top:'#e8e4da',head:'cap',hc:'#1f6f43'},
+    {label:'TRADE FAIR GATE',name:'GATE GUARD (INVENTED)',friend:false,greet:FZF.tradefair,items:[]});
+  DEST.push(['TRADE FAIR COMPLEX GATE','tfguard']);
+  addPerson('alvend',{x:-6740,z:-10.4,yaw:0,skin:sk[2],skin2:'#4a2b1a',low:'#2a5a34',low2:'#1c3a24',top:'#e07a1f',head:'cap',hc:'#14161a'},
+    {label:'PHONE CASES',name:'BAYO (PHONE CASES)',svcLabel:'BUY',friend:false,hours:[8,19],closed:'Bayo has packed his tray. He sells from 8 AM to 7 PM.',greet:'Phone case, screen guard, cable! Alaba prices, ten percent off for you.',
+     items:[{l:'PHONE CASE',c:1500,fx:{fun:3},msg:'A clear phone case that clicks on.'},{l:'SCREEN GUARD',c:1000,fx:{fun:2},msg:'A glass screen guard, fitted for you.'},{l:'CHARGING CABLE',c:2000,fx:{fun:4,social:1},msg:'A braided charging cable.'}]});
+  DEST.push(['PHONE CASES, ALABA','alvend']);
+  addPerson('okbus',{x:-7072,z:9.6,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#e0c040',head:'cap',hc:'#14161a'},
+    {label:'BUS',name:'BUS CONDUCTOR',friend:false,greet:'Mile 2, Mile 2, Mile 2! Enter with your change!',items:[]});
+  NK.okbus.npc.talk=function(){okMenu();};
+  DEST.push(['OKOKOMAIKO BUS STOP','okbus']);
+  /* careers (pay and costs are invented) */
+  CARS.estclerk={name:'ESTATE CLERK',key:'efest',pay:6000,secs:30,req:'Education Level 2 (study at the school in Ojuelegba, Yabatech or the Ajegunle digital centre)',ok:function(){return eduLevel()>=2;},cost:{energy:-9,hunger:-5,hygiene:-2,fun:-5,bladder:-4}};
+  CARS.fzusher={name:'CINEMA USHER',key:'efmall',pay:3600,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-9,hunger:-5,hygiene:-3,fun:-1,bladder:-4}};
+  CARS.partsclerk={name:'PARTS CLERK',key:'etfair',pay:4800,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-11,hunger:-5,hygiene:-6,fun:-4,bladder:-4}};
+  CARS.motelporter={name:'MOTEL PORTER',key:'etmotel',pay:4200,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-11,hunger:-5,hygiene:-4,fun:-3,bladder:-4}};
+  CARS.fishseller={name:'FISH SELLER',key:'eagboju',pay:3000,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-5,hygiene:-7,fun:-4,bladder:-4}};
+  CARS.electech={name:'ELECTRONICS ASSISTANT',key:'ealaba',pay:5200,secs:30,req:'Education Level 1 (study at the school in Makoko, Ojuelegba or Yabatech)',ok:function(){return eduLevel()>=1;},cost:{energy:-10,hunger:-5,hygiene:-3,fun:-3,bladder:-4}};
+  CARS.parkclerk={name:'PARK CLERK',key:'eokpark',pay:3800,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-10,hunger:-5,hygiene:-4,fun:-4,bladder:-4}};
+  ['estclerk','fzusher','partsclerk','motelporter','fishseller','electech','parkclerk'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  [[-6330,3],[-6500,-3],[-6650,3],[-6800,-3],[-6950,3],[-7100,-3]].forEach(function(q){FSPOTS.push(q);});
+})();
+/* people on the move */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0;
+  function WK(a,b,win,sp){
+    var i=n++;
+    var w=makeWalker({fem:i%2,occ:i%2,look:i+2777,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:a,b:b,sp:sp||(1.0+(i%4)*0.18)});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  var COM=[[5,9.5],[16,21]],DAY=[[6,21]],MKT=[[5,19]],WORK=[[7,17]];
+  /* the pavements, in hops */
+  var x0,k=0;
+  for(x0=-6280;x0>-7180;x0-=80){
+    var x1=Math.max(x0-76,-7182);
+    WK([x0,-5.8],[x1,-5.8],k%3?DAY:COM,0.8+(k%3)*0.1);WK([x1,5.8],[x0,5.8],k%2?DAY:COM,0.8+(k%2)*0.1);k++;
+  }
+  /* Alaba and Festac are busy: more people on the pavements of those stretches */
+  for(x0=-6400;x0>-6860;x0-=100){WK([x0,-5.1],[x0-92,-5.1],DAY,1.0+(k%3)*0.1);WK([x0-92,5.1],[x0,5.1],DAY,0.9+(k%2)*0.1);k++;}
+  /* inside the Festac estate, down the three avenues */
+  WK([-6395,-17],[-6395,-58],DAY,0.6);WK([-6470,-58],[-6470,-17],DAY,0.6);WK([-6545,-17],[-6545,-58],DAY,0.6);WK([-6399,-58],[-6399,-17],DAY,0.5);
+  /* the mall car park and the Trade Fair compound */
+  WK([-6370,23.6],[-6320,23.6],DAY,0.6);WK([-6320,29.6],[-6370,29.6],DAY,0.5);
+  WK([-6625,24],[-6495,24],MKT,0.6);WK([-6495,26.8],[-6548,26.8],MKT,0.5);WK([-6572,26.8],[-6625,26.8],MKT,0.5);WK([-6560,15],[-6560,23],MKT,0.5);
+  /* the Alaba yard and the Okokomaiko yard */
+  WK([-6700,-29],[-6795,-29],MKT,0.6);WK([-6795,-39],[-6700,-39],MKT,0.6);WK([-6700,-49],[-6795,-49],MKT,0.5);WK([-6795,-55],[-6700,-55],MKT,0.5);
+  WK([-7048,-31.5],[-7120,-31.5],MKT,0.5);WK([-7120,-42],[-7048,-42],MKT,0.5);
+  /* the bus park and the station site */
+  WK([-7096,23.8],[-7004,23.8],DAY,0.6);WK([-7004,30],[-7096,30],DAY,0.5);
+  WK([-7172,30],[-7114,30],WORK,0.6);WK([-7114,48],[-7172,48],WORK,0.5);
+  /* inside the rooms */
+  function IW(id,a,b,win,sp){var d=INTD[id].c;var i=n++;var w=makeWalker({fem:i%2,occ:1,look:i+2777,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});OJW.push({w:w,win:win});w.off=true;}
+  IW('efest',[-13,-5],[13,-5],[[8,16]],0.45);IW('efest',[-12,-1],[12,-1],[[8,16]],0.45);IW('efest',[12.3,-6],[12.3,7],[[8,16]],0.4);
+  IW('efmall',[-16,-6.5],[16,-6.5],[[10,22]],0.5);IW('efmall',[-1,-4.5],[-1,9],[[10,22]],0.4);IW('efmall',[15.8,-6],[15.8,9],[[10,22]],0.4);IW('efmall',[-14,7.5],[14,7.5],[[10,22]],0.45);
+  IW('etfair',[-13,-5],[12,-5],[[8,18]],0.45);IW('etfair',[-9,4.2],[11,4.2],[[8,18]],0.45);IW('etfair',[11,-6],[11,8],[[8,18]],0.4);
+  IW('etmotel',[-11,-2.5],[10,-2.5],[[0,24]],0.45);IW('etmotel',[9,-3],[9,7],[[0,24]],0.4);IW('etmotel',[-10.5,-2],[-10.5,6.5],[[0,24]],0.4);
+  IW('eagboju',[-13.5,-0.45],[13.5,-0.45],[[5,19]],0.5);IW('eagboju',[13,7],[-13,7],[[5,19]],0.5);IW('eagboju',[-0.5,-6],[-0.5,9],[[5,19]],0.4);IW('eagboju',[-14,-7.2],[14,-7.2],[[5,19]],0.45);
+  IW('ealaba',[-13,-5],[13,-5],[[8,19]],0.45);IW('ealaba',[-12.5,4.5],[12.5,4.5],[[8,19]],0.45);IW('ealaba',[0.5,-4],[0.5,8],[[8,19]],0.4);
+  IW('eokpark',[-13,-3.5],[12,-3.5],[[5,21]],0.45);IW('eokpark',[-9,0.8],[9,0.8],[[5,21]],0.45);IW('eokpark',[-3,8],[13,8],[[5,21]],0.45);IW('eokpark',[12.4,-4],[12.4,7],[[5,21]],0.4);
 })();
 
 /* ------------------------------------------------------------------ loop */
