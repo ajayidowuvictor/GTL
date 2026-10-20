@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b56';
+var VERSION='GTL 0.9 b57';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -4718,10 +4718,6 @@ var EBB={};
   })();
   [-4490,-4499,-4508,-4517,-4526,-4535,-4544].forEach(function(x){S({face:'N',x:x,z:16.5,floors:2+((k++)%3)});S({face:'S',x:x,z:-16.5,floors:2+((k++)%3)});});
   /* the west end of the road is closed */
-  [0.55,0.95].forEach(function(by,i){box(-4560,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
-  [-4.7,4.7].forEach(function(bz){box(-4560,0.6,bz,0.3,1.2,0.3,'#555');});
-  solid(-4563,0,6,134,2);box(-4562,1.2,0,0.4,2.4,134,'#8a7a60');
-  addSign('COSTAIN. ROAD CLOSED','#f2b705','#141414',-4559.7,1.9,0,Math.PI/2,3.4,0.9);
   /* ---------- street furniture ---------- */
   var lx;
   for(lx=-3945;lx>=-4550;lx-=22){lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
@@ -4831,6 +4827,319 @@ var EBR={oyin:[2570,-42],iddo:[2570,-14],stn:[2570,14],nrc:[2570,42],jude:[2635,
     [[-5,-2.8],[1,-2.8],[7,-2.8],[-5,2.8],[1,2.8],[7,2.8],[-5,5.6],[1,5.6],[7,5.6]].forEach(function(p){bench(X(p[0]),Z(p[1]),4.4,'#7a5a3a');});
     box(X(0),0.05,Z(0),16,0.03,0.5,'#d9a520');
     plant(X(-12.5),Z(-8));plant(X(12.5),Z(8));
+  })();
+})();
+
+var CHK_SAVE11=CHK;CHK=40;
+/* ---- b57: COSTAIN, IJORA AND APAPA. A fictionalised west end of the road: the Costain junction under a flyover, the Ijora causeway over the lagoon, Ijora with the old power station and the frozen
+   food market, and Apapa with the port wall and cranes, the truck park, the railway station, the club and the medical centre. The layout is invented, not surveyed. ---- */
+var APB={};
+(function(){
+  var SHP=OJB.shopHouse,wx,k=0,nn=0,i,j,r;
+  var NMS=['CLEARING AND FORWARDING','SHIPPING AGENT','FREIGHT','CHANDLER','LOGISTICS','INSURANCE','CANTEEN','HARDWARE','PRINTING','TYRE CENTRE','ELECTRICALS','TRAVEL AGENT'];
+  var NMI=['COLD ROOM','FISH DEALER','ICE BLOCKS','TIMBER AND PLANKS','PROVISIONS','HARDWARE','TYRE CENTRE','TAILOR','CHEMIST','ELECTRICALS'];
+  var NMC=['PHONE REPAIRS','PROVISIONS','BUREAU DE CHANGE','SHOES','CHEMIST','TRAVEL AGENT','FABRICS'];
+  function S(o,nm){o.name=nm[(nn++)%nm.length];return SHP(o);}
+  function lb(x0,x1,y,z,h,d,col){var n=Math.ceil(Math.abs(x1-x0)/36),i,sl=(x1-x0)/n;for(i=0;i<n;i++)box(x0+sl*(i+0.5),y,z,sl+0.02,h,d,col);}
+  function lawn(x,z,w,d,col){box(x,0.02,z,w,0.04,d,col||'#5b8f3e');}
+  function pave(x,z,w,d,col){box(x,0.04,z,w,0.06,d,col||'#b7ad98');}
+  var CONT=['#c1352d','#1f6f9e','#2a7a4a','#d9a520','#7a3b2a','#6e6e72','#e07a1f','#34507a'];
+  /* a lorry standing still: the cab at the +x end (ry 0 faces east, PI faces west) */
+  function truck(x,z,ry,col,cc){
+    frame(x,z,ry,function(){
+      box(4.6,1.65,0,2.6,2.5,2.5,col);box(4.9,2.35,0,1.8,0.9,2.3,'#243746');box(3.2,1.1,0,0.5,0.5,2.4,'#2a2a2e');
+      box(-0.4,0.85,0,10.8,0.5,2.2,'#2a2a2e');
+      box(-0.9,2.35,0,10.2,2.6,2.5,cc);box(-6.0,2.35,0,0.12,2.4,2.3,'#4a4a4e');
+      [-5,-3.3,2.6,4.6].forEach(function(wx){[-1.2,1.2].forEach(function(wz){cyl(wx,0.5,wz,1.0,0.5,1.0,'#1a1a1a',Math.PI/2);});});
+    });
+    vehSolid(x,z,ry,12.2,2.7,3.4);
+  }
+  /* a stack of shipping containers */
+  function stack(x,z,n,c0){var q;for(q=0;q<n;q++)box(x,1.3+q*2.7,z,12,2.6,2.5,CONT[(c0+q*3)&7]);solid(x,z,12,2.5,2.7*n);}
+  /* ---------- ground: Costain and the road past it (the b56 ground ends at x -4570) ---------- */
+  box(-4630,-0.1,0,120,0.2,134,'#a39a86');
+  box(-4750,-0.35,0,120,0.2,134,'#3d6860');
+  solid(-4750,-37.1,120,59.8,2);solid(-4750,37.1,120,59.8,2);
+  box(-4910,-0.1,-4.5,200,0.2,125,'#a39a86');
+  box(-4910,-0.35,62.5,200,0.2,9,'#3d6860');solid(-4910,62.5,200,9,2);
+  box(-5125,-0.1,4.5,230,0.2,125,'#a39a86');
+  box(-5125,-0.35,-62.5,230,0.2,9,'#3d6860');solid(-5125,-62.5,230,9,2);
+  box(-5330,-0.1,0,180,0.2,134,'#a39a86');
+  /* ---------- the road ---------- */
+  lb(-4560,-5410,0.03,0,0.06,10,ROAD);
+  for(wx=-4564;wx>=-5405;wx-=7)box(wx,0.066,0,3,0.012,0.18,'#e9c46a');
+  [-4.6,4.6].forEach(function(ez){lb(-4560,-5410,0.066,ez,0.012,0.12,'#e8e4da');});
+  lb(-4560,-5410,0.09,-5.8,0.18,1.6,SH);lb(-4560,-5410,0.09,5.8,0.18,1.6,SH);
+  /* ---------- Costain: a plaza under a flyover, with the signs for the roads that meet here ---------- */
+  pave(-4625,-38,130,52,'#b7ad98');pave(-4625,38,130,52,'#b7ad98');
+  (function(){
+    var ox=-4625;
+    box(ox,6.3,0,22,0.8,134,'#8d8a82');[-10.85,10.85].forEach(function(rx){box(ox+rx,7.1,0,0.3,0.8,134,'#c9c3b0');});
+    [-9,9].forEach(function(pz){box(ox,3.0,pz,3,6.0,3,'#6f6c64');solid(ox,pz,3.2,3.2,6);});
+    [-25,25,-45,45].forEach(function(pz){box(ox,3.0,pz,3,6.0,3,'#6f6c64');solid(ox,pz,3.2,3.2,6);});
+    addSign('COSTAIN FLYOVER','#14161a','#f2d36b',ox+11.2,4.6,0,Math.PI/2,8,0.9);
+    addSign('COSTAIN FLYOVER','#14161a','#f2d36b',ox-11.2,4.6,0,-Math.PI/2,8,0.9);
+  })();
+  /* a gantry over the road with the directions: for people going west and for people coming back */
+  [-7.4,7.4].forEach(function(gz){box(-4580,3.4,gz,0.5,6.8,0.5,'#555');solid(-4580,gz,0.6,0.6,6.8);});
+  box(-4580,6.9,0,0.5,0.5,15.4,'#555');
+  addSign('IJORA. APAPA','#1f6f43','#ffffff',-4579.7,5.6,-3.2,Math.PI/2,6,0.9);addSign('COSTAIN','#1f6f43','#ffffff',-4579.7,5.6,3.4,Math.PI/2,5,0.9);
+  addSign('EBUTE METTA. OYINGBO','#1f6f43','#ffffff',-4580.3,5.6,0,-Math.PI/2,9,0.9);
+  /* the signs on posts for the roads of the axis (names from public reports, the posts are invented) */
+  [['WESTERN AVENUE. SURULERE',-4600,-22,0],['EKO BRIDGE. LAGOS ISLAND',-4635,-22,0],['ORILE. ALAKA',-4670,-22,0],['IGANMU ROAD. ABULE NLA',-4600,22,Math.PI],['APAPA ROAD',-4635,22,Math.PI],['IJORA OLOPA. APONGBON',-4670,22,Math.PI]].forEach(function(s){
+    box(s[1],2.1,s[2],0.3,4.2,0.3,'#555');solid(s[1],s[2],0.5,0.5,4.2);addSign(s[0],'#1f3a68','#ffffff',s[1],3.6,s[2]+(s[3]?0.25:-0.25),s[3],6.4,0.9);
+  });
+  /* traders around the plaza */
+  [-28,-36].forEach(function(sz,ri){for(j=0;j<26;j++){var sx=-4574-j*4.4;if(sx<-4686)break;if(Math.abs(sx+4625)<9)continue;stall(sx,sz,j+ri*5);}});
+  [28,36].forEach(function(sz,ri){for(j=0;j<26;j++){var sx=-4574-j*4.4;if(sx<-4686)break;if(Math.abs(sx+4625)<9)continue;stall(sx,sz,j+ri*3+2);}});
+  [[-4590,48,Math.PI],[-4602,48,Math.PI],[-4650,-48,0],[-4662,-48,0]].forEach(function(p){danfo(p[0],p[1],p[2]);solid(p[0],p[1],5.2,2.2,2.6);});
+  [[-4584,-52],[-4678,-52],[-4584,52],[-4678,52],[-4652,-14],[-4652,14]].forEach(function(p){tree(p[0],p[1]);});
+  /* ---------- the Ijora causeway over the lagoon ---------- */
+  box(-4750,-0.15,0,120,0.3,14,'#8d8a82');
+  for(wx=-4700;wx>=-4800;wx-=20)box(wx,-1.2,0,2.4,2.4,10,'#6f6c64');
+  [-6.9,6.9].forEach(function(rz){box(-4750,0.55,rz,120,1.1,0.2,'#c9c3b0');box(-4750,1.15,rz,120,0.12,0.3,'#8d8a82');solid(-4750,rz,120,0.4,1.2);});
+  addSign('IJORA CAUSEWAY. TO APAPA','#1f6f43','#ffffff',-4700,2.2,6.8,Math.PI,6,0.7);
+  addSign('IJORA CAUSEWAY. TO COSTAIN','#1f6f43','#ffffff',-4800,2.2,-6.8,0,6,0.7);
+  for(wx=-4700;wx>=-4800;wx-=22){lamp(wx,6.4,Math.PI/2);lamp(wx-11,-6.4,-Math.PI/2);ALAMPS.push([wx,5.3],[wx-11,-5.3]);}
+  /* canoes on the water */
+  [[-4715,18,0.1],[-4740,-24,0.3],[-4770,30,-0.2],[-4790,-16,0.2]].forEach(function(c){frame(c[0],c[1],c[2],function(){box(0,-0.1,0,5.5,0.5,1.2,'#7b5c3c');box(2.6,0.15,0,0.5,0.7,0.8,'#7b5c3c');box(-2.6,0.15,0,0.5,0.7,0.8,'#7b5c3c');});});
+  /* ---------- Ijora, north: the old thermal station with its chimney and the coal wharf rails ---------- */
+  [-4815,-4824,-4833,-4842].forEach(function(x){S({face:'S',x:x,z:-16.5,floors:2+((k++)%3)},NMI);});
+  (function(){
+    var cx=-4905;
+    wallX(-13,-4960,-4850,cx,12);wallZ(-4850,-64,-13);wallZ(-4960,-64,-13);wallX(-64,-4960,-4850);
+    pave(cx,-24,108,22,'#c9c3b0');pave(cx,-57,108,14,'#8a8576');
+    box(cx,4.5,-42,40,9,14,'#8a4a3a');box(cx,9.3,-42,42,0.6,16,'#5a3a2a');
+    for(i=-3;i<=3;i++)box(cx+i*5.5,2.4,-34.9,0.7,4.4,0.5,'#c9b99a');
+    box(cx,1.7,-34.95,4,3.4,0.15,'#2b2118');
+    [-14,-9,9,14].forEach(function(dx){box(cx+dx,3.6,-34.95,2.0,2.4,0.1,'#9ec3d8');});
+    addSign('IJORA THERMAL STATION','#14161a','#f2d36b',cx,6.6,-34.55,0,10,0.9);
+    solid(cx,-42,40,14,9.3);
+    cyl(cx+14,17,-52,3.4,34,3.4,'#6a4a3a');cyl(cx+14,34.5,-52,3.9,1.2,3.9,'#14161a');solid(cx+14,-52,3.6,3.6,34);
+    for(i=0;i<5;i++)lump(cx-35+i*3.2,1.0+(i%2)*0.4,-57,5,2.2,4,'#1c1c1e');
+    [-56.4,-59.6].forEach(function(rz){lb(-4960,-4850,0.04,rz,0.06,0.15,'#555');});
+    [[-4925,-46],[-4935,-46]].forEach(function(p){box(p[0],1.1,p[1],6,1.6,2.4,'#3a3a3e');solid(p[0],p[1],6,2.4,1.8);});
+    addSign('IJORA COAL WHARF','#c1352d','#ffffff',cx-6,3.0,-61.2,Math.PI,6,0.6);
+    [[-4955,-18],[-4855,-18],[-4955,-62],[-4855,-62]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  [-4970,-4979,-4988].forEach(function(x){S({face:'S',x:x,z:-16.5,floors:2+((k++)%3)},NMI);});
+  /* ---------- Ijora, south: the frozen food market hall and the yard behind it, a fish market by the water ---------- */
+  [-4815,-4824,-4833,-4842,-4851,-4860].forEach(function(x){S({face:'N',x:x,z:16.5,floors:2+((k++)%3)},NMI);});
+  APB.olopa=SHP({face:'N',x:-4890,z:16.5,w:36,d:9,floors:3,name:'IJORA OLOPA FROZEN FOOD',sbg:'#1f6f9e',sfg:'#ffffff',aw:'#1f6f9e',wall:'#e8eef2'});
+  [-4920,-4929,-4938,-4947,-4956,-4965,-4975,-4984].forEach(function(x){S({face:'N',x:x,z:16.5,floors:2+((k++)%3)},NMI);});
+  lb(-4960,-4872,0.03,41,0.06,34,'#8a8576');
+  [29,37].forEach(function(sz,ri){for(j=0;j<20;j++){if(j%6===5)continue;var sx=-4877-j*4.2;if(sx<-4955)break;stall(sx,sz,j+ri*3);}});
+  box(-4917,5.4,22.5,90,0.9,0.4,'#1f6f9e');
+  addSign('IJORA OLOPA. FROZEN FISH. CHICKEN. TURKEY.','#1f6f9e','#ffffff',-4917,5.4,22.1,Math.PI,22,0.8);
+  [-4875,-4959].forEach(function(px){box(px,2.7,22.5,0.4,5.4,0.4,'#f1efe6');solid(px,22.5,0.5,0.5,5.4);});
+  [[-4930,50,0],[-4912,50,Math.PI],[-4893,50,0]].forEach(function(p){truck(p[0],p[1],p[2],'#f1efe6',CONT[(Math.abs(Math.floor(p[0]))>>1)&7]);});
+  addSign('AJELORO FISH MARKET','#1f6f43','#ffffff',-4915,3.4,57.6,Math.PI,10,0.8);
+  [-4935,-4895].forEach(function(px){box(px,1.7,57.6,0.2,3.4,0.2,'#555');});
+  /* ---------- Apapa: the port wall on the north side, a truck park on the south side ---------- */
+  [-4995,-5004].forEach(function(x){S({face:'S',x:x,z:-16.5,floors:2+((k++)%3)},NMS);});
+  (function(){
+    var x0=-5240,x1=-5010,gc=-5030;
+    wallX(-13,x0,x1,gc,14);wallZ(x0,-58,-13);wallZ(x1,-58,-13);
+    /* the gate is shut to visitors: a barrier and a solid across the gap */
+    box(gc,1.0,-12.4,13.6,0.2,0.2,'#c1352d');box(gc,1.4,-12.4,13.6,0.2,0.2,'#f1efe6');
+    box(gc-8.2,1.6,-15,2.6,3.2,2.6,'#e8e4da');solid(gc-8.2,-15,2.8,2.8,3.2);
+    solid(gc,-13,14,1.2,3);
+    addSign('APAPA CONTAINER TERMINAL. AUTHORISED PERSONS ONLY','#1f3a68','#ffffff',gc,4.2,-12.6,0,13,0.9);
+    pave(-5125,-35,230,44,'#8a8576');
+    /* container blocks with aisles between them */
+    for(r=0;r<4;r++){var rz=[-28,-32,-44,-48][r];for(i=0;i<13;i++){var sx=x1-18-i*14.5;if(sx<x0+8)break;if(Math.abs(sx+5130)<8)continue;stack(sx,rz,1+((i*7+r*3)%3),i+r*2);}}
+    /* the quay edge, the ship and the ship-to-shore cranes */
+    box(-5125,0.2,-57.6,230,0.4,0.6,'#6f6c64');
+    box(-5085,3.2,-63.5,110,6,6,'#2f4a6b');box(-5085,6.3,-63.5,110,0.3,6.2,'#c1352d');box(-5033,10.5,-63.5,14,9,6,'#e8e4da');cyl(-5033,16.5,-63.5,2.4,3.5,2.4,'#14161a');
+    for(i=0;i<8;i++){box(-5135+i*10,8.5,-63.5,9,2.6,2.5,CONT[(i*3+1)&7]);box(-5135+i*10,11.2,-63.5,9,2.6,2.5,CONT[(i*5+2)&7]);}
+    [-5100,-5170].forEach(function(cx){
+      [-8,8].forEach(function(dx){[-56,-47].forEach(function(dz){box(cx+dx,14,dz,1.4,28,1.4,'#e0a020');solid(cx+dx,dz,1.6,1.6,28);});});
+      box(cx,28.6,-56,17,1.2,1.4,'#e0a020');box(cx,28.6,-47,17,1.2,1.4,'#e0a020');box(cx-8,28.6,-51.5,1.4,1.2,10,'#e0a020');box(cx+8,28.6,-51.5,1.4,1.2,10,'#e0a020');
+      box(cx,30.5,-52,2,2.0,28,'#c8881a');box(cx,32.5,-62,2.6,1.2,2.6,'#555');
+    });
+    addSign('APAPA PORT. CONTAINER TERMINAL','#1f3a68','#f2d36b',-5125,3.0,-12.7,0,18,1.0);
+    [[-5235,-18],[-5014,-18]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  /* the truck transit park on the south side: trucks wait here for a call-up */
+  (function(){
+    var cx=-5050;
+    wallZ(-4990,13,62);wallZ(-5110,13,62);wallX(62,-5110,-4990);
+    pave(cx,37,118,48,'#8a8576');
+    addSign('TRUCK TRANSIT PARK. ETO CALL-UP','#1f6f43','#ffffff',cx,4.2,12.6,Math.PI,13,0.9);
+    [-6.2,6.2].forEach(function(dx){box(cx+dx,2.1,13,0.4,4.2,0.4,'#555');});
+    box(cx+6.8,1.0,12.4,10.5,0.2,0.2,'#c1352d');box(cx+6.8,1.4,12.4,10.5,0.2,0.2,'#f1efe6');
+    [[-5102,22],[-5078,22],[-5054,22],[-5030,22],[-5006,22],[-5096,40],[-5072,40],[-5048,40],[-5024,40],[-5000,40],[-5100,54],[-5062,54],[-5026,54]].forEach(function(p,ti){
+      truck(p[0],p[1],ti%2?0:Math.PI,['#c1352d','#1f6f9e','#e07a1f','#2a7a4a','#f1efe6'][ti%5],CONT[(ti*3)&7]);
+    });
+    [[-5000,16],[-5104,16]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  APB.gate=SHP({face:'N',x:-5125,z:16.5,w:14,d:9,floors:2,name:'TRUCK CALL-UP OFFICE',sbg:'#1f6f43',sfg:'#ffffff',aw:'#1f6f43',wall:'#e8e4da'});
+  [-5145,-5154,-5163,-5172,-5181].forEach(function(x){S({face:'N',x:x,z:16.5,floors:2+((k++)%3)},NMS);});
+  /* ---------- Apapa railway station with a platform and a train behind it ---------- */
+  APB.stn=SHP({face:'N',x:-5210,z:16.5,w:30,d:9,floors:2,name:'APAPA RAILWAY STATION',sbg:'#1f3a68',sfg:'#f2d36b',aw:'#1f3a68',wall:'#efe7d4'});
+  (function(){
+    pave(-5217,42,76,42,'#9a9486');lb(-5255,-5180,0.04,44.2,0.06,0.15,'#555');lb(-5255,-5180,0.04,45.8,0.06,0.15,'#555');
+    [[-5245,'#1f3a68'],[-5230,'#e8e4da'],[-5215,'#e8e4da'],[-5200,'#e8e4da']].forEach(function(t,ti){
+      box(t[0],1.9,45,ti?14:9,3.4,3.0,t[1]);box(t[0],0.45,45,ti?13.6:8.6,0.5,2.4,'#2a2a2e');
+      if(ti){for(j=0;j<4;j++)box(t[0]-5+j*3.3,2.5,43.45,1.8,0.9,0.08,'#9ec3d8');box(t[0],3.7,45,14,0.2,2.8,'#c9c3b0');}
+      else{box(t[0]-1,4.1,45,4,1.0,2.6,'#14161a');box(t[0]+3.6,1.4,45,0.8,1.2,2.6,'#c1352d');}
+      solid(t[0],45,ti?14:9,3.1,3.8);
+    });
+    addSign('APAPA STATION. WESTERN LINE','#1f3a68','#f2d36b',-5217,3.0,23,0,10,0.8);
+    [-5254,-5180].forEach(function(px){box(px,1.5,23,0.3,3.0,0.3,'#555');});
+  })();
+  [-5235,-5244].forEach(function(x){S({face:'N',x:x,z:16.5,floors:2+((k++)%3)},NMS);});
+  /* ---------- Apapa Club: the club house on the road, tennis courts and a pool behind ---------- */
+  APB.club=SHP({face:'N',x:-5290,z:16.5,w:34,d:9,floors:2,name:'APAPA CLUB',sbg:'#1f6f43',sfg:'#f2d36b',aw:'#1f6f43',wall:'#f4efe0'});
+  (function(){
+    wallZ(-5260,24,64);wallZ(-5340,24,64);wallX(64,-5340,-5260);
+    lawn(-5300,44,76,38,'#5b8f3e');
+    [[-5320,36],[-5320,54]].forEach(function(p){box(p[0],0.05,p[1],14,0.04,9,'#2f6a4a');box(p[0],0.07,p[1],14,0.02,0.15,'#f1efe6');box(p[0],0.07,p[1],0.15,0.02,9,'#f1efe6');[-7.1,7.1].forEach(function(dx){box(p[0]+dx,0.6,p[1],0.1,1.2,9,'#555');});});
+    box(-5280,-0.05,52,12,0.1,16,'#9ec3d8');box(-5280,0.1,52,13,0.2,17,'#e8e4da');solid(-5280,52,13,17,0.3);
+    [[-5268,32],[-5270,62],[-5332,62]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  [-5320,-5329,-5338,-5347].forEach(function(x){S({face:'N',x:x,z:16.5,floors:2+((k++)%3)},NMS);});
+  /* ---------- Apapa, north: the medical centre, the amusement park, a villa ---------- */
+  APB.clin=SHP({face:'S',x:-5262,z:-16.5,w:18,d:9,floors:3,name:'DAKO MEDICAL CENTRE',sbg:'#c1352d',sfg:'#ffffff',aw:'#c1352d',wall:'#f4f1e8'});
+  (function(){
+    var cx=-5330;
+    wallX(-13,-5370,-5290,cx,10);wallZ(-5290,-64,-13);wallZ(-5370,-64,-13);wallX(-64,-5370,-5290);
+    lawn(cx,-38,76,48,'#6a9a48');pave(cx,-19,5,12,'#c9c3b0');
+    addSign('APAPA AMUSEMENT PARK','#7a2e65','#f2d36b',cx,5.4,-12.7,0,9,1.0);
+    /* a ferris wheel */
+    var wy=14,R=10,n=16,a,bx,bz=-44;
+    for(i=0;i<n;i++){a=i/n*Math.PI*2;box(cx+R*Math.cos(a),wy+R*Math.sin(a),bz,2*R*Math.sin(Math.PI/n)+0.1,0.5,0.6,'#e0a020',0,0,a+Math.PI/2);}
+    for(i=0;i<8;i++){a=i/8*Math.PI*2;box(cx+R/2*Math.cos(a),wy+R/2*Math.sin(a),bz,R,0.25,0.25,'#d9d2c2',0,0,a);box(cx+R*Math.cos(a),wy+R*Math.sin(a)-0.9,bz,1.6,1.4,1.4,CONT[i]);}
+    cyl(cx,wy,bz,1.4,1.2,1.4,'#555',Math.PI/2);
+    [-1,1].forEach(function(sg){box(cx+sg*3,7,bz,0.8,14.4,1.0,'#6e6e72',0,0,sg*0.43);});
+    solid(cx-5.5,bz,2.0,2.0,4);solid(cx+5.5,bz,2.0,2.0,4);
+    /* a carousel and a few rides */
+    cyl(cx-22,1.2,-28,9,0.5,9,'#c1352d');cyl(cx-22,0.15,-28,10,0.3,10,'#8a7a60');box(cx-22,3.2,-28,0.5,4.5,0.5,'#555');cyl(cx-22,5.7,-28,10,0.4,10,'#f2b705');solid(cx-22,-28,10,10,3);
+    cyl(cx+22,1.0,-32,6,2.0,6,'#2f6fb1');lump(cx+22,3.1,-32,6,2.0,6,'#e07a1f');solid(cx+22,-32,6.4,6.4,3.4);
+    [[-5365,-20],[-5295,-20],[-5365,-58],[-5295,-58]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  /* a villa on the north side of the old Apapa GRA streets, one on the south side */
+  function villa(vx,vz,face){
+    var f=face==='S'?1:-1,cz=vz;
+    lawn(vx,cz,28,36,'#5b8f3e');
+    box(vx,2.4,cz,14,4.8,10,'#f1e8cf');box(vx,5.3,cz,15.6,0.4,11.6,'#8a5a3a');box(vx,6.2,cz,10,1.4,8,'#8a5a3a');
+    box(vx,1.5,cz+f*5.05,2.4,3.0,0.1,'#2b2118');[-4.5,4.5].forEach(function(dx){box(vx+dx,2.4,cz+f*5.05,1.8,1.6,0.1,'#9ec3d8');});
+    box(vx,0.06,cz+f*9,1.6,0.08,8,'#c9c3b0');
+    solid(vx,cz,14,10,5);
+    wallX(f>0?-13:13,vx-14,vx+14,vx,5);
+    tree(vx-11,cz+f*10);tree(vx+11,cz+f*10);
+  }
+  villa(-5389,-38,'S');villa(-5389,38,'N');
+  /* the west end of the road is closed */
+  [0.55,0.95].forEach(function(by,i){box(-5405,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
+  [-4.7,4.7].forEach(function(bz){box(-5405,0.6,bz,0.3,1.2,0.3,'#555');});
+  solid(-5408,0,6,134,2);box(-5407,1.2,0,0.4,2.4,134,'#8a7a60');
+  addSign('APAPA GRA. ROAD CLOSED','#f2b705','#141414',-5404.7,1.9,0,Math.PI/2,3.4,0.9);
+  /* ---------- street furniture ---------- */
+  var lx;
+  for(lx=-4570;lx>=-5400;lx-=22){if(lx<-4695&&lx>-4805)continue;lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
+  var pxs=[];for(lx=-4570;lx>=-5400;lx-=28){if(lx<-4690&&lx>-4810)continue;pxs.push(lx);}
+  poleLine(pxs,-6.4,3);
+  OJB.busStop(-4600,-8.6,0,'COSTAIN');OJB.busStop(-4650,8.6,Math.PI,'COSTAIN FLYOVER');OJB.busStop(-4950,8.6,Math.PI,'IJORA OLOPA');OJB.busStop(-4998,-8.6,0,'APAPA WHARF');OJB.busStop(-5180,8.6,Math.PI,'APAPA STATION');OJB.busStop(-5262,-8.6,0,'DAKO MEDICAL');OJB.busStop(-5312,8.6,Math.PI,'APAPA CLUB');
+  [[-4570,-8.4,0.2],[-4640,8.6,3.2],[-4880,-8.6,0.1],[-5120,8.4,3.3],[-5290,-8.4,0.2]].forEach(function(o){okada(o[0],o[1],o[2]);});
+  APB.done=1;
+})();
+
+CHK=CHK_SAVE11;
+/* ---- b57: six places in Ijora and Apapa you can walk into: the Ijora Olopa frozen food hall, the truck call-up office, Apapa railway station, the Apapa Club, a medical centre and the Ijora Thermal Station ---- */
+var APR={olopa:[2700,-42],egate:[2700,-14],estn:[2700,14],club:[2700,42],clin:[2765,-30],therm:[2765,6]};
+(function(){
+  function table(x,z,col,w,d){w=w||1.5;d=d||0.95;box(x,0.75,z,w,0.08,d,col||'#8a6a45');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.37,z+p[1]*(d/2-0.1),0.08,0.74,0.08,'#3a2a1c');});solid(x,z,w,d,0.8);}
+  function plant(x,z,s){s=s||1;cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  function counter(x,z,w,col){box(x,0.55,z,w,1.1,0.8,col||'#2b2118');box(x,1.14,z,w+0.2,0.1,1.0,'#e9e4d6');solid(x,z,w+0.2,1.0,1.2);}
+  function bench(x,z,w,col){box(x,0.45,z,w,0.1,0.6,col||'#8a6a45');box(x-w/2+0.2,0.22,z,0.1,0.44,0.5,'#5a4631');box(x+w/2-0.2,0.22,z,0.1,0.44,0.5,'#5a4631');solid(x,z,w,0.6,0.5);}
+  function freezer(x,z,w){box(x,0.55,z,w,1.1,1.5,'#e8eef2');box(x,1.14,z,w-0.2,0.08,1.3,'#9ec3d8');
+    var n=Math.floor(w/1.1),i;for(i=0;i<n;i++)box(x-w/2+0.65+i*1.1,1.28,z,0.8,0.2,0.9,['#c1352d','#e07a1f','#2f6fb1','#d9a520'][(i+Math.floor(Math.abs(x)))&3]);
+    solid(x,z,w,1.5,1.3);}
+  function disc(x,y,z,r,col){cyl(x,y,z,r*2,0.1,r*2,col,Math.PI/2);}
+  /* ----- IJORA OLOPA FROZEN FOOD HALL ----- */
+  (function(){
+    var cx=APR.olopa[0],cz=APR.olopa[1],W=34,D=24,H=5.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('eolopa',cx,cz,W,D,H,{floor:'#cfd6d9',wall:'#eef2f4',trim:'#1f6f9e',ceil:'#f8fafb'},{out:'eolopad',nm:'IJORA OLOPA FROZEN FOOD',doorX:cx-10});
+    box(X(0),2.0,Z(-11.7),W-2,4.0,0.3,'#e6edf0');
+    [[-9,'#1f6f9e','FROZEN FISH',9],[3,'#c1352d','CHICKEN AND TURKEY',8],[13,'#7a3b2a','DRIED FISH AND CRAYFISH',8]].forEach(function(c){
+      counter(X(c[0]),Z(-10),c[3],c[1]);addSign(c[2],c[1],'#ffffff',X(c[0]),3.9,Z(-11.5),0,c[3]+0.8,0.8);
+    });
+    addSign('IJORA OLOPA. A BIG FROZEN FOOD MARKET OF LAGOS','#14161a','#f2d36b',X(0),4.8,Z(-11.5),0,16,0.6);
+    [[-11,-3.5],[-4,-3.5],[3,-3.5],[10,-3.5],[-11,2.6],[-4,2.6],[3,2.6],[10,2.6]].forEach(function(t){freezer(X(t[0]),Z(t[1]),4.4);});
+    [[-15.5,7],[15.5,7]].forEach(function(p){box(X(p[0]),0.6,Z(p[1]),1.2,1.2,0.8,'#e8eef2');box(X(p[0]),1.35,Z(p[1]),0.9,0.3,0.6,'#9ec3d8');solid(X(p[0]),Z(p[1]),1.2,0.8,1.5);});
+    plant(X(-16),Z(-10.5));plant(X(16),Z(10.5));
+  })();
+  /* ----- THE TRUCK CALL-UP OFFICE ----- */
+  (function(){
+    var cx=APR.egate[0],cz=APR.egate[1],W=28,D=22,H=4.8,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('eegate',cx,cz,W,D,H,{floor:'#c9c2b0',wall:'#eeeae0',trim:'#1f6f43',ceil:'#f6f3ea'},{out:'eegated',nm:'TRUCK CALL-UP OFFICE',doorX:cx-10});
+    box(X(0),1.9,Z(-10.7),W-2,3.8,0.3,'#dcd7c8');
+    counter(X(-5),Z(-8),9,'#1f6f43');box(X(-5),1.9,Z(-8.2),9,1.4,0.06,'#9ec3d8');
+    counter(X(9),Z(-8),5,'#7a3b2a');
+    addSign('ETO CALL-UP DESK','#1f6f43','#ffffff',X(-5),3.0,Z(-10.4),0,6,0.6);
+    addSign('TEA AND BREAD','#7a3b2a','#f2d36b',X(9),3.0,Z(-10.4),0,4,0.6);
+    addSign('TRUCKS CALLED. WAIT FOR YOUR NUMBER','#14161a','#f2d36b',X(2),3.8,Z(-10.4),0,7,0.7);
+    [[-5.5,3],[-5.5,5.6],[3,3],[3,5.6],[9,3]].forEach(function(p){bench(X(p[0]),Z(p[1]),3.4,'#1f6f43');});
+    box(X(-13.8),2.2,Z(-1),0.1,1.6,5,'#e8e4da');addSign('TRUCK TRANSIT PARK. THE QUEUE FOR THE PORT','#1f3a68','#ffffff',X(-13.7),2.3,Z(-1),Math.PI/2,5,0.6);
+    plant(X(-13),Z(-9.5));plant(X(13),Z(9));
+  })();
+  /* ----- APAPA RAILWAY STATION ----- */
+  (function(){
+    var cx=APR.estn[0],cz=APR.estn[1],W=32,D=22,H=5.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('eestn',cx,cz,W,D,H,{floor:'#bdb8aa',wall:'#eeeae0',trim:'#1f3a68',ceil:'#f6f3ea'},{out:'eestnd',nm:'APAPA RAILWAY STATION',doorX:cx-10});
+    box(X(0),2.0,Z(-10.7),W-2,4.0,0.3,'#dcd7c8');
+    counter(X(-5),Z(-8),12,'#1f3a68');box(X(-5),1.9,Z(-8.2),12,1.6,0.06,'#9ec3d8');
+    counter(X(10),Z(-8),6,'#7a3b2a');
+    addSign('APAPA RAILWAY STATION','#14161a','#f2d36b',X(0),4.2,Z(-10.5),0,10,0.8);
+    addSign('TICKETS','#1f3a68','#ffffff',X(-5),3.0,Z(-10.4),0,3,0.5);addSign('NEWS AND SNACKS','#7a3b2a','#ffffff',X(10),3.0,Z(-10.4),0,5,0.5);
+    disc(X(1),3.3,Z(-10.4),0.8,'#f1efe6');box(X(1),3.3,Z(-10.35),0.06,0.6,0.04,'#14161a');
+    [[-6,3.2],[-6,5.6],[-0.5,3.2],[-0.5,5.6],[5,3.2],[5,5.6]].forEach(function(p){bench(X(p[0]),Z(p[1]),3.4,'#1f3a68');});
+    [-1,1].forEach(function(s){box(X(11+s*1.2),0.55,Z(1),0.15,1.1,1.2,'#8a8f94');solid(X(11+s*1.2),Z(1),0.2,1.3,1.1);});
+    addSign('TO THE PLATFORM','#14161a','#f2d36b',X(11),2.4,Z(0.3),0,3,0.5);
+    plant(X(-14.5),Z(-9.5));plant(X(14.5),Z(9.5));
+  })();
+  /* ----- THE APAPA CLUB ----- */
+  (function(){
+    var cx=APR.club[0],cz=APR.club[1],W=30,D=22,H=5,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('eclub',cx,cz,W,D,H,{floor:'#d9c4a0',wall:'#f4efe0',trim:'#1f6f43',ceil:'#faf6ea'},{out:'eclubd',nm:'APAPA CLUB',doorX:cx-10});
+    box(X(0),2.0,Z(-10.7),W-2,4.0,0.3,'#ebe3cc');
+    counter(X(-7),Z(-8),6,'#1f6f43');counter(X(8),Z(-8),10,'#6e4a2a');
+    addSign('SPORTS DESK','#1f6f43','#ffffff',X(-7),3.0,Z(-10.4),0,4,0.5);addSign('CLUB BAR AND LUNCH','#6e4a2a','#f2d36b',X(8),3.0,Z(-10.4),0,7,0.6);
+    addSign('APAPA CLUB. TENNIS. SWIMMING. SQUASH.','#14161a','#f2d36b',X(0),4.2,Z(-10.4),0,12,0.7);
+    box(X(-1.5),1.2,Z(-10.3),2.0,2.4,0.5,'#6e4a2a');box(X(-1.5),1.4,Z(-10.04),1.7,1.8,0.04,'#9ec3d8');for(i=0;i<3;i++)lump(X(-2.1+i*0.6),0.9+i*0.1,Z(-10.0),0.3,0.5,0.2,'#d9a520');solid(X(-1.5),Z(-10.3),2.0,0.5,2.4);
+    [[-4,3.5],[4,3.5],[10,3.5],[4,7.6],[10,7.6]].forEach(function(p){cyl(X(p[0]),0.4,Z(p[1]),0.3,0.8,0.3,'#5a4631');cyl(X(p[0]),0.82,Z(p[1]),1.5,0.08,1.5,'#f1efe6');solid(X(p[0]),Z(p[1]),1.5,1.5,0.9);
+      [[-1.1,0],[1.1,0],[0,-1.1],[0,1.1]].forEach(function(c){box(X(p[0])+c[0],0.45,Z(p[1])+c[1],0.5,0.9,0.5,'#8a5a3a');});});
+    plant(X(-13.5),Z(-9.5));plant(X(13.5),Z(9.5));
+  })();
+  /* ----- THE MEDICAL CENTRE ----- */
+  (function(){
+    var cx=APR.clin[0],cz=APR.clin[1],W=28,D=20,H=4.5,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('eclin',cx,cz,W,D,H,{floor:'#e8eef0',wall:'#f4f7f8',trim:'#c1352d',ceil:'#fafcfc'},{out:'eclind',nm:'DAKO MEDICAL CENTRE',doorX:cx-10});
+    box(X(0),1.8,Z(-9.7),W-2,3.6,0.3,'#e4eaec');
+    counter(X(-6),Z(-8),8,'#c1352d');counter(X(6),Z(-8),6,'#1f6f43');
+    addSign('DAKO MEDICAL CENTRE','#c1352d','#ffffff',X(0),3.9,Z(-9.5),0,10,0.8);
+    addSign('RECEPTION','#c1352d','#ffffff',X(-6),2.9,Z(-9.4),0,3.4,0.5);addSign('PHARMACY','#1f6f43','#ffffff',X(6),2.9,Z(-9.4),0,3.4,0.5);
+    box(X(0),3.0,Z(-9.45),0.4,1.4,0.05,'#c1352d');box(X(0),3.0,Z(-9.45),1.4,0.4,0.05,'#c1352d');
+    [[-3,3.2],[-3,5.8],[3,3.2],[3,5.8],[9,3.2]].forEach(function(p){bench(X(p[0]),Z(p[1]),3.2,'#6e8aa0');});
+    box(X(11.5),0.5,Z(-2),0.9,0.6,2.2,'#f4f1e8');solid(X(11.5),Z(-2),1.0,2.3,0.7);box(X(10.3),1.2,Z(-2),0.1,2.2,3,'#9ec3d8');
+    plant(X(-12.5),Z(-8));plant(X(12.5),Z(8));
+  })();
+  /* ----- THE IJORA THERMAL STATION ----- */
+  (function(){
+    var cx=APR.therm[0],cz=APR.therm[1],W=32,D=22,H=7,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('ethermal',cx,cz,W,D,H,{floor:'#8a8576',wall:'#b99a78',trim:'#3a3a3e',ceil:'#d8d2c2'},{out:'ethermald',nm:'IJORA THERMAL STATION',doorX:cx-10});
+    box(X(0),2.8,Z(-10.7),W-2,5.6,0.3,'#a8805f');
+    counter(X(-7),Z(-8),6,'#3a3a3e');
+    addSign('VISITOR DESK','#3a3a3e','#f2d36b',X(-7),3.0,Z(-10.4),0,4,0.5);
+    addSign('IJORA THERMAL STATION. BUILT 1923','#14161a','#f2d36b',X(1),5.0,Z(-10.4),0,14,0.9);
+    box(X(10),2.2,Z(-6.5),9,4.4,4,'#3a3a3e');solid(X(10),Z(-6.5),9,4,4.4);
+    box(X(10),5.0,Z(-6.5),9,0.5,0.5,'#c9c3b0');box(X(6),4.1,Z(-6.5),0.5,2.2,0.5,'#c9c3b0');
+    box(X(1),1.2,Z(-7.4),6,2.4,2.4,'#6e6e72');cyl(X(1),2.8,Z(-7.4),1.8,1.2,1.8,'#8a8f94');solid(X(1),Z(-7.4),6,2.4,3.4);
+    for(i=0;i<5;i++){box(X(-9+i*2.2),2.4,Z(-10.35),1.6,1.6,0.08,'#14161a');cyl(X(-9+i*2.2),2.4,Z(-10.28),0.9,0.06,0.9,['#2a9d5b','#f2b705','#c1352d','#2a9d5b','#f2b705'][i],Math.PI/2);}
+    box(X(0),6.2,Z(-4),30,0.4,0.4,'#7a7a7e');box(X(0),6.2,Z(4),30,0.4,0.4,'#7a7a7e');
+    [[8,3.2],[8,5.8]].forEach(function(p){bench(X(p[0]),Z(p[1]),3.4,'#6e4a2a');});
+    plant(X(-14.5),Z(-9.5));plant(X(14.5),Z(9.5));
   })();
 })();
 
@@ -5592,7 +5901,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-4600,XMAX=2700;
+var LIM=66,PR=0.38,XMIN=-5420,XMAX=2830;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -6428,15 +6737,15 @@ var LANES=[
   {x:AGX+2,z:63,h:Math.PI,speed:8,b:[AGX-4,AGX+4]},
   {x:-1002,z:-63,h:0,speed:7,b:[-1004,-996]},
   {x:-998,z:63,h:Math.PI,speed:8,b:[-1004,-996]},
-  {x:-4535,z:2.5,h:Math.PI/2,speed:8,b:[-4551,-3068]},
-  {x:-3080,z:-2.5,h:-Math.PI/2,speed:8,b:[-4551,-3068]}
+  {x:-5365,z:2.5,h:Math.PI/2,speed:8,b:[-5381,-3068]},
+  {x:-3080,z:-2.5,h:-Math.PI/2,speed:8,b:[-5381,-3068]}
 ];
 function regOf(x){return x>1000?4:(x>730?3:(x>500?2:(x>258?1:0)));}
 function grpOf(x){var r=regOf(x);return r===3?0:(r===4?1:r);}
 var LB0=[-64,248];
 function addVeh(kind,lane,p,col){
   var L=LANES[lane],mesh,r=1.2;
-  if(kind==='danfo'){mesh=buildDanfo();r=1.6;}else if(kind==='okada'){mesh=buildOkada();r=0.5;}else mesh=buildSedan(col);
+  if(kind==='danfo'){mesh=buildDanfo();r=1.6;}else if(kind==='okada'){mesh=buildOkada();r=0.5;}else if(kind==='truck'){mesh=buildTruck(col);r=5.8;}else mesh=buildSedan(col);
   var grp=new THREE.Group();grp.add(mesh);scene.add(grp);
   var v={grp:grp,lane:lane,r:r,h:L.h,x:L.x+Math.sin(L.h)*p,z:L.z+Math.cos(L.h)*p,speed:L.speed,max:L.speed,honkT:2+Math.random()*3};
   grp.position.set(v.x,0,v.z);grp.rotation.y=v.h;traffic.push(v);
@@ -6783,7 +7092,7 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';npcs[3].label='DELE';npcs[4].label='KUNLE';npcs[5].label='RONKE';npcs[6].label='OKON';
 var MW=480,MH=200,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
 mapBG.width=MW;mapBG.height=MH;
-var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338],[-2482,-1888],[-3044,-2448],[-3430,-3040],[-3790,-3400],[-4170,-3780],[-4580,-4160]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
+var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338],[-2482,-1888],[-3044,-2448],[-3430,-3040],[-3790,-3400],[-4170,-3780],[-4580,-4160],[-5000,-4570],[-5430,-4990]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
 function MX(x){var r=MR[mapReg];return (x-r[0])/(r[1]-r[0])*MW;}
 function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 (function(){
@@ -6871,7 +7180,7 @@ function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 
 
 var mapBG6=document.createElement('canvas');mapBG6.width=MW;mapBG6.height=MH;
-function mreg(x){return x<-4165?14:x<-3790?13:x<-3410?12:x<-3050?11:x<-2452?10:(x<-1892?9:(x<-1342?8:(x<-882?7:(x<-558?6:(x<-190?5:regOf(x))))));}
+function mreg(x){return x<-4995?16:x<-4570?15:x<-4165?14:x<-3790?13:x<-3410?12:x<-3050?11:x<-2452?10:(x<-1892?9:(x<-1342?8:(x<-882?7:(x<-558?6:(x<-190?5:regOf(x))))));}
 (function(){
   mapReg=5;var g=mapBG6.getContext('2d');
   g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
@@ -6995,12 +7304,12 @@ function drawEB(mr,cv){
   mapReg=mr;var g=cv.getContext('2d'),r=MR[mr],i;
   g.fillStyle='#3d6860';g.fillRect(0,0,MW,MH);
   g.fillStyle='#a8a08c';
-  g.fillRect(MX(-4570),MZ(-67),MX(-3935)-MX(-4570),MZ(67)-MZ(-67));
+  g.fillRect(MX(-4700),MZ(-67),MX(-3935)-MX(-4700),MZ(67)-MZ(-67));
   g.fillRect(MX(-3791),MZ(-67),MX(-3061)-MX(-3791),MZ(24)-MZ(-67));
   g.fillStyle='#8d8a82';g.fillRect(MX(-3930),MZ(-7),MX(-3790)-MX(-3930),MZ(7)-MZ(-7));
   g.fillRect(MX(-4480),MZ(-67),MX(-4460)-MX(-4480),MZ(67)-MZ(-67));
-  g.fillStyle='#4a4d52';g.fillRect(MX(-4560),MZ(-5),MX(-3760)-MX(-4560),MZ(5)-MZ(-5));
-  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(MX(-4560),MZ(0));g.lineTo(MX(-3760),MZ(0));g.stroke();g.setLineDash([]);
+  g.fillStyle='#4a4d52';g.fillRect(MX(-4600),MZ(-5),MX(-3760)-MX(-4600),MZ(5)-MZ(-5));
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(MX(-4600),MZ(0));g.lineTo(MX(-3760),MZ(0));g.stroke();g.setLineDash([]);
   g.fillStyle='#c9b08a';
   for(i=0;i<solids.length;i++){
     var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
@@ -7010,11 +7319,31 @@ function drawEB(mr,cv){
   mapReg=0;
 }
 drawEB(13,mapBG14);drawEB(14,mapBG15);
+var mapBG16=document.createElement('canvas');mapBG16.width=MW;mapBG16.height=MH;
+var mapBG17=document.createElement('canvas');mapBG17.width=MW;mapBG17.height=MH;
+function drawAP(mr,cv){
+  mapReg=mr;var g=cv.getContext('2d'),r=MR[mr],i;
+  g.fillStyle='#3d6860';g.fillRect(0,0,MW,MH);
+  g.fillStyle='#a8a08c';
+  [[-4700,-4570,-67,67],[-5010,-4810,-67,58],[-5240,-5010,-58,67],[-5420,-5240,-67,67]].forEach(function(q){g.fillRect(MX(q[0]),MZ(q[2]),MX(q[1])-MX(q[0]),MZ(q[3])-MZ(q[2]));});
+  g.fillStyle='#8d8a82';g.fillRect(MX(-4810),MZ(-7),MX(-4690)-MX(-4810),MZ(7)-MZ(-7));
+  g.fillRect(MX(-4636),MZ(-67),MX(-4614)-MX(-4636),MZ(67)-MZ(-67));
+  g.fillStyle='#4a4d52';g.fillRect(MX(-5410),MZ(-5),MX(-4560)-MX(-5410),MZ(5)-MZ(-5));
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(MX(-5410),MZ(0));g.lineTo(MX(-4560),MZ(0));g.stroke();g.setLineDash([]);
+  g.fillStyle='#c9b08a';
+  for(i=0;i<solids.length;i++){
+    var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
+    if(q.maxX<r[0]||q.minX>r[1])continue;
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(r[1]-r[0])*MW),Math.max(2,d/(2*LIM)*MH));
+  }
+  mapReg=0;
+}
+drawAP(15,mapBG16);drawAP(16,mapBG17);
 function mapLabel(g,t,x,y){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(t,x,y);g.fillText(t,x,y);}
 function mapUpdate(dt){
   mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
-  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10,mapBG11,mapBG12,mapBG13,mapBG14,mapBG15][rg],0,0);
+  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10,mapBG11,mapBG12,mapBG13,mapBG14,mapBG15,mapBG16,mapBG17][rg],0,0);
   if(px>1250){g.fillStyle='rgba(10,10,12,0.78)';g.fillRect(0,0,MW,MH);g.fillStyle='#fff';g.font='bold 26px sans-serif';g.textAlign='center';g.fillText('INSIDE A BUILDING',MW/2,MH/2);return;}
   g.fillStyle='#1b1b1b';
   for(i=0;i<traffic.length;i++)if(mreg(traffic[i].x)===rg)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
@@ -12439,7 +12768,7 @@ ojTick=function(dt){_ojTick54(dt);mkCanoeTick(dt);};
    The layout, every person, shop, price and hour are invented. The facts people tell you are from public sources and are labelled. */
 (function(){
   var kinds=['danfo','okada','sedan','danfo','okada'],cols=['#e0c040','#2f6a8e','#d9d9d9','#c1352d','#8e2f2f'],k;
-  [825,960,1095,1235,1375].forEach(function(p,i){addVeh(kinds[i%5],26,p,cols[i%5]);});
+  [1655,1790,1925,2065,2205].forEach(function(p,i){addVeh(kinds[i%5],26,p,cols[i%5]);});
   [70,205,340,480,610].forEach(function(p,i){addVeh(kinds[(i+2)%5],27,p,cols[(i+1)%5]);});
 })();
 var ISP=[
@@ -12707,7 +13036,7 @@ function lhTour(){
    The layout, every person, shop, price and hour are invented. The facts people tell you are from public sources and are labelled. */
 (function(){
   var kinds=['danfo','okada','sedan','danfo','okada'],cols=['#e0c040','#2f6a8e','#d9d9d9','#c1352d','#8e2f2f'];
-  [60,230,400,570].forEach(function(p,i){addVeh(kinds[(i+1)%5],26,p,cols[(i+2)%5]);});
+  [890,1060,1230,1400].forEach(function(p,i){addVeh(kinds[(i+1)%5],26,p,cols[(i+2)%5]);});
   [760,910,1060,1210,1360].forEach(function(p,i){addVeh(kinds[(i+3)%5],27,p,cols[(i+3)%5]);});
 })();
 var EBP=[
@@ -12734,22 +13063,24 @@ var EBF={
 var EBFARE={bus:300,train:400};
 function ebBusMenu(msg){
   if(!isOpen(5,22)){openDlg('BUS ATTENDANT','The buses rest at night. They leave from 5 AM to 10 PM.',[{label:'OK'}]);return;}
-  openDlg('BUS ATTENDANT',(msg?msg+'  ':'')+'Ebute Metta Bus Terminal. Buses to Yaba Terminal take about half an hour. You have '+money(cash)+'.',[
-    {label:'BUS TO YABA TERMINAL '+money(EBFARE.bus),fn:ebBus},
+  openDlg('BUS ATTENDANT',(msg?msg+'  ':'')+'Ebute Metta Bus Terminal. Buses to Yaba Terminal and to Apapa take about half an hour. You have '+money(cash)+'.',[
+    {label:'BUS TO YABA TERMINAL '+money(EBFARE.bus),fn:function(){ebBus('yaba');}},
+    {label:'BUS TO APAPA '+money(EBFARE.apapa),fn:function(){ebBus('apapa');}},
     {label:'ABOUT THE TERMINAL',fn:function(){isInfo('BUS ATTENDANT',EBF.bus,ebBusMenu);}},
     {label:'BYE'}]);
 }
-function ebBus(){
+function ebBus(dest){
+  var apa=dest==='apapa';
   var why=phBlock();if(why){buzz();toast(why);return;}
   if(!isOpen(5,22)){buzz();toast('The buses rest at night. They leave from 5 AM to 10 PM.');return;}
-  var fare=EBFARE.bus;
+  var fare=apa?EBFARE.apapa:EBFARE.bus;
   if(cash<fare){buzz();ebBusMenu('E no reach! That ticket is '+money(fare)+'.');return;}
-  var n=NK.aytermd.npc;
-  cash-=fare;setCash();logTx('Bus ticket to Yaba Terminal',-fare);saveGame();
-  fadeSeq('The bus to Yaba Terminal...',function(){
+  var n=apa?NK.apbus.npc:NK.aytermd.npc;
+  cash-=fare;setCash();logTx(apa?'Bus ticket to Apapa':'Bus ticket to Yaba Terminal',-fare);saveGame();
+  fadeSeq(apa?'The bus to Apapa...':'The bus to Yaba Terminal...',function(){
     var sp=spotNear(n);player.x=sp[0];player.z=sp[1];player.speed=0;player.yaw=Math.atan2(n.x-sp[0],n.z-sp[1]);camYaw=player.yaw+Math.PI;camSnap=true;
     advanceHours(0.5);gain('energy',-2);saveGame();
-  },'',{mid:900,total:2200,done:function(){toast('You took the bus to Yaba Terminal for '+money(fare));}});
+  },'',{mid:900,total:2200,done:function(){toast('You took the bus to '+(apa?'Apapa':'Yaba Terminal')+' for '+money(fare));}});
 }
 /* the train between Mobolaji Johnson Station and Agege */
 function emMenu(msg){
@@ -12944,7 +13275,7 @@ function elEvent(){
   /* the station platform */
   WK([-4165,30],[-4108,30],DAY,0.6);WK([-4108,37],[-4165,37],DAY,0.6);WK([-4125,22],[-4125,40],DAY,0.5);
   /* the churches */
-  WK([-4190,-8],[-4190,-24],DAY,0.5);WK([-4212,-19],[-4168,-19],DAY,0.5);WK([-4200,8],[-4200,24],DAY,0.5);WK([-4222,20],[-4178,20],DAY,0.5);
+  WK([-4190,-8],[-4190,-23],DAY,0.5);WK([-4212,-19],[-4168,-19],DAY,0.5);WK([-4200,8],[-4200,24],DAY,0.5);WK([-4222,20],[-4178,20],DAY,0.5);
   /* the Oyingbo stall yard */
   WK([-4305,-32],[-4430,-32],MKT,0.6);WK([-4430,-40],[-4305,-40],MKT,0.6);WK([-4305,-48],[-4430,-48],MKT,0.5);WK([-4430,-56],[-4305,-56],MKT,0.5);
   WK([-4430,-32],[-4305,-32],MKT,0.7);WK([-4305,-40],[-4430,-40],MKT,0.7);WK([-4430,-48],[-4305,-48],MKT,0.7);WK([-4305,-56],[-4430,-56],MKT,0.6);
@@ -12956,6 +13287,282 @@ function elEvent(){
   IW('enrc',[-13,-6],[13,-6],[[8,16]],0.45);IW('enrc',[-13,0.2],[13,0.2],[[8,16]],0.45);IW('enrc',[-11,7],[11,7],[[8,16]],0.4);
   IW('ejude',[0,8],[0,-6],[[7,18]],0.35);IW('ejude',[12.7,-6],[12.7,8],[[7,18]],0.4);IW('ejude',[-12.7,8],[-12.7,-6],[[7,18]],0.4);
   IW('elisa',[-13,0],[13,0],[[10,20]],0.45);IW('elisa',[12,-4],[12,8],[[10,20]],0.4);IW('elisa',[-11.5,8],[-11.5,-4],[[10,20]],0.4);IW('elisa',[-13,-4.4],[13,-4.4],[[10,20]],0.4);
+})();
+
+/* ---- b57: Costain, Ijora and Apapa people, opening hours, careers, the bus to Ebute Metta, lorries and traffic ----
+   The layout, every person, shop, price, fare and hour are invented. The facts people tell you are from public sources and are labelled. */
+var APCONT=['#c1352d','#1f6f9e','#2a7a4a','#d9a520','#7a3b2a','#6e6e72'];
+function buildTruck(col){
+  var b=new GB(),cc=APCONT[(String(col).charCodeAt(1)+String(col).charCodeAt(3))%6];
+  b.add(BOXG,0,1.65,4.6,2.5,2.5,2.6,0,0,0,col);b.add(BOXG,0,2.55,5.3,2.2,0.9,1.4,0,0,0,'#243746');b.add(BOXG,0,1.1,6.0,2.5,0.5,0.3,0,0,0,'#2a2a2e');
+  b.add(BOXG,0,0.85,-0.4,2.2,0.5,11,0,0,0,'#2a2a2e');
+  b.add(BOXG,0,2.35,-1.0,2.5,2.6,9.8,0,0,0,cc);
+  [-1,1].forEach(function(sd){[-5.0,-3.4,3.2,4.9].forEach(function(wz){staticWheel(b,sd*1.15,wz,0.5,0.4);});});
+  return b.mesh(carMat);
+}
+(function(){
+  var kinds=['truck','danfo','sedan','truck','okada','sedan'],cols=['#e0c040','#2f6a8e','#d9d9d9','#c1352d','#8e2f2f','#f1efe6'];
+  [40,170,310,450,590,730].forEach(function(p,i){addVeh(kinds[i%6],26,p,cols[(i+1)%6]);});
+  [1520,1680,1830,1980,2130,2260].forEach(function(p,i){addVeh(kinds[(i+3)%6],27,p,cols[(i+2)%6]);});
+})();
+var APP=[
+  {k:'eolopad',id:'eolopa',nm:'IJORA OLOPA FROZEN FOOD',h:[5,18],x:-4890,z:10.9,yaw:Math.PI,bx:-4890,bz:11.85,br:Math.PI},
+  {k:'eegated',id:'eegate',nm:'TRUCK CALL-UP OFFICE',h:[6,22],x:-5125,z:10.9,yaw:Math.PI,bx:-5125,bz:11.85,br:Math.PI},
+  {k:'eestnd',id:'eestn',nm:'APAPA RAILWAY STATION',h:[5,21],x:-5210,z:10.9,yaw:Math.PI,bx:-5210,bz:11.85,br:Math.PI},
+  {k:'eclubd',id:'eclub',nm:'APAPA CLUB',h:[10,22],x:-5290,z:10.9,yaw:Math.PI,bx:-5290,bz:11.85,br:Math.PI},
+  {k:'eclind',id:'eclin',nm:'DAKO MEDICAL CENTRE',h:[8,20],x:-5262,z:-10.9,yaw:0,bx:-5262,bz:-11.85,br:0},
+  {k:'ethermald',id:'ethermal',nm:'IJORA THERMAL STATION',h:[9,16],x:-4905,z:-33.6,yaw:0,bx:-4905,bz:-34.8,br:0}
+];
+/* ---- facts (public sources, wording kept careful) ---- */
+var APF={
+  apapa:'Apapa is a Local Government Area on the mainland, west of Lagos Island, where the Lagos Lagoon meets the sea. It began as a small Awori fishing village. Ships could enter Lagos harbour from 1913, after moles were built at the harbour mouth, a wharf reached Apapa in 1919, and four deep-water berths were finished in 1926. Apapa was chosen as the end of the western railway line. The streets, shops and people in this game are invented.',
+  port:'The Lagos Port Complex at Apapa was expanded from 1956, finished in 1961 and enlarged again between 1962 and 1968. The Nigerian Ports Authority ran it until 2005, when the terminals were leased to private operators and the Authority became the landlord. APM Terminals runs the Apapa Container Terminal, and Tin Can Island Port was commissioned in 1977. The cranes, the ship, the stacks and the gate in this game are invented models, and the gate is closed to visitors.',
+  eto:'Eto is the electronic call-up system for lorries. The Nigerian Ports Authority started it on 27 February 2021 with Truck Transit Park Limited. A lorry needs a valid call-up ticket before it may go to the port, and an electronic barrier checks it. A June 2021 report said Apapa can handle about 2,400 lorries a day but more than 7,000 arrive, and it reported fake tickets and illegal toll points. The park, the lorries and the people in this game are invented.',
+  ijora:'Ijora began as a swampy village reached by canoe from Lagos Island. A coal wharf opened in 1919 and the Ijora Thermal Station was built in 1923 for the railway. The Ijora Causeway is a main road to Apapa Wharf, and the Eko Bridge starts at Ijora. Ijora Olopa is a big frozen food market, and the Ajeloro Fish Market stands in the coal wharf area. The layout here is invented.',
+  olopa:'Ijora Olopa is described as a major market for frozen food. People come for frozen fish, chicken and turkey, and dried fish. The stalls, the traders and the prices here are invented.',
+  thermal:'The Ijora Thermal Station was built in 1923 to make power for the railway. The hall, the machines and the staff in this game are invented models.',
+  costain:'Costain is a busy junction where several big roads meet: Funsho Williams Avenue (Western Avenue), Apapa Road, Iganmu Road, the Eko Bridge, Abule Nla Road, Ijora Olopa and others, according to news reports. A new flyover replaced the old one, and part of the junction was closed from 3 October to 3 December 2019 for the work. The plaza, the traders and the signs in this game are invented.',
+  gra:'The Apapa GRA was laid out as a quiet residential district for colonial administrators and technical staff, with a grid of streets. The villas here are invented.',
+  club:'The Apapa Club was founded in the 1930s, with tennis, swimming and squash. The club house, the courts and the pool in this game are invented.',
+  stn:'Apapa Railway Station is a terminal of the Nigerian Railway Corporation, and the old Apapa North station is no longer in use. The hall, the platform, the trains, the times and the fares in this game are invented.',
+  clinic:'Private hospitals such as Dako Medical Centre and Faleti Medical Centre are in Apapa, and so is the Military Hospital Lagos. The rooms, the staff and the prices in this game are invented.',
+  road:'The Oshodi-Apapa Expressway was built between 1975 and 1978 and serves the ports and the airport road.'
+};
+EBFARE.apapa=400;
+var APFARE={tour:600,swim:3000,tennis:2500,check:2500};
+/* the bus attendant at Apapa Station */
+function apBusMenu(msg){
+  if(!isOpen(5,22)){openDlg('BUS ATTENDANT','The buses rest at night. They leave from 5 AM to 10 PM.',[{label:'OK'}]);return;}
+  openDlg('BUS ATTENDANT',(msg?msg+'  ':'')+'Apapa Station bus stop. Buses to Ebute Metta Bus Terminal take about half an hour. You have '+money(cash)+'.',[
+    {label:'BUS TO EBUTE METTA '+money(EBFARE.apapa),fn:apBus},
+    {label:'ABOUT APAPA',fn:function(){isInfo('BUS ATTENDANT',APF.apapa,apBusMenu);}},
+    {label:'ABOUT THE ROAD',fn:function(){isInfo('BUS ATTENDANT',APF.road,apBusMenu);}},
+    {label:'BYE'}]);
+}
+function apBus(){
+  var why=phBlock();if(why){buzz();toast(why);return;}
+  if(!isOpen(5,22)){buzz();toast('The buses rest at night. They leave from 5 AM to 10 PM.');return;}
+  var fare=EBFARE.apapa;
+  if(cash<fare){buzz();apBusMenu('E no reach! That ticket is '+money(fare)+'.');return;}
+  var n=NK.ebbus.npc;
+  cash-=fare;setCash();logTx('Bus ticket to Ebute Metta',-fare);saveGame();
+  fadeSeq('The bus to Ebute Metta...',function(){
+    var sp=spotNear(n);player.x=sp[0];player.z=sp[1];player.speed=0;player.yaw=Math.atan2(n.x-sp[0],n.z-sp[1]);camYaw=player.yaw+Math.PI;camSnap=true;
+    advanceHours(0.5);gain('energy',-2);saveGame();
+  },'',{mid:900,total:2200,done:function(){toast('You took the bus to Ebute Metta for '+money(fare));}});
+}
+/* the truck call-up office */
+function egMenu(msg){
+  openDlg('MR USMAN (CALL-UP CLERK)',(msg?msg+'  ':'')+'Truck Transit Park call-up desk. Drivers wait here for their number to be called.',[
+    {label:'WAIT WITH THE DRIVERS (FREE, 30 MIN)',fn:egWait},
+    {label:'ABOUT ETO CALL-UP',fn:function(){isInfo('MR USMAN (CALL-UP CLERK)',APF.eto,egMenu);}},
+    {label:'ABOUT THE PORT',fn:function(){isInfo('MR USMAN (CALL-UP CLERK)',APF.port,egMenu);}},
+    {label:'ABOUT APAPA',fn:function(){isInfo('MR USMAN (CALL-UP CLERK)',APF.apapa,egMenu);}},
+    {label:'BYE'}]);
+}
+function egWait(){applyFx({energy:2,fun:2,social:4});advanceHours(0.5);saveGame();chime();egMenu('You sit with the drivers and talk football and traffic. Half an hour passes.');}
+/* Apapa railway station */
+function stMenu(msg){
+  openDlg('MRS ADEOLA (TICKET CLERK)',(msg?msg+'  ':'')+'Apapa Railway Station. The trains here are invented, and so is the timetable.',[
+    {label:'SIT AND WATCH THE PLATFORM (FREE, 30 MIN)',fn:stSit},
+    {label:'ABOUT THE STATION',fn:function(){isInfo('MRS ADEOLA (TICKET CLERK)',APF.stn,stMenu);}},
+    {label:'ABOUT APAPA',fn:function(){isInfo('MRS ADEOLA (TICKET CLERK)',APF.apapa,stMenu);}},
+    {label:'BYE'}]);
+}
+function stSit(){applyFx({energy:3,fun:5,social:1});advanceHours(0.5);saveGame();chime();stMenu('You sit on a bench and watch the old train rest. Half an hour passes.');}
+/* the Apapa Club */
+function clMenu(msg){
+  openDlg('MR OKAFOR (SPORTS DESK)',(msg?msg+'  ':'')+'Apapa Club. Swimming '+money(APFARE.swim)+', tennis '+money(APFARE.tennis)+'. You have '+money(cash)+'.',[
+    {label:'SWIM FOR AN HOUR '+money(APFARE.swim),fn:clSwim},
+    {label:'PLAY TENNIS '+money(APFARE.tennis),fn:clTennis},
+    {label:'ABOUT THE CLUB',fn:function(){isInfo('MR OKAFOR (SPORTS DESK)',APF.club,clMenu);}},
+    {label:'ABOUT THE GRA',fn:function(){isInfo('MR OKAFOR (SPORTS DESK)',APF.gra,clMenu);}},
+    {label:'BYE'}]);
+}
+function clSwim(){
+  if(cash<APFARE.swim){buzz();clMenu('Swimming is '+money(APFARE.swim)+'.');return;}
+  cash-=APFARE.swim;setCash();logTx('Apapa Club swim',-APFARE.swim);
+  applyFx({fun:14,hygiene:10,energy:-4,hunger:-4,social:3});advanceHours(1);saveGame();chime();
+  clMenu('You swim lengths in the cool pool, then lie in the shade. An hour goes by.');
+}
+function clTennis(){
+  if(cash<APFARE.tennis){buzz();clMenu('Tennis is '+money(APFARE.tennis)+'.');return;}
+  cash-=APFARE.tennis;setCash();logTx('Apapa Club tennis',-APFARE.tennis);
+  applyFx({fun:16,social:8,energy:-8,hunger:-5,hygiene:-5});advanceHours(1);saveGame();chime();
+  clMenu('You play a hard set on the clay court. Your arm aches in a good way.');
+}
+/* the medical centre */
+function cnMenu(msg){
+  openDlg('NURSE JOY (RECEPTION)',(msg?msg+'  ':'')+'Dako Medical Centre. A check-up is '+money(APFARE.check)+'. You have '+money(cash)+'.',[
+    {label:'HAVE A CHECK-UP '+money(APFARE.check),fn:cnCheck},
+    {label:'ABOUT THE HOSPITALS',fn:function(){isInfo('NURSE JOY (RECEPTION)',APF.clinic,cnMenu);}},
+    {label:'ABOUT APAPA',fn:function(){isInfo('NURSE JOY (RECEPTION)',APF.apapa,cnMenu);}},
+    {label:'BYE'}]);
+}
+function cnCheck(){
+  if(cash<APFARE.check){buzz();cnMenu('A check-up is '+money(APFARE.check)+'.');return;}
+  cash-=APFARE.check;setCash();logTx('Medical centre check-up',-APFARE.check);
+  applyFx({energy:8,hygiene:6,fun:2});advanceHours(1);saveGame();chime();
+  cnMenu('The doctor checks you over and says you are fit, but should rest and drink water.');
+}
+/* the thermal station */
+function thMenu(msg){
+  openDlg('MR EZEKIEL (GUIDE)',(msg?msg+'  ':'')+'Ijora Thermal Station. A visitor tour is '+money(APFARE.tour)+'. You have '+money(cash)+'.',[
+    {label:'TAKE THE TOUR '+money(APFARE.tour),fn:thTour},
+    {label:'ABOUT THE STATION',fn:function(){isInfo('MR EZEKIEL (GUIDE)',APF.thermal,thMenu);}},
+    {label:'ABOUT IJORA',fn:function(){isInfo('MR EZEKIEL (GUIDE)',APF.ijora,thMenu);}},
+    {label:'BYE'}]);
+}
+function thTour(){
+  if(cash<APFARE.tour){buzz();thMenu('The tour is '+money(APFARE.tour)+'.');return;}
+  cash-=APFARE.tour;setCash();logTx('Thermal station tour',-APFARE.tour);
+  applyFx({fun:10,social:3,energy:-2});advanceHours(0.75);saveGame();chime();
+  thMenu('The guide walks you past the boiler and the old turbine and tells you how coal became power. It takes three quarters of an hour.');
+}
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  var D={
+    eolopad:{look:{skin:sk[3],skin2:'#774a2e',low:'#1f6f9e',low2:'#14506f',top:'#f1efe6',head:'gele',hc:'#1f6f9e',hc2:'#f2b705'},name:'HALL WARDEN',lbl:'IJORA OLOPA',greet:'Ijora Olopa. Frozen fish, chicken and turkey. Open 5 AM to 6 PM.'},
+    eegated:{look:{skin:sk[0],skin2:'#5a3520',low:'#1f6f43',low2:'#14502f',top:'#e8e4da',head:'cap',hc:'#1f6f43'},name:'OFFICE GUARD',lbl:'CALL-UP OFFICE',greet:'Truck Transit Park call-up office. Open 6 AM to 10 PM.'},
+    eestnd:{look:{skin:sk[1],skin2:'#6a3e26',low:'#1f3a68',low2:'#14264a',top:'#e8e4da',head:'cap',hc:'#1f3a68'},name:'STATION GUARD',lbl:'APAPA STATION',greet:'Apapa Railway Station. Open 5 AM to 9 PM.'},
+    eclubd:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#1f6f43',low2:'#14502f',top:'#f4efe0',head:'cap',hc:'#1f6f43'},name:'CLUB DOORMAN',lbl:'APAPA CLUB',greet:'Apapa Club. Open 10 AM to 10 PM.'},
+    eclind:{look:{skin:sk[3],skin2:'#774a2e',low:'#c1352d',low2:'#8a2020',top:'#f4f7f8',head:'gele',hc:'#f4f7f8',hc2:'#c1352d'},name:'SECURITY',lbl:'DAKO MEDICAL',greet:'Dako Medical Centre. Open 8 AM to 8 PM.'},
+    ethermald:{look:{skin:sk[0],skin2:'#5a3520',low:'#3a3a3e',low2:'#26262a',top:'#e0a020',head:'cap',hc:'#e0a020'},name:'PLANT GUARD',lbl:'THERMAL STATION',greet:'Ijora Thermal Station. Visitors from 9 AM to 4 PM.'}
+  };
+  APP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2,hs:lk.hs},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.bx,2.4,p.bz,p.br,3.2,0.6);
+    var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    OJP.push(p);
+    DEST.push([p.nm,p.k]);
+  });
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  var CL='The place is closed. ';
+  /* the frozen food hall: three counters */
+  inside('eolopa','eolopa',[-9,-10.8],{skin:sk[2],skin2:'#4a2b1a',low:'#1f6f9e',low2:'#14506f',top:'#f1efe6',head:'gele',hc:'#1f6f9e',hc2:'#f2b705'},
+    {label:'FROZEN FISH',name:'MAMA TITUS (FROZEN FISH)',svcLabel:'BUY',career:'frozenseller',hours:[5,18],closed:CL+'It opens at 5 AM.',greet:'Frozen fish! Titus, shrimps, ice blocks. Come and see.',
+     chat:['The cold room never sleeps. '+APF.olopa,'Come early, my friend. By noon the best fish are gone and the ice is sweating.','Lagos eats from this hall. Half the restaurants on the Island buy from us.'],hangMsg:'She hands you a heavy, icy parcel to feel the weight.',
+     items:[{l:'FROZEN TITUS FISH (1 KG)',c:3200,fx:{fun:3,social:2},msg:'A frozen titus fish wrapped in a black nylon bag.'},{l:'PACK OF FROZEN SHRIMP',c:2800,fx:{fun:3,social:2},msg:'A cold pack of shrimp, already cleaned.'},{l:'BAG OF ICE',c:300,fx:{energy:3,fun:1},msg:'A bag of crushed ice. You press it to your neck.'}]});
+  inside('eolopa','eolopab',[3,-10.8],{skin:sk[3],skin2:'#774a2e',low:'#c1352d',low2:'#8a2020',top:'#f1efe6',head:'gele',hc:'#c1352d',hc2:'#f2b705'},
+    {label:'CHICKEN AND TURKEY',name:'MAMA FOLUKE (CHICKEN AND TURKEY)',svcLabel:'BUY',friend:false,hours:[5,18],closed:CL+'It opens at 5 AM.',greet:'Chicken, turkey, wings! Frozen hard and cheap.',
+     items:[{l:'FROZEN CHICKEN',c:4200,fx:{fun:3,social:2},msg:'A whole frozen chicken, heavy and hard.'},{l:'FROZEN TURKEY',c:6500,fx:{fun:4,social:3},msg:'A big frozen turkey, wrapped twice.'},{l:'CHICKEN WINGS (1 KG)',c:3000,fx:{fun:3,social:2},msg:'A kilo of frozen wings.'}]});
+  inside('eolopa','eolopac',[13,-10.8],{skin:sk[0],skin2:'#5a3520',low:'#7a3b2a',low2:'#5a2a1c',top:'#e8e3d2',head:'cap',hc:'#7a3b2a'},
+    {label:'DRIED FISH AND CRAYFISH',name:'BABA ALHAJI (DRIED FISH AND CRAYFISH)',svcLabel:'BUY',friend:false,hours:[5,18],closed:CL+'It opens at 5 AM.',greet:'Dried fish, crayfish, stockfish! The soup needs it.',
+     items:[{l:'DRIED FISH',c:1500,food:1,fx:{hunger:10,fun:2,bladder:-1},msg:'A piece of smoky dried fish. You chew on it.'},{l:'CRAYFISH (CUP)',c:800,fx:{fun:2,social:1},msg:'A cup of ground crayfish in paper.'},{l:'STOCKFISH PIECE',c:2600,fx:{fun:2,social:2},msg:'A hard piece of stockfish, wrapped in nylon.'}]});
+  /* the truck call-up office */
+  inside('eegate','eegate',[-5,-8.8],{skin:sk[0],skin2:'#5a3520',low:'#1f6f43',low2:'#14502f',top:'#e8e4da',head:'cap',hc:'#1f6f43'},
+    {label:'CALL-UP DESK',name:'MR USMAN (CALL-UP CLERK)',svcLabel:'',origLabel:'ASK THE CLERK',orig:function(){egMenu();},friend:false,career:'gateclerk',hours:[6,22],closed:'The office is closed. It opens at 6 AM.',greet:'Truck Transit Park. Please wait for your number.',items:[]});
+  inside('eegate','eegate2',[9,-8.8],{skin:sk[3],skin2:'#774a2e',low:'#7a3b2a',low2:'#5a2a1c',top:'#efe0bc',head:'gele',hc:'#7a3b2a',hc2:'#f2b705'},
+    {label:'TEA AND BREAD',name:'AUNTY RASHIDAT (TEA AND BREAD)',svcLabel:'BUY',friend:false,hours:[6,22],closed:CL+'It opens at 6 AM.',greet:'Tea, bread, meat pie! Drivers wait long, so eat well.',
+     items:[{l:'TEA AND BREAD',c:900,food:1,fx:{hunger:26,energy:6,fun:3,bladder:-3},msg:'Hot tea with buttered bread.'},{l:'MEAT PIE',c:700,food:1,fx:{hunger:24,fun:3,bladder:-1},msg:'A warm meat pie.'},{l:'SACHET WATER',c:100,food:1,fx:{energy:2,bladder:-3},msg:'A sachet of cold water.'}]});
+  /* Apapa railway station */
+  inside('eestn','eestn',[-5,-8.8],{skin:sk[2],skin2:'#4a2b1a',low:'#1f3a68',low2:'#14264a',top:'#f1efe6',head:'gele',hc:'#1f3a68',hc2:'#f2b705'},
+    {label:'TICKETS',name:'MRS ADEOLA (TICKET CLERK)',svcLabel:'',origLabel:'FACTS AND THE PLATFORM',orig:function(){stMenu();},friend:false,hours:[5,21],closed:'The station is closed. It opens at 5 AM.',greet:'Welcome to Apapa Station.',items:[]});
+  inside('eestn','eestn2',[10,-8.8],{skin:sk[0],skin2:'#5a3520',low:'#7a3b2a',low2:'#5a2a1c',top:'#e8e3d2',head:'cap',hc:'#14161a'},
+    {label:'NEWS AND SNACKS',name:'MALLAM SANI (NEWS AND SNACKS)',svcLabel:'BUY',career:'porter',hours:[5,21],closed:CL+'It opens at 5 AM.',greet:'Newspaper, meat pie, cold drinks. For the wait.',
+     chat:['I carry bags and sell papers. The port trucks shake this whole street, but the trains are quiet.',APF.stn],hangMsg:'He tucks a folded paper under your arm.',
+     items:[{l:'NEWSPAPER',c:300,fx:{fun:4,social:1},msg:'Today\'s paper, folded under your arm.'},{l:'MEAT PIE',c:700,food:1,fx:{hunger:24,fun:3,bladder:-1},msg:'A warm meat pie in a paper bag.'},{l:'COLD DRINK',c:400,food:1,fx:{hunger:4,energy:4,fun:3,bladder:-5},msg:'A cold bottled drink.'}]});
+  /* the Apapa Club */
+  inside('eclub','eclub',[-7,-8.8],{skin:sk[1],skin2:'#6a3e26',low:'#1f6f43',low2:'#14502f',top:'#f4efe0',head:'cap',hc:'#1f6f43'},
+    {label:'SPORTS DESK',name:'MR OKAFOR (SPORTS DESK)',svcLabel:'',origLabel:'SWIM, TENNIS AND FACTS',orig:function(){clMenu();},friend:false,hours:[10,22],closed:'The club is closed. It opens at 10 AM.',greet:'Welcome to Apapa Club.',items:[]});
+  inside('eclub','eclub2',[8,-8.8],{skin:sk[3],skin2:'#774a2e',low:'#14161a',low2:'#0a0a0c',top:'#f4efe0',head:'',hs:'low'},
+    {label:'CLUB BAR AND LUNCH',name:'MR EMEKA (BARMAN)',svcLabel:'BUY',career:'clubwaiter',hours:[10,22],closed:CL+'It opens at 10 AM.',greet:'Lunch and cold drinks. Take a table by the window.',
+     chat:['Members play tennis in the morning and eat here after. The club is old and the jollof is older.',APF.club],hangMsg:'He polishes a glass and slides it across the counter.',
+     items:[{l:'CLUB LUNCH',c:3500,food:1,fx:{hunger:48,energy:4,fun:6,bladder:-3},msg:'Jollof rice with chicken and plantain on a white plate.'},{l:'CHAPMAN',c:1200,food:1,fx:{hunger:6,energy:4,fun:5,bladder:-5},msg:'A cold glass of chapman with ice.'},{l:'SACHET WATER',c:100,food:1,fx:{energy:2,bladder:-3},msg:'A sachet of cold water.'}]});
+  /* the medical centre */
+  inside('eclin','eclin',[-6,-8.8],{skin:sk[2],skin2:'#4a2b1a',low:'#c1352d',low2:'#8a2020',top:'#f4f7f8',head:'gele',hc:'#f4f7f8',hc2:'#c1352d'},
+    {label:'RECEPTION',name:'NURSE JOY (RECEPTION)',svcLabel:'',origLabel:'CHECK-UP AND FACTS',orig:function(){cnMenu();},friend:false,career:'clinicaide',hours:[8,20],closed:'The clinic is closed. It opens at 8 AM.',greet:'Dako Medical Centre. How can I help?',items:[]});
+  inside('eclin','eclin2',[6,-8.8],{skin:sk[0],skin2:'#5a3520',low:'#1f6f43',low2:'#14502f',top:'#f4f7f8',head:'cap',hc:'#1f6f43'},
+    {label:'PHARMACY',name:'PHARMACIST ADE (PHARMACY)',svcLabel:'BUY',friend:false,hours:[8,20],closed:'The clinic is closed. It opens at 8 AM.',greet:'Pharmacy. Small things for small problems.',
+     items:[{l:'PARACETAMOL',c:300,fx:{energy:4,fun:1},msg:'A strip of paracetamol.'},{l:'VITAMIN C',c:600,fx:{energy:5,hygiene:2,fun:1},msg:'A tube of vitamin C tablets.'},{l:'HAND SANITISER',c:500,fx:{hygiene:10,fun:1},msg:'A small bottle of hand sanitiser.'}]});
+  /* the thermal station */
+  inside('ethermal','ethermal',[-7,-8.8],{skin:sk[1],skin2:'#6a3e26',low:'#3a3a3e',low2:'#26262a',top:'#e0a020',head:'cap',hc:'#e0a020'},
+    {label:'VISITOR DESK',name:'MR EZEKIEL (GUIDE)',svcLabel:'',origLabel:'TOUR AND FACTS',orig:function(){thMenu();},friend:false,hours:[9,16],closed:'The station is closed to visitors. It opens at 9 AM.',greet:'Welcome to the Ijora Thermal Station.',items:[]});
+  inside('ethermal','ethermal2',[3.5,-4.8],{skin:sk[3],skin2:'#774a2e',low:'#2a3a52',low2:'#1c2a3e',top:'#e0a020',head:'cap',hc:'#e0a020'},
+    {label:'ENGINEER',name:'ENGR. BELLO (ENGINEER)',career:'plantop',friend:false,hours:[9,16],closed:'The station is closed to visitors. It opens at 9 AM.',greet:APF.thermal,
+     chat:['The wheels of the whole railway once turned from this building. '+APF.thermal,'Coal came in at the wharf and went straight to the boiler. That is why this place sits here.','I check the dials and oil the old machines. Visitors always ask the same questions.'],hangMsg:'He wipes his hands on a rag and nods at a dial.',items:[]});
+  /* exit doormen */
+  APP.forEach(function(p){
+    var dd=INTD[p.id],c=dd.c;
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* street people */
+  addPerson('apwarden',{x:-4655,z:-9.5,yaw:0,skin:sk[0],skin2:'#5a3520',low:'#1c2a44',low2:'#121c30',top:'#f2b705',head:'cap',hc:'#14161a'},
+    {label:'COSTAIN',name:'JUNCTION WARDEN (INVENTED)',friend:false,greet:APF.costain,items:[]});
+  DEST.push(['COSTAIN JUNCTION','apwarden']);
+  addPerson('apbus',{x:-5176,z:9.6,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#e0c040',head:'cap',hc:'#14161a'},
+    {label:'BUS',name:'BUS ATTENDANT',friend:false,greet:'Ebute Metta, Ebute Metta! Bus to Ebute Metta Terminal!',items:[]});
+  NK.apbus.npc.talk=function(){apBusMenu();};
+  DEST.push(['APAPA STATION BUS STOP','apbus']);
+  addPerson('apgguard',{x:-5027,z:-10.2,yaw:0,skin:sk[1],skin2:'#6a3e26',low:'#1f3a68',low2:'#14264a',top:'#e8e4da',head:'cap',hc:'#1f3a68'},
+    {label:'PORT GATE',name:'GATE GUARD (INVENTED)',friend:false,greet:'The terminal is closed to visitors. Authorised persons only. '+APF.port,items:[]});
+  DEST.push(['PORT GATE, APAPA','apgguard']);
+  addPerson('apttp',{x:-5052,z:10.6,yaw:Math.PI,skin:sk[0],skin2:'#5a3520',low:'#1f6f43',low2:'#14502f',top:'#e0c040',head:'cap',hc:'#14161a'},
+    {label:'TRUCK PARK',name:'PARK MARSHAL (INVENTED)',friend:false,greet:APF.eto,items:[]});
+  DEST.push(['TRUCK TRANSIT PARK','apttp']);
+  addPerson('apfish',{x:-4985,z:9.5,yaw:Math.PI,skin:sk[3],skin2:'#774a2e',low:'#2a5a34',low2:'#1c3a24',top:'#e07a1f',head:'gele',hc:'#e07a1f',hc2:'#f2b705'},
+    {label:'FRIED FISH',name:'AUNTY SIDIKAT (FRIED FISH)',svcLabel:'BUY',friend:false,hours:[10,21],closed:'Aunty Sidikat has not lit her fire yet. She comes at 10 AM.',greet:'Fried fish and bread! Ijora fish is sweet. Come and eat.',
+     items:[{l:'FRIED FISH AND BREAD',c:1200,food:1,fx:{hunger:36,fun:4,bladder:-2},msg:'Hot fried fish with fresh bread and pepper.'},{l:'FISH ONLY',c:700,food:1,fx:{hunger:18,fun:2,bladder:-1},msg:'A piece of hot fried fish in paper.'}]});
+  DEST.push(['FRIED FISH, IJORA','apfish']);
+  /* careers (pay and costs are invented) */
+  CARS.frozenseller={name:'FROZEN FOOD SELLER',key:'eolopa',pay:3600,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-5,hygiene:-6,fun:-4,bladder:-4}};
+  CARS.gateclerk={name:'CALL-UP CLERK',key:'eegate',pay:5000,secs:30,req:'Education Level 1 (study at the school in Makoko, Ojuelegba or Yabatech)',ok:function(){return eduLevel()>=1;},cost:{energy:-10,hunger:-5,hygiene:-2,fun:-5,bladder:-4}};
+  CARS.porter={name:'STATION PORTER',key:'eestn2',pay:3300,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-5,hygiene:-5,fun:-4,bladder:-4}};
+  CARS.clubwaiter={name:'CLUB WAITER',key:'eclub2',pay:3900,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-10,hunger:-5,hygiene:-3,fun:-4,bladder:-4}};
+  CARS.clinicaide={name:'CLINIC AIDE',key:'eclin',pay:5800,secs:30,req:'Education Level 2 (study at the school in Makoko, Ojuelegba or Yabatech)',ok:function(){return eduLevel()>=2;},cost:{energy:-10,hunger:-5,hygiene:-3,fun:-5,bladder:-4}};
+  CARS.plantop={name:'PLANT OPERATOR',key:'ethermal2',pay:5400,secs:30,req:'Education Level 1 (study at the school in Makoko, Ojuelegba or Yabatech)',ok:function(){return eduLevel()>=1;},cost:{energy:-11,hunger:-5,hygiene:-6,fun:-5,bladder:-4}};
+  ['frozenseller','gateclerk','porter','clubwaiter','clinicaide','plantop'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  [[-4600,3],[-4900,-3],[-5100,3],[-5250,-3],[-5330,3]].forEach(function(q){FSPOTS.push(q);});
+})();
+/* people on the move */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0;
+  function WK(a,b,win,sp){
+    var i=n++;
+    var w=makeWalker({fem:i%2,occ:i%2,look:i+777,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:a,b:b,sp:sp||(1.0+(i%4)*0.18)});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  var COM=[[5,9.5],[16,21]],DAY=[[6,21]],MKT=[[5,18]];
+  /* the pavements, in hops */
+  var x0,k=0;
+  for(x0=-4566;x0>-5390;x0-=80){
+    var x1=Math.max(x0-76,-5395);
+    WK([x0,-5.8],[x1,-5.8],k%3?DAY:COM,0.8+(k%3)*0.1);WK([x1,5.8],[x0,5.8],k%2?DAY:COM,0.8+(k%2)*0.1);k++;
+  }
+  /* the Costain plaza */
+  WK([-4575,-32],[-4685,-32],MKT,0.6);WK([-4685,32],[-4575,32],MKT,0.6);WK([-4575,-19],[-4685,-19],DAY,0.7);WK([-4685,19],[-4575,19],DAY,0.7);
+  /* the thermal station compound */
+  WK([-4955,-24],[-4855,-24],DAY,0.6);WK([-4855,-28],[-4955,-28],DAY,0.5);
+  /* the frozen food yard */
+  WK([-4880,33],[-4952,33],MKT,0.6);WK([-4952,44],[-4880,44],MKT,0.6);WK([-4952,33],[-4880,33],MKT,0.5);
+  /* the truck park */
+  WK([-5105,31],[-4995,31],DAY,0.5);WK([-4995,47],[-5105,47],DAY,0.5);
+  /* the station platform */
+  WK([-5250,38],[-5185,38],DAY,0.6);WK([-5185,30],[-5250,30],DAY,0.6);
+  /* the club grounds */
+  WK([-5335,30],[-5265,30],DAY,0.5);WK([-5300,28],[-5300,62],DAY,0.5);
+  /* the amusement park */
+  WK([-5360,-20],[-5300,-20],[[10,21]],0.5);WK([-5300,-52],[-5360,-52],[[10,21]],0.5);
+  /* inside the rooms */
+  function IW(id,a,b,win,sp){var d=INTD[id].c;var i=n++;var w=makeWalker({fem:i%2,occ:1,look:i+777,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});OJW.push({w:w,win:win});w.off=true;}
+  IW('eolopa',[-15,-0.45],[15,-0.45],[[5,18]],0.5);IW('eolopa',[14,7],[-14,7],[[5,18]],0.5);IW('eolopa',[-0.5,-6],[-0.5,9],[[5,18]],0.4);IW('eolopa',[-14,-7.2],[14,-7.2],[[5,18]],0.45);
+  IW('eegate',[-13,-5],[13,-5],[[6,22]],0.45);IW('eegate',[-13,-1],[6,-1],[[6,22]],0.45);IW('eegate',[12.3,-6],[12.3,7],[[6,22]],0.4);
+  IW('eestn',[-14,-5],[14,-5],[[5,21]],0.45);IW('eestn',[-14,-1],[6,-1],[[5,21]],0.45);IW('eestn',[14.3,-6],[14.3,6.5],[[5,21]],0.4);
+  IW('eclub',[-13,-4.5],[13,-4.5],[[10,22]],0.45);IW('eclub',[-13,0.2],[13,0.2],[[10,22]],0.45);IW('eclub',[-6.5,7.5],[-6.5,-4.5],[[10,22]],0.4);
+  IW('eclin',[-13,-4.5],[13,-4.5],[[8,20]],0.45);IW('eclin',[-13,0.3],[8.5,0.3],[[8,20]],0.45);IW('eclin',[-7,6.5],[-7,-4.5],[[8,20]],0.4);
+  IW('ethermal',[-14,-2.5],[14,-2.5],[[9,16]],0.45);IW('ethermal',[-14,1],[13,1],[[9,16]],0.45);IW('ethermal',[-12,9],[-12,-6],[[9,16]],0.4);
 })();
 
 /* ------------------------------------------------------------------ loop */
