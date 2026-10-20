@@ -13,7 +13,7 @@ Confirmed by those sources and used in the game:
 - The E-Centre is a shopping centre on Commercial Avenue and has cinemas.
 - Yaba College of Technology (Yabatech) was founded in 1947 as the successor to Yaba Higher College. It gained autonomous status in 1969, was renamed Federal Polytechnic Yaba in 1979, and went back to Yaba College of Technology in 1980. It is described as Nigeria's first higher educational institution.
 - Tejuosho is Yaba's market area, called the shopping centre of Lagos. A fire destroyed most of the old market. The Lagos State Government, a building firm and a bank rebuilt it as a "mega shopping plaza" in a public-private partnership, and it was commissioned in 2014. After the rebuild stall prices rose and some low-income traders complained.
-- Yaba has a railway station, Mobolaji Johnson Central Station, inaugurated in 2021 on the standard-gauge line to Ibadan.
+- Correction (b56): the standard-gauge line to Ibadan was commissioned in 2021 at Ebute Metta Station, now called Mobolaji Johnson Station. That station is at Ebute Metta, not Yaba, so the game now puts it in district 10 and the Yaba coach menu says so.
 - Queen's College is a federal government girls' school in Yaba, founded in 1927 (from earlier research in this project, not re-checked this round).
 - The Efik people are from Calabar in Cross River State. Afang soup and edikang ikong are leafy soups; ekpang nkukwo is a cocoyam dish.
 
