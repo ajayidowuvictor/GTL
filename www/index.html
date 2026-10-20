@@ -520,7 +520,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b54';
+var VERSION='GTL 0.9 b55';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -4243,6 +4243,350 @@ var MKI={mkt:[2305,-42],smoke:[2305,-14],school:[2305,14],baale:[2305,42],boat:[
   })();
 })();
 
+var CHK_SAVE9=CHK;CHK=40;
+/* ---- b55: OLD LAGOS ISLAND. A fictionalised version of the real Lagos Island: Marina and the Cathedral Church of Christ, Freedom Park (the old Broad Street prison),
+   Tafawa Balewa Square (the old Race Course), Balogun Market, the Brazilian Quarter with the Shitta-Bey Mosque, Campos Square and Iga Idunganran, the Oba's palace.
+   The layout is invented, not surveyed. ---- */
+var ISD=[],ISB={};
+(function(){
+  var SHP=OJB.shopHouse,wx,k=0,nn=0,i,j;
+  var NMS=['LACE AND ANKARA','AGBADA AND BUBA','TAILOR','JEWELLERY','SHOES AND BAGS','PROVISIONS','CHEMIST','BUREAU DE CHANGE','PHONE ACCESSORIES','OFFICE SUPPLIES','TRAVEL AGENT','PRINTING','HARDWARE','COSMETICS'];
+  function S(o){o.name=NMS[(nn++)%NMS.length];return SHP(o);}
+  function lb(x0,x1,y,z,h,d,col){var n=Math.ceil(Math.abs(x1-x0)/36),i,sl=(x1-x0)/n;for(i=0;i<n;i++)box(x0+sl*(i+0.5),y,z,sl+0.02,h,d,col);}
+  function lawn(x,z,w,d,col){box(x,0.02,z,w,0.04,d,col||'#5b8f3e');}
+  function pave(x,z,w,d,col){box(x,0.04,z,w,0.06,d,col||'#b7ad98');}
+  var PAL=['#e8c9a0','#d9a679','#9ec3b0','#e8d36b','#c98a8a','#a8b8d8','#e6d2b5','#b5cfa3'];
+  var ROOFC=['#8a5a3a','#7a3b2a','#6a4a3a','#8a6a45'];
+  /* ---------- ground, harbour water and the road ---------- */
+  box(-3426,-0.1,-21.5,730,0.2,91,'#a39a86');
+  box(-3465.5,-0.1,45.5,649,0.2,43,'#a39a86');
+  box(-3101,-0.35,45.5,80,0.2,43,'#3d6860');
+  lb(-3760,-3062,0.03,0,0.06,10,ROAD);
+  for(wx=-3068;wx>=-3754;wx-=7)box(wx,0.066,0,3,0.012,0.18,'#e9c46a');
+  [-4.6,4.6].forEach(function(ez){lb(-3760,-3062,0.066,ez,0.012,0.12,'#e8e4da');});
+  lb(-3760,-3062,0.09,-5.8,0.18,1.6,SH);lb(-3760,-3062,0.09,5.8,0.18,1.6,SH);
+  box(-3053,-0.35,0,18,0.2,134,'#3d6860');solid(-3053,0,18,134,2);
+  /* the east end meets the bridge, the west end is closed for the festival ground */
+  [0.55,0.95].forEach(function(by,i){box(-3062,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');box(-3760,by,0,0.22,0.3,9.4,i?'#f1efe6':'#c1352d');});
+  [-4.7,4.7].forEach(function(bz){[-3062,-3760].forEach(function(bx){box(bx,0.6,bz,0.3,1.2,0.3,'#555');});});
+  solid(-3062,0,0.6,9.8,1.3);solid(-3763,0,6,134,2);box(-3762,1.2,0,0.4,2.4,134,'#8a7a60');
+  addSign('THIRD MAINLAND BRIDGE. NO ENTRY ON FOOT','#1f6f43','#ffffff',-3062.3,1.9,0,-Math.PI/2,5,0.9);
+  addSign('IDUMOTA. ROAD CLOSED','#f2b705','#141414',-3759.7,1.9,0,Math.PI/2,3.4,0.9);
+  /* a gantry over the road at the start of the Island */
+  [-7.4,7.4].forEach(function(gz){box(-3078,3.4,gz,0.5,6.8,0.5,'#555');solid(-3078,gz,0.6,0.6,6.8);});
+  box(-3078,6.9,0,0.5,0.5,15.4,'#555');
+  addSign('MARINA. LAGOS ISLAND','#14161a','#f2d36b',-3077.7,6.9,0,Math.PI/2,10,0.9);
+  addSign('MARINA. LAGOS ISLAND','#14161a','#f2d36b',-3078.3,6.9,0,-Math.PI/2,10,0.9);
+  /* ---------- north side, east to west ---------- */
+  [-3086,-3095].forEach(function(x){S({face:'S',x:x,z:-16.5,floors:2+((k++)%3)});});
+  /* the Cathedral Church of Christ: a walled compound, a nave, a tower */
+  (function(){
+    var cx=-3130,th=Math.atan2(5,12),L=Math.sqrt(144+25),s;
+    wallX(-13,-3160,-3100,cx,8);wallZ(-3100,-64,-13);wallZ(-3160,-64,-13);wallX(-64,-3160,-3100);
+    lawn(cx,-38.5,58,50,'#5b8f3e');pave(cx,-18,5,10,'#c9c3b0');
+    box(cx,5.5,-44,24,11,36,'#e4dccb');
+    box(cx-6,13.5,-44,L,0.3,37,'#8a5a3a',0,0,th);box(cx+6,13.5,-44,L,0.3,37,'#8a5a3a',0,0,-th);
+    for(s=0;s<5;s++)box(cx,11.5+s*1.0,-26.1,24-s*4.8,1,0.3,'#d8cfbb');
+    for(i=0;i<5;i++){[-12.05,12.05].forEach(function(sx){box(cx+sx,5.5,-30-i*7,0.1,4.4,1.4,'#34507a');box(cx+sx,7.9,-30-i*7,0.1,0.8,1.0,'#34507a');});}
+    box(cx,10,-27,8,20,8,'#d8cfbb');
+    [[7.6,1.0],[6.0,1.0],[4.4,1.0],[3.0,1.0],[1.6,1.2]].forEach(function(q,qi){box(cx,20.5+qi*1.0,-27,q[0],1.0,q[0],'#9a8f78');});
+    box(cx,22.8,-27,0.5,2.4,0.5,'#555');
+    box(cx,2.0,-22.95,3.0,4.0,0.2,'#2b2118');lump(cx,4.2,-22.95,3.0,1.1,0.3,'#2b2118');
+    [-1,1].forEach(function(sx){box(cx+sx*2.6,12,-22.9,1.1,3.2,0.1,'#34507a');});
+    addSign('CATHEDRAL CHURCH OF CHRIST. MARINA','#1f3a68','#f2d36b',cx,6.6,-22.8,0,7.5,0.9);
+    solid(cx,-44,24,36,11);solid(cx,-27,8,8,20);
+    [[-3110,-18],[-3150,-18],[-3112,-56],[-3148,-56],[-3150,-36],[-3110,-30]].forEach(function(p){tree(p[0],p[1]);});
+    lamp(cx-4.5,-16,Math.PI/2);ALAMPS.push([cx-4.5,-16]);
+  })();
+  /* Freedom Park: the old Broad Street Prison yard, now a park, with a gallery */
+  (function(){
+    var fx=-3210,i2;
+    wallX(-13,-3250,-3170,fx,8);wallZ(-3170,-64,-13);wallZ(-3250,-64,-13);wallX(-64,-3250,-3170);
+    lawn(fx,-38.5,78,50,'#5b8f3e');pave(fx,-20,5,14,'#c9c3b0');pave(fx,-33,36,3,'#c9c3b0');
+    /* a remnant of the old prison wall */
+    box(-3244,2.6,-26,0.8,5.2,22,'#8a4a3a');solid(-3244,-26,0.9,22,5.2);box(-3244,5.4,-26,1.1,0.3,22,'#6a3a2e');
+    box(-3244,2.6,-52,0.8,5.2,16,'#8a4a3a');solid(-3244,-52,0.9,16,5.2);box(-3244,5.4,-52,1.1,0.3,16,'#6a3a2e');
+    addSign('FREEDOM PARK. FORMER BROAD STREET PRISON','#7a3b2a','#f2d36b',fx,4.9,-12.7,0,8.4,0.9);
+    /* an open-air stage with seating steps */
+    box(-3190,0.5,-56,18,1.0,7,'#8a7a62');solid(-3190,-56,18,7,1.0);
+    for(i2=0;i2<3;i2++){box(-3190,0.2+i2*0.3,-49+i2*1.1*0,16-i2*2,0.3,1.2,'#b7ad98');}
+    solid(-3190,-49,16,1.4,0.9);
+    /* sculptures on plinths */
+    [[-3236,-22],[-3184,-22],[-3236,-44],[-3180,-44]].forEach(function(p,pi){
+      box(p[0],0.4,p[1],2,0.8,2,'#9a9486');cyl(p[0],2.0,p[1],0.5,2.4,0.5,['#c1352d','#2f6fb1','#e0a010','#2a9d5b'][pi]);lump(p[0],3.5,p[1],1.2,1.0,1.2,['#c1352d','#2f6fb1','#e0a010','#2a9d5b'][pi]);solid(p[0],p[1],2,2,3.5);
+    });
+    /* the gallery */
+    box(-3222,2.2,-42,24,4.4,14,'#e8e0d0');box(-3222,4.6,-42,25,0.3,15,'#9a9486');
+    [-10,-5,5,10].forEach(function(dx){box(-3222+dx,2.0,-34.7,0.5,4.0,0.5,'#f1efe6');});
+    box(-3222,1.1,-34.95,3.0,2.2,0.15,'#2b2118');
+    [-8,8].forEach(function(dx){box(-3222+dx,1.9,-34.95,2.4,1.5,0.1,'#9ec3d8');});
+    addSign('WOLE SOYINKA ART GALLERY','#14161a','#f2d36b',-3222,3.5,-34.6,0,9,0.8);
+    solid(-3222,-42,24,14,4.6);
+    [[-3200,-22],[-3240,-60],[-3200,-62],[-3176,-34],[-3244,-38]].forEach(function(p){tree(p[0],p[1]);});
+    lamp(fx+4.5,-16,-Math.PI/2);ALAMPS.push([fx+4.5,-16]);
+  })();
+  /* Marina Bank House */
+  ISB.bank=SHP({face:'S',x:-3268,z:-16.5,w:18,d:9,floors:5,name:'MARINA BANK HOUSE',sbg:'#14161a',sfg:'#f2d36b',aw:'#1f3a68',wall:'#d9d2c2'});
+  for(wx=-3290;wx>=-3326;wx-=9)S({face:'S',x:wx,z:-16.5,floors:2+((k++)%3)});
+  /* Balogun Market: a hall on the road and a yard of stalls behind */
+  ISB.bal=SHP({face:'S',x:-3358,z:-16.5,w:30,d:9,floors:2,name:'BALOGUN MARKET HALL',sbg:'#c1352d',sfg:'#ffffff',aw:'#c1352d',wall:'#f1efe6'});
+  for(wx=-3383;wx>=-3410;wx-=9)S({face:'S',x:wx,z:-16.5,floors:2+((k++)%3)});
+  lb(-3436,-3338,0.03,-44,0.06,40,'#8a7a60');
+  [-28,-36,-44,-52,-60].forEach(function(sz,ri){for(j=0;j<26;j++){if(j%6===5)continue;var sx=-3345-j*3.8;if(sx<-3432)break;stall(sx,sz,j+ri*3);}});
+  [-3340,-3434].forEach(function(px){box(px,2.2,-23.5,0.4,4.4,0.4,'#f1efe6');solid(px,-23.5,0.5,0.5,4.4);});
+  box(-3387,4.5,-23.5,98,0.9,0.4,'#c1352d');
+  addSign('BALOGUN MARKET. LACE. ANKARA. READY-MADE.','#c1352d','#ffffff',-3387,4.5,-23.9,0,22,0.8);
+  /* the Afro-Brazilian house kit: an arcaded ground floor, a verandah above, a hipped roof */
+  function braz(x,z,w,d,fl,wall,fz,roofc){
+    var h=3.6*fl,fp=z+fz*(d/2),n=3,b,ci,pa=0.3,half=d/2;
+    box(x,h/2,z,w,h,d,wall);
+    for(ci=0;ci<=n;ci++){var cx2=x-w/2+0.5+ci*(w-1)/n;box(cx2,1.7,fp+fz*0.8,0.5,3.4,0.5,'#f1efe6');}
+    box(x,3.5,fp+fz*0.8,w,0.2,1.7,'#f1efe6');box(x,4.1,fp+fz*1.55,w,0.9,0.12,'#c1352d');
+    for(b=0;b<n;b++){var bx=x-w/2+0.5+(b+0.5)*(w-1)/n;box(bx,1.4,fp+fz*0.04,(w-1)/n-0.9,2.6,0.1,'#2b2118');lump(bx,2.7,fp+fz*0.04,(w-1)/n-0.9,0.5,0.2,'#2b2118');}
+    if(fl>1){for(b=0;b<n;b++){var bx2=x-w/2+0.5+(b+0.5)*(w-1)/n;box(bx2,5.4,fp+fz*0.06,1.0,1.7,0.1,'#3a6a4a');box(bx2-0.7,5.4,fp+fz*0.07,0.4,1.7,0.08,'#2a4a34');}}
+    box(x,h+Math.tan(pa)*half/2+0.08,z-half/2,w+0.8,0.14,half/Math.cos(pa)+0.3,roofc,0,-pa,0);
+    box(x,h+Math.tan(pa)*half/2+0.08,z+half/2,w+0.8,0.14,half/Math.cos(pa)+0.3,roofc,0,pa,0);
+    solid(x,z,w,d,h+1.2);
+  }
+  /* the heritage house and the first houses of the old quarter */
+  ISB.braz=SHP({face:'S',x:-3450,z:-16.5,w:16,d:9,floors:3,name:'AFRO-BRAZILIAN HERITAGE HOUSE',sbg:'#2a7a5a',sfg:'#ffffff',aw:'#2a7a5a',wall:'#e8d36b'});
+  [-3472,-3485,-3498,-3511].forEach(function(x,bi){braz(x,-16.5,11,9,2,PAL[(bi*3)%8],1,ROOFC[bi%4]);});
+  /* Campos Square */
+  (function(){
+    var sx=-3552;
+    pave(sx,-31,66,38,'#b7ad98');pave(sx,-31,40,22,'#c9c3b0');
+    cyl(sx,0.4,-31,4,0.8,4,'#9a9486');cyl(sx,1.6,-31,1.2,3,1.2,'#d8cfbb');lump(sx,3.4,-31,2.4,0.7,2.4,'#6aa7c0');solid(sx,-31,4.2,4.2,3.2);
+    [[-3530,-20],[-3574,-20],[-3530,-44],[-3574,-44],[-3552,-50],[-3552,-14]].forEach(function(p){tree(p[0],p[1]);});
+    [[-3540,-24],[-3564,-24],[-3540,-38],[-3564,-38]].forEach(function(p){box(p[0],0.45,p[1],3,0.1,0.7,'#8a6a45');box(p[0]-1.2,0.22,p[1],0.1,0.44,0.6,'#5a4631');box(p[0]+1.2,0.22,p[1],0.1,0.44,0.6,'#5a4631');solid(p[0],p[1],3,0.7,0.5);});
+    [[-3524,-13],[-3580,-13]].forEach(function(p){lamp(p[0],p[1],Math.PI/2);ALAMPS.push([p[0],p[1]]);});
+    box(sx,3.0,-12.6,6,0.9,0.2,'#7a3b2a');addSign('CAMPOS SQUARE','#7a3b2a','#f2d36b',sx,3.0,-12.45,0,5.6,0.8);
+    [-3.3,3.3].forEach(function(dx){box(sx+dx,1.5,-12.6,0.3,3.0,0.3,'#555');});
+  })();
+  /* Iga Idunganran: the palace of the Oba of Lagos, behind a gate and a forecourt */
+  (function(){
+    var px=-3660,cols=['#14161a','#c1352d','#e0c010','#2a9d5b','#7a2e65'];
+    wallX(-24,-3720,-3600,px,8);wallZ(-3720,-64,-24);wallZ(-3600,-64,-24);wallX(-64,-3720,-3600);
+    pave(px,-18,122,12,'#c9c3b0');lawn(px,-44,116,38,'#5b8f3e');pave(px,-36,6,24,'#c9c3b0');
+    building({kind:'multi',face:'S',x:px,z:-50,w:34,d:14,h:9,floors:2,balcony:true,wall:'#f1efe6',roof:'#7a3b2a'});
+    building({kind:'multi',face:'S',x:px-26,z:-42,w:12,d:9,h:4.6,floors:1,balcony:false,wall:'#e8d9bf',roof:'#a8321f'});
+    building({kind:'multi',face:'S',x:px+26,z:-42,w:12,d:9,h:4.6,floors:1,balcony:false,wall:'#e8d9bf',roof:'#a8321f'});
+    box(px,5.2,-24,12,0.6,0.5,'#d9d2c2');
+    addSign('IGA IDUNGANRAN. PALACE OF THE OBA OF LAGOS','#14161a','#f2d36b',px,4.4,-23.65,0,10,0.9);
+    /* five Eyo masquerades in the forecourt: white robes, five hat colours */
+    function eyo(x,z,hc){
+      cyl(x,1.5,z,1.5,3.0,1.5,'#f4f1e8');lump(x,3.15,z,1.6,0.5,1.0,'#f4f1e8');lump(x,3.5,z,0.7,0.8,0.7,'#f4f1e8');
+      cyl(x,3.62,z,1.9,0.07,1.9,hc);cyl(x,3.9,z,0.8,0.5,0.8,hc);
+      cyl(x+0.95,1.8,z,0.07,3.6,0.07,'#6e5436');solid(x,z,1.2,1.2,3.4);
+    }
+    cols.forEach(function(c,ci){eyo(-3676+ci*8,-17,c);});
+    addSign('EYO MASQUERADES. A LAGOS TRADITION','#f1efe6','#14161a',px,2.9,-12.6,0,8.6,0.7);
+    [-4.2,4.2].forEach(function(dx){box(px+dx,1.4,-12.6,0.3,2.8,0.3,'#555');});
+    [[-3606,-30],[-3714,-30],[-3606,-58],[-3714,-58],[-3640,-30],[-3680,-30]].forEach(function(p){tree(p[0],p[1]);});
+    solid(px,-50,34,14,9);
+  })();
+  [-3735,-3744,-3753].forEach(function(x){if(x>-3756)S({face:'S',x:x,z:-16.5,floors:2+((k++)%3)});});
+  /* ---------- south side, east to west ---------- */
+  /* the harbour promenade with the island ferry jetty */
+  (function(){
+    var jx0=-3112,jx1=-3098,z0=22,z1=52,n,sl,j2,jj;
+    pave(-3101,15.5,80,17,'#b7ad98');
+    [-3136,-3126,-3076,-3066].forEach(function(x){tree(x,10);});
+    [[-3130,18],[-3122,18],[-3080,18],[-3070,18]].forEach(function(p){box(p[0],0.45,p[1],3,0.1,0.7,'#8a6a45');box(p[0]-1.2,0.22,p[1],0.1,0.44,0.6,'#5a4631');box(p[0]+1.2,0.22,p[1],0.1,0.44,0.6,'#5a4631');solid(p[0],p[1],3,0.7,0.5);});
+    for(wx=-3140;wx<=-3062;wx+=2){if(wx>jx0-1&&wx<jx1+1)continue;box(wx,0.5,23.8,0.1,1.0,0.1,'#555');}
+    box(-3126,1.0,23.8,28,0.08,0.1,'#555');box(-3080,1.0,23.8,36,0.08,0.1,'#555');
+    ISD.push([jx0,jx1,z0,z1]);
+    n=Math.ceil((z1-z0)/6);sl=(z1-z0)/n;
+    for(j2=0;j2<n;j2++)box((jx0+jx1)/2,0,z0+sl*(j2+0.5),jx1-jx0,0.2,sl+0.02,['#7a5e3e','#6e5436','#86684a'][j2%3]);
+    for(jj=z0+2;jj<=z1-1;jj+=6){box(jx0+0.3,-0.45,jj,0.22,0.9,0.22,'#4a3a28');box(jx1-0.3,-0.45,jj,0.22,0.9,0.22,'#4a3a28');}
+    /* a ferry tied up beside the jetty */
+    box(-3091,0.0,39,5,1.6,18,'#f1efe6');box(-3091,-0.4,39,5.2,0.5,18.2,'#1f3a68');box(-3091,1.9,38,4.2,1.4,8,'#e8e4da');box(-3091,2.7,38,4.6,0.2,8.6,'#1f6f43');
+    [-3.5,0,3.5].forEach(function(dz){box(-3093.2,2.0,38+dz,0.05,0.7,1.6,'#9ec3d8');});
+    addSign('ISLAND FERRY JETTY','#1f6f43','#ffffff',-3105,3.2,21.4,Math.PI,7,0.8);
+    [-3110,-3100].forEach(function(px2){box(px2,1.6,21.4,0.25,3.2,0.25,'#555');});
+    lamp(-3095,10.5,-Math.PI/2);ALAMPS.push([-3095,10.5]);
+    /* the water you cannot walk on */
+    var X0=-3141,X1=-3062,Z0=24,Z1=66,nx=X1-X0,nz=Z1-Z0,iz,ix,x,z,run,open,d,dd,cnt=0;
+    for(iz=0;iz<nz;iz++){
+      z=Z0+iz+0.5;run=-1;
+      for(ix=0;ix<=nx;ix++){
+        open=true;
+        if(ix<nx){x=X0+ix+0.5;open=false;for(d=0;d<ISD.length;d++){dd=ISD[d];if(x>dd[0]&&x<dd[1]&&z>dd[2]&&z<dd[3]){open=true;break;}}}
+        if(!open&&run<0)run=ix;
+        if(open&&run>=0){solid(X0+(run+ix)/2,z,ix-run,1,2);cnt++;run=-1;}
+      }
+    }
+    ISB.waterSolids=cnt;
+  })();
+  /* Tafawa Balewa Square: the old Race Course, now a ceremonial ground with white horses and red eagles */
+  (function(){
+    var tx=-3220;
+    wallX(12,-3290,-3150,tx,20);wallZ(-3150,12,62);wallZ(-3290,12,62);wallX(62,-3290,-3150);
+    pave(tx,37,138,48,'#cfc8b6');pave(tx,22,20,18,'#e2dccb');
+    addSign('TAFAWA BALEWA SQUARE','#1f6f43','#ffffff',tx,3.4,11.7,Math.PI,8,0.9);
+    [-9.8,9.8].forEach(function(dx){box(tx+dx,2.2,12,0.5,4.4,0.5,'#f1efe6');});
+    /* a row of flag poles */
+    for(i=0;i<7;i++){var fx=-3262+i*14;cyl(fx,4,26,0.18,8,0.18,'#d9d9d9');box(fx+1.1,7.3,26,2,1.3,0.05,i%2?'#ffffff':'#1f8a4c');solid(fx,26,0.4,0.4,8);}
+    /* white horses on plinths */
+    function horse(x,z,ry){
+      frame(x,z,ry,function(){
+        box(0,0.5,0,4.4,1.0,2.4,'#e8e4da');
+        box(0,1.9,0,3.0,1.1,1.1,'#f4f1e8');
+        [[-1.1,-0.35],[-1.1,0.35],[1.1,-0.35],[1.1,0.35]].forEach(function(l){box(l[0],1.35,l[1],0.28,0.9,0.28,'#f4f1e8');});
+        box(1.9,2.7,0,0.8,1.3,0.55,'#f4f1e8',0,0,-0.4);box(2.45,3.3,0,0.9,0.5,0.45,'#f4f1e8');
+        box(-1.8,2.1,0,0.8,0.3,0.25,'#d9d2c2',0,0,0.5);
+      });
+      solid(x,z,4.4,2.4,3.6);
+    }
+    horse(-3252,42,0);horse(-3188,42,Math.PI);horse(-3252,52,0.3);horse(-3188,52,Math.PI-0.3);
+    /* red eagles on tall columns */
+    function eagle(x,z){
+      cyl(x,3,z,1.4,6,1.4,'#d9d2c2');box(x,6.4,z,1.6,0.5,1.0,'#c1352d');lump(x,6.9,z,1.0,0.9,0.8,'#c1352d');
+      box(x-1.5,7.0,z,2.8,0.18,0.9,'#c1352d',0,0,0.4);box(x+1.5,7.0,z,2.8,0.18,0.9,'#c1352d',0,0,-0.4);
+      box(x,7.7,z+0.5,0.35,0.35,0.7,'#c1352d');
+      solid(x,z,1.6,1.6,7);
+    }
+    eagle(-3234,46);eagle(-3206,46);
+    /* a rostrum with a row of seats at the back */
+    box(tx,0.7,58,40,1.4,5,'#e8e0d0');solid(tx,58,40,5,1.4);
+    for(i=0;i<9;i++)box(tx-16+i*4,1.7,59.2,2.2,0.7,0.6,'#1f6f43');
+    [[-3280,18],[-3160,18],[-3280,54],[-3160,54]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  for(wx=-3300;wx>=-3336;wx-=9)S({face:'N',x:wx,z:16.5,floors:2+((k++)%3)});
+  /* the Isale Eko buka on the south side */
+  ISB.buka=SHP({face:'N',x:-3362,z:16.5,w:16,d:9,floors:2,name:'ISALE EKO BUKA',sbg:'#7a3b2a',sfg:'#f2d36b',aw:'#7a3b2a',wall:'#f1e6c8'});
+  for(wx=-3380;wx>=-3416;wx-=9)S({face:'N',x:wx,z:16.5,floors:2+((k++)%3)});
+  /* the Shitta-Bey Mosque, seen from the street (a national monument, not enterable here) */
+  (function(){
+    var mx=-3460;
+    wallX(13,-3480,-3440,mx,7);wallZ(-3480,13,44);wallZ(-3440,13,44);wallX(44,-3480,-3440);
+    pave(mx,28.5,38,30,'#d8d2c0');
+    box(mx,3.8,30,16,7.6,14,'#f4f1e8');box(mx,7.8,30,16.8,0.4,14.8,'#1f6f43');
+    lump(mx,9.2,30,7,2.6,7,'#f4f1e8');
+    cyl(mx+10,7,24,2.4,14,2.4,'#f4f1e8');cyl(mx+10,14.4,24,3,0.5,3,'#1f6f43');lump(mx+10,15.5,24,2.2,1.8,2.2,'#1f6f43');
+    for(i=0;i<5;i++)box(mx-6+i*3,2.0,22.95,1.6,2.8,0.1,'#1f6f43');
+    box(mx,1.1,22.9,2.2,2.2,0.12,'#2b2118');
+    addSign('SHITTA-BEY MOSQUE. 1894','#1f6f43','#ffffff',mx,5.2,22.85,Math.PI,8,0.8);
+    solid(mx,30,16,14,7.6);solid(mx+10,24,2.6,2.6,14.4);
+    [[-3472,18],[-3448,18],[-3472,40],[-3448,40]].forEach(function(p){tree(p[0],p[1]);});
+  })();
+  /* old quarter houses on the south side */
+  for(wx=-3500,i=0;wx>=-3700;wx-=13,i++)braz(wx,16.5,11,9,2,PAL[(i*5+2)%8],-1,ROOFC[(i+1)%4]);
+  [-3722,-3731,-3740,-3749].forEach(function(x){S({face:'N',x:x,z:16.5,floors:2+((k++)%3)});});
+  /* ---------- street furniture ---------- */
+  var lx;
+  for(lx=-3090;lx>=-3750;lx-=22){lamp(lx,7.4,Math.PI/2);lamp(lx-11,-7.4,-Math.PI/2);ALAMPS.push([lx,6.2],[lx-11,-6.2]);}
+  var pxs=[];for(lx=-3090;lx>=-3750;lx-=28)pxs.push(lx);
+  poleLine(pxs,-6.4,3);
+  OJB.busStop(-3086,8.6,Math.PI,'MARINA');OJB.busStop(-3130,-8.6,0,'CATHEDRAL');OJB.busStop(-3220,8.6,Math.PI,'TAFAWA BALEWA SQUARE');OJB.busStop(-3340,-8.6,0,'BALOGUN');OJB.busStop(-3600,8.6,Math.PI,'ISALE EKO');
+  [[-3200,-8.4,0.2],[-3240,8.6,3.2],[-3380,-8.6,0.1],[-3400,8.4,3.3]].forEach(function(o){okada(o[0],o[1],o[2]);});
+  ISB.done=1;
+})();
+
+CHK=CHK_SAVE9;
+/* ---- b55: six places on Lagos Island you can walk into: Balogun Market hall, the Cathedral, Marina Bank House, the Isale Eko buka, the Freedom Park gallery and the heritage house ---- */
+var LIR={bal:[2440,-42],cath:[2440,-14],bank:[2440,14],buka:[2440,42],gall:[2505,-30],braz:[2505,6]};
+(function(){
+  function table(x,z,col,w,d){w=w||1.5;d=d||0.95;box(x,0.75,z,w,0.08,d,col||'#8a6a45');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.37,z+p[1]*(d/2-0.1),0.08,0.74,0.08,'#3a2a1c');});solid(x,z,w,d,0.8);}
+  function plant(x,z,s){s=s||1;cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  function counter(x,z,w,col){box(x,0.55,z,w,1.1,0.8,col||'#2b2118');box(x,1.14,z,w+0.2,0.1,1.0,'#e9e4d6');solid(x,z,w+0.2,1.0,1.2);}
+  function bench(x,z,w,col){box(x,0.45,z,w,0.1,0.6,col||'#8a6a45');box(x-w/2+0.2,0.22,z,0.1,0.44,0.5,'#5a4631');box(x+w/2-0.2,0.22,z,0.1,0.44,0.5,'#5a4631');solid(x,z,w,0.6,0.5);}
+  function pew(x,z,w){box(x,0.45,z,w,0.1,0.6,'#6e4a2a');box(x,0.9,z+0.3,w,0.8,0.08,'#6e4a2a');box(x-w/2+0.15,0.22,z,0.1,0.44,0.5,'#4a3220');box(x+w/2-0.15,0.22,z,0.1,0.44,0.5,'#4a3220');solid(x,z,w,0.7,0.9);}
+  var FAB=['#c1352d','#f2b705','#2f6fb1','#2a9d5b','#7a2e65','#e07a1f','#f1efe6','#14161a'];
+  function clothTable(x,z,w){box(x,0.7,z,w,0.12,1.5,'#d9d2c2');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.35,z+p[1]*0.65,0.1,0.7,0.1,'#5a4631');});
+    var n=Math.floor(w/0.9),i;for(i=0;i<n;i++){box(x-w/2+0.55+i*0.9,0.95,z,0.7,0.36,0.9,FAB[(i*3+Math.floor(x))&7]);box(x-w/2+0.55+i*0.9,1.2,z,0.6,0.16,0.8,FAB[(i*3+3+Math.floor(x))&7]);}
+    solid(x,z,w,1.5,1.3);}
+  /* ----- BALOGUN MARKET HALL ----- */
+  (function(){
+    var cx=LIR.bal[0],cz=LIR.bal[1],W=34,D=24,H=5.4,X=function(v){return cx+v;},Z=function(v){return cz+v;};
+    ROOMFN('lbal',cx,cz,W,D,H,{floor:'#cfc7b4',wall:'#f4efe2',trim:'#c1352d',ceil:'#faf8f4'},{out:'lbald',nm:'BALOGUN MARKET HALL',doorX:cx-10});
+    box(X(0),2.0,Z(-11.7),W-2,4.0,0.3,'#eee6d4');
+    [[-9,'#7a2e65','LACE AND ANKARA',9],[3,'#c1352d','READY-MADE CLOTHES',8],[13,'#2f6fb1','ELECTRONICS',8]].forEach(function(c){
+      counter(X(c[0]),Z(-10),c[3],c[1]);addSign(c[2],c[1],'#ffffff',X(c[0]),3.9,Z(-11.5),0,c[3]+0.8,0.8);
+    });
+    addSign('BREADFRUIT STREET. BALOGUN STREET. DOSUNMU STREET.','#14161a','#f2d36b',X(0),4.8,Z(-11.5),0,14,0.6);
+    [[-11,-3.5],[-4,-3.5],[3,-3.5],[10,-3.5],[-11,2],[-4,2],[3,2],[10,2]].forEach(function(t){clothTable(X(t[0]),Z(t[1]),4.4);});
+    [[-15.5,7],[15.5,7]].forEach(function(p){cyl(X(p[0]),0.9,Z(p[1]),0.5,1.8,0.5,'#c9c3b0');lump(X(p[0]),2.0,Z(p[1]),0.7,0.8,0.5,'#e8d2b5');box(X(p[0]),1.3,Z(p[1]),1.2,1.4,0.5,FAB[Math.abs(p[0])&7]);solid(X(p[0]),Z(p[1]),1.0,1.0,2.4);});
+    plant(X(-16),Z(-10));plant(X(16),Z(10.5));
+  })();
+  /* ----- THE CATHEDRAL ----- */
+  (function(){
+    var cx=LIR.cath[0],cz=LIR.cath[1],W=34,D=26,H=9,X=function(v){return cx+v;},Z=function(v){return cz+v;},i,r;
+    ROOMFN('lcath',cx,cz,W,D,H,{floor:'#c9c0ad',wall:'#e8e0cf',trim:'#34507a',ceil:'#efe7d6'},{out:'lcathd',nm:'CATHEDRAL CHURCH OF CHRIST',doorX:cx-10});
+    box(X(0),3.0,Z(-12.2),W-2,6.0,0.3,'#e2d8c4');
+    /* the sanctuary: steps, an altar and a cross */
+    box(X(0),0.15,Z(-9.8),14,0.3,6,'#9a8f78');box(X(0),0.45,Z(-10.6),10,0.3,4.4,'#8a7f68');
+    box(X(0),0.9,Z(-10.6),3.6,0.9,1.2,'#f1efe6');solid(X(0),Z(-10.6),3.6,1.2,1.2);
+    box(X(0),4.6,Z(-12.0),0.4,3.6,0.15,'#d9a520');box(X(0),5.4,Z(-12.0),2.0,0.4,0.15,'#d9a520');
+    addSign('CATHEDRAL CHURCH OF CHRIST','#34507a','#f2d36b',X(0),7.6,Z(-12.0),0,10,0.9);
+    /* the organ: a case against the back wall with pipes of many heights */
+    box(X(-10),0.9,Z(-11.2),9,1.8,1.4,'#4a3220');solid(X(-10),Z(-11.2),9,1.4,1.8);
+    for(i=0;i<12;i++)cyl(X(-14+i*0.75),1.8+(3.4+((i*5)%4)*0.7)/2,Z(-11.6),0.34,3.4+((i*5)%4)*0.7,0.34,i%2?'#cfc9b8':'#b9b3a0');
+    addSign('THE OBERLINGER ORGAN. 64 STOPS','#4a3220','#f2d36b',X(-10),0.9,Z(-10.45),0,6,0.5);
+    /* pews in two blocks with a wide centre aisle and a red carpet */
+    box(X(0),0.05,Z(0),5,0.04,20,'#8a2a2a');
+    [-1,1].forEach(function(s){for(r=0;r<5;r++)pew(X(s*7.5),Z(-3+r*2.2),9);});
+    /* tall windows in the side walls */
+    [-1,1].forEach(function(s){for(i=0;i<5;i++){box(X(s*16.85),3.6,Z(-8+i*4),0.1,3.6,1.5,['#34507a','#8a2a2a','#2a7a5a','#d9a520','#7a2e65'][i%5]);}});
+    plant(X(-16),Z(-4));plant(X(16),Z(-4));plant(X(16),Z(10));
+  })();
+  /* ----- MARINA BANK HOUSE ----- */
+  (function(){
+    var cx=LIR.bank[0],cz=LIR.bank[1],W=30,D=22,H=5.0,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('lbank',cx,cz,W,D,H,{floor:'#bdb8aa',wall:'#eeeae0',trim:'#1f3a68',ceil:'#f6f3ea'},{out:'lbankd',nm:'MARINA BANK HOUSE',doorX:cx-10});
+    box(X(0),1.9,Z(-10.7),W-2,3.8,0.3,'#dcd7c8');
+    counter(X(-4),Z(-8),14,'#1f3a68');box(X(-4),1.9,Z(-8.2),14,1.6,0.06,'#9ec3d8');
+    counter(X(10),Z(-8),6,'#1f3a68');
+    addSign('MARINA BANK HOUSE','#14161a','#f2d36b',X(0),3.7,Z(-10.5),0,10,0.8);
+    /* waiting chairs and cash machines */
+    [[-8,3],[-8,5.5],[-3,3],[-3,5.5],[2,3],[2,5.5]].forEach(function(p){bench(X(p[0]),Z(p[1]),3.4,'#1f3a68');});
+    [-8,-4].forEach(function(ax){box(X(14.8),0.9,Z(ax-0.0),0.9,1.8,1.0,'#2a2a30');box(X(14.35),1.3,Z(ax),0.05,0.6,0.7,'#9ec3d8');solid(X(14.8),Z(ax),0.9,1.0,1.8);});
+    addSign('CASH MACHINES','#1f3a68','#ffffff',X(14.3),2.6,Z(-6),-Math.PI/2,2.4,0.5);
+    table(X(10),Z(4),'#d9d2c2',3,1.2);plant(X(-14),Z(-9.5));plant(X(14),Z(9.5));
+  })();
+  /* ----- THE ISALE EKO BUKA ----- */
+  (function(){
+    var cx=LIR.buka[0],cz=LIR.buka[1],W=26,D=18,H=4.6,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('lbuka',cx,cz,W,D,H,{floor:'#bfae8e',wall:'#efe0bc',trim:'#7a3b2a',ceil:'#f3e9cf'},{out:'lbukad',nm:'ISALE EKO BUKA',doorX:cx-10});
+    box(X(0),1.8,Z(-8.7),W-2,3.6,0.3,'#e8d5a8');
+    counter(X(-5),Z(-6.8),10,'#7a3b2a');
+    addSign('ISALE EKO BUKA. AMALA. EWEDU. GBEGIRI.','#7a3b2a','#f2d36b',X(-1),3.6,Z(-8.5),0,11,0.8);
+    [[-8,-0.5],[-1,-0.5],[6,-0.5],[-8,4.5],[-1,4.5],[6,4.5]].forEach(function(t){table(X(t[0]),Z(t[1]),'#8a6a45',3,1.2);bench(X(t[0]),Z(t[1]-1.0),2.8);bench(X(t[0]),Z(t[1]+1.0),2.8);});
+    [[8,-7],[10.5,-7]].forEach(function(p){cyl(X(p[0]),0.6,Z(p[1]),1.1,1.2,1.1,'#3a3d40');cyl(X(p[0]),1.25,Z(p[1]),0.9,0.1,0.9,'#e07a1f');solid(X(p[0]),Z(p[1]),1.2,1.2,1.3);});
+    plant(X(-12),Z(-7.8));plant(X(12),Z(7.8));
+  })();
+  /* ----- THE FREEDOM PARK GALLERY ----- */
+  (function(){
+    var cx=LIR.gall[0],cz=LIR.gall[1],W=30,D=20,H=5.0,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('lgall',cx,cz,W,D,H,{floor:'#d8d4ca',wall:'#f7f5ef',trim:'#14161a',ceil:'#faf8f4'},{out:'lgalld',nm:'WOLE SOYINKA ART GALLERY',doorX:cx-10});
+    box(X(0),1.9,Z(-9.7),W-2,3.8,0.3,'#f1eee6');
+    /* paintings in frames: bright blocks of colour on the back and side walls */
+    [[-10,'#c1352d','#e0a010'],[-5,'#2f6fb1','#f1efe6'],[0,'#2a9d5b','#14161a'],[5,'#7a2e65','#e07a1f'],[10,'#e0a010','#2f6fb1']].forEach(function(p){
+      box(X(p[0]),2.3,Z(-9.5),2.8,2.0,0.08,'#14161a');box(X(p[0]),2.3,Z(-9.45),2.5,1.7,0.06,p[1]);box(X(p[0]+0.3),2.1,Z(-9.4),1.2,0.9,0.05,p[2]);});
+    [-1,1].forEach(function(s){[-4,2,6].forEach(function(zz,zi){box(X(s*14.9),2.3,Z(zz),0.08,1.8,2.4,'#14161a');box(X(s*14.85),2.3,Z(zz),0.06,1.5,2.1,['#2a7a6a','#c1352d','#e0a010','#2f6fb1','#7a2e65','#e07a1f'][(zi+(s>0?3:0))%6]);});});
+    /* sculpture plinths */
+    [[-8,-2.8],[0,-2.8],[8,-2.8],[-4,5],[4,5]].forEach(function(p,pi){box(X(p[0]),0.5,Z(p[1]),1.4,1.0,1.4,'#f1efe6');cyl(X(p[0]),1.9,Z(p[1]),0.5,1.8,0.5,['#8a5a3a','#14161a','#c1352d','#6e5436','#d9a520'][pi]);lump(X(p[0]),3.0,Z(p[1]),0.9,0.7,0.7,['#8a5a3a','#14161a','#c1352d','#6e5436','#d9a520'][pi]);solid(X(p[0]),Z(p[1]),1.4,1.4,3.2);});
+    counter(X(-8),Z(-7.5),6,'#14161a');
+    addSign('WOLE SOYINKA ART GALLERY','#14161a','#f2d36b',X(-8),3.0,Z(-9.2),0,5.5,0.6);
+    bench(X(0),Z(8),5);plant(X(-13),Z(-7.5));plant(X(13),Z(8));
+  })();
+  /* ----- THE AFRO-BRAZILIAN HERITAGE HOUSE ----- */
+  (function(){
+    var cx=LIR.braz[0],cz=LIR.braz[1],W=26,D=18,H=4.8,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('lbraz',cx,cz,W,D,H,{floor:'#d9c4a0',wall:'#efe0b8',trim:'#2a7a5a',ceil:'#f6edd2'},{out:'lbrazd',nm:'AFRO-BRAZILIAN HERITAGE HOUSE',doorX:cx-10});
+    box(X(0),1.9,Z(-8.7),W-2,3.8,0.3,'#e8d9ac');
+    /* arched alcoves along the back wall */
+    for(i=0;i<5;i++){box(X(-9+i*4.5),1.5,Z(-8.5),2.6,3.0,0.1,'#6a4a2a');lump(X(-9+i*4.5),3.1,Z(-8.5),2.6,0.8,0.2,'#6a4a2a');}
+    addSign('FROM BRAZIL TO LAGOS','#2a7a5a','#ffffff',X(0),4.3,Z(-8.5),0,8,0.6);
+    /* a pattern of coloured floor tiles */
+    for(i=0;i<8;i++){box(X(-10.5+i*3),0.05,Z(2),1.6,0.03,1.6,['#2a7a5a','#c1352d','#e8d36b','#2f6fb1'][i%4]);box(X(-10.5+i*3),0.05,Z(6),1.6,0.03,1.6,['#e8d36b','#2f6fb1','#2a7a5a','#c1352d'][i%4]);}
+    /* glass cases and framed photographs */
+    [[-8,-3.5],[0,-3.5],[8,-3.5]].forEach(function(p){box(X(p[0]),0.7,Z(p[1]),3.2,1.0,1.2,'#5a4631');box(X(p[0]),1.35,Z(p[1]),3.0,0.3,1.0,'#9ec3d8');solid(X(p[0]),Z(p[1]),3.2,1.2,1.5);});
+    [-1,1].forEach(function(s){[-3,1,5].forEach(function(zz){box(X(s*12.9),2.2,Z(zz),0.08,1.3,1.0,'#3a2a1c');box(X(s*12.85),2.2,Z(zz),0.06,1.1,0.8,'#cfc6aa');});});
+    counter(X(-8),Z(-6.6),5,'#2a7a5a');
+    table(X(9),Z(5),'#8a6a45',4,1.2);plant(X(-11.5),Z(-7.5));plant(X(11.5),Z(7.5));
+  })();
+})();
+
 var WORLD_TRIS=0;
 Object.keys(BK).forEach(function(k){
   var B=BK[k],g=new THREE.BufferGeometry();
@@ -5001,7 +5345,7 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-3044,XMAX=2420;
+var LIM=66,PR=0.38,XMIN=-3790,XMAX=2540;
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -5836,7 +6180,9 @@ var LANES=[
   {x:AGX-2,z:-63,h:0,speed:7,b:[AGX-4,AGX+4]},
   {x:AGX+2,z:63,h:Math.PI,speed:8,b:[AGX-4,AGX+4]},
   {x:-1002,z:-63,h:0,speed:7,b:[-1004,-996]},
-  {x:-998,z:63,h:Math.PI,speed:8,b:[-1004,-996]}
+  {x:-998,z:63,h:Math.PI,speed:8,b:[-1004,-996]},
+  {x:-3750,z:2.5,h:Math.PI/2,speed:8,b:[-3751,-3068]},
+  {x:-3069,z:-2.5,h:-Math.PI/2,speed:8,b:[-3751,-3068]}
 ];
 function regOf(x){return x>1000?4:(x>730?3:(x>500?2:(x>258?1:0)));}
 function grpOf(x){var r=regOf(x);return r===3?0:(r===4?1:r);}
@@ -6190,7 +6536,7 @@ clkBtn.addEventListener('click',function(){gameHour=(gameHour+3)%24;});
 npcs[0].label='MAMA';npcs[1].label='SULE';npcs[2].label='TOLA';npcs[3].label='DELE';npcs[4].label='KUNLE';npcs[5].label='RONKE';npcs[6].label='OKON';
 var MW=480,MH=200,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.createElement('canvas'),mapBig=true,mapT=0;
 mapBG.width=MW;mapBG.height=MH;
-var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338],[-2482,-1888],[-3044,-2448]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
+var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338],[-2482,-1888],[-3044,-2448],[-3430,-3040],[-3790,-3400]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
 function MX(x){var r=MR[mapReg];return (x-r[0])/(r[1]-r[0])*MW;}
 function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 (function(){
@@ -6278,7 +6624,7 @@ function MZ(z){return (z+LIM)/(2*LIM)*MH;}
 
 
 var mapBG6=document.createElement('canvas');mapBG6.width=MW;mapBG6.height=MH;
-function mreg(x){return x<-2452?10:(x<-1892?9:(x<-1342?8:(x<-882?7:(x<-558?6:(x<-190?5:regOf(x))))));}
+function mreg(x){return x<-3410?12:x<-3050?11:x<-2452?10:(x<-1892?9:(x<-1342?8:(x<-882?7:(x<-558?6:(x<-190?5:regOf(x))))));}
 (function(){
   mapReg=5;var g=mapBG6.getContext('2d');
   g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
@@ -6375,11 +6721,32 @@ var mapBG11=document.createElement('canvas');mapBG11.width=MW;mapBG11.height=MH;
   }
   mapReg=0;
 })();
+var mapBG12=document.createElement('canvas');mapBG12.width=MW;mapBG12.height=MH;
+var mapBG13=document.createElement('canvas');mapBG13.width=MW;mapBG13.height=MH;
+function drawIsle(mr,cv){
+  mapReg=mr;var g=cv.getContext('2d'),r=MR[mr],i;
+  g.fillStyle='#3d6860';g.fillRect(0,0,MW,MH);
+  g.fillStyle='#a8a08c';
+  g.fillRect(MX(-3790),MZ(-67),MX(-3062)-MX(-3790),MZ(24)-MZ(-67));
+  g.fillRect(MX(-3790),MZ(24),MX(-3141)-MX(-3790),MZ(67)-MZ(24));
+  g.fillStyle='#4a4d52';g.fillRect(MX(-3760),MZ(-5),MX(-3062)-MX(-3760),MZ(5)-MZ(-5));
+  g.strokeStyle='#e9c46a';g.lineWidth=1;g.setLineDash([6,6]);g.beginPath();g.moveTo(MX(-3760),MZ(0));g.lineTo(MX(-3062),MZ(0));g.stroke();g.setLineDash([]);
+  g.fillStyle='#8a6a45';
+  ISD.forEach(function(d){g.fillRect(MX(d[0]),MZ(d[2]),Math.max(1,MX(d[1])-MX(d[0])),Math.max(1,MZ(d[3])-MZ(d[2])));});
+  g.fillStyle='#c9b08a';
+  for(i=0;i<solids.length;i++){
+    var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
+    if(q.maxX<r[0]||q.minX>r[1])continue;
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(r[1]-r[0])*MW),Math.max(2,d/(2*LIM)*MH));
+  }
+  mapReg=0;
+}
+drawIsle(11,mapBG12);drawIsle(12,mapBG13);
 function mapLabel(g,t,x,y){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(t,x,y);g.fillText(t,x,y);}
 function mapUpdate(dt){
   mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
-  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10,mapBG11][rg],0,0);
+  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10,mapBG11,mapBG12,mapBG13][rg],0,0);
   if(px>1250){g.fillStyle='rgba(10,10,12,0.78)';g.fillRect(0,0,MW,MH);g.fillStyle='#fff';g.font='bold 26px sans-serif';g.textAlign='center';g.fillText('INSIDE A BUILDING',MW/2,MH/2);return;}
   g.fillStyle='#1b1b1b';
   for(i=0;i<traffic.length;i++)if(mreg(traffic[i].x)===rg)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
@@ -11317,19 +11684,20 @@ var YBP=[
   {k:'aytecd',id:'aytec',nm:'YABATECH CENTRE',h:[8,17],x:YTX+10.9,z:-34,yaw:-Math.PI/2,bx:YTX+11.85,bz:-34,br:-Math.PI/2}
 ];
 /* coach tickets from the terminal */
-var YBFARE={agege:400,oshodi:500};
+var YBFARE={agege:400,oshodi:500,island:600};
 function ybTermMenu(msg){
-  openDlg('MR KAYODE (COACH AGENT)',(msg?msg+'  ':'')+'Yaba Terminal. Coaches leave every hour from 5 AM to 10 PM. Agege Station is '+money(YBFARE.agege)+'. Oshodi is '+money(YBFARE.oshodi)+'. You have '+money(cash)+'.',[
+  openDlg('MR KAYODE (COACH AGENT)',(msg?msg+'  ':'')+'Yaba Terminal. Coaches leave every hour from 5 AM to 10 PM. Agege Station is '+money(YBFARE.agege)+'. Oshodi is '+money(YBFARE.oshodi)+'. Lagos Island is '+money(YBFARE.island)+'. You have '+money(cash)+'.',[
     {label:'COACH TO AGEGE '+money(YBFARE.agege),fn:function(){ybCoach('agege');}},
     {label:'COACH TO OSHODI '+money(YBFARE.oshodi),fn:function(){ybCoach('oshodi');}},
+    {label:'COACH TO LAGOS ISLAND '+money(YBFARE.island),fn:function(){ybCoach('island');}},
     {label:'ABOUT YABA STATION',fn:function(){ybTermMenu('Yaba also has a railway station, Mobolaji Johnson Central Station, inaugurated in 2021 on the standard-gauge line to Ibadan. This game has no train from here. The coaches are invented.');}},
     {label:'BYE'}]);
 }
 function ybCoach(to){
   var why=phBlock();if(why){buzz();toast(why);return;}
-  var fare=YBFARE[to],hrs=to==='agege'?0.75:1;
+  var fare=YBFARE[to],hrs=to==='agege'?0.75:(to==='island'?1.25:1);
   if(cash<fare){buzz();ybTermMenu('E no reach! That ticket is '+money(fare)+'.');return;}
-  var n=to==='agege'?NK.agstnd.npc:NK.ojbay.npc,nm=to==='agege'?'Agege Station':'Oshodi';
+  var n=to==='agege'?NK.agstnd.npc:(to==='island'?NK.iscoach.npc:NK.ojbay.npc),nm=to==='agege'?'Agege Station':(to==='island'?'Lagos Island':'Oshodi');
   cash-=fare;setCash();logTx('Coach ticket to '+nm,-fare);saveGame();
   fadeSeq('The coach to '+nm+'...',function(){
     var sp=spotNear(n);player.x=sp[0];player.z=sp[1];player.speed=0;player.yaw=Math.atan2(n.x-sp[0],n.z-sp[1]);camYaw=player.yaw+Math.PI;camSnap=true;
@@ -11604,6 +11972,7 @@ function mkRideMenu(here,msg){
   openDlg('CANOE MAN',(msg?msg+'  ':'')+'Canoe? I take you '+(here==='jetty'?'to the far pier at the end of the walkway':'back to the jetty')+' or I paddle you round the villages. You have '+money(cash)+'.',[
     {label:(here==='jetty'?'TO THE FAR PIER ':'BACK TO THE JETTY ')+money(MKFARE.cross),fn:function(){mkRide(here,'cross');}},
     {label:'VILLAGE TOUR '+money(MKFARE.tour),fn:function(){mkRide(here,'tour');}},
+    {label:(here==='pier'?'FERRY TO LAGOS ISLAND '+money(ISFARE.ferry):'ABOUT MAKOKO'),fn:function(){if(here==='pier')isFerry('mk');else mkInfo('CANOE MAN',MKF.people,function(){mkRideMenu(here);});}},
     {label:'ABOUT CANOES',fn:function(){mkInfo('CANOE MAN',MKF.work,function(){mkRideMenu(here);});}},
     {label:'BYE'}]);
 }
@@ -11794,6 +12163,274 @@ ojTick=function(dt){_ojTick54(dt);mkCanoeTick(dt);};
   IW('mkschool',[-12,-4.5],[3,-4.5],[[8,15]],0.4);IW('mkschool',[12,5.5],[-12,5.5],[[8,15]],0.45);IW('mkschool',[12,-4],[-12,-4],[[8,15]],0.4);
   IW('mkbaale',[0,-3.8],[0,6.5],[[9,17]],0.4);IW('mkbaale',[10.8,-6],[10.8,6],[[9,17]],0.4);IW('mkbaale',[-10.8,6],[-10.8,-6],[[9,17]],0.4);
   IW('mkboat',[-12,-5.5],[0.5,-5.5],[[8,17]],0.4);IW('mkboat',[12,1],[-12,1],[[8,17]],0.45);IW('mkboat',[-12,8],[12,8],[[8,17]],0.5);
+})();
+
+/* ---- b55: Old Lagos Island people, opening hours, careers, the ferry and the coach, and traffic ----
+   The layout, every person, shop, price and hour are invented. The facts people tell you are from public sources and are labelled. */
+(function(){
+  var kinds=['danfo','okada','sedan','danfo','okada'],cols=['#e0c040','#2f6a8e','#d9d9d9','#c1352d','#8e2f2f'],k;
+  [40,175,310,450,590].forEach(function(p,i){addVeh(kinds[i%5],26,p,cols[i%5]);});
+  [70,205,340,480,610].forEach(function(p,i){addVeh(kinds[(i+2)%5],27,p,cols[(i+1)%5]);});
+})();
+var ISP=[
+  {k:'lbald',id:'lbal',nm:'BALOGUN MARKET HALL',h:[7,19],x:-3358,z:-10.9,yaw:0,bx:-3358,bz:-11.85,br:0},
+  {k:'lcathd',id:'lcath',nm:'CATHEDRAL CHURCH OF CHRIST',h:[8,18],x:-3130,z:-21.5,yaw:0,bx:-3130,bz:-22.75,br:0},
+  {k:'lbankd',id:'lbank',nm:'MARINA BANK HOUSE',h:[8,16],x:-3268,z:-10.9,yaw:0,bx:-3268,bz:-11.85,br:0},
+  {k:'lbukad',id:'lbuka',nm:'ISALE EKO BUKA',h:[7,21],x:-3362,z:10.9,yaw:Math.PI,bx:-3362,bz:11.85,br:Math.PI},
+  {k:'lgalld',id:'lgall',nm:'WOLE SOYINKA ART GALLERY',h:[10,19],x:-3222,z:-33.6,yaw:0,bx:-3222,bz:-34.8,br:0},
+  {k:'lbrazd',id:'lbraz',nm:'AFRO-BRAZILIAN HERITAGE HOUSE',h:[9,17],x:-3450,z:-10.9,yaw:0,bx:-3450,bz:-11.85,br:0}
+];
+/* ---- facts (public sources, wording kept careful) ---- */
+function isInfo(who,text,back){openDlg(who,text,[{label:'BACK',fn:back},{label:'DONE'}]);}
+var ISF={
+  marina:'Marina is the waterfront road of Lagos Island. Banks, offices and the Cathedral Church of Christ stand along it, and it has been a business street since colonial times. The street plan and every shop in this game are invented.',
+  cath:'The Cathedral Church of Christ is the seat of the Anglican Bishop of Lagos. The foundation stone of the first building was laid on 29 March 1867 and the cathedral was established in 1869. The present Norman Gothic church was begun on 1 November 1924, its foundation stone was laid by the Prince of Wales on 21 April 1925, and it was completed in 1946. The architect was Bagan Benjamin. The inside here is invented.',
+  organ:'The organ was built by Oberlinger of Germany, with four manuals, 64 stops and about 3,700 pipes. It was dedicated on 9 May 2010. Another source calls it the largest organ in Nigeria. The one in this game is only a model of it.',
+  park:'Freedom Park stands on the site of the old Broad Street Prison. The prison was built in 1872 as a mud-walled, thatched jail, rebuilt in 1885 with bricks brought from England, and closed in 1972. The architect Theo Lawson turned the site into a park for Nigeria\'s fiftieth independence anniversary in October 2010. Wole Soyinka is the principal patron. The real park keeps 52 old cells and a museum. The gallery room here is invented.',
+  tbs:'Tafawa Balewa Square was the Lagos Race Course in colonial times, a place for horse racing. It was made a ceremonial ground for the independence celebrations of 1960 and is named after Sir Abubakar Tafawa Balewa, Nigeria\'s first prime minister. The white horses and red eagles stand for strength, progress and dignity. The guards and the layout here are invented.',
+  aguda:'Many Yoruba people came back to Lagos from Brazil in the nineteenth century. They are called the Aguda, and they were skilled masons and carpenters. They built houses with deep verandahs, tall shutters and decorated fronts, and a number of them still stand on Lagos Island. The house and the exhibits here are invented.',
+  mosque:'The Shitta-Bey Mosque was completed in 1894 and is credited to the Afro-Brazilian builder Joao Baptista da Costa. It was built for the merchant Mohammed Shitta-Bey. It is a national monument. Here you can see it from the street, and you cannot go inside.',
+  balogun:'Balogun is one of the busiest markets on Lagos Island. People come for lace, ankara cloth and ready-made clothes, and bargaining is part of the fun. Balogun is also a Yoruba title for a war chief. The traders, prices and hours here are invented.',
+  palace:'Iga Idunganran is the palace of the Oba of Lagos, in the old part of the Island. It is a working royal palace, so the gate stays closed to visitors. The buildings and the guard here are invented.',
+  eyo:'Eyo, also called the Adamu Orisha Play, is a masquerade tradition of Lagos Island. The Eyo wear long white robes and wide hats and carry staffs, and different groups wear different hat colours. In the real festival the Eyo walk through the streets in their hundreds. These five are only models.',
+  ferry:'Lagos State runs public ferries on the lagoon through its waterways authority, LASWA. The boat here, the route to Makoko and the fare are invented.'
+};
+/* the ferry between the Island and Makoko, and the coach to Yaba */
+var ISFARE={ferry:500,coach:600};
+function isFerryMenu(msg){
+  if(!isOpen(6,20)){openDlg('FERRY CLERK','The ferry rests at night. It sails from 6 AM to 8 PM.',[{label:'OK'}]);return;}
+  openDlg('FERRY CLERK',(msg?msg+'  ':'')+'Island Ferry Jetty. Boats cross the lagoon to the far pier at Makoko. You have '+money(cash)+'.',[
+    {label:'FERRY TO MAKOKO FAR PIER '+money(ISFARE.ferry),fn:function(){isFerry('isl');}},
+    {label:'ABOUT THE FERRY',fn:function(){isInfo('FERRY CLERK',ISF.ferry,isFerryMenu);}},
+    {label:'BYE'}]);
+}
+function isFerry(from){
+  var why=phBlock();if(why){buzz();toast(why);return;}
+  if(!isOpen(6,20)){buzz();toast('The ferry rests at night. It sails from 6 AM to 8 PM.');return;}
+  var fare=ISFARE.ferry;
+  if(cash<fare){buzz();if(from==='isl')isFerryMenu('E no reach! That is '+money(fare)+'.');else mkRideMenu('pier','E no reach! That is '+money(fare)+'.');return;}
+  var n=NK[from==='isl'?'mkcanoe2':'isferry'].npc,nm=from==='isl'?'Makoko':'Lagos Island';
+  cash-=fare;setCash();logTx('Ferry to '+nm,-fare);saveGame();
+  fadeSeq('The ferry to '+nm+'...',function(){
+    var sp=spotNear(n);player.x=sp[0];player.z=sp[1];player.speed=0;player.yaw=Math.atan2(n.x-sp[0],n.z-sp[1]);camYaw=player.yaw+Math.PI;camSnap=true;
+    advanceHours(0.5);gain('fun',4);saveGame();
+  },'',{mid:900,total:2200,done:function(){toast('You took the ferry to '+nm+' for '+money(fare));}});
+}
+function isCoachMenu(msg){
+  if(!isOpen(5,22)){openDlg('COACH ATTENDANT','The coaches rest at night. They leave from 5 AM to 10 PM.',[{label:'OK'}]);return;}
+  openDlg('COACH ATTENDANT',(msg?msg+'  ':'')+'Marina coach stop. The coach to Yaba Terminal takes about an hour and a quarter. You have '+money(cash)+'.',[
+    {label:'COACH TO YABA TERMINAL '+money(ISFARE.coach),fn:isCoach},
+    {label:'ABOUT THE ROUTE',fn:function(){isInfo('COACH ATTENDANT','Lagos Island and the mainland are joined by bridges, and the Third Mainland Bridge crosses the lagoon past Makoko. The coach, the stop and the fare in this game are invented.',isCoachMenu);}},
+    {label:'BYE'}]);
+}
+function isCoach(){
+  var why=phBlock();if(why){buzz();toast(why);return;}
+  if(!isOpen(5,22)){buzz();toast('The coaches rest at night. They leave from 5 AM to 10 PM.');return;}
+  var fare=ISFARE.coach;
+  if(cash<fare){buzz();isCoachMenu('E no reach! That ticket is '+money(fare)+'.');return;}
+  var n=NK.aytermd.npc;
+  cash-=fare;setCash();logTx('Coach ticket to Yaba Terminal',-fare);saveGame();
+  fadeSeq('The coach to Yaba Terminal...',function(){
+    var sp=spotNear(n);player.x=sp[0];player.z=sp[1];player.speed=0;player.yaw=Math.atan2(n.x-sp[0],n.z-sp[1]);camYaw=player.yaw+Math.PI;camSnap=true;
+    advanceHours(1.25);gain('energy',-3);saveGame();
+  },'',{mid:900,total:2200,done:function(){toast('You took the coach to Yaba Terminal for '+money(fare));}});
+}
+/* the cathedral */
+function lcMenu(msg){
+  openDlg('THE VERGER',(msg?msg+'  ':'')+'You are welcome in the house of God. Walk softly. The pews are free.',[
+    {label:'QUIET PRAYER (FREE, 15 MIN)',fn:lcPray},
+    {label:'LIGHT A CANDLE '+money(200),fn:lcCandle},
+    {label:'ABOUT THE CATHEDRAL',fn:function(){isInfo('THE VERGER',ISF.cath,lcMenu);}},
+    {label:'ABOUT THE ORGAN',fn:function(){isInfo('THE VERGER',ISF.organ,lcMenu);}},
+    {label:'BYE'}]);
+}
+function lcPray(){applyFx({energy:4,fun:5,social:2,hygiene:0});advanceHours(0.25);saveGame();chime();lcMenu('You sit in a quiet pew for a while. It is cool and still.');}
+function lcCandle(){
+  if(cash<200){buzz();lcMenu('A candle costs '+money(200)+'.');return;}
+  cash-=200;setCash();logTx('Candle at the cathedral',-200);gain('fun',3);gain('social',2);saveGame();chime();
+  lcMenu('You light a candle and place it in the stand.');
+}
+/* the bank */
+function lbMenu(msg){
+  openDlg('BANK TELLER',(msg?msg+'  ':'')+'Marina Bank House. How may I help you?',[
+    {label:'ABOUT MARINA',fn:function(){isInfo('BANK TELLER',ISF.marina,lbMenu);}},
+    {label:'ABOUT THIS BRANCH',fn:function(){isInfo('BANK TELLER','This branch, its staff and its desks are invented. Nothing in this room holds real money. Your cash is kept on your phone and in your pocket.',lbMenu);}},
+    {label:'BYE'}]);
+}
+/* the gallery */
+var LGTICKET=1000;
+function lgMenu(msg){
+  openDlg('GALLERY ATTENDANT',(msg?msg+'  ':'')+'Wole Soyinka Art Gallery. A ticket is '+money(LGTICKET)+' and gives you an hour among the pictures and sculptures. You have '+money(cash)+'.',[
+    {label:'BUY A TICKET '+money(LGTICKET),fn:lgTicket},
+    {label:'ABOUT FREEDOM PARK',fn:function(){isInfo('GALLERY ATTENDANT',ISF.park,lgMenu);}},
+    {label:'ABOUT THE OLD PRISON',fn:function(){isInfo('GALLERY ATTENDANT','Freedom Park remembers the people held at Broad Street, and activists such as Obafemi Awolowo were kept there in the colonial years. The real park also has a museum in the former records office. The pictures in this room are invented.',lgMenu);}},
+    {label:'BYE'}]);
+}
+function lgTicket(){
+  if(cash<LGTICKET){buzz();lgMenu('A ticket is '+money(LGTICKET)+'.');return;}
+  cash-=LGTICKET;setCash();logTx('Gallery ticket',-LGTICKET);
+  applyFx({fun:18,social:6,energy:-3,hunger:-3,bladder:-2});advanceHours(1);saveGame();chime();
+  lgMenu('You walk slowly past every frame and every plinth. An hour goes by.');
+}
+/* the heritage house */
+var LHTOUR=800;
+function lhMenu(msg){
+  openDlg('HOUSE KEEPER',(msg?msg+'  ':'')+'The Afro-Brazilian Heritage House. A guided tour of the rooms is '+money(LHTOUR)+'. You have '+money(cash)+'.',[
+    {label:'TAKE THE TOUR '+money(LHTOUR),fn:lhTour},
+    {label:'WHO WERE THE AGUDA?',fn:function(){isInfo('HOUSE KEEPER',ISF.aguda,lhMenu);}},
+    {label:'ABOUT SHITTA-BEY MOSQUE',fn:function(){isInfo('HOUSE KEEPER',ISF.mosque,lhMenu);}},
+    {label:'BYE'}]);
+}
+function lhTour(){
+  if(cash<LHTOUR){buzz();lhMenu('The tour is '+money(LHTOUR)+'.');return;}
+  cash-=LHTOUR;setCash();logTx('Heritage house tour',-LHTOUR);
+  applyFx({fun:12,social:4,energy:-2,hunger:-2,bladder:-2});advanceHours(0.75);saveGame();chime();
+  lhMenu('You see the tiled floor, the old photographs and the carved doors, and hear how the family came home from Brazil.');
+}
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  var D={
+    lbald:{look:{skin:sk[1],skin2:'#6a3e26',low:'#7a2e65',low2:'#5a2048',top:'#f1efe6',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},name:'MARKET PORTER',lbl:'BALOGUN',greet:'Balogun Market Hall. Lace, ankara, ready-made. Open 7 AM to 7 PM.'},
+    lcathd:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#f1efe6',head:'',hs:'low'},name:'CHURCH WARDEN',lbl:'CATHEDRAL',greet:'The Cathedral Church of Christ. Open 8 AM to 6 PM.'},
+    lbankd:{look:{skin:sk[0],skin2:'#5a3520',low:'#1c2a44',low2:'#121c30',top:'#1f3a68',head:'cap',hc:'#1f3a68'},name:'BANK SECURITY',lbl:'MARINA BANK HOUSE',greet:'Marina Bank House. Open 8 AM to 4 PM.'},
+    lbukad:{look:{skin:sk[3],skin2:'#774a2e',low:'#7a3b2a',low2:'#5a2a1c',top:'#efe0bc',head:'gele',hc:'#7a3b2a',hc2:'#f2b705'},name:'BUKA BOY',lbl:'ISALE EKO BUKA',greet:'Amala, ewedu, gbegiri! Open 7 AM to 9 PM.'},
+    lgalld:{look:{skin:sk[1],skin2:'#6a3e26',low:'#14161a',low2:'#0a0a0c',top:'#f7f5ef',head:'',hs:'low'},name:'GALLERY DOORMAN',lbl:'GALLERY',greet:'Wole Soyinka Art Gallery, Freedom Park. Open 10 AM to 7 PM.'},
+    lbrazd:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#2a7a5a',low2:'#1c5a40',top:'#f1efe6',head:'cap',hc:'#2a7a5a'},name:'HOUSE DOORMAN',lbl:'HERITAGE HOUSE',greet:'The Afro-Brazilian Heritage House. Open 9 AM to 5 PM.'}
+  };
+  ISP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2,hs:lk.hs},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.bx,2.4,p.bz,p.br,3.2,0.6);
+    var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    OJP.push(p);
+    DEST.push([p.nm,p.k]);
+  });
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  var CL='The place is closed. ';
+  /* Balogun Market Hall: three counters */
+  inside('lbal','lbal',[-9,-10.8],{skin:sk[2],skin2:'#4a2b1a',low:'#7a2e65',low2:'#5a2048',top:'#f1efe6',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},
+    {label:'LACE AND ANKARA',name:'MAMA RISIKAT (LACE AND ANKARA)',svcLabel:'BUY',career:'lacetrader',hours:[7,19],closed:CL+'It opens at 7 AM.',greet:'Lace! Ankara! Aso-ebi for the whole family. Come and touch the cloth.',
+     chat:['Bargain well, my friend, nobody pays the first price. '+ISF.balogun,'The lace for owambe comes in on Monday. By Wednesday it is gone.','Ankara is bright, lace is rich. Which one are you?'],hangMsg:'She drapes a length of lace on your shoulder to show you.',
+     items:[{l:'ANKARA WRAPPER',c:6500,fx:{fun:10,social:8},msg:'Six yards of bright ankara, folded in a bag.'},{l:'LACE (5 YARDS)',c:12000,fx:{fun:14,social:12},msg:'Rich lace for a party. Heads will turn.'},{l:'GELE HEAD TIE',c:2500,fx:{fun:6,social:5},msg:'A stiff gele, ready to tie.'}]});
+  inside('lbal','lbalc',[3,-10.8],{skin:sk[0],skin2:'#5a3520',low:'#c1352d',low2:'#8a2020',top:'#f1efe6',head:'cap',hc:'#c1352d'},
+    {label:'READY-MADE',name:'BABA LATEEF (READY-MADE CLOTHES)',svcLabel:'BUY',friend:false,hours:[7,19],closed:CL+'It opens at 7 AM.',greet:'Shirts, trousers, agbada, buba and sokoto. Already sewn. Try it on.',
+     items:[{l:'SHIRT',c:4500,fx:{fun:6,social:4},msg:'A clean ready-made shirt.'},{l:'TROUSERS',c:5500,fx:{fun:6,social:4},msg:'Smart trousers, cut to measure on the spot.'},{l:'AGBADA SET',c:14000,fx:{fun:16,social:14},msg:'A full agbada set. You will look like a chief.'}]});
+  inside('lbal','lbalp',[13,-10.8],{skin:sk[3],skin2:'#774a2e',low:'#2f6fb1',low2:'#1f4f84',top:'#e8e3d2',head:'cap',hc:'#14161a'},
+    {label:'ELECTRONICS',name:'ENGR. DOSUNMU (ELECTRONICS)',svcLabel:'BUY',friend:false,hours:[7,19],closed:CL+'It opens at 7 AM.',greet:'Chargers, earphones, power banks. Original, not fake.',
+     items:[{l:'PHONE CHARGER',c:1800,fx:{fun:3,social:2},msg:'A phone charger in the box.'},{l:'EARPHONES',c:2500,fx:{fun:5,social:2},msg:'Wired earphones with a good mic.'},{l:'POWER BANK',c:7500,fx:{fun:8,social:3},msg:'A power bank. The light comes on and the phone goes green.'}]});
+  /* the cathedral */
+  inside('lcath','lcath',[6,-8],{skin:sk[1],skin2:'#6a3e26',low:'#2a2a30',low2:'#1c1c20',top:'#f1efe6',head:'',hs:'low'},
+    {label:'THE VERGER',name:'THE VERGER',svcLabel:'',origLabel:'PRAY OR ASK',orig:function(){lcMenu();},friend:false,career:'churchhelp',hours:[8,18],closed:'The cathedral is closed. It opens at 8 AM.',greet:'Welcome. Walk softly.',items:[]},Math.PI*0.9);
+  /* the bank */
+  inside('lbank','lbank',[-4,-8.8],{skin:sk[2],skin2:'#4a2b1a',low:'#1c2a44',low2:'#121c30',top:'#f1efe6',head:'',hs:'low'},
+    {label:'TELLER',name:'MISS ADA (BANK TELLER)',svcLabel:'',origLabel:'ASK THE TELLER',orig:function(){lbMenu();},friend:false,career:'bankclerk',hours:[8,16],closed:'The bank is closed. It opens at 8 AM.',greet:'Welcome to Marina Bank House.',items:[]});
+  inside('lbank','lbank2',[10,-8.8],{skin:sk[0],skin2:'#5a3520',low:'#1c2a44',low2:'#121c30',top:'#d9d2c2',head:'cap',hc:'#1f3a68'},
+    {label:'CUSTOMER SERVICE',name:'MR BELLO (CUSTOMER SERVICE)',friend:false,hours:[8,16],closed:'The bank is closed. It opens at 8 AM.',greet:'Please take a number and wait. We will call you.',items:[]});
+  /* the buka */
+  inside('lbuka','lbuka',[-5,-7.6],{skin:sk[3],skin2:'#774a2e',low:'#7a3b2a',low2:'#5a2a1c',top:'#efe0bc',head:'gele',hc:'#7a3b2a',hc2:'#f2b705'},
+    {label:'AMALA',name:'IYA ALAMALA (ISALE EKO BUKA)',svcLabel:'EAT',career:'amalacook',hours:[7,21],closed:CL+'It opens at 7 AM.',greet:'Amala hot! Ewedu, gbegiri, assorted meat. Sit down.',
+     chat:['Amala is made from yam flour. You need strong arms to turn it.','Ewedu is jute leaf, gbegiri is bean soup. Together we call it abula.','The Island eats here at one o\'clock. Come early.'],hangMsg:'She puts a spoonful of gbegiri on a plate for you to taste.',
+     items:[{l:'AMALA, EWEDU AND GBEGIRI',c:2500,food:1,fx:{hunger:60,fun:5,bladder:-4},msg:'Hot amala with ewedu and gbegiri.'},{l:'AMALA WITH ASSORTED MEAT',c:3800,food:1,fx:{hunger:72,energy:6,fun:6,bladder:-5},msg:'Amala with meat in rich stew.'},{l:'EBA AND EFO RIRO',c:2200,food:1,fx:{hunger:56,fun:4,bladder:-4},msg:'Eba with efo riro stew.'},{l:'BOTTLED WATER',c:300,food:1,fx:{hunger:2,energy:3,bladder:-6},msg:'Cold bottled water.'}]});
+  /* the gallery */
+  inside('lgall','lgall',[-8,-8.3],{skin:sk[1],skin2:'#6a3e26',low:'#14161a',low2:'#0a0a0c',top:'#f7f5ef',head:'gele',hc:'#14161a',hc2:'#c1352d'},
+    {label:'TICKETS',name:'MS TOPE (GALLERY ATTENDANT)',svcLabel:'',origLabel:'TICKETS AND FACTS',orig:function(){lgMenu();},friend:false,hours:[10,19],closed:'The gallery is closed. It opens at 10 AM.',greet:'Welcome to the Wole Soyinka Art Gallery.',items:[]});
+  inside('lgall','lgalg',[5,-7.8],{skin:sk[0],skin2:'#5a3520',low:'#2a2a30',low2:'#1c1c20',top:'#c1352d',head:'cap',hc:'#14161a'},
+    {label:'GUIDE',name:'MR KOLA (GALLERY GUIDE)',friend:false,career:'gallguide',hours:[10,19],closed:'The gallery is closed. It opens at 10 AM.',greet:'Look closely. Every picture here is invented, but the park outside is real.',
+     chat:['Every piece in this room is invented for the game.',ISF.park],hangMsg:'He points out a colour you would have missed.',items:[]});
+  /* the heritage house */
+  inside('lbraz','lbraz',[-8,-7.4],{skin:sk[2],skin2:'#4a2b1a',low:'#2a7a5a',low2:'#1c5a40',top:'#f1efe6',head:'gele',hc:'#2a7a5a',hc2:'#e8d36b'},
+    {label:'HOUSE KEEPER',name:'MRS DA SILVA (HOUSE KEEPER)',svcLabel:'',origLabel:'TOUR AND FACTS',orig:function(){lhMenu();},friend:false,hours:[9,17],closed:'The house is closed. It opens at 9 AM.',greet:'Welcome to the house. Mind the tiles.',items:[]});
+  inside('lbraz','lbraz2',[6,-7.4],{skin:sk[3],skin2:'#774a2e',low:'#1f3a68',low2:'#14264a',top:'#e8d9ac',head:'cap',hc:'#2a7a5a'},
+    {label:'CURATOR',name:'MR PEREIRA (CURATOR)',friend:false,hours:[9,17],closed:'The house is closed. It opens at 9 AM.',greet:ISF.aguda,items:[]});
+  /* exit doormen */
+  ISP.forEach(function(p){
+    var dd=INTD[p.id],c=dd.c;
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* street people */
+  addPerson('isferry',{x:-3105,z:19.6,yaw:0,skin:sk[0],skin2:'#5a3520',low:'#1f3a68',low2:'#14264a',top:'#e8e4da',head:'cap',hc:'#1f6f43'},
+    {label:'FERRY',name:'FERRY CLERK',friend:false,greet:'Island Ferry Jetty. Tickets here.',items:[]});
+  NK.isferry.npc.talk=function(){isFerryMenu();};
+  DEST.push(['ISLAND FERRY JETTY','isferry']);
+  addPerson('iscoach',{x:-3092,z:11,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#e0c040',head:'cap',hc:'#14161a'},
+    {label:'COACH',name:'COACH ATTENDANT',friend:false,greet:'Yaba, Yaba! Coach to Yaba Terminal!',items:[]});
+  NK.iscoach.npc.talk=function(){isCoachMenu();};
+  DEST.push(['MARINA COACH STOP','iscoach']);
+  addPerson('ispalace',{x:-3655,z:-21.6,yaw:0,skin:sk[1],skin2:'#6a3e26',low:'#1c2a44',low2:'#121c30',top:'#f1efe6',head:'cap',hc:'#c1352d'},
+    {label:'PALACE',name:'PALACE GUARD (INVENTED)',friend:false,greet:ISF.palace,items:[]});
+  DEST.push(['IGA IDUNGANRAN PALACE','ispalace']);
+  addPerson('iseyo',{x:-3640,z:-13.6,yaw:0,skin:sk[3],skin2:'#774a2e',low:'#f1efe6',low2:'#d9d2c2',top:'#f1efe6',head:'cap',hc:'#14161a'},
+    {label:'EYO',name:'EYO GUIDE (INVENTED)',friend:false,greet:ISF.eyo,items:[]});
+  DEST.push(['EYO FORECOURT','iseyo']);
+  addPerson('istbs',{x:-3226,z:14.4,yaw:Math.PI,skin:sk[0],skin2:'#5a3520',low:'#1f6f43',low2:'#14502f',top:'#e8e4da',head:'cap',hc:'#1f6f43'},
+    {label:'SQUARE',name:'SQUARE GUARD (INVENTED)',friend:false,greet:ISF.tbs,items:[]});
+  DEST.push(['TAFAWA BALEWA SQUARE','istbs']);
+  addPerson('ismosque',{x:-3465,z:15.4,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#f1efe6',low2:'#d9d2c2',top:'#f1efe6',head:'cap',hc:'#1f6f43'},
+    {label:'MOSQUE',name:'MOSQUE GUARD (INVENTED)',friend:false,greet:ISF.mosque,items:[]});
+  DEST.push(['SHITTA-BEY MOSQUE','ismosque']);
+  addPerson('isiyaloja',{x:-3375.4,z:-25.4,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#7a2e65',low2:'#5a2048',top:'#f2b705',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},
+    {label:'MARKET',name:'MARKET WOMEN\'S REP (INVENTED)',friend:false,greet:ISF.balogun,items:[]});
+  DEST.push(['BALOGUN MARKET YARD','isiyaloja']);
+  addPerson('issuya',{x:-3195,z:-9.5,yaw:0,skin:sk[0],skin2:'#5a3520',low:'#2a2a30',low2:'#1c1c20',top:'#c1352d',head:'cap',hc:'#14161a'},
+    {label:'SUYA',name:'MALLAM SANI (SUYA)',svcLabel:'BUY',friend:false,hours:[16,23],closed:'Mallam Sani has not lit his fire yet. He comes at 4 PM.',greet:'Suya! Hot suya with onions and yaji!',
+     items:[{l:'BEEF SUYA',c:1500,food:1,fx:{hunger:40,fun:5,bladder:-3},msg:'Spicy suya wrapped in paper.'},{l:'SUYA AND ONION',c:2200,food:1,fx:{hunger:52,fun:6,bladder:-3},msg:'A big stick of suya with raw onion and yaji.'},{l:'ZOBO',c:300,food:1,fx:{hunger:6,energy:5,fun:2,bladder:-7},msg:'Chilled zobo.'}]});
+  DEST.push(['SUYA, FREEDOM PARK ROAD','issuya']);
+  addPerson('iscorn',{x:-3546,z:-16,yaw:Math.PI*0.5,skin:sk[3],skin2:'#774a2e',low:'#2a5a34',low2:'#1c3a24',top:'#e07a1f',head:'gele',hc:'#e07a1f',hc2:'#f2b705'},
+    {label:'CORN',name:'AUNTY SHOLA (ROASTED CORN)',svcLabel:'BUY',friend:false,hours:[8,20],closed:'Aunty Shola has packed up. Come back from 8 AM.',greet:'Roasted corn and pear! Campos Square is the best place to sit.',
+     items:[{l:'ROASTED CORN',c:500,food:1,fx:{hunger:26,fun:3,bladder:-2},msg:'A hot roasted cob.'},{l:'CORN AND PEAR',c:800,food:1,fx:{hunger:34,fun:4,bladder:-2},msg:'Roasted corn with a sweet native pear.'}]});
+  DEST.push(['CAMPOS SQUARE','iscorn']);
+  /* careers (pay and costs are invented) */
+  CARS.lacetrader={name:'LACE TRADER',key:'lbal',pay:3700,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-12,hunger:-5,hygiene:-6,fun:-4,bladder:-4}};
+  CARS.churchhelp={name:'CHURCH HELPER',key:'lcath',pay:3200,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-9,hunger:-5,hygiene:-2,fun:-3,bladder:-4}};
+  CARS.bankclerk={name:'BANK CLERK',key:'lbank',pay:6400,secs:30,req:'Education Level 2 (study at the school in Ojuelegba or Yabatech)',ok:function(){return eduLevel()>=2;},cost:{energy:-11,hunger:-6,hygiene:-2,fun:-5,bladder:-4}};
+  CARS.gallguide={name:'GALLERY GUIDE',key:'lgalg',pay:4800,secs:30,req:'Education Level 1 (study at the school in Makoko, Ojuelegba or Yabatech)',ok:function(){return eduLevel()>=1;},cost:{energy:-10,hunger:-5,hygiene:-2,fun:-4,bladder:-4}};
+  CARS.amalacook={name:'BUKA COOK',key:'lbuka',pay:3500,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-13,hunger:-4,hygiene:-9,fun:-4,bladder:-4}};
+  ['lacetrader','churchhelp','bankclerk','gallguide','amalacook'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  [[-3100,3],[-3250,-3],[-3400,3],[-3550,-3],[-3700,3],[-3220,9],[-3130,-10]].forEach(function(q){FSPOTS.push(q);});
+})();
+/* people on the move */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0;
+  function WK(a,b,win,sp){
+    var i=n++;
+    var w=makeWalker({fem:i%2,occ:i%2,look:i+511,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:a,b:b,sp:sp||(1.0+(i%4)*0.18)});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  var COM=[[5,9.5],[16,21]],DAY=[[6,21]],MKT=[[7,19]];
+  /* the pavements along Marina and the old quarter */
+  WK([-3070,-5.8],[-3200,-5.8],DAY,0.9);WK([-3200,5.8],[-3070,5.8],DAY,1.0);
+  WK([-3210,-5.8],[-3340,-5.8],COM,0.8);WK([-3340,5.8],[-3210,5.8],DAY,0.9);
+  WK([-3350,-5.8],[-3480,-5.8],DAY,0.9);WK([-3480,5.8],[-3350,5.8],COM,0.8);
+  WK([-3490,-5.8],[-3620,-5.8],DAY,0.8);WK([-3620,5.8],[-3490,5.8],DAY,0.9);
+  WK([-3630,-5.8],[-3750,-5.8],DAY,0.9);WK([-3750,5.8],[-3630,5.8],DAY,0.8);
+  /* the promenade, the square, the park, Campos Square and the palace forecourt */
+  WK([-3135,13.5],[-3068,13.5],DAY,0.6);WK([-3068,16],[-3135,16],DAY,0.6);
+  WK([-3282,30],[-3158,30],DAY,0.8);WK([-3158,36],[-3282,36],DAY,0.7);WK([-3213,20],[-3213,52],DAY,0.7);
+  WK([-3238,-30],[-3180,-30],DAY,0.7);WK([-3208,-18],[-3208,-31],DAY,0.5);
+  WK([-3584,-26],[-3520,-26],DAY,0.6);WK([-3520,-36],[-3584,-36],DAY,0.6);WK([-3547,-16],[-3547,-46],DAY,0.5);
+  WK([-3600,-14],[-3632,-14],DAY,0.5);WK([-3722,-14],[-3684,-14],DAY,0.5);WK([-3632,-21],[-3600,-21],DAY,0.5);WK([-3684,-21],[-3722,-21],DAY,0.5);
+  /* the Balogun stall yard */
+  WK([-3430,-32],[-3350,-32],MKT,0.6);WK([-3350,-40],[-3430,-40],MKT,0.6);WK([-3430,-48],[-3350,-48],MKT,0.5);WK([-3350,-56],[-3430,-56],MKT,0.5);
+  WK([-3350,-32],[-3430,-32],MKT,0.7);WK([-3430,-40],[-3350,-40],MKT,0.7);WK([-3350,-48],[-3430,-48],MKT,0.7);WK([-3430,-56],[-3350,-56],MKT,0.6);
+  /* inside the rooms */
+  function IW(id,a,b,win,sp){var d=INTD[id].c;var i=n++;var w=makeWalker({fem:i%2,occ:1,look:i+511,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});OJW.push({w:w,win:win});w.off=true;}
+  IW('lbal',[-14,-0.75],[14,-0.75],[[7,19]],0.5);IW('lbal',[14,5.5],[-13,5.5],[[7,19]],0.5);IW('lbal',[-0.5,-7],[-0.5,9],[[7,19]],0.4);IW('lbal',[-14,-6.5],[14,-6.5],[[7,19]],0.45);
+  IW('lcath',[14.2,-8],[14.2,8],[[8,18]],0.4);IW('lcath',[-14.2,8],[-14.2,-8],[[8,18]],0.4);IW('lcath',[0,8],[0,-8],[[8,18]],0.35);
+  IW('lbank',[-13,-5.5],[12,-5.5],[[8,16]],0.45);IW('lbank',[-13,0.5],[13,0.5],[[8,16]],0.45);IW('lbank',[-3,7.6],[13,7.6],[[8,16]],0.4);
+  IW('lbuka',[-11,-4],[11,-4],[[7,21]],0.45);IW('lbuka',[11,2],[-11,2],[[7,21]],0.45);IW('lbuka',[11,-5],[11,6],[[7,21]],0.4);
+  IW('lgall',[-13,-5.4],[13,-5.4],[[10,19]],0.4);IW('lgall',[13,2],[-13,2],[[10,19]],0.4);IW('lgall',[-12,-5],[-12,8],[[10,19]],0.4);
+  IW('lbraz',[-12,-1],[12,-1],[[9,17]],0.4);IW('lbraz',[12,2.5],[-12,2.5],[[9,17]],0.4);IW('lbraz',[0,7.5],[12,7.5],[[9,17]],0.4);
 })();
 
 /* ------------------------------------------------------------------ loop */
