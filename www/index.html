@@ -94,6 +94,16 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 #horn.on{filter:brightness(1.25);transform:scale(.96)}
 #gas.on,#brk.on{transform:scale(.94);filter:brightness(1.25)}
 #act:active{background:var(--danfo)}
+#hpbar{top:calc(env(safe-area-inset-top,0px) + 148px);left:calc(env(safe-area-inset-left,0px) + 16px);width:150px;height:18px;background:rgba(20,17,15,.78);border-left:6px solid #d33}
+#hpbar i{display:block;height:100%;width:100%;background:#d33;transition:width .15s}
+#hpbar b{position:absolute;left:8px;top:0;font:700 12px/18px var(--display);letter-spacing:.14em;color:#f6ecd9;text-shadow:0 1px 2px #000}
+#hpbar span{position:absolute;left:-6px;top:20px;font:700 12px/1 var(--display);letter-spacing:.12em;color:#f6ecd9;background:rgba(20,17,15,.78);padding:3px 8px 3px 12px;white-space:nowrap}
+#hpbar[hidden]{display:none}
+#fire{position:fixed;z-index:8;right:calc(env(safe-area-inset-right,0px) + 128px);bottom:calc(env(safe-area-inset-bottom,0px) + 38px);width:84px;height:84px;border-radius:50%;background:#e0584c;border:4px solid var(--ink);color:var(--ink);font:700 19px/1 var(--display);letter-spacing:.1em;touch-action:none;padding:0;box-shadow:0 0 0 3px rgba(246,236,217,.55)}
+#fire.on{transform:scale(.94);filter:brightness(1.25)}
+#wsw{position:fixed;z-index:8;right:calc(env(safe-area-inset-right,0px) + 136px);bottom:calc(env(safe-area-inset-bottom,0px) + 140px);min-width:84px;height:44px;border-radius:8px;background:#cdbf9f;border:4px solid var(--ink);color:var(--ink);font:700 17px/1 var(--display);letter-spacing:.1em;padding:0 10px}
+#fire[hidden],#wsw[hidden]{display:none}
+#hurt{position:fixed;inset:0;pointer-events:none;z-index:6;opacity:0;background:radial-gradient(ellipse at center,rgba(160,0,0,0) 40%,rgba(160,0,0,.75) 100%);transition:opacity .25s}
 #speed{left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translateX(-50%);background:rgba(20,17,15,.72);border-bottom:5px solid var(--danfo);padding:4px 16px;font:700 34px/1 var(--display);letter-spacing:.04em;font-variant-numeric:tabular-nums;text-align:center}
 #speed small{font-size:14px;letter-spacing:.14em;color:#cdbf9f}
 
@@ -433,6 +443,9 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <button id="brk" type="button" hidden>BRAKE</button>
 <button id="act" type="button" hidden>ENTER</button>
 <button id="horn" type="button" hidden>HORN</button>
+<button id="fire" type="button" hidden>FIRE</button>
+<button id="wsw" type="button" hidden>SWAP</button>
+<div id="hurt"></div>
 
 <div class="hud wallet"><span class="lbl">CASH</span><span class="amt" id="cash">&#8358;2,500</span></div>
 <div class="hud tools"><button id="menuBtn" type="button">MENU</button><button id="clk" type="button">2:30 PM</button></div>
@@ -440,6 +453,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <div class="hud" id="toast"></div>
 <div class="hud" id="obj" hidden><span class="t" id="objTitle">JOB</span><span class="d" id="objDist">0 m</span><span class="d" id="objTime" hidden></span></div>
 <div class="hud" id="needs" hidden></div>
+<div class="hud" id="hpbar" hidden><i></i><b>HEALTH</b><span id="wpn">FISTS</span></div>
 <div id="vig"></div>
 <div class="hud" id="heat" hidden><span id="heatStars">★☆☆</span><span class="hb"><i id="heatBar"></i></span></div>
 <div class="hud" id="speed" hidden><span id="kmh">0</span> <small>KM/H</small></div>
@@ -520,7 +534,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b59';
+var VERSION='GTL 0.9 b60';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -6948,6 +6962,7 @@ function updateAct(){
       var cd=carDist(player.x,player.z),nd=99;
       for(var i=0;i<npcs.length;i++){if(npcs[i].off)continue;var d=Math.hypot(player.x-npcs[i].x,player.z-npcs[i].z)-0.35;if(d<nd){nd=d;nearNpc=npcs[i];}}
       if(inInt())for(var si=0;si<SPOTS.length;si++){var spt=SPOTS[si],sd2=Math.hypot(player.x-spt.x,player.z-spt.z);if(sd2<nd){nd=sd2;nearNpc=spt;}}
+      if(!inInt()){var csp=CT.spots();for(var ci=0;ci<csp.length;ci++){var cd2=Math.hypot(player.x-csp[ci].x,player.z-csp[ci].z);if(cd2<nd){nd=cd2;nearNpc=csp[ci];}}}
       if(nd<2.4&&nd<cd)want=nearNpc.act||'TALK';else{nearNpc=null;if(cd<2.4)want='ENTER';}
     }
   }
@@ -7085,16 +7100,18 @@ ring.rotation.x=Math.PI/2;ring.position.set(-56,0.2,2);scene.add(ring);
 var npcArrow=new THREE.Mesh(new THREE.ConeGeometry(0.3,0.65,4),new THREE.MeshBasicMaterial({color:0xf2b705}));
 npcArrow.rotation.x=Math.PI;scene.add(npcArrow);
 function updateMissionVisuals(){
-  var cj=curJob(),st=(jobActive&&cj)?cj.stages[jobStage]:null,isFare=false,isGig=false;
+  var cj=curJob(),st=(jobActive&&cj)?cj.stages[jobStage]:null,isFare=false,isGig=false,isCt=false;
   if(!st&&gig&&gig.stages[gig.st]){var gs=gig.stages[gig.st];st={x:gs.x,z:gs.z,label:gs.label};isGig=true;}
   if(!st&&typeof fare==='object'&&fare.st){st={x:fare.x,z:fare.z,label:fare.st===1?'PICK UP THE PASSENGER':'DROP OFF THE PASSENGER'};isFare=true;}
-  beam.visible=ring.visible=!!st;
-  var col=isGig?(GIGDEF[gig.id].ill?0xff4b3a:0x3aa0ff):(isFare?0x3ee07a:0xf2b705);
+  var cr=CT.S.run;
+  if(!st&&cr&&cr.st){var cm=CT.mark();st={x:cm?cm.x:0,z:cm?cm.z:0,label:cr.st.label||'',nomark:!cm};isCt=true;}
+  beam.visible=ring.visible=!!st&&!st.nomark;
+  var col=isCt?0xff4b3a:(isGig?(GIGDEF[gig.id].ill?0xff4b3a:0x3aa0ff):(isFare?0x3ee07a:0xf2b705));
   beam.material.color.setHex(col);ring.material.color.setHex(col);
-  if(st){beam.position.set(st.x,30,st.z);ring.position.set(st.x,0.2,st.z);objTitle.textContent=(isGig?'GIG: ':(isFare?'FARE: ':'JOB: '))+st.label;}
+  if(st){beam.position.set(st.x,30,st.z);ring.position.set(st.x,0.2,st.z);objTitle.textContent=(isCt?'CONTRACT: ':(isGig?'GIG: ':(isFare?'FARE: ':'JOB: ')))+st.label;}
   npcArrow.visible=false;
   objEl.hidden=!st;lastObj=-1;
-  var timed=!!(st&&(timerOn||isGig||(isFare&&fare.st===2)));objTime.hidden=!timed;
+  var timed=!!(st&&(timerOn||isGig||(isFare&&fare.st===2)||(isCt&&cr.tl>0)));objTime.hidden=!timed;
 }
 function openDlg(name,text,btns){
   talking=true;dlgName.textContent=name;dlgText.textContent=text;dlgBtns.innerHTML='';
@@ -7185,7 +7202,7 @@ makeNPC({x:5.1,z:16.2,yaw:-Math.PI/2,skin:'#7a4a2e',skin2:'#6a3e26',low:'#d9731a
     var cj=curJob();
     if(!cj)openDlg('MAMA NKECHI',"You don do every job I get, my pikin! Kunle dey the workshop west of the market if you wan tune your car, and some people don drop cash around town and on the island. Check if you fit find all "+NB+". More work coming soon!",[{label:'OK'}]);
     else if(jobActive)openDlg('MAMA NKECHI',cj.remind,[{label:'OK'}]);
-    else openDlg('MAMA NKECHI',(jobIdx>0?'':'')+cj.offer,[{label:"I'LL DO IT",fn:function(){if(gig){toast('Finish your gig first');return;}cancelFare();jobActive=true;jobStage=0;timerOn=false;saveGame();updateMissionVisuals();toast(cj.toast);}},{label:'LATER'}]);
+    else openDlg('MAMA NKECHI',(jobIdx>0?'':'')+cj.offer,[{label:"I'LL DO IT",fn:function(){if(gig){toast('Finish your gig first');return;}if(CT.S.run){toast('Finish your contract first');return;}cancelFare();jobActive=true;jobStage=0;timerOn=false;saveGame();updateMissionVisuals();toast(cj.toast);}},{label:'LATER'}]);
   }});
 makeNPC({x:-56,z:6.3,yaw:Math.PI,skin:'#5a3520',skin2:'#4a2b1a',low:'#ece7d6',low2:'#cfc7a8',top:'#ece7d6',head:'cap',hc:'#7a1f1f',
   talk:function(){
@@ -7578,10 +7595,1277 @@ function walkersUpdate(dt){
   }
 }
 
+/* ============================================================ b60 DATA: six fixers and 54 contracts.
+   Settings are real Lagos areas. Every fixer, gang, target and crime here is invented. */
+var CTA=[
+  {id:'tunde',n:'OGA TUNDE',role:'Yard boss, Mushin',req:0,fx:'mshpartsd',tag:'Small jobs, small money, big lessons.'},
+  {id:'cash',n:'MAMA CASH',role:'Lender, Otigba and Allen',req:15,fx:'cvcanteend',tag:'Everybody owes Mama Cash.'},
+  {id:'eng',n:'THE ENGINEER',role:'Fixer, Agege and Yaba',req:45,fx:'agplant',tag:'He can open any lock and any car.'},
+  {id:'sarge',n:'SARGE BELLO',role:'Ex-soldier, Lagos Island',req:85,fx:'iscorn',tag:'Pays well. Does not forgive.'},
+  {id:'dia',n:'MADAM DIAMOND',role:'Port queen, Apapa',req:140,fx:'apfish',tag:'Nothing moves in the port without her.'},
+  {id:'ghost',n:'GHOST',role:'Nobody knows, Ajegunle to Okokomaiko',req:210,fx:'m2hub',tag:'You never see him. He sees you.'}
+];
+var CTM=(function(){
+  var L=[],RESP={tunde:3,cash:4,eng:5,sarge:6,dia:8,ghost:10},DM={1:0.75,2:0.85,3:0.95,4:1,5:1.1};
+  function X(o,x){if(x)for(var k in x)o[k]=x[k];return o;}
+  function go(at,label,x){return X({t:'go',at:at,label:label},x);}
+  function gov(at,label,x){return X({t:'go',at:at,label:label,veh:1,tm:'auto'},x);}
+  function kill(at,label,g,x){return X({t:'kill',at:at,label:label,g:g},x);}
+  function hold(at,label,secs,g,x){return X({t:'hold',at:at,label:label,secs:secs,g:g},x);}
+  function car(at,label,kind,x){return X({t:'car',at:at,label:label,kind:kind},x);}
+  function lift(at,label){return {t:'lift',at:at,label:label};}
+  function talk(at,label,name,line,x){return X({t:'talk',at:at,label:label,name:name,line:line},x);}
+  function defend(at,label,secs,w,x){return X({t:'defend',at:at,label:label,secs:secs,w:w},x);}
+  function esc(lvl){return {t:'escape',label:'LOSE THE TASK FORCE',lvl:lvl};}
+  function escort(at,to,label,name,w,x){return X({t:'escort',at:at,to:to,label:label,name:name,w:w},x);}
+  function own(w,label){return {t:'own',w:w,label:label};}
+  function m(arc,id,n,tier,pay,txt,ok,st,x){
+    var o={id:id,arc:arc,n:n,tier:tier,pay:pay,resp:RESP[arc],dm:DM[tier],txt:txt,ok:ok,st:st};
+    L.push(X(o,x));
+  }
+  function g(n,w,f,x){return X({n:n,w:w,f:f||'thug'},x);}
+  function boss(w,f,name,x){return X({n:1,w:w,f:f||'cobra',boss:1,name:name},x);}
+
+  /* ------------------------------------------------ OGA TUNDE: Mushin, Ojuelegba, Oshodi */
+  m('tunde','t01','First errand',1,3000,
+    'Oga Tunde runs a spare-parts yard in Ladipo. Two boys have been bullying the traders at Oshodi market. Chase them off with your fists.',
+    'Tunde laughs and counts out your money. "You dey try. Come back tomorrow."',
+    [go('mshpartsd','MEET OGA TUNDE AT HIS YARD'),
+     kill('ojmkt','CHASE OFF THE TWO THUGS',[g(2,'fists')],{trig:55}),
+     go('mshpartsd','REPORT BACK TO OGA TUNDE')]);
+  m('tunde','t02','Iron pipe',1,3500,
+    'Fists are for children. Buy an iron pipe (phone, Contracts, Armoury) and teach three boys at the junction some manners.',
+    'Three boys limp away. The pipe stays in your hand.',
+    [own('pipe','BUY AN IRON PIPE IN THE ARMOURY'),
+     kill('ojagege','CLEAR THE JUNCTION',[g(3,'pipe')],{trig:55}),
+     go('mshpartsd','REPORT BACK TO OGA TUNDE')],
+    {buy:'pipe'});
+  m('tunde','t03','Small debt',1,4000,
+    'Bola sells fried yam near Ojuelegba and owes Tunde money for six months. Ask him nicely. Or not so nicely.',
+    'Bola finds the money under his mattress. Tunde is pleased.',
+    [go('ojbukad','FIND BOLA, THE YAM SELLER',{r:7}),
+     talk('ojbukad','TALK TO BOLA','BOLA','"Oga, I swear, na only this week I go pay..."',{mode:'any'}),
+     go('mshpartsd','BRING THE MONEY TO TUNDE')]);
+  m('tunde','t04','Light fingers',1,4500,
+    'A loud money-changer with a fat wallet walks the suya road every afternoon. Take his wallet without him noticing. Approach from behind and tap the button.',
+    'He never even felt it. Tunde whistles.',
+    [go('ojsuya','FIND THE MONEY-CHANGER',{r:12}),
+     lift('ojsuya','LIFT HIS WALLET FROM BEHIND'),
+     go('mshpartsd','DELIVER THE WALLET TO TUNDE')]);
+  m('tunde','t05','Wheels for Tunde',2,5500,
+    'A client wants a clean sedan, no questions asked. There is a red one parked by the school. Take it to Tunde\'s yard before the owner notices.',
+    'The sedan disappears into a container in minutes.',
+    [car('ojschoold','TAKE THE RED SEDAN','sedan',{col:'#8e2f2f',alarm:1,h:1.2}),
+     gov('mshpartsd','DRIVE IT TO TUNDE\'S YARD')]);
+  m('tunde','t06','The tax men',2,6000,
+    'Self-styled "area boys" are collecting tax from the shops at Ojuelegba. Stand in front of the supermarket and show them what happens.',
+    'The shop owners clap. You feel ten feet tall.',
+    [go('ojsuperd','GO TO THE SUPERMARKET'),
+     defend('ojsuperd','DEFEND THE SHOP',45,[[4,[g(2,'fists')]],[20,[g(3,'pipe')]]]),
+     go('mshpartsd','REPORT BACK TO OGA TUNDE')]);
+  m('tunde','t07','First gun',2,7000,
+    'The Black Cobras have taken the Oshodi bus bays. Buy a pistol (phone, Contracts, Armoury) and take the bays back. Keep your head down.',
+    'You have a gun and a reputation. Both are heavy.',
+    [own('pistol','BUY A PISTOL IN THE ARMOURY'),
+     kill('ojbay','TAKE BACK THE BUS BAYS',[g(2,'pistol','cobra'),g(2,'pipe','cobra')],{trig:60}),
+     go('mshpartsd','REPORT BACK TO OGA TUNDE')],
+    {buy:'pistol'});
+  m('tunde','t08','The danfo job',2,8000,
+    'A yellow danfo is parked at the bus bays and somebody wants it in the Oshodi tech corner by dark. Drive it there. If the driver shouts, keep going.',
+    'The danfo is delivered. Nobody saw anything.',
+    [car('ojbay','TAKE THE DANFO','danfo',{alarm:1,h:0}),
+     gov('ojhubd','DRIVE THE DANFO TO THE DROP')],{need:'pistol'});
+  m('tunde','t09','Ade Razor',2,10000,
+    'Ade Razor runs the Cobras in Mushin and he is the reason Tunde pays double for his parts. He is in the Idi-Oro lane with his men. Finish it.',
+    'Ade Razor is down. Tunde pours you a cold drink. "You are ready for Mama Cash."',
+    [go('mshlane','GO TO IDI-ORO LANE'),
+     kill('mshlane','TAKE DOWN ADE RAZOR AND HIS MEN',[boss('pistol','cobra','ADE RAZOR'),g(3,'pipe','cobra'),g(2,'pistol','cobra')],{trig:55}),
+     go('mshpartsd','REPORT BACK TO OGA TUNDE')],{need:'pistol'});
+
+  /* ------------------------------------------------ MAMA CASH: Otigba, Ikeja, Allen */
+  m('cash','c01','The rounds',2,8000,
+    'Mama Cash lends money all over Otigba. Visit two men who are late with their payments and bring back what they owe. Talk first. Fists second.',
+    'Mama counts it twice and smiles with all her gold teeth.',
+    [go('cvcanteend','MEET MAMA CASH AT HER CANTEEN'),
+     talk('cvhawk','FIND SEGUN','SEGUN','"Mama Cash? Oga, the speaker business slow o..."',{mode:'any'}),
+     talk('cvbay','FIND DAYO','DAYO','"Ah! Today? I thought you said Friday!"',{mode:'any'}),
+     go('cvcanteend','RETURN TO MAMA CASH')]);
+  m('cash','c02','Fake cheque fella',2,8500,
+    'A smooth talker keeps passing fake cheques in the plaza. Mama wants his wallet as a lesson. Lift it from behind.',
+    'Mama frames the fake cheque and hangs it on the wall.',
+    [go('cvplazad','FIND THE FAKE-CHEQUE MAN',{r:12}),
+     lift('cvplazad','LIFT HIS WALLET FROM BEHIND'),
+     go('cvcanteend','DELIVER THE WALLET TO MAMA CASH')]);
+  m('cash','c03','Stolen stock',3,10000,
+    'Black Cobras broke into the Ikeja Along terminal store and carried off Mama\'s phone stock. They are still there. Get it back.',
+    'The boxes come back, and so does your pride.',
+    [go('cvbay','GO TO THE TERMINAL',{r:30}),
+     kill('cvbay','TAKE BACK THE STOCK',[g(3,'pistol','cobra'),g(2,'fists','cobra')],{trig:60}),
+     go('cvcanteend','RETURN TO MAMA CASH')],{need:'pistol'});
+  m('cash','c04','The generator',3,10500,
+    'Somebody is stealing generators from the repair centre. Stand at the loading spot until the hired hands see you off, then take a danfo and carry the generator to the plaza.',
+    'The generator hums again. Mama\'s repair centre lives.',
+    [hold('cvrepaird','LOAD THE GENERATOR',16,[g(2,'pistol','thug')],{trig:55}),
+     car('cvrepaird','TAKE THE DANFO','danfo',{h:3.1,i:2}),
+     gov('cvplazad','DRIVE TO THE PLAZA')],{need:'pistol'});
+  m('cash','c05','Allen collection',3,12000,
+    'Chief Oyelaran owes Mama a fortune and has hired door muscle on Allen Avenue. Clear the muscle, then collect.',
+    'The chief pays in cash and in fear.',
+    [go('alloungd','GO TO ALLEN AVENUE',{r:30}),
+     kill('alloungd','DEAL WITH THE DOOR MUSCLE',[g(2,'pipe','guard'),g(1,'pistol','guard')],{trig:55}),
+     talk('alloungd','COLLECT FROM THE CHIEF','CHIEF OYELARAN','"Okay, okay! Take it. Just take it!"',{mode:'any',hp:60}),
+     go('cvcanteend','RETURN TO MAMA CASH')],{need:'pistol'});
+  m('cash','c06','Getaway car',3,13000,
+    'A silver sedan on Allen Junction belongs to a man who cheated Mama. Take it. The owner will scream. The Task Force may come. Lose them and bring the car home.',
+    'The silver sedan is gone forever. Mama sends you a plate of jollof.',
+    [car('alsuya','TAKE THE SILVER SEDAN','sedan',{col:'#c9c9c9',alarm:2,h:1.57,i:1}),
+     esc(2),
+     gov('cvcanteend','DRIVE TO MAMA CASH')]);
+  m('cash','c07','The accountant',3,14000,
+    'Mama\'s accountant must carry a bag of money from the Allen bank to her canteen. The Scorpions know. Walk with him and keep him alive.',
+    'The bag arrives. So does the accountant, barely.',
+    [go('albankd','MEET THE ACCOUNTANT'),
+     escort('albankd','cvcanteend','WALK THE ACCOUNTANT TO MAMA','MR OKAFOR',[[0.3,[g(2,'pistol','scorp')]],[0.65,[g(2,'pistol','scorp'),g(1,'pipe','scorp')]]])],{need:'pistol'});
+  m('cash','c08','The shop stands',3,15000,
+    'The Scorpions want Mama\'s plaza. They will come in waves. Hold the front for one minute.',
+    'The plaza stands. Mama gives you the keys to the back room.',
+    [go('cvplazad','GO TO THE PLAZA'),
+     defend('cvplazad','HOLD THE PLAZA',60,[[3,[g(3,'pistol','scorp')]],[22,[g(2,'pistol','scorp'),g(2,'pipe','scorp')]],[42,[g(3,'pistol','scorp')]]])],{need:'pistol'});
+  m('cash','c09','Cobra Eze',3,18000,
+    'Cobra Eze runs every Cobra in Ikeja and he drinks at the Allen hotel. Mama wants his hand off her business. End it.',
+    'Cobra Eze is done. Allen Avenue goes quiet.',
+    [go('alhoteld','GO TO ALLEN AVENUE',{r:30}),
+     kill('alhoteld','TAKE DOWN COBRA EZE AND HIS MEN',[boss('pistol','cobra','COBRA EZE'),g(3,'pistol','cobra'),g(2,'pipe','cobra')],{trig:58}),
+     go('cvcanteend','RETURN TO MAMA CASH')],{need:'pistol'});
+
+  /* ------------------------------------------------ THE ENGINEER: Agege, Yaba */
+  m('eng','e01','Keys for the Engineer',3,15000,
+    'The Engineer needs a sedan from the Agege station car park. A "key problem", he calls it. Take the car to his garage.',
+    'The Engineer taps the dashboard. "Sweet. Clean."',
+    [go('agplant','MEET THE ENGINEER AT HIS GARAGE'),
+     car('agstnd','TAKE THE SEDAN','sedan',{col:'#2f4f8e',alarm:1,h:0.2}),
+     gov('agplant','DRIVE IT TO THE GARAGE')]);
+  m('eng','e02','Tap the line',3,16000,
+    'The Engineer wants a cable tapped at the level crossing. It takes twenty seconds. Two hired thugs will not like it.',
+    'The line is tapped. The Engineer\'s screens light up.',
+    [go('agrail','GO TO THE LEVEL CROSSING'),
+     hold('agrail','TAP THE CABLE',20,[g(2,'pistol','guard')],{trig:60}),
+     go('agplant','RETURN TO THE ENGINEER')],{need:'pistol'});
+  m('eng','e03','Key card',3,17000,
+    'A trader at the market carries a key card in his wallet. The Engineer needs it for one night. Lift it from behind.',
+    'The card clones in minutes. The wallet returns by post. Almost.',
+    [go('agmktd','FIND THE TRADER',{r:12}),
+     lift('agmktd','LIFT THE WALLET FROM BEHIND'),
+     go('agplant','DELIVER IT TO THE ENGINEER')]);
+  m('eng','e04','Shotgun weather',3,19000,
+    'Iron Hand men are stripping cables near the stadium. Buy a shotgun (phone, Contracts, Armoury, ₦35,000). It is close work.',
+    'The shotgun does what a shotgun does.',
+    [own('shotgun','BUY A SHOTGUN IN THE ARMOURY'),
+     kill('aggate','CLEAR THE STADIUM ROAD',[g(3,'shotgun','iron'),g(2,'pipe','iron')],{trig:60}),
+     go('agplant','RETURN TO THE ENGINEER')],{buy:'shotgun'});
+  m('eng','e05','Danfo heist',4,22000,
+    'A cash-in-transit danfo waits at the cinema stop. Take it to Yaba market before it is missed. The Task Force will be curious.',
+    'The cash lands exactly where it should.',
+    [car('agbread','TAKE THE DANFO','danfo',{alarm:1,h:0.3}),
+     gov('ayybtr','DRIVE THE DANFO TO YABA MARKET',{sp:7.5}),
+     go('agplant','GO TO THE ENGINEER',{r:5})],{need:'pistol'});
+  m('eng','e06','Container yard',4,24000,
+    'Iron Hand wants the yard behind Alade market. Hold it for a minute while the Engineer moves his containers out.',
+    'The last container rolls out as you stand over a dozen men.',
+    [go('agkola','GO TO THE CONTAINER YARD'),
+     defend('agkola','HOLD THE YARD',60,[[3,[g(2,'shotgun','iron')]],[20,[g(2,'pistol','iron'),g(2,'pipe','iron')]],[40,[g(2,'shotgun','iron'),g(1,'pistol','iron')]]])],{need:'shotgun'});
+  m('eng','e07','Rival engineer',4,25000,
+    'Another fixer is bidding for the Engineer\'s clients in Commercial Avenue. His men are armed. Remove the competition.',
+    'The rival\'s shop is empty by morning.',
+    [go('aytour','GO TO COMMERCIAL AVENUE',{r:30}),
+     kill('aytour','CLEAR THE RIVAL\'S MEN',[g(3,'pistol','iron'),g(2,'shotgun','iron')],{trig:58}),
+     go('agplant','RETURN TO THE ENGINEER')],{need:'shotgun'});
+  m('eng','e08','The professor',4,27000,
+    'Dr. Lanre built the Engineer\'s software and a rival wants him dead. Walk him from the college gate to the garage. Do not let him out of your sight.',
+    'The professor lights a cigarette with shaking hands. "Thank you."',
+    [go('aygate','MEET DR. LANRE AT THE COLLEGE GATE'),
+     escort('aygate','agplant','WALK DR. LANRE TO THE GARAGE','DR LANRE',[[0.22,[g(2,'pistol','iron')]],[0.5,[g(2,'pistol','iron'),g(1,'shotgun','iron')]],[0.75,[g(2,'pistol','iron'),g(1,'pipe','iron')]]])],{need:'shotgun'});
+  m('eng','e09','Mr. Switch',4,30000,
+    'Mr. Switch can take any lock in Lagos and the Engineer wants him quiet. He is holed up at the shopping complex with his crew. Finish it.',
+    'Mr. Switch will never switch again. The Engineer shakes your hand.',
+    [go('aytejd','GO TO THE SHOPPING COMPLEX',{r:30}),
+     kill('aytejd','TAKE DOWN MR. SWITCH AND HIS CREW',[boss('pistol','iron','MR SWITCH'),g(3,'pistol','iron'),g(2,'shotgun','iron')],{trig:58}),
+     go('agplant','RETURN TO THE ENGINEER')],{need:'shotgun'});
+
+  /* ------------------------------------------------ SARGE BELLO: Lagos Island, Marina, Balogun */
+  m('sarge','s01','Loading dock',4,25000,
+    'Sarge Bello needs a sedan from the Marina bank car park. Quiet and quick. He does not like noise.',
+    'Sarge checks his watch. "Seven minutes. You are late by two."',
+    [go('iscorn','MEET SARGE BELLO AT CAMPOS'),
+     car('lbankd','TAKE THE SEDAN','sedan',{col:'#1f3f6a',alarm:1,h:1.57}),
+     gov('iscorn','DRIVE TO SARGE')]);
+  m('sarge','s02','Balogun tax',4,26000,
+    'The Scorpions are demanding "protection" from the Balogun traders. Sarge says nobody taxes his market but him. Hold the hall for a minute.',
+    'The traders bow. Sarge nods once. That is thanks.',
+    [go('lbald','GO TO THE MARKET HALL'),
+     defend('lbald','HOLD THE MARKET',60,[[3,[g(2,'shotgun','scorp')]],[20,[g(3,'pistol','scorp')]],[40,[g(2,'shotgun','scorp'),g(1,'pistol','scorp')]]])],{need:'shotgun'});
+  m('sarge','s03','Market cleanup',4,28000,
+    'Scorpions have set up in the Balogun market yard. Sarge wants it empty by dark.',
+    'The yard is quiet again.',
+    [go('isiyaloja','GO TO THE MARKET YARD'),
+     kill('isiyaloja','CLEAR THE YARD',[g(4,'pistol','scorp'),g(2,'shotgun','scorp')],{trig:58}),
+     go('iscorn','RETURN TO SARGE')],{need:'shotgun'});
+  m('sarge','s04','The courier',4,30000,
+    'A courier is bringing a locked case off the ferry. Sarge\'s enemies know the route. Walk with him to the forecourt.',
+    'The case is delivered. Sarge opens it and says nothing.',
+    [go('isferry','MEET THE COURIER AT THE FERRY'),
+     escort('isferry','iseyo','WALK THE COURIER TO THE FORECOURT','FEMI',[[0.25,[g(2,'pistol','scorp')]],[0.55,[g(2,'pistol','scorp'),g(1,'shotgun','scorp')]],[0.8,[g(2,'pistol','scorp')]]])],{need:'shotgun'});
+  m('sarge','s05','Blue envelope',4,31000,
+    'A man in a blue agbada carries a blue envelope near Tafawa Balewa Square. Sarge wants it. Lift it.',
+    'Sarge puts the envelope in a safe. Then another envelope in your hand.',
+    [go('istbs','FIND THE MAN IN BLUE',{r:12}),
+     lift('istbs','LIFT THE ENVELOPE FROM BEHIND'),
+     go('iscorn','DELIVER IT TO SARGE')]);
+  m('sarge','s06','Collection day',4,33000,
+    'A businessman owes Sarge forty million. He thinks Sarge forgot. Find him near the cathedral and remind him.',
+    'He pays. Sarge does not forget. Neither does the businessman.',
+    [go('lcathd','GO TO THE CATHEDRAL ROAD',{r:30}),
+     kill('lcathd','CLEAR HIS BODYGUARDS',[g(2,'pistol','guard'),g(2,'pipe','guard')],{trig:55}),
+     talk('lcathd','COLLECT FROM OGA SEYI','OGA SEYI','"Please, tell Sarge I am good for it..."',{mode:'any',hp:65}),
+     go('iscorn','RETURN TO SARGE')],{need:'shotgun'});
+  m('sarge','s07','Long range',4,38000,
+    'Rifle men hold the Marina walkway. They have the range. Buy a rifle (phone, Contracts, Armoury, ₦90,000) and beat them at their own game.',
+    'The walkway is silent. Sarge nods at the rifle.',
+    [own('rifle','BUY A RIFLE IN THE ARMOURY'),
+     kill('m2marina','CLEAR THE WALKWAY',[g(3,'rifle','guard'),g(3,'pistol','guard')],{trig:60}),
+     go('iscorn','RETURN TO SARGE')],{buy:'rifle'});
+  m('sarge','s08','Gun run',4,42000,
+    'A sedan outside the coach stop is packed with something Sarge wants. The Task Force will chase you. Lose them and park it at the corner.',
+    'The sedan is unloaded in minutes. Not one question.',
+    [car('iscoach','TAKE THE SEDAN','sedan',{col:'#7a2e2e',alarm:2,h:1.57}),
+     esc(2),
+     gov('iscorn','DRIVE TO SARGE')],{need:'rifle'});
+  m('sarge','s09','Major Cutlass',4,45000,
+    'Major Cutlass was Sarge\'s old comrade. Now he sells to the Scorpions. Sarge wants him gone. He holds the old courtyard with riflemen.',
+    'Sarge puts down his glass. "Good. Now Lagos is mine."',
+    [go('issuya','GO TO THE OLD COURTYARD',{r:30}),
+     kill('issuya','TAKE DOWN MAJOR CUTLASS AND HIS MEN',[boss('rifle','scorp','MAJOR CUTLASS'),g(3,'rifle','scorp'),g(2,'pistol','scorp')],{trig:62}),
+     go('iscorn','RETURN TO SARGE')],{need:'rifle'});
+
+  /* ------------------------------------------------ MADAM DIAMOND: Apapa, Ijora, Tin Can */
+  m('dia','d01','Customs walk',4,45000,
+    'Madam Diamond runs the port from a fried-fish stall. A sedan at the railway station carries her cargo papers. Bring it to her stall.',
+    'Madam Diamond smiles. "Sit. Eat. You have earned it."',
+    [go('apfish','MEET MADAM DIAMOND AT HER STALL'),
+     car('eestnd','TAKE THE SEDAN','sedan',{col:'#16181d',alarm:1,h:0.4}),
+     gov('apfish','DRIVE TO THE STALL')]);
+  m('dia','d02','The port gate',5,48000,
+    'Rival gunmen control the old port gate. Madam wants them gone. They carry rifles and they are patient.',
+    'The gate opens for Madam Diamond.',
+    [go('apgguard','GO TO THE PORT GATE',{r:30}),
+     kill('apgguard','CLEAR THE GATE',[g(3,'rifle','guard'),g(2,'shotgun','guard')],{trig:62}),
+     go('apfish','RETURN TO MADAM DIAMOND')],{need:'rifle'});
+  m('dia','d03','Container crack',5,50000,
+    'A container at the call-up office holds Madam\'s property. Crack it open. Hired gunmen will object.',
+    'The container opens. Madam\'s smile widens.',
+    [go('eegated','GO TO THE CALL-UP OFFICE'),
+     hold('eegated','CRACK THE CONTAINER',25,[g(3,'pistol','guard')],{trig:60}),
+     go('apfish','RETURN TO MADAM DIAMOND')],{need:'rifle'});
+  m('dia','d04','The clearing agent',5,52000,
+    'A clearing agent at Tin Can takes money from both sides. Persuade him with a gun and clear his guards.',
+    'The agent signs everything. Madam is delighted.',
+    [go('etagentd','GO TO THE CLEARING AGENT\'S HOUSE',{r:30}),
+     kill('etagentd','CLEAR HIS GUARDS',[g(2,'pistol','guard'),g(2,'shotgun','guard')],{trig:55}),
+     talk('etagentd','CONFRONT THE AGENT','AGENT BIYI','"Not the face! Please! I will sign!"',{mode:'gun',hp:65}),
+     go('apfish','RETURN TO MADAM DIAMOND')],{need:'rifle'});
+  m('dia','d05','Truck park raid',5,55000,
+    'A rival gang wants the truck transit park. Hold it for a minute and a half while the trucks roll.',
+    'The trucks roll. The rival gang does not.',
+    [go('apttp','GO TO THE TRUCK PARK'),
+     defend('apttp','HOLD THE TRUCK PARK',90,[[3,[g(2,'rifle','scorp')]],[25,[g(2,'shotgun','scorp'),g(2,'pistol','scorp')]],[50,[g(2,'rifle','scorp'),g(1,'pistol','scorp')]],[72,[g(3,'pistol','scorp')]]])],{need:'rifle'});
+  m('dia','d06','Dead of night',5,60000,
+    'A shady broker carries a leather bag near the bus stop. Madam wants the bag. Lift it. If he shouts, the Task Force comes.',
+    'The bag is empty. Madam Diamond smiles, "I only wanted to know you could."',
+    [go('apbus','FIND THE SHADY BROKER',{r:12}),
+     lift('apbus','LIFT HIS BAG FROM BEHIND'),
+     esc(2),
+     go('apfish','DELIVER IT TO MADAM DIAMOND')]);
+  m('dia','d07','The widow\'s shipment',5,65000,
+    'Madam\'s friend is moving a shipment from the clearing agent\'s house to the fish stall. Walk her. The Scorpions will not like it.',
+    'The shipment arrives. The widow weeps.',
+    [go('etagentd','MEET MADAME TOYIN'),
+     escort('etagentd','apfish','WALK MADAME TOYIN TO THE STALL','MADAME TOYIN',[[0.2,[g(2,'rifle','scorp')]],[0.45,[g(2,'pistol','scorp'),g(1,'shotgun','scorp')]],[0.7,[g(2,'rifle','scorp')]]])],{need:'rifle'});
+  m('dia','d08','Overpass run',5,75000,
+    'A sedan at the overpass carries stolen manifests. Take it. The Task Force will give chase. Lose them, then bring it to the stall.',
+    'The manifests burn. The ashes smell expensive.',
+    [car('ebover','TAKE THE SEDAN','sedan',{col:'#e8e8e8',alarm:2,h:0}),
+     esc(3),
+     gov('apfish','DRIVE TO THE STALL')]);
+  m('dia','d09','Captain Volt',5,90000,
+    'Captain Volt is the last man standing between Madam Diamond and the whole port. He holds the Costain junction. Finish him.',
+    'Captain Volt is down. The port belongs to Madam Diamond.',
+    [go('apwarden','GO TO COSTAIN JUNCTION',{r:30}),
+     kill('apwarden','TAKE DOWN CAPTAIN VOLT AND HIS CREW',[boss('rifle','scorp','CAPTAIN VOLT'),g(2,'rifle','scorp'),g(2,'shotgun','scorp'),g(2,'pistol','scorp')],{trig:62}),
+     go('apfish','RETURN TO MADAM DIAMOND')],{need:'rifle'});
+
+  /* ------------------------------------------------ GHOST: Ajegunle, Mile 2, Festac, Alaba, Okokomaiko */
+  m('ghost','g01','Under the bridge',5,80000,
+    'A voice on the phone says "Go to Mile Two. Wait." Nothing else. Scorpions are waiting at the bus stop.',
+    'A message arrives: "Good. More soon."',
+    [go('m2hub','GO UNDER THE MILE 2 BRIDGE'),
+     kill('m2bus','CLEAR THE BUS STOP',[g(3,'pistol','scorp'),g(2,'shotgun','scorp')],{trig:60}),
+     go('m2hub','WAIT UNDER THE BRIDGE')],{need:'rifle'});
+  m('ghost','g02','Ajegunle run',5,90000,
+    'A sedan near the suya stand holds a package for Ghost. Take it. The Task Force is waiting.',
+    'The package vanishes from the back seat. No one saw who took it.',
+    [car('ajsuya','TAKE THE SEDAN','sedan',{col:'#3a8f6a',alarm:2,h:3.1}),
+     esc(2),
+     gov('m2hub','DRIVE UNDER THE BRIDGE')],{need:'rifle'});
+  m('ghost','g03','Wilmer walk',5,100000,
+    'A fruit trader at Wilmer market carries a thick wallet. Ghost wants to know whose name is inside. Lift it.',
+    'The name is read once and the wallet is burned.',
+    [go('ajwilmer','FIND THE TRADER',{r:12}),
+     lift('ajwilmer','LIFT HIS WALLET FROM BEHIND'),
+     go('m2hub','DELIVER IT UNDER THE BRIDGE')]);
+  m('ghost','g04','Boundary stand',5,110000,
+    'Rivals want the boundary roundabout. Hold it for ninety seconds. They send everything they have.',
+    'The roundabout is quiet. Somebody leaves flowers.',
+    [go('ajround','GO TO THE ROUNDABOUT'),
+     defend('ajround','HOLD THE ROUNDABOUT',90,[[3,[g(2,'rifle','scorp')]],[25,[g(2,'shotgun','scorp'),g(2,'pistol','scorp')]],[50,[g(2,'rifle','scorp'),g(2,'pistol','scorp')]],[72,[g(3,'pistol','scorp')]]])],{need:'rifle'});
+  m('ghost','g05','Festac gate',5,120000,
+    'Hired gunmen hold the first gate of the estate. They are paid to shoot. Clear them.',
+    'The gate swings open.',
+    [go('fgate','GO TO THE ESTATE GATE',{r:30}),
+     kill('fgate','CLEAR THE GATE',[g(4,'rifle','guard'),g(2,'pistol','guard')],{trig:64}),
+     go('m2hub','RETURN UNDER THE BRIDGE')],{need:'rifle'});
+  m('ghost','g06','Alaba squeeze',5,130000,
+    'A trader at Alaba sells information to everyone. Clear his guards and make him sell it to Ghost.',
+    'The trader sells to Ghost only from now on.',
+    [go('alvend','GO TO ALABA',{r:30}),
+     kill('alvend','CLEAR HIS GUARDS',[g(2,'pistol','guard'),g(2,'shotgun','guard')],{trig:55}),
+     talk('alvend','CONFRONT MR. GOLD','MR GOLD','"Ghost? You are working for Ghost? Okay. Okay."',{mode:'gun',hp:70}),
+     go('m2hub','RETURN UNDER THE BRIDGE')],{need:'rifle'});
+  m('ghost','g07','Trade fair trucks',5,150000,
+    'A danfo at the Trade Fair gate carries something Ghost needs. Take it. They will chase you. Lose them.',
+    'The danfo is crushed, and so is the evidence.',
+    [car('tfguard','TAKE THE DANFO','danfo',{alarm:2,h:3.1}),
+     esc(3),
+     gov('m2hub','DRIVE UNDER THE BRIDGE')],{need:'rifle'});
+  m('ghost','g08','The last escort',5,170000,
+    'Madame Grace testifies against Ghost\'s enemies tomorrow. Walk her from the estate gate to the Okokomaiko bus stop. Do not let her fall.',
+    'Madame Grace boards the bus. Ghost sends a single word: "Thanks."',
+    [go('fgate','MEET MADAME GRACE AT THE GATE'),
+     escort('fgate','okbus','WALK MADAME GRACE TO OKOKOMAIKO','MADAME GRACE',[[0.15,[g(2,'rifle','scorp')]],[0.35,[g(2,'pistol','scorp'),g(1,'shotgun','scorp')]],[0.55,[g(2,'rifle','scorp')]],[0.8,[g(2,'pistol','scorp'),g(2,'rifle','scorp')]]])],{need:'rifle'});
+  m('ghost','g09','The Ghost',5,200000,
+    'Ghost wants one more job. When you arrive at Okokomaiko you find out why: it is a trap. He wants to see if you are as good as they say.',
+    'The Ghost lies still. For the first time in years, Lagos sleeps well.',
+    [go('okbus','GO TO OKOKOMAIKO',{r:30}),
+     kill('okbus','FACE THE GHOST',[boss('rifle','scorp','THE GHOST',{hp:240}),g(3,'rifle','scorp'),g(3,'pistol','scorp')],{trig:68})],{need:'rifle'});
+  return L;
+})();
+
+/* ============================================================ b60: CONTRACTS. Health, weapons, gang fights and 54 street missions.
+   Everything lives inside the CT object so no global name can clash with the rest of the game.
+   Real places are used only as settings. Every gang, fixer, target and crime in here is invented. */
+var CT=(function(){
+  var WEAP={
+    fists:{n:'FISTS',dmg:9,rng:1.9,cd:0.42,melee:1,len:0},
+    pipe:{n:'IRON PIPE',dmg:21,rng:2.4,cd:0.62,melee:1,price:1500,len:0.8,col:0x8d949c},
+    pistol:{n:'PISTOL',dmg:24,rng:30,cd:0.36,am:'9mm',price:9000,len:0.3,col:0x1a1a1d},
+    shotgun:{n:'SHOTGUN',dmg:90,rng:15,cd:0.9,am:'shell',price:35000,len:0.7,col:0x5a3a1a},
+    rifle:{n:'RIFLE',dmg:38,rng:70,cd:0.55,am:'rifle',price:90000,len:0.72,col:0x2a2a30}
+  };
+  var WORD=['fists','pipe','pistol','shotgun','rifle'];
+  var AMMO={'9mm':{n:'9MM ROUNDS',pack:12,price:600},'shell':{n:'SHOTGUN SHELLS',pack:8,price:900},'rifle':{n:'RIFLE ROUNDS',pack:15,price:1500}};
+  var FAC={
+    cobra:{n:'BLACK COBRAS',shirt:'#17171b',pants:'#2b2b33'},
+    iron:{n:'IRON HAND CREW',shirt:'#6b6f77',pants:'#2c2f36'},
+    scorp:{n:'RED SCORPIONS',shirt:'#a8232b',pants:'#1d1d22'},
+    guard:{n:'HIRED MUSCLE',shirt:'#1f3a6b',pants:'#1c2a4a'},
+    thug:{n:'STREET THUGS',shirt:'#3d4a2c',pants:'#2b2b33'},
+    civ:{n:'PEOPLE',shirt:'#2f8f6a',pants:'#2a2f3a'},
+    vip:{n:'CLIENT',shirt:'#f1efe6',pants:'#2a2f3a'}
+  };
+  /* base numbers per kind of enemy: hp, damage per hit, reaction time, speed, how far they see */
+  var KIND={fists:{hp:40,dm:4,rt:0.4,sp:3.6,sight:20,cd:0.95},pipe:{hp:45,dm:7,rt:0.4,sp:3.5,sight:20,cd:1.0},pistol:{hp:50,dm:7,rt:0.55,sp:3.0,sight:24,cd:1.2},shotgun:{hp:60,dm:15,rt:0.7,sp:3.0,sight:20,cd:2.0},rifle:{hp:70,dm:9,rt:0.6,sp:2.8,sight:34,cd:1.2}};
+  var ARM=[1,0.7,0.5];
+  var S={fireHeld:false,swing:0,hp:100,cd:0,aim:0,aimYaw:0,hs:[],pool:[],run:null,regen:0,hurtT:0,tr:[],fireReq:0,noise:0,heatShot:0,friend:null,own:null,props:[],dead:0,flash:0,spotL:[],lastObj:'',gun:null,gunW:'',fl:null};
+  var G=null,GN=0,GC=12;
+  function tc(s){return String(s).toLowerCase().replace(/(^|\s)([a-z])/g,function(a,b,c){return b+c.toUpperCase();});}
+
+  /* ---------------- saved data */
+  function D(){
+    var l=life;if(!l.ct||typeof l.ct!=='object')l.ct={};
+    var c=l.ct;
+    if(!c.w||typeof c.w!=='object')c.w={};
+    if(!c.am||typeof c.am!=='object')c.am={};
+    if(!c.done||typeof c.done!=='object')c.done={};
+    ['resp','kills','deaths','steals','v'].forEach(function(k){if(typeof c[k]!=='number'||!isFinite(c[k]))c[k]=0;});
+    if(typeof c.cur!=='string'||!WEAP[c.cur])c.cur='fists';
+    return c;
+  }
+  function have(w){return w==='fists'||(!!life&&D().w[w]>0);}
+  function curW(){return life?D().cur:'fists';}
+  function ammoOf(t){return life?(D().am[t]|0):0;}
+  function setCur(w){if(!have(w))return false;D().cur=w;S.gunW='';hudW();return true;}
+
+  /* ---------------- solids grid: fast free-space and line-of-sight checks */
+  function gridBuild(){
+    G={};GN=solids.length;
+    for(var i=0;i<solids.length;i++){
+      var s=solids[i],c0=Math.floor(s.minX/GC),c1=Math.floor(s.maxX/GC);
+      for(var c=c0;c<=c1;c++){(G[c]||(G[c]=[])).push(s);}
+    }
+  }
+  function gfree(px,pz,r){
+    if(!G||GN!==solids.length)gridBuild();
+    if(px<XMIN||px>XMAX||Math.abs(pz)>LIM)return false;
+    var c=Math.floor(px/GC),a,i,s,L,r2=r*r;
+    for(a=c-1;a<=c+1;a++){
+      L=G[a];if(!L)continue;
+      for(i=0;i<L.length;i++){
+        s=L[i];
+        var cx=Math.max(s.minX,Math.min(px,s.maxX)),cz=Math.max(s.minZ,Math.min(pz,s.maxZ));
+        if((px-cx)*(px-cx)+(pz-cz)*(pz-cz)<r2)return false;
+      }
+    }
+    return true;
+  }
+  function segHit(x0,z0,x1,z1,s){
+    var dx=x1-x0,dz=z1-z0,t0=0,t1=1,p,q;
+    var P=[-dx,dx,-dz,dz],Q=[x0-s.minX,s.maxX-x0,z0-s.minZ,s.maxZ-z0];
+    for(var i=0;i<4;i++){
+      p=P[i];q=Q[i];
+      if(p===0){if(q<0)return false;}
+      else{var r=q/p;if(p<0){if(r>t1)return false;if(r>t0)t0=r;}else{if(r<t0)return false;if(r<t1)t1=r;}}
+    }
+    return t0<=t1;
+  }
+  function los(x0,z0,x1,z1){
+    if(!G||GN!==solids.length)gridBuild();
+    var ca=Math.floor(Math.min(x0,x1)/GC),cb=Math.floor(Math.max(x0,x1)/GC);
+    for(var c=ca;c<=cb;c++){
+      var L=G[c];if(!L)continue;
+      for(var i=0;i<L.length;i++){var s=L[i];if(s.h<1.4)continue;if(segHit(x0,z0,x1,z1,s))return false;}
+    }
+    return true;
+  }
+  function dist(ax,az,bx,bz){return Math.hypot(ax-bx,az-bz);}
+  function pp(){return driving?[car.x,car.z]:[player.x,player.z];}
+
+  /* ---------------- places: a stable free spot near a landmark */
+  function base(at){
+    if(Array.isArray(at))return {x:at[0],z:at[1]};
+    var n=NK[at]&&NK[at].npc;
+    return n?{x:n.x,z:n.z}:null;
+  }
+  function spotsAround(cx,cz,n,r0,r1,gap,clear){
+    var out=[],cand=[],rs,k,a,x,z;
+    for(rs=r0;rs<=r1+0.01;rs+=1.5)for(k=0;k<16;k++){
+      a=k*Math.PI/8+rs*0.3;x=cx+Math.sin(a)*rs;z=cz+Math.cos(a)*rs;
+      if(!gfree(x,z,clear||0.55))continue;
+      cand.push({x:x,z:z,sc:Math.abs(z)*0.8+rs});
+    }
+    cand.sort(function(p,q){return p.sc-q.sc;});
+    for(k=0;k<cand.length&&out.length<n;k++){
+      var ok=true;for(var j=0;j<out.length;j++)if(dist(out[j].x,out[j].z,cand[k].x,cand[k].z)<gap){ok=false;break;}
+      if(ok)out.push(cand[k]);
+    }
+    return out;
+  }
+  function P(at,i){
+    var b=base(at);if(!b)return null;
+    if(Array.isArray(at))return b;
+    var s=spotsAround(b.x,b.z,(i|0)+1,2.4,9,1.8,0.6);
+    return s[i|0]||s[s.length-1]||b;
+  }
+
+  /* ---------------- actors (enemies, targets, escorts) */
+  var SK=['#6b4026','#7a4a2e','#5a3520','#8a5a38'];
+  function propMesh(){
+    var m=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshBasicMaterial({color:0x1a1a1d}));
+    m.visible=false;return m;
+  }
+  function setProp(m,wp){
+    var W=WEAP[wp];
+    if(!W||!W.len){m.visible=false;return;}
+    var thick=wp==='pipe'?0.07:0.09;
+    m.visible=true;m.material.color.setHex(W.col);
+    m.scale.set(thick,W.len,thick+0.02);
+    m.position.set(0,-0.52-W.len*0.28,0.02);
+  }
+  var MKG=null,MKM=null;
+  function mkMarker(){
+    if(!MKG){MKG=new THREE.ConeGeometry(0.14,0.32,4);MKM={r:new THREE.MeshBasicMaterial({color:0xff3a2a}),g:new THREE.MeshBasicMaterial({color:0x3ee07a}),y:new THREE.MeshBasicMaterial({color:0xf2b705})};}
+    var m=new THREE.Mesh(MKG,MKM.r);m.rotation.x=Math.PI;m.position.set(0,2.2,0);m.renderOrder=7;m.visible=false;return m;
+  }
+  function mkActor(fac){
+    var f=FAC[fac]||FAC.thug,idx=S.pool.length;
+    var w=plainWalker({shirt:f.shirt,pants:f.pants,skin:SK[idx%4],hair:'#0d0d0d',shoe:'#1a1a1a',a:[0,0],b:[0,0],sp:3});
+    var pm=propMesh();w.aR.add(pm);
+    var mk=mkMarker();w.g.add(mk);
+    var a={w:w,fac:fac,prop:pm,mk:mk,used:0};
+    S.pool.push(a);return a;
+  }
+  function getActor(fac){
+    for(var i=0;i<S.pool.length;i++)if(!S.pool[i].used&&S.pool[i].fac===fac){S.pool[i].used=1;return S.pool[i];}
+    if(S.pool.length>=14){for(var j=0;j<S.pool.length;j++)if(!S.pool[j].used){var o=S.pool[j];scene.remove(o.w.g);S.pool.splice(j,1);break;}}
+    var a=mkActor(fac);a.used=1;return a;
+  }
+  function freeSpotNear(x,z){
+    if(gfree(x,z,0.45))return {x:x,z:z};
+    var s=spotsAround(x,z,1,1.2,7,1,0.5);
+    return s[0]||{x:x,z:z};
+  }
+  /* h = one living or fallen character */
+  function spawn(x,z,def){
+    var a=getActor(def.f||'thug'),K=KIND[def.w||'fists']||KIND.fists,p=freeSpotNear(x,z),w=a.w,dm=(S.run&&S.run.m.dm)||1;
+    var hp=(def.hp||K.hp)*(def.boss?1.5:1);
+    var h={a:a,w:w,x:p.x,z:p.z,wp:def.w||'fists',hp:hp,max:hp,st:def.civ?3:0,boss:!!def.boss,name:def.name||'',
+      dm:K.dm*dm,rt:K.rt+Math.random()*0.25,sp:K.sp*(def.sp||1),sight:def.sight||K.sight,cdw:K.cd,cd:0.5+Math.random()*0.6,aim:0,
+      lx:p.x,lz:p.z,stk:0,fall:0,t:0,civ:!!def.civ,friend:!!def.friend,strafe:Math.random()<0.5?1:-1,ang:0,hit:0,fleeT:0,mission:true};
+    w.x=h.x;w.z=h.z;w.yaw=def.yaw||0;w.sp=h.sp;w.off=false;
+    w.g.rotation.order='YXZ';w.g.rotation.x=0;w.g.visible=true;w.g.scale.set(1,1,1);
+    setProp(a.prop,h.wp);
+    a.mk.material=def.friend?MKM.g:(def.civ?MKM.y:MKM.r);a.mk.visible=true;
+    S.hs.push(h);return h;
+  }
+  function release(h){
+    h.a.used=0;h.a.mk.visible=false;h.w.g.visible=false;h.w.g.rotation.x=0;h.w.off=true;
+    var i=S.hs.indexOf(h);if(i>=0)S.hs.splice(i,1);
+  }
+  function clearHostiles(){for(var i=S.hs.length-1;i>=0;i--)release(S.hs[i]);S.friend=null;}
+  function liveHostiles(){var n=0;for(var i=0;i<S.hs.length;i++){var h=S.hs[i];if(!h.civ&&!h.friend&&h.st!==2)n++;}return n;}
+  function alertNear(x,z,r){
+    for(var i=0;i<S.hs.length;i++){var h=S.hs[i];if(h.st===0&&!h.civ&&!h.friend&&dist(h.x,h.z,x,z)<r)h.st=1;}
+  }
+  function hmove(h,tx,tz,spd,dt){
+    var dd=Math.hypot(tx-h.x,tz-h.z);if(dd<0.04)return false;
+    var ux=(tx-h.x)/dd,uz=(tz-h.z)/dd,st=Math.min(dd,spd*dt),nx=h.x+ux*st,nz=h.z+uz*st,mv=false;
+    if(gfree(nx,nz,0.4)){h.x=nx;h.z=nz;mv=true;}
+    else if(gfree(nx,h.z,0.4)){h.x=nx;mv=true;}
+    else if(gfree(h.x,nz,0.4)){h.z=nz;mv=true;}
+    h.w.x=h.x;h.w.z=h.z;
+    if(mv)h.w.yaw=turnToward(h.w.yaw,Math.atan2(ux,uz),dt*8);
+    return mv;
+  }
+  function tracer(x0,y0,z0,x1,y1,z1,col){
+    var t=null;
+    for(var i=0;i<S.tr.length;i++)if(S.tr[i].life<=0){t=S.tr[i];break;}
+    if(!t){
+      if(S.tr.length>=8)return;
+      var m=new THREE.Mesh(new THREE.BoxGeometry(0.035,0.035,1),new THREE.MeshBasicMaterial({color:0xffe9a8,transparent:true,opacity:0.9,depthWrite:false}));
+      m.renderOrder=6;scene.add(m);t={m:m,life:0};S.tr.push(t);
+    }
+    var dx=x1-x0,dy=y1-y0,dz=z1-z0,L=Math.hypot(dx,dy,dz)||1;
+    t.m.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);t.m.scale.set(1,1,L);t.m.lookAt(x1,y1,z1);
+    t.m.material.color.setHex(col||0xffe9a8);t.m.visible=true;t.life=0.09;
+  }
+  function gunShot(vol){
+    tone(180,0.09,'sawtooth',vol||0.1,0);tone(70,0.14,'square',(vol||0.1)*0.8,0.01);tone(2600,0.03,'square',0.025,0);
+  }
+
+  /* ---------------- the player's body */
+  function hudW(){
+    var el=document.getElementById('wpn');if(!el)return;
+    var w=curW(),W=WEAP[w];
+    el.textContent=W.n+(W.am?'  '+ammoOf(W.am):'');
+  }
+  function hurt(n,fromx,fromz){
+    if(S.dead||!started)return;
+    n*=ARM[D().v|0]||1;
+    S.hp=Math.max(0,S.hp-n);S.hurtT=0.35;S.regen=7;
+    camShake=Math.max(camShake,0.14);
+    var hf=document.getElementById('hurt');if(hf)hf.style.opacity='0.55';
+    if(S.hp<=0)die();
+  }
+  function heal(n){S.hp=Math.min(100,S.hp+n);}
+  function die(){
+    if(S.dead)return;S.dead=1;
+    var mn=S.run?S.run.m.n:'';
+    if(S.run)endRun(false,'');
+    clearHostiles();
+    var fee=Math.min(cash,2000);
+    if(fee>0){cash-=fee;setCash();logTx('Clinic fee',-fee);}
+    D().deaths++;
+    if(driving){car.speed=0;exitCar();}
+    copsOff();
+    var nr=NK.nurse&&NK.nurse.npc?NK.nurse.npc:{x:-34,z:-6};
+    player.x=nr.x+1.6;player.z=nr.z+1.6;player.speed=0;
+    if(!freeSpot(player.x,player.z)){player.x=nr.x-1.6;player.z=nr.z+1.6;}
+    advanceHours(3);gain('energy',-10);
+    S.hp=60;S.regen=0;
+    qdlg('KNOCKED OUT',(mn?'The contract "'+tc(mn)+'" is lost. ':'')+'Somebody dragged you to the clinic. Nurse Ada patched you up. Fee: '+money(fee)+'. Next time, buy a better weapon or take cover.',[{label:'OK'}]);
+    saveGame();S.dead=0;
+    var hf=document.getElementById('hurt');if(hf)hf.style.opacity='0';
+  }
+
+  /* ---------------- firing */
+  function pickTarget(w){
+    var fx=Math.sin(player.yaw),fz=Math.cos(player.yaw),best=null,bs=1e9,rng=WEAP[w].rng,mel=WEAP[w].melee;
+    for(var i=0;i<S.hs.length;i++){
+      var h=S.hs[i];if(h.st===2||h.civ||h.friend)continue;
+      var dx=h.x-player.x,dz=h.z-player.z,d=Math.hypot(dx,dz);
+      if(d>rng+0.4)continue;
+      var dot=d>0.01?(dx*fx+dz*fz)/d:1;
+      var sc=d*(1.45-0.45*dot);
+      if(!mel&&!los(player.x,player.z,h.x,h.z))sc+=40;
+      if(sc<bs){bs=sc;best=h;}
+    }
+    return best;
+  }
+  function fire(){
+    if(!started||talking||paused||driving||fadeBusy||PH.open||S.dead)return;
+    if(inInt()){toast('No fighting inside');return;}
+    if(S.cd>0)return;
+    var wn=curW(),W=WEAP[wn];
+    if(W.am&&ammoOf(W.am)<=0){toast('NO AMMO. Buy some in Contracts');tone(300,0.05,'square',0.08,0);S.cd=0.3;return;}
+    S.cd=W.cd;
+    var h=pickTarget(wn),yaw=player.yaw;
+    if(h)yaw=Math.atan2(h.x-player.x,h.z-player.z);
+    S.aimYaw=yaw;S.aim=0.45;player.yaw=yaw;
+    var fx=Math.sin(yaw),fz=Math.cos(yaw);
+    if(W.melee){
+      S.swing=0.25;
+      if(h&&dist(h.x,h.z,player.x,player.z)<=W.rng+0.4){damage(h,W.dmg);tone(150,0.07,'square',0.09,0);camShake=Math.max(camShake,0.06);}
+      else tone(260,0.04,'sine',0.04,0);
+      alertNear(player.x,player.z,10);
+      return;
+    }
+    D().am[W.am]=Math.max(0,ammoOf(W.am)-1);hudW();
+    gunShot(wn==='shotgun'?0.14:0.1);S.flash=0.06;
+    S.noise=1;noteNoise();
+    alertNear(player.x,player.z,34);
+    var sx=player.x+fx*0.5,sz=player.z+fz*0.5;
+    if(!h){tracer(sx,1.3,sz,sx+fx*W.rng,1.2,sz+fz*W.rng);return;}
+    var d=dist(h.x,h.z,player.x,player.z);
+    if(!los(player.x,player.z,h.x,h.z)){
+      tracer(sx,1.3,sz,sx+fx*Math.min(d,W.rng)*0.7,1.25,sz+fz*Math.min(d,W.rng)*0.7);return;
+    }
+    var hit,dmg=W.dmg;
+    if(wn==='shotgun'){var n=0;for(var i=0;i<6;i++)if(Math.random()<Math.max(0.12,1.05-0.07*d))n++;dmg=W.dmg*(n/6);hit=n>0;}
+    else hit=Math.random()<Math.max(0.25,(wn==='rifle'?1.02:0.96)-(wn==='rifle'?0.004:0.012)*d);
+    tracer(sx,1.3,sz,h.x,1.2,h.z);
+    if(hit){damage(h,dmg);emitPuff(h.x,1.2,h.z,0,0.6,0,0.5,0.4,0.5,0xcfc7a8);}
+  }
+  function noteNoise(){
+    var R=S.run;if(!R||!R.m.loud||!copsOn||S.heatShot>0)return;
+    S.heatShot=45;setHeat(1,'SHOTS FIRED! The Task Force is coming');
+  }
+  function damage(h,n){
+    if(h.st===2)return;
+    h.hp-=n;h.hit=0.18;if(h.st===0||h.st===3){h.st=h.civ?3:1;}
+    if(h.civ){h.fleeT=4;}
+    if(h.hp<=0)killH(h);
+  }
+  function killH(h){
+    h.st=2;h.fall=0;h.t=0;h.hp=0;h.a.mk.visible=false;
+    if(!h.civ&&!h.friend){D().kills++;S.run&&(S.run.kills=(S.run.kills|0)+1);}
+    if(h.friend&&S.run)failMsg('YOUR CLIENT IS DOWN');
+    tone(130,0.2,'sawtooth',0.07,0);
+  }
+
+  /* ---------------- enemy brains */
+  function hostileTick(h,dt){
+    var w=h.w,px=driving?car.x:player.x,pz=driving?car.z:player.z,fr=S.friend&&S.friend.st!==2?S.friend:null;
+    w.x=h.x;w.z=h.z;
+    if(h.st===2){
+      h.fall=Math.min(1,h.fall+dt*3.2);w.g.rotation.x=-1.5*h.fall;w.g.position.y=-0.05*h.fall;
+      h.t+=dt;
+      if(h.t>7)release(h);
+      return;
+    }
+    w.g.rotation.x=0;
+    if(h.hit>0){h.hit-=dt;}
+    var tx=px,tz=pz,d=Math.hypot(tx-h.x,tz-h.z);
+    if(h.civ){
+      /* a bystander or target who is not fighting */
+      if(h.fleeT>0){h.fleeT-=dt;var ax=h.x-px,az=h.z-pz,al=Math.hypot(ax,az)||1;hmove(h,h.x+ax/al*6,h.z+az/al*6,3.6,dt);wAnim(w,dt,true);}
+      else if(h.path){
+        var q=h.path[h.pi],dd=Math.hypot(q.x-h.x,q.z-h.z);
+        if(h.hold>0){h.hold-=dt;wAnim(w,dt,false);}
+        else{
+          if(dd<0.4){h.pi=(h.pi+1)%h.path.length;wAnim(w,dt,false);}
+          else{
+            if(h.alert>=1){wAnim(w,dt,false);w.yaw=turnToward(w.yaw,Math.atan2(px-h.x,pz-h.z),dt*8);}
+            else wAnim(w,dt,hmove(h,q.x,q.z,1.5,dt));
+          }
+        }
+      }else{w.yaw=turnToward(w.yaw,Math.atan2(px-h.x,pz-h.z),dt*3);wAnim(w,dt,false);}
+      return;
+    }
+    if(h.friend){
+      var dp=Math.hypot(px-h.x,pz-h.z);
+      if(dp>3.2){var mv=hmove(h,px,pz,Math.min(5.4,dp*1.2+1),dt);wAnim(w,dt,mv);}
+      else{w.yaw=turnToward(w.yaw,player.yaw,dt*3);wAnim(w,dt,false);}
+      if(dp>20&&gfree(px+1.5,pz,0.45)){h.x=px+1.5;h.z=pz;}
+      return;
+    }
+    /* enemies pick the nearest of the player and the client */
+    if(fr){var df=Math.hypot(fr.x-h.x,fr.z-h.z);if(df<d){tx=fr.x;tz=fr.z;d=df;}}
+    var vis=d<h.sight&&los(h.x,h.z,tx,tz);
+    if(h.st===0){
+      if(vis)h.st=1;
+      w.yaw=turnToward(w.yaw,Math.atan2(px-h.x,pz-h.z),dt*0.5);
+      wAnim(w,dt,false);
+      return;
+    }
+    var mvv=false;
+    var melee=!!WEAP[h.wp]&&WEAP[h.wp].melee;
+    h.cd-=dt;
+    if(melee){
+      if(d>1.5)mvv=hmove(h,tx,tz,h.sp*(h.wp==='fists'?1.15:1),dt);
+      else{
+        w.yaw=turnToward(w.yaw,Math.atan2(tx-h.x,tz-h.z),dt*10);
+        if(h.cd<=0){
+          h.cd=h.cdw;h.swing=0.3;
+          if(tx===px&&tz===pz){hurt(h.dm,h.x,h.z);tone(120,0.08,'square',0.08,0);}
+          else{damage(fr,h.dm);}
+        }
+      }
+    }else{
+      var pr=h.wp==='shotgun'?6:(h.wp==='rifle'?17:11),Wp=WEAP[h.wp];
+      if(!vis||d>pr+4)mvv=hmove(h,tx,tz,h.sp,dt);
+      else if(d<pr-4)mvv=hmove(h,h.x-(tx-h.x)/(d||1)*4,h.z-(tz-h.z)/(d||1)*4,h.sp,dt);
+      else{
+        h.ang+=dt*h.strafe;
+        var sxn=-(tz-h.z)/(d||1),szn=(tx-h.x)/(d||1);
+        mvv=hmove(h,h.x+sxn*h.strafe*3,h.z+szn*h.strafe*3,h.sp*0.6,dt);
+        if(Math.random()<dt*0.4)h.strafe=-h.strafe;
+      }
+      if(vis&&d<=Wp.rng){
+        w.yaw=turnToward(w.yaw,Math.atan2(tx-h.x,tz-h.z),dt*10);
+        h.aim+=dt;
+        if(h.aim>=h.rt&&h.cd<=0){
+          h.cd=h.cdw*(1.15+Math.random()*0.6);h.aim=h.rt*0.4;
+          var mvp=(tx===px&&tz===pz)&&player.speed>2.2?0.78:1;
+          var pc=Math.max(0.12,(h.wp==='rifle'?0.8:0.72)-0.025*d)*mvp;
+          var hf=h.wp==='shotgun'?Math.max(0.1,1-0.11*d):pc;
+          tracer(h.x+Math.sin(w.yaw)*0.5,1.3,h.z+Math.cos(w.yaw)*0.5,tx,1.2,tz,0xffb080);
+          gunShot(0.06);h.flashT=0.06;
+          if(Math.random()<hf){
+            if(tx===px&&tz===pz)hurt(h.dm,h.x,h.z);else damage(fr,h.dm);
+          }
+        }
+      }else h.aim=Math.max(0,h.aim-dt);
+    }
+    if(Math.hypot(h.x-h.lx,h.z-h.lz)<0.05){h.stk+=dt;}else{h.stk=0;h.lx=h.x;h.lz=h.z;}
+    if(vis)h.nl=0;else h.nl=(h.nl||0)+dt;
+    if((h.stk>3&&!vis&&d>3)||h.nl>10){
+      /* walled off or lost behind buildings: step out where the target can be seen */
+      var s=spotsAround(tx,tz,5,6,13,2,0.5),moved=false;
+      for(var i=0;i<s.length&&!moved;i++)if(los(s[i].x,s[i].z,tx,tz)){h.x=s[i].x;h.z=s[i].z;moved=true;}
+      h.stk=0;h.nl=0;
+    }
+    wAnim(w,dt,mvv);
+  }
+  function hostilePose(h){
+    var w=h.w;
+    if(h.st===2)return;
+    var armed=h.wp!=='fists'&&WEAP[h.wp];
+    if(h.st===1&&armed&&!armed.melee)w.aR.rotation.x=-1.5;
+    else if(h.swing>0){h.swing-=0.016;w.aR.rotation.x=-1.9+(0.3-h.swing)*5;}
+    else if(h.st===1&&armed&&armed.melee)w.aR.rotation.x=-0.9;
+    if(h.hit>0)w.g.position.y=0.04;
+  }
+
+  /* ---------------- missions: runtime */
+  var BY={};
+  function ms(){return typeof CTM!=='undefined'?CTM:[];}
+  (function(){ms().forEach(function(m){BY[m.id]=m;});})();
+  function arcOf(id){for(var i=0;i<CTA.length;i++)if(CTA[i].id===id)return CTA[i];return null;}
+  function prevOf(m){
+    var a=arcOf(m.arc),L=ms().filter(function(x){return x.arc===m.arc;}),i=L.indexOf(m);
+    return i>0?L[i-1]:null;
+  }
+  function locked(m){
+    var a=arcOf(m.arc),c=D();
+    if(c.resp<a.req)return 'Needs RESPECT '+a.req+' (you have '+c.resp+')';
+    var p=prevOf(m);if(p&&!c.done[p.id])return 'Finish "'+tc(p.n)+'" first';
+    return '';
+  }
+  function block(m){
+    if(!started||!life||!life.made)return 'Start the game first';
+    if(S.run)return 'You are on a contract already';
+    var why=locked(m);if(why)return why;
+    if(gig)return 'Finish your gig first';
+    if(jobActive)return "Finish Mama Nkechi's job first";
+    if(shift)return 'Finish your shift first';
+    if(fare&&fare.st)return 'Finish your fare first';
+    if(heat>0)return 'The Task Force is after you!';
+    if(typeof BD==='object'&&BD.w)return 'Someone is in your face. Deal with him first';
+    var gp=pp();if(gp[0]>115)return 'Contracts run on the Lagos mainland. Take a ride back first';
+    if(inInt())return 'Walk out of the building first';
+    if(S.hp<30)return 'You are too hurt. Rest first';
+    if(need.energy<12)return 'You are too tired. Sleep first';
+    if(m.buy&&!have(m.buy)&&cash<WEAP[m.buy].price+(WEAP[m.buy].am?AMMO[WEAP[m.buy].am].price:0))return 'You need '+money(WEAP[m.buy].price)+' for the '+WEAP[m.buy].n+' first. Earn it with gigs';
+    if(m.need&&!have(m.need))return 'Needs a '+WEAP[m.need].n+'. Buy one in Armoury';
+    if(m.need&&WEAP[m.need].am&&ammoOf(WEAP[m.need].am)<6)return 'Buy ammo for your '+WEAP[m.need].n+' first';
+    return '';
+  }
+  function setMark(R,x,z,label){R.mark=x===null?null:{x:x,z:z,label:label};}
+  function startRun(id){
+    var m=BY[id];if(!m)return false;
+    var why=block(m);if(why){toast(why);buzz();return false;}
+    cancelFare();
+    S.run={m:m,si:-1,kills:0,hp0:S.hp,t:0,tl:0};
+    S.heatShot=0;
+    if(m.need&&curW()!==m.need&&have(m.need))setCur(m.need);
+    toast('CONTRACT: '+tc(m.n));
+    nextStage();
+    return true;
+  }
+  function nextStage(){
+    var R=S.run;if(!R)return;
+    cleanStage(R);
+    R.si++;
+    if(R.si>=R.m.st.length){endRun(true,'');return;}
+    var st=R.m.st[R.si];
+    R.st=st;R.ph=0;R.prog=0;R.mark=null;R.dst=null;R.sp=null;R.hl=[];R.sT=0;
+    var T=STG[st.t];
+    T.begin(R,st);
+    if(st.tm==='auto'&&R.dst){var q0=pp();R.tl=Math.round(25+dist(q0[0],q0[1],R.dst.x,R.dst.z)/(st.veh?(st.sp||8.5):3.6));}
+    else if(st.tm){R.tl=st.tm;}else if(!st.cont){R.tl=0;}
+    if(st.heat&&copsOn)setHeat(st.heat,st.heatMsg||'TASK FORCE ALERTED!');
+    if(st.say)toast(st.say);
+    updateMissionVisuals();
+  }
+  function cleanStage(R){
+    for(var i=S.props.length-1;i>=0;i--){var o=S.props[i];if(o.stage){scene.remove(o.m);S.props.splice(i,1);}}
+    S.spotL=[];
+  }
+  function restoreCar(){
+    var o=S.own;if(!o)return;
+    S.own=null;
+    if(driving){car.speed=0;exitCar();}
+    if(vehKind!==o.kind)setVehicle(o.kind);
+    car.x=o.x;car.z=o.z;car.h=o.h;car.speed=0;setCarPose();
+  }
+  function endRun(ok,msg){
+    var R=S.run;if(!R)return;
+    S.run=null;
+    cleanStage(R);
+    for(var i=S.hs.length-1;i>=0;i--){var h=S.hs[i];if(h.mission)release(h);}
+    S.friend=null;
+    restoreCar();
+    if(ok){
+      var m=R.m,c=D();
+      c.done[m.id]=1;c.resp+=m.resp;
+      addCash(m.pay);logTx('Contract: '+tc(m.n),m.pay);
+      saveGame();chime();
+      var line=(m.ok||'Job done.')+' You earn '+money(m.pay)+' and '+m.resp+' RESPECT.';
+      var nx=null,a=arcOf(m.arc);
+      CTA.forEach(function(x){if(x.req>c.resp-m.resp&&x.req<=c.resp)nx=x;});
+      if(nx)line+=' A new contact is calling: '+nx.n+'.';
+      qdlg(tc(a.n),line,[{label:'OK'}]);
+      toast('CONTRACT DONE  +'+money(m.pay));
+    }else if(msg){buzz();toast(msg);}
+    updateMissionVisuals();
+  }
+  function failMsg(msg){if(S.run)endRun(false,'CONTRACT FAILED. '+msg);}
+  function abort(){if(S.run)endRun(false,'Contract cancelled');}
+
+  /* ---------------- stage types */
+  function addProp(m,stage){scene.add(m);S.props.push({m:m,stage:stage!==false});}
+  function spawnGroup(R,st,pos,alert,list){
+    var out=[],n=0,i,j;list.forEach(function(g){n+=(g.n||1);});
+    var sp=spotsAround(pos.x,pos.z,n+2,3,9.5,1.7,0.55),k=0;
+    list.forEach(function(g){
+      for(j=0;j<(g.n||1);j++){
+        var q=sp[k++]||{x:pos.x+j,z:pos.z+1};
+        var h=spawn(q.x,q.z,g);h.st=alert?1:0;if(g.sight)h.sight=g.sight;if(st&&st.sight&&!g.sight)h.sight=st.sight;
+        h.yaw0=Math.atan2(pos.x-q.x,pos.z-q.z);h.w.yaw=h.yaw0;out.push(h);
+      }
+    });
+    return out;
+  }
+  function allDead(R){for(var i=0;i<R.hl.length;i++)if(R.hl[i].st!==2)return false;return true;}
+  function leftCount(R){var n=0;for(var i=0;i<R.hl.length;i++)if(R.hl[i].st!==2)n++;return n;}
+  function carPose(){return {x:car.x,z:car.z,h:car.h,kind:vehKind};}
+  var STG={};
+  STG.go={
+    begin:function(R,st){var p=P(st.at,st.i||0);R.dst=p;R.rad=st.r||0;setMark(R,p.x,p.z,st.label);},
+    tick:function(R,st,dt){
+      var q=pp(),d=dist(q[0],q[1],R.dst.x,R.dst.z),r=R.rad||(driving?3.8:3.1);
+      R.hud=Math.round(d)+' m'+(st.veh&&!driving?'  GET IN A VEHICLE':(st.foot&&driving?'  GET OUT':''));
+      if(st.veh&&!driving)return false;
+      if(st.foot&&driving)return false;
+      return d<r;
+    }
+  };
+  STG.kill={
+    begin:function(R,st){var p=P(st.at,st.i||0);R.dst=p;setMark(R,p.x,p.z,st.label);R.ph=0;},
+    tick:function(R,st,dt){
+      var q=pp(),d=dist(q[0],q[1],R.dst.x,R.dst.z);
+      if(R.ph===0){
+        R.hud=Math.round(d)+' m';
+        if(d<(st.trig||62)){R.hl=spawnGroup(R,st,R.dst,false,st.g);R.ph=1;if(st.alert)R.hl.forEach(function(h){h.st=1;});}
+        return false;
+      }
+      var n=leftCount(R);
+      R.hud=n+' LEFT';
+      if(n===0)return true;
+      if(d>230){R.hl.forEach(function(h){release(h);});R.hl=[];R.ph=0;toast('You left them behind. They are still there');}
+      return false;
+    }
+  };
+  STG.hold={
+    begin:function(R,st){var p=P(st.at,st.i||0);R.dst=p;R.rad=st.r||3.2;R.prog=0;setMark(R,p.x,p.z,st.label);R.ph=0;},
+    tick:function(R,st,dt){
+      var q=pp(),d=dist(q[0],q[1],R.dst.x,R.dst.z);
+      if(st.g&&R.ph===0&&d<(st.trig||58)){R.hl=spawnGroup(R,st,R.dst,false,st.g);R.ph=1;}
+      var inside=d<R.rad&&!driving;
+      if(inside){
+        if(R.prog===0&&R.hl.length){R.hl.forEach(function(h){h.st=1;});toast('THEY HEARD YOU!');}
+        R.prog+=dt;
+      }else R.prog=Math.max(0,R.prog-dt*0.5);
+      R.hud=inside?('WORKING '+Math.min(100,Math.round(100*R.prog/st.secs))+'%'):(Math.round(d)+' m');
+      return R.prog>=st.secs;
+    }
+  };
+  STG.car={
+    begin:function(R,st){
+      var p=P(st.at,st.i||0),kind=st.kind||'sedan',m;
+      if(kind==='danfo')m=buildDanfo();else if(kind==='okada')m=buildOkada();else m=buildSedan(st.col||'#8e2f2f');
+      m.position.set(p.x,0,p.z);m.rotation.y=st.h||0;addProp(m);
+      R.dst=p;R.carM=m;R.carKind=kind;setMark(R,p.x,p.z,st.label);
+      var vs=VEHS[R.carKind]?R.carKind:'sedan';
+      var tgt={x:p.x,z:p.z,act:'TAKE THE CAR',talk:function(){stealCar(R,st,vs);}};
+      R.sp=tgt;
+    },
+    tick:function(R,st,dt){var q=pp();R.hud=Math.round(dist(q[0],q[1],R.dst.x,R.dst.z))+' m';return !!R.stolen;}
+  };
+  function stealCar(R,st,vs){
+    if(driving)return;
+    if(!S.own)S.own=carPose();
+    setVehicle(vs);
+    car.x=R.dst.x;car.z=R.dst.z;car.h=st.h||0;car.speed=0;setCarPose();
+    R.carM.visible=false;R.stolen=true;D().steals++;
+    enterCar();
+    if(st.alarm&&copsOn)setHeat(st.alarm,'THE OWNER SHOUTED! Task Force alerted');
+  }
+  function lanePath(cx,cz){
+    var b=freeSpotNear(cx,cz),best=null,zo=[0,-2,2,-4,4,-6,6],k;
+    for(k=0;k<zo.length;k++){
+      var z=b.z+zo[k];if(!gfree(b.x,z,0.5))continue;
+      var l=0,r=0;
+      while(l<7&&gfree(b.x-l-0.75,z,0.5)&&los(b.x-l,z,b.x-l-0.75,z))l+=0.75;
+      while(r<7&&gfree(b.x+r+0.75,z,0.5)&&los(b.x+r,z,b.x+r+0.75,z))r+=0.75;
+      if(l+r>=9)return [{x:b.x-l,z:z},{x:b.x+r,z:z}];
+      if(!best||l+r>best.len)best={len:l+r,a:{x:b.x-l,z:z},b:{x:b.x+r,z:z}};
+    }
+    return best&&best.len>=3?[best.a,best.b]:null;
+  }
+  STG.lift={
+    begin:function(R,st){
+      var p=P(st.at,0),lp=lanePath(p.x,p.z)||[p,{x:p.x+1,z:p.z}],a0=lp[0],a1=lp[1];
+      var h=spawn(a0.x,a0.z,{f:'civ',w:'fists',civ:1,hp:30});
+      h.path=[a1,a0];h.pi=0;h.alert=0;h.hold=0;h.warn=0;R.tgt=h;R.hl=[h];
+      R.sp={x:h.x,z:h.z,act:'LIFT WALLET',talk:function(){liftTry(R,st);}};
+      R.dst=p;setMark(R,h.x,h.z,st.label);
+    },
+    tick:function(R,st,dt){
+      var h=R.tgt;if(!h)return false;
+      R.sp.x=h.x;R.sp.z=h.z;R.mark.x=h.x;R.mark.z=h.z;
+      if(h.alert<1){
+        var dx=player.x-h.x,dz=player.z-h.z,d=Math.hypot(dx,dz),fx=Math.sin(h.w.yaw),fz=Math.cos(h.w.yaw);
+        var front=d>0.01?(dx*fx+dz*fz)/d:1;
+        if(d<4.5&&front>0.25&&!driving)h.warn+=dt*(player.speed>3.5?1.6:1);else h.warn=Math.max(0,h.warn-dt*0.5);
+        if(h.warn>1.3){h.alert=1;toast('HE SAW YOU! Back off...');h.hold=0;h.alertT=0;}
+      }else{
+        h.alertT+=dt;
+        if(h.alertT>1.3){
+          if(copsOn)setHeat(1,'HE RAISED THE ALARM!');
+          h.fleeT=5;failMsg('Spotted. He raised the alarm');
+        }
+      }
+      var q=pp();R.hud=h.alert>=1?'SPOTTED!':(Math.round(dist(q[0],q[1],h.x,h.z))+' m');
+      return !!R.lifted;
+    }
+  };
+  function liftTry(R,st){
+    var h=R.tgt;if(!h||R.lifted)return;
+    var dx=player.x-h.x,dz=player.z-h.z,d=Math.hypot(dx,dz),fx=Math.sin(h.w.yaw),fz=Math.cos(h.w.yaw),front=d>0.01?(dx*fx+dz*fz)/d:1;
+    if(h.alert>=1||front>0.55){
+      h.alert=1;h.alertT=2;toast('HE FELT YOUR HAND!');return;
+    }
+    R.lifted=true;D().steals++;tone(900,0.05,'sine',0.06,0);tone(1300,0.07,'sine',0.06,0.05);
+    toast('GOT THE WALLET! Walk away calmly');
+  }
+  STG.talk={
+    begin:function(R,st){
+      var p=P(st.at,st.i||0);
+      var h=spawn(p.x,p.z,{f:st.f||'civ',w:'fists',civ:1,hp:st.hp||45,name:st.name||'DEBTOR'});
+      h.w.yaw=Math.PI;R.tgt=h;R.hl=[h];R.dst=p;R.ph=0;setMark(R,p.x,p.z,st.label);
+      R.sp={x:h.x,z:h.z,act:'DEMAND PAYMENT',talk:function(){talkTry(R,st);}};
+    },
+    tick:function(R,st,dt){
+      var h=R.tgt,q=pp();
+      if(R.ph===0){
+        var near=dist(q[0],q[1],R.dst.x,R.dst.z);R.hud=Math.round(near)+' m';
+        R.sp.x=h.x;R.sp.z=h.z;
+        return !!R.paid;
+      }
+      R.hud=h.st===2?'':'BEAT '+tc(h.name||'HIM')+' UNTIL HE PAYS';
+      if(h.st===2&&!R.paid){R.paid=1;toast('He gives up and hands over the money');}
+      return !!R.paid;
+    }
+  };
+  function talkTry(R,st){
+    var h=R.tgt;if(!h||R.paid||R.ph!==0)return;
+    var armed=curW(),W=WEAP[armed],btns=[];
+    var gun=!W.melee&&ammoOf(W.am)>0;
+    if(st.mode!=='fist')btns.push({label:'THREATEN WITH GUN',fn:function(){
+      var w2=WEAP[curW()];
+      if(!w2.melee&&ammoOf(w2.am)>0){R.paid=1;toast('He hands over the money, shaking');tone(220,0.1,'sine',0.05,0);}
+      else{toast('You need to hold a loaded gun');buzz();}
+    }});
+    if(st.mode!=='gun')btns.push({label:'BEAT HIM UP',fn:function(){
+      h.civ=false;h.wp='fists';h.st=1;var K=KIND.fists;h.dm=K.dm*((R.m.dm)||1);h.sp=K.sp;h.cdw=K.cd;h.rt=K.rt;h.hp=h.max=st.hp||45;
+      setProp(h.a.prop,'fists');h.a.mk.material=MKM.r;R.ph=1;toast('HE FIGHTS BACK!');
+    }});
+    btns.push({label:'LEAVE'});
+    openDlg(tc(h.name||'DEBTOR'),st.line||'"Please, oga, the money no dey. Give me small time..."',btns);
+  }
+  STG.defend={
+    begin:function(R,st){var p=P(st.at,st.i||0);R.dst=p;R.ph=0;R.sT=0;R.out=0;R.wv=0;setMark(R,p.x,p.z,st.label);},
+    tick:function(R,st,dt){
+      var q=pp(),d=dist(q[0],q[1],R.dst.x,R.dst.z),lim=st.lim||15;
+      if(R.ph===0){R.hud=Math.round(d)+' m';if(d<6&&!driving){R.ph=1;toast('HOLD THE SPOT! '+st.secs+' seconds');}return false;}
+      if(d>lim){R.out+=dt;if(R.out>6){failMsg('You abandoned the spot');return false;}R.hud='GO BACK! '+Math.ceil(6-R.out);return false;}
+      R.out=Math.max(0,R.out-dt);
+      R.sT+=dt;
+      var w=st.w||[];
+      while(R.wv<w.length&&R.sT>=w[R.wv][0]){
+        if(liveHostiles()<8){var g=spawnGroup(R,st,{x:R.dst.x+(R.wv%2?1:-1)*13,z:R.dst.z+(R.wv%3-1)*4},true,w[R.wv][1]);g.forEach(function(h){R.hl.push(h);h.st=1;});}
+        R.wv++;
+      }
+      R.hud='HOLD '+Math.max(0,Math.ceil(st.secs-R.sT))+' s';
+      return R.sT>=st.secs;
+    }
+  };
+  STG.escape={
+    begin:function(R,st){R.ph=0;R.sT=0;R.hud='LOSE THE TASK FORCE';if(!copsOn)R.off=1;},
+    tick:function(R,st,dt){
+      R.sT+=dt;
+      if(R.off){R.hud='POLICE IS OFF';return R.sT>6;}
+      if(R.sT>1.2&&heat===0)return true;
+      if(R.sT<=1.2&&heat===0)setHeat(st.lvl||2,'RUN! The Task Force is after you!');
+      R.hud='LOSE THE TASK FORCE';
+      return false;
+    }
+  };
+  STG.escort={
+    begin:function(R,st){
+      var p=P(st.at,st.i||0),to=P(st.to,st.j||0);
+      var h=spawn(p.x,p.z,{f:'vip',w:'fists',friend:1,hp:90,name:st.name||'CLIENT'});h.st=4;
+      S.friend=h;R.hl=[];R.tgt=h;R.dst=to;R.wv=0;R.lost=0;R.start=dist(p.x,p.z,to.x,to.z);
+      setMark(R,to.x,to.z,st.label);toast('STAY CLOSE TO '+tc(st.name||'YOUR CLIENT'));
+    },
+    tick:function(R,st,dt){
+      var h=R.tgt,q=pp();
+      if(h.st===2)return false;
+      var dh=dist(q[0],q[1],h.x,h.z),dd=dist(h.x,h.z,R.dst.x,R.dst.z);
+      if(dh>26){R.lost+=dt;R.hud='GO BACK TO YOUR CLIENT!';if(R.lost>12){failMsg('You left your client behind');return false;}}
+      else R.lost=Math.max(0,R.lost-dt);
+      var prog=R.start>0?1-dd/R.start:1,w=st.w||[];
+      while(R.wv<w.length&&prog>=w[R.wv][0]){
+        if(liveHostiles()<8){
+          var ax=h.x+(R.dst.x-h.x)*0.35,az=h.z+(R.dst.z-h.z)*0.35;
+          var g=spawnGroup(R,st,{x:ax,z:az},true,w[R.wv][1]);g.forEach(function(e){R.hl.push(e);e.st=1;});toast('AMBUSH!');
+        }
+        R.wv++;
+      }
+      R.hud='GET HIM THERE '+Math.round(dd)+' m';
+      return dd<5&&dh<7&&liveHostiles()===0;
+    }
+  };
+  STG.own={
+    begin:function(R,st){R.mark=null;},
+    tick:function(R,st,dt){R.hud='BUY A '+WEAP[st.w].n+' (PHONE > CONTRACTS > ARMOURY)';return have(st.w)&&(!WEAP[st.w].am||ammoOf(WEAP[st.w].am)>=6);}
+  };
+
+  /* ---------------- per-frame mission step */
+  function missionTick(dt){
+    var R=S.run;if(!R)return;
+    if(inInt())return;
+    var st=R.st,T=STG[st.t];
+    if(pp()[0]>115){failMsg('You left the mainland');return;}
+    if(R.tl>0){
+      R.tl-=dt;
+      if(R.tl<=0){R.tl=0;failMsg('Too slow');return;}
+    }
+    var done=T.tick(R,st,dt);
+    if(!S.run)return;
+    if(!st.silent){objDist.textContent=R.hud||'';}
+    objTime.hidden=!(R.tl>0);if(R.tl>0)objTime.textContent='TIME '+Math.ceil(R.tl)+' s';
+    var title='CONTRACT: '+(st.label||'');
+    if(objTitle.textContent!==title)objTitle.textContent=title;
+    if(R.mark){beam.position.set(R.mark.x,30,R.mark.z);ring.position.set(R.mark.x,0.2,R.mark.z);}
+    if(done){blip();nextStage();}
+  }
+
+  /* ---------------- the per-frame entry points */
+  function update(dt){
+    if(!life||!life.made||!started)return;
+    if(S.cd>0)S.cd-=dt;
+    if(S.heatShot>0)S.heatShot-=dt;
+    if(S.hurtT>0){S.hurtT-=dt;if(S.hurtT<=0){var hf=document.getElementById('hurt');if(hf)hf.style.opacity='0';}}
+    if(talking||paused)return;
+    if(S.fireReq>0||S.fireHeld||keys.KeyJ){S.fireReq=0;fire();}
+    if(S.hp<100&&S.hp>0){
+      if(S.regen>0)S.regen-=dt;else S.hp=Math.min(100,S.hp+dt*1.6);
+    }
+    var inI=inInt();
+    if(S.hs.length&&!inI){
+      var px=driving?car.x:player.x,pz=driving?car.z:player.z;
+      for(var i=S.hs.length-1;i>=0;i--){
+        var h=S.hs[i];if(!h)continue;
+        if(h.civ||h.friend||h.st!==2){
+          if(!S.run){release(h);continue;}
+        }
+        hostileTick(h,dt);
+        var d=Math.hypot(h.x-px,h.z-pz);
+        h.w.g.visible=d<70;
+        if(sun.castShadow)gateShadow(h.w.g,d<45);
+        if(h.st===2)h.w.g.position.set(h.x,h.w.g.position.y,h.z);
+        h.w.g.rotation.y=h.w.yaw;
+        hostilePose(h);
+      }
+    }
+    missionTick(dt);
+    if(!S.el){S.el={hb:document.getElementById('hpbar'),fb:document.getElementById('fire'),sb:document.getElementById('wsw'),w:-1};}
+    var E=S.el;
+    if(E.hb){
+      var show=S.hp<100||liveHostiles()>0||!!S.run||curW()!=='fists';
+      if(E.hb.hidden===show)E.hb.hidden=!show;
+      var wp=Math.round(S.hp);
+      if(show&&E.w!==wp){E.w=wp;E.hb.firstElementChild.style.width=wp+'%';}
+    }
+    if(E.fb){
+      var vis=!driving&&!inI&&!talking&&(liveHostiles()>0||curW()!=='fists'||!!S.run);
+      if(E.fb.hidden===vis)E.fb.hidden=!vis;
+      if(E.sb){var vs=vis&&ownedCount()>0;if(E.sb.hidden===vs)E.sb.hidden=!vs;}
+    }
+    for(var t=0;t<S.tr.length;t++){var tr=S.tr[t];if(tr.life>0){tr.life-=dt;if(tr.life<=0)tr.m.visible=false;}}
+    if(S.flash>0)S.flash-=dt;
+    S.spotL=S.run&&S.run.sp?[S.run.sp]:[];
+  }
+  /* after the player's own animation: gun in hand, arm raised, body turned to the target */
+  function post(dt){
+    if(!armR)return;
+    if(!S.gun){S.gun=propMesh();armR.add(S.gun);}
+    var wn=curW();
+    if(S.gunW!==wn){S.gunW=wn;setProp(S.gun,wn);hudW();}
+    var W=WEAP[wn];
+    if(S.aim>0){
+      S.aim-=dt;
+      root.rotation.y=S.aimYaw;
+      if(W.melee){armR.rotation.x=-1.9+Math.min(1,Math.max(0,S.swing||0)/0.25)*1.4;if(S.swing>0)S.swing-=dt;}
+      else armR.rotation.x=-1.5;
+    }else if(W.len&&!W.melee&&liveHostiles()>0){armR.rotation.x=-0.9;}
+    if(S.aim<=0&&W.melee&&W.len&&liveHostiles()>0)armR.rotation.x=-0.7;
+  }
+  function ownedCount(){var n=0;WORD.forEach(function(w){if(w!=='fists'&&have(w))n++;});return n;}
+  function swap(){
+    var i=WORD.indexOf(curW()),n=WORD.length;
+    for(var k=1;k<=n;k++){var w=WORD[(i+k)%n];if(have(w)){setCur(w);toast(WEAP[w].n);tap();return;}}
+  }
+  /* ---------------- the hooks the game calls */
+  function spots(){return S.spotL;}
+  function mark(){var R=S.run;return R&&R.mark?R.mark:null;}
+  function onBust(){if(S.run)failMsg('BUSTED by the Task Force');}
+  function title(){return S.run?'CONTRACT: ':'';}
+  function reset(){clearHostiles();if(S.run)endRun(false,'');S.hp=100;S.dead=0;}
+
+  /* ---------------- the phone app */
+  function diffStars(m){return stars(m.tier>5?5:m.tier);}
+  function appCT(){
+    phPush('Contracts',function(b){
+      var c=D(),done=0;ms().forEach(function(m){if(c.done[m.id])done++;});
+      if(S.run){
+        pSect(b,'On a contract now');
+        pRow(b,tc(S.run.m.n),S.run.st.label||'',S.run.hud||'',null,pLead('<path d="M12 3l9 16H3zM12 10v4M12 17h.01"/>','#a82a20'),'r');
+        pBtn(b,'CANCEL CONTRACT',function(){abort();phRefresh();},'red');
+      }
+      pKV(b,[['Respect',String(c.resp)],['Contracts done',done+' / '+ms().length],['Kills',String(c.kills)],['Weapon',WEAP[c.cur].n+(WEAP[c.cur].am?' · '+ammoOf(WEAP[c.cur].am)+' rounds':'')]]);
+      pRow(b,'Armoury','Weapons and ammo, delivered to you','',function(){appArm();},pLead('<path d="M3 11h12l2-3h4v5h-3l-1 4H9l-1-3H3z"/>','#3a404a'));
+      CTA.forEach(function(a){
+        var L=ms().filter(function(m){return m.arc===a.id;}),dn=L.filter(function(m){return c.done[m.id];}).length;
+        pSect(b,a.n+' · '+a.role+' · '+dn+'/'+L.length);
+        if(c.resp<a.req){pNote(b,'LOCKED. Reach RESPECT '+a.req+' to meet this fixer.');return;}
+        L.forEach(function(m){
+          var lk=locked(m),dnm=!!c.done[m.id];
+          pRow(b,tc(m.n),dnm?'Done':(lk||('Pay '+money(m.pay)+' · '+diffStars(m)+(m.need?' · needs '+WEAP[m.need].n:''))),dnm?'✓':'',(lk&&!dnm)?null:function(){ctDetail(m.id);},pLead('<path d="M12 3l9 16H3zM12 10v4M12 17h.01"/>',dnm?'#2a7a4a':(lk?'#3a404a':'#a82a20')),dnm?'g':(lk?'':'r'));
+        });
+      });
+    });
+  }
+  function ctDetail(id){
+    var m=BY[id];
+    phPush(tc(m.n),function(b){
+      var a=arcOf(m.arc),why=block(m),c=D();
+      pSect(b,a.n+' · '+a.role);
+      pNote(b,m.txt);
+      pKV(b,[['Pay',money(m.pay)],['Respect',String(m.resp)],['Danger',diffStars(m)],['Needs',m.need?WEAP[m.need].n:'Nothing'],['Status',c.done[m.id]?'Done':'Open']]);
+      if(c.done[m.id]){pNote(b,'You finished this one.');return;}
+      if(why)pNote(b,why);
+      pBtn(b,'ACCEPT CONTRACT',function(){
+        if(startRun(m.id)){closePhone();}else phRefresh();
+      },why?'':'red');
+    });
+  }
+  function appArm(){
+    phPush('Armoury',function(b){
+      var c=D();
+      pNote(b,'A dispatch rider brings everything within seconds. Keep your ammo stocked before every contract.');
+      pKV(b,[['Cash',money(cash)],['In hand',WEAP[c.cur].n],['Health',Math.round(S.hp)+'%'],['Armour',['None','Body vest','Plate carrier'][c.v|0]]]);
+      pSect(b,'Weapons');
+      WORD.forEach(function(w){
+        if(w==='fists')return;
+        var W=WEAP[w],own=have(w);
+        pRow(b,W.n,own?(c.cur===w?'In hand':'Owned'):'Damage '+Math.round(W.dmg)+' · range '+Math.round(W.rng)+' m',own?(c.cur===w?'✓':'EQUIP'):money(W.price),function(){
+          if(own){setCur(w);phRefresh();return;}
+          if(cash<W.price){buzz();toast('You need '+money(W.price));return;}
+          cash-=W.price;setCash();logTx('Armoury: '+W.n,-W.price);c.w[w]=1;if(W.am&&!ammoOf(W.am)){c.am[W.am]=(c.am[W.am]|0)+AMMO[W.am].pack;}
+          setCur(w);saveGame();chime();toast('You bought a '+W.n);phRefresh();
+        },pLead('<path d="M3 11h12l2-3h4v5h-3l-1 4H9l-1-3H3z"/>',own?'#2a7a4a':'#3a404a'),own?'g':'');
+      });
+      pRow(b,'FISTS','Always with you','',function(){setCur('fists');phRefresh();},pLead('<path d="M7 11V6a2 2 0 0 1 4 0v5M11 9a2 2 0 0 1 4 0v3a6 6 0 0 1-6 6H8a4 4 0 0 1-4-4v-2a2 2 0 0 1 3-1z"/>','#3a404a'));
+      pSect(b,'Protection');
+      [[1,'BODY VEST','Takes 30% off every hit',20000],[2,'PLATE CARRIER','Takes 50% off every hit',100000]].forEach(function(V){
+        var own=(c.v|0)>=V[0];
+        pRow(b,V[1],own?'Worn':V[2],own?'✓':money(V[3]),function(){
+          if(own)return;
+          if(cash<V[3]){buzz();toast('You need '+money(V[3]));return;}
+          cash-=V[3];setCash();logTx('Armoury: '+V[1],-V[3]);c.v=V[0];saveGame();chime();toast('You are wearing a '+V[1]);phRefresh();
+        },pLead('<path d="M5 5l7-2 7 2v7c0 4-3 7-7 9-4-2-7-5-7-9z"/>',own?'#2a7a4a':'#3a404a'),own?'g':'');
+      });
+      pRow(b,'MEDKIT','Heals 60 health now',money(1200),function(){
+        if(S.hp>=100){toast('You are already at full health');return;}
+        if(cash<1200){buzz();toast('You need '+money(1200));return;}
+        cash-=1200;setCash();logTx('Armoury: MEDKIT',-1200);heal(60);chime();toast('Health restored');phRefresh();
+      },pLead('<path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/>','#3a404a'));
+      pSect(b,'Ammunition');
+      Object.keys(AMMO).forEach(function(k){
+        var A=AMMO[k];
+        pRow(b,A.n,'Pack of '+A.pack+' · you have '+ammoOf(k),money(A.price),function(){
+          if(cash<A.price){buzz();toast('You need '+money(A.price));return;}
+          cash-=A.price;setCash();logTx('Armoury: '+A.n,-A.price);c.am[k]=(c.am[k]|0)+A.pack;hudW();saveGame();chime();phRefresh();
+        },pLead('<circle cx="12" cy="12" r="4"/>','#3a404a'));
+      });
+    });
+  }
+  return {
+    WEAP:WEAP,WORD:WORD,AMMO:AMMO,FAC:FAC,KIND:KIND,S:S,D:D,have:have,curW:curW,setCur:setCur,ammoOf:ammoOf,gfree:gfree,los:los,P:P,base:base,spotsAround:spotsAround,
+    spawn:spawn,release:release,clearHostiles:clearHostiles,liveHostiles:liveHostiles,hurt:hurt,heal:heal,die:die,fire:fire,swap:swap,damage:damage,killH:killH,
+    startRun:startRun,lanePath:lanePath,abort:abort,block:block,locked:locked,update:update,post:post,spots:spots,mark:mark,onBust:onBust,reset:reset,hudW:hudW,
+    BY:BY,STG:STG,nextStage:nextStage,endRun:endRun,failMsg:failMsg,app:appCT,arcOf:arcOf,leftCount:leftCount,stealCar:stealCar,liftTry:liftTry,talkTry:talkTry,restoreCar:restoreCar
+  };
+})();
+
+holdBtn($('fire'),function(v){CT.S.fireHeld=v;if(v)CT.S.fireReq=1;});
+$('wsw').addEventListener('click',function(){CT.swap();});
+window.addEventListener('keydown',function(e){if(e.target&&e.target.tagName==='INPUT')return;if(e.code==='KeyK'&&!e.repeat)CT.swap();});
 loadGame();setCash();updateMissionVisuals();
 function resetAll(){
   gig=null;if(typeof crashStop==='function'){crashStop();CRASH.run=0;}
-  cash=2500;jobIdx=0;jobActive=false;jobStage=0;timerOn=false;got=[];ups.eng=0;ups.tyre=0;ups.paint=0;stat.earned=0;stat.played=0;stat.busts=0;stat.escapes=0;stat.fares=0;endSeen=0;copsOff();cancelFare();lifeReset();
+  cash=2500;jobIdx=0;jobActive=false;jobStage=0;timerOn=false;got=[];ups.eng=0;ups.tyre=0;ups.paint=0;stat.earned=0;stat.played=0;stat.busts=0;stat.escapes=0;stat.fares=0;endSeen=0;copsOff();cancelFare();CT.reset();lifeReset();
   try{localStorage.removeItem(SAVE_KEY);}catch(e){}
   owned=['sedan'];setVehicle('sedan');bundlesRefresh();setCash();updateMissionVisuals();
 }
@@ -8377,6 +9661,7 @@ function bust(){
   var fine=Math.round(Math.min(cash,500+heat*1500)*Math.max(0,1-0.25*((life.sf&&life.sf.guard)||0)));
   cash-=fine;stat.busts++;setCash();
   if(gig)gigAbort('',false);
+  CT.onBust();
   heat=0;bustMeter=0;loseT=0;clearPatrols();showHeat();
   if(driving){car.speed=0;exitCar();}
   buzz();toast('BUSTED! Fine '+money(fine)+'. Drive safe, oga!');saveGame();
@@ -8486,7 +9771,7 @@ function boardFare(){
 }
 function fareUpdate(dt){
   if(!started||talking)return;
-  if(jobActive||gig){if(fare.st)cancelFare();return;}
+  if(jobActive||gig||CT.S.run){if(fare.st)cancelFare();return;}
   if(fare.st===0){
     if(driving&&farePref&&jobIdx>=2){fareIdle+=dt;if(fareIdle>=FARE_GAP)offerFare();}
     return;
@@ -8555,7 +9840,7 @@ var LMULT=[1,1.4,2];
 var GOVS=[null,{n:'GOV. BELLO',d:'Rent is 25% cheaper'},{n:'GOV. ADEYEMI',d:'Shifts and fares pay 15% more'},{n:'GOV. OKAFOR',d:'Food is 20% cheaper'}];
 var APPR={shirt:[['BLACK','#17171b'],['RED','#b3261e'],['GREEN','#2f7d4f'],['BLUE','#2b5a9a'],['YELLOW','#e0b020']],skin:[['DEEP','#6b4026','#5a3520'],['DARK','#4a2a18','#3c2012'],['MEDIUM','#8a5a3a','#774a2e'],['LIGHT','#b07a52','#9a6842']]};
 var life=null,creating=false,lastGH=gameHour,dq=[],warnT={},chatCd={},shift=null,lifeSpeed=1,clubNear=false,clubD=99,needAcc=0,lookCur={shirt:'#17171b',skin:'#6b4026',skin2:'#5a3520'};
-function lifeDefault(){return {made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,sx:{},edu:0,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,bb:{},mn:[],sf:{},fit:0,cb:{ngn:185000000000,usd:1850000000,log:[]},gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
+function lifeDefault(){return {ct:{},made:0,bg:'hustler',home:'',own:[],day:1,nextPay:4,arrears:0,loan:0,late:0,inv:0,biz:[],furn:{bed:0,tv:0,fridge:0},car:{},fr:{},look:[0,0],gov:0,elNext:13,vote:-1,sx:{},edu:0,msgs:[],tx:[],wp:'auto',acct:'',hotel:null,ticket:null,trips:0,wel:0,mid:0,fix:[],chk:0,streak:0,pw:0,frz:0,bb:{},mn:[],sf:{},fit:0,cb:{ngn:185000000000,usd:1850000000,log:[]},gg:{c:{},earn:0,ill:0},gm:{day:0,fx:[],bets:[],lotto:[],net:0,wag:0,cool:0,bid:0,last:null}};}
 function lifeInit(sv){
   life=lifeDefault();
   if(sv&&sv.L&&sv.L.l){
@@ -8752,7 +10037,7 @@ function shiftPay(ck){
 }
 function startShift(ck){
   var c=CARS[ck];
-  if(jobActive||fare.st||gig){toast('Finish your job first');return;}
+  if(jobActive||fare.st||gig||CT.S.run){toast('Finish your job first');return;}
   if(!c.ok()){toast('Locked: '+c.req);return;}
   if(need.energy<15){toast('You are too tired to work. Sleep first');return;}
   if(need.hunger<8){toast('You are too hungry to work. Eat first');return;}
@@ -9006,6 +10291,7 @@ var APPS=[
   {id:'fly',n:'Flights',c:['#3a9ae8','#1b4f9a'],ic:'<path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>',fn:function(){appFly();}},
   {id:'jobs',n:'Jobs',c:['#e8803a','#b04a10'],ic:'<rect x="3" y="7" width="18" height="12" rx="2"/><path d="M9 7V5h6v2M3 13h18"/>',fn:function(){appJobs();}},
   {id:'gigs',n:'Gigs',c:['#2f8fd8','#16508a'],ic:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',fn:function(){appGigs();}},
+  {id:'ctr',n:'Contracts',c:['#c1352d','#4a0f0a'],ic:'<path d="M12 3l9 16H3zM12 10v4M12 17h.01"/>',fn:function(){CT.app();}},
   {id:'bet',n:'LuckyBet',c:['#a8c818','#4a7a10'],ic:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M15 9h.01M12 12h.01M9 15h.01M15 15h.01"/>',fn:function(){appBet();}},
   {id:'vit',n:'Vitals',c:['#e8586a','#a82040'],ic:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',fn:function(){appVit();}},
   {id:'home',n:'Home',c:['#2fa0b0','#176a78'],ic:'<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',fn:function(){appHome();}},
@@ -10208,6 +11494,7 @@ function bdMove(w,tx,tz,spd,dt){
 }
 function baddieTick(dt){
   if(!life||!life.made||!started)return;
+  if(CT.S.run){BD.cd=Math.max(BD.cd,8);return;}
   var px=driving?car.x:player.x,pz=driving?car.z:player.z,w=BD.w;
   if(!w){
     BD.cd-=dt;if(BD.cd>0)return;
@@ -10897,6 +12184,7 @@ function gigBlock(id){
   var D=GIGDEF[id];
   if(!started||!life||!life.made)return 'Start the game first';
   if(gig)return 'You are already on a gig';
+  if(CT.S.run)return 'Finish your contract first';
   if(jobActive)return "Finish Mama Nkechi's job first";
   if(shift)return 'Finish your shift first';
   var p=gpos();if(p[0]>258&&grpOf(p[0])!==0)return 'Gigs only run in Lagos. Fly home first';
@@ -14838,7 +16126,7 @@ function okBus(dest){
 /* ------------------------------------------------------------------ loop */
 function update(dt){
   _fdt=dt;
-  npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);vipTick(dt);socialTick(dt);ojTick(dt);baddieTick(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);gfxUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
+  npcsUpdate(dt);checkMission(dt);gigUpdate(dt);gmTick();fareUpdate(dt);trafficUpdate(dt);patrolsUpdate(dt);lifeUpdate(dt);shiftUpdate(dt);walkersUpdate(dt);escUpdate(dt);vipTick(dt);socialTick(dt);ojTick(dt);baddieTick(dt);CT.update(dt);audioUpdate(dt);dayUpdate(dt);boatsUpdate(dt);bundlesUpdate(dt);weatherUpdate(dt);gfxUpdate(dt);intLight();motorsTick(dt);statTick(dt);fxUpdate(dt);
   if(driving){
     var dctl=readDrive(),nsub=Math.min(4,Math.max(1,Math.ceil(Math.abs(car.speed)*dt)));for(var si=0;si<nsub;si++)driveUpdate(dt/nsub,dctl);setCarPose();updateAct();
     var kmh=Math.round(Math.abs(car.speed)*3.6);
@@ -14901,7 +16189,7 @@ function update(dt){
   body.rotation.y=Math.sin(player.phase)*0.07*amt+idle*Math.sin(elapsed*0.31)*0.09;
   body.scale.y=1+idle*br*0.005;
   if(runAmt>0.5){footAcc+=dt;if(footAcc>0.2){footAcc=0;emitPuff(player.x-player.dirx*0.4+(Math.random()-0.5)*0.3,0.1,player.z-player.dirz*0.4+(Math.random()-0.5)*0.3,-player.dirx*0.5,0.35,-player.dirz*0.5,0.5,0.55,0.22,0xb9a98a);}}
-  root.position.set(player.x,0,player.z);root.rotation.y=player.yaw;
+  root.position.set(player.x,0,player.z);root.rotation.y=player.yaw;CT.post(dt);
   blob.position.x=player.x;blob.position.z=player.z;
 }
 var camTX=0,camTZ=0,camSpd=0,camFov=60,fpX=0,fpY=0,fpZ=0,fpOn=false;
