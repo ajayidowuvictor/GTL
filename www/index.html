@@ -430,6 +430,25 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 
 #err{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#a4262c;color:#fff;font-size:14px;line-height:1.4;padding:12px max(16px,env(safe-area-inset-left,0px));user-select:text;-webkit-user-select:text}
 #err[hidden]{display:none}
+.ic{width:58%;height:58%;stroke:currentColor;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.ic .f,.ic.f{fill:currentColor;stroke:none}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#run,#gas,#brk,#act,#horn,#fire,#wsw,#menuBtn,#phBtn{display:flex;align-items:center;justify-content:center;font-size:0;letter-spacing:0;padding:0}
+#run[hidden],#gas[hidden],#brk[hidden],#act[hidden],#horn[hidden],#fire[hidden],#wsw[hidden]{display:none}
+#run .ic{width:62%;height:62%}#gas .ic{width:54%;height:54%}#brk .ic{width:58%;height:58%}#fire .ic{width:62%;height:62%}
+#act{right:calc(env(safe-area-inset-right,0px) + 24px);bottom:calc(env(safe-area-inset-bottom,0px) + 140px);width:78px;height:78px;min-width:0;border-radius:50%;background:var(--paper);animation:actp 1.6s ease-in-out infinite}
+#act .ic{width:60%;height:60%;stroke-width:2.2}
+#act.crime{background:#ffd3cd;border-color:#8f1f17;color:#8f1f17}
+@keyframes actp{0%,100%{box-shadow:0 0 0 3px rgba(246,236,217,.55)}50%{box-shadow:0 0 0 9px rgba(246,236,217,.2)}}
+#horn{right:calc(env(safe-area-inset-right,0px) + 122px);bottom:calc(env(safe-area-inset-bottom,0px) + 146px);width:66px;height:66px;min-width:0;border-radius:50%}
+#wsw{right:calc(env(safe-area-inset-right,0px) + 130px);bottom:calc(env(safe-area-inset-bottom,0px) + 134px);width:58px;height:58px;min-width:0;border-radius:50%;padding:0}
+#menuBtn{width:46px;height:46px;min-width:0;border-radius:12px}
+#menuBtn .ic{width:60%;height:60%}
+#phBtn{width:46px;height:46px;right:calc(env(safe-area-inset-right,0px) + 70px);border-radius:12px;gap:0}
+#phBtn .ic{width:56%;height:56%;stroke-width:2.1}
+#clk{min-width:0;padding:5px 9px;font-size:12px;letter-spacing:.08em}
+.card li .ic{width:22px;height:22px;vertical-align:-6px;margin-right:6px;stroke:var(--paper);stroke-width:2}
+.card li .ic .f{fill:var(--paper)}
 </style>
 
 <canvas id="view" aria-label="Game view"></canvas>
@@ -438,17 +457,17 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <div id="padL" class="pad"></div>
 <div id="padR" class="pad"></div>
 <div id="stick"><div id="knob"></div></div>
-<button id="run" type="button">RUN</button>
-<button id="gas" type="button" hidden>GAS</button>
-<button id="brk" type="button" hidden>BRAKE</button>
-<button id="act" type="button" hidden>ENTER</button>
-<button id="horn" type="button" hidden>HORN</button>
-<button id="fire" type="button" hidden>FIRE</button>
-<button id="wsw" type="button" hidden>SWAP</button>
+<button id="run" type="button" aria-label="Run"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle class="f" cx="14.6" cy="4.2" r="2"/><path d="M13.4 7.6L11.6 13M13.2 8.6l3.6 2 2.2-1M13 8.6l-3.5 1-1.5 2.6M11.6 13l3.4 2.5-.5 4.7M11.6 13l-3.2 3.2L5 17.6"/></svg><span class="vh">Run</span></button>
+<button id="gas" type="button" aria-label="Accelerate" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M12 2.6l-4.4 5.2h8.8z"/><rect x="8" y="11" width="8" height="10.2" rx="2.2"/><path d="M10.2 14.4h3.6M10.2 17.6h3.6"/></svg><span class="vh">Accelerate</span></button>
+<button id="brk" type="button" aria-label="Brake and reverse" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 3h6.8L21 8.6v6.8L15.4 21H8.6L3 15.4V8.6z"/><path d="M7.6 12h8.8"/></svg><span class="vh">Brake and reverse</span></button>
+<button id="act" type="button" aria-label="Action" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.8h15a1.6 1.6 0 011.6 1.6v8.2a1.6 1.6 0 01-1.6 1.6h-8.1L6.6 20v-3.8H4.5a1.6 1.6 0 01-1.6-1.6V6.4a1.6 1.6 0 011.6-1.6z"/><circle class="f" cx="8" cy="10.5" r="1.1"/><circle class="f" cx="12" cy="10.5" r="1.1"/><circle class="f" cx="16" cy="10.5" r="1.1"/></svg><span class="vh">Action</span></button>
+<button id="horn" type="button" aria-label="Horn" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h3.2l5.3 4V6L6.2 10z"/><path d="M15 9.2a4 4 0 010 5.6M17.6 6.6a7.6 7.6 0 010 10.8"/></svg><span class="vh">Horn</span></button>
+<button id="fire" type="button" aria-label="Fire" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6.6"/><path d="M12 2.5v5M12 16.5v5M2.5 12h5M16.5 12h5"/><circle class="f" cx="12" cy="12" r="1.3"/></svg><span class="vh">Fire</span></button>
+<button id="wsw" type="button" aria-label="Change weapon" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5h13.5M14.2 5l3.5 3.5-3.5 3.5M20 15.5H6.5M9.8 12l-3.5 3.5L9.8 19"/></svg><span class="vh">Change weapon</span></button>
 <div id="hurt"></div>
 
 <div class="hud wallet"><span class="lbl">CASH</span><span class="amt" id="cash">&#8358;2,500</span></div>
-<div class="hud tools"><button id="menuBtn" type="button">MENU</button><button id="clk" type="button">2:30 PM</button></div>
+<div class="hud tools"><button id="menuBtn" type="button" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg><span class="vh">Menu</span></button><button id="clk" type="button">2:30 PM</button></div>
 <div class="hud" id="hint">Left thumb moves. Right thumb looks. Tap HOME by your bed for sleep, shower and kitchen, or walk out the door to explore Lagos.</div>
 <div class="hud" id="toast"></div>
 <div class="hud" id="obj" hidden><span class="t" id="objTitle">JOB</span><span class="d" id="objDist">0 m</span><span class="d" id="objTime" hidden></span></div>
@@ -489,7 +508,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
     </div>
   </div>
 </div>
-<button id="phBtn" class="hud" type="button" aria-label="Phone"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>PHONE<i id="phBadge" hidden>0</i></button>
+<button id="phBtn" class="hud" type="button" aria-label="Phone"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.8" y="2.5" width="10.4" height="19" rx="2.6"/><path d="M10.6 18.3h2.8"/></svg><span class="vh">Phone</span><i id="phBadge" hidden>0</i></button>
 <div id="notif"></div>
 <div id="fade" hidden></div>
 <div id="phone" hidden>
@@ -515,14 +534,14 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
     <div class="ver">GTL 0.7 &middot; Your phone: NairaPay, stays and flights</div>
     <p>Build 19: driving and animation. Cars now drift and slide, bounce and lean, burn rubber with tyre smoke and skid marks, and the camera chases with speed. People breathe, lean into turns, kick up dust when running, and wave when you come near.</p>
     <ul>
-      <li><b>MOVE</b> &nbsp;drag with your left thumb</li>
-      <li><b>LOOK</b> &nbsp;swipe with your right thumb</li>
-      <li><b>RUN</b> &nbsp;hold the yellow button</li>
-      <li><b>TALK</b> &nbsp;tap TALK when you stand near a person</li>
-      <li><b>HORN</b> &nbsp;hold the HORN button while driving</li>
-      <li><b>DRIVE</b> &nbsp;tap ENTER beside the car, hold GAS, steer with the left thumb</li>
-      <li><b>PHONE</b> &nbsp;tap PHONE: messages, NairaPay, rides, stays and flights</li>
-      <li><b>MENU</b> &nbsp;map, radio and settings</li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><circle class="f" cx="12" cy="12" r="3.2"/><path d="M12 2.4v2M12 19.6v2M2.4 12h2M19.6 12h2"/></svg><b>MOVE</b> &nbsp;drag with your left thumb</li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg><b>LOOK</b> &nbsp;swipe with your right thumb</li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle class="f" cx="14.6" cy="4.2" r="2"/><path d="M13.4 7.6L11.6 13M13.2 8.6l3.6 2 2.2-1M13 8.6l-3.5 1-1.5 2.6M11.6 13l3.4 2.5-.5 4.7M11.6 13l-3.2 3.2L5 17.6"/></svg><b>RUN</b> &nbsp;hold the yellow runner button</li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.8h15a1.6 1.6 0 011.6 1.6v8.2a1.6 1.6 0 01-1.6 1.6h-8.1L6.6 20v-3.8H4.5a1.6 1.6 0 01-1.6-1.6V6.4a1.6 1.6 0 011.6-1.6z"/><circle class="f" cx="8" cy="10.5" r="1.1"/><circle class="f" cx="12" cy="10.5" r="1.1"/><circle class="f" cx="16" cy="10.5" r="1.1"/></svg><b>TALK</b> &nbsp;tap the speech bubble when you stand near a person</li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="2.4"/><path d="M3.8 10.2l5.9 1.2M20.2 10.2l-5.9 1.2M12 14.4v6.2"/></svg><b>DRIVE</b> &nbsp;tap the steering wheel beside the car, hold the green pedal, steer with the left thumb</li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h3.2l5.3 4V6L6.2 10z"/><path d="M15 9.2a4 4 0 010 5.6M17.6 6.6a7.6 7.6 0 010 10.8"/></svg><b>HORN</b> &nbsp;hold the horn button while driving</li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.8" y="2.5" width="10.4" height="19" rx="2.6"/><path d="M10.6 18.3h2.8"/></svg><b>PHONE</b> &nbsp;tap the phone: messages, NairaPay, rides, stays and flights</li>
+      <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 7h15M4.5 12h15M4.5 17h15"/></svg><b>MENU</b> &nbsp;map, radio and settings</li>
     </ul>
     <button id="play" type="button">PLAY</button><br><button id="reset" type="button">Reset my progress</button>
     <p class="note">Landscape feels best. On a computer use W A S D, Shift and the mouse.</p>
@@ -534,7 +553,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b61';
+var VERSION='GTL 0.9 b62';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -7269,6 +7288,10 @@ function runOn(e){e.preventDefault();running=true;runBtn.classList.add('on');try
 function runOff(){running=false;runBtn.classList.remove('on');}
 runBtn.addEventListener('pointerdown',runOn);runBtn.addEventListener('pointerup',runOff);runBtn.addEventListener('pointercancel',runOff);
 var gasBtn=$('gas'),brkBtn=$('brk'),actBtn=$('act'),speedEl=$('speed'),kmhEl=$('kmh');
+var ACTICON={'TALK':'talk','ENTER':'wheel','EXIT':'exit','TAKE THE CAR':'key','LIFT WALLET':'wallet','DEMAND PAYMENT':'cash'},ACTSVG={'talk':'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.8h15a1.6 1.6 0 011.6 1.6v8.2a1.6 1.6 0 01-1.6 1.6h-8.1L6.6 20v-3.8H4.5a1.6 1.6 0 01-1.6-1.6V6.4a1.6 1.6 0 011.6-1.6z"/><circle class="f" cx="8" cy="10.5" r="1.1"/><circle class="f" cx="12" cy="10.5" r="1.1"/><circle class="f" cx="16" cy="10.5" r="1.1"/></svg>','wheel':'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="2.4"/><path d="M3.8 10.2l5.9 1.2M20.2 10.2l-5.9 1.2M12 14.4v6.2"/></svg>','exit':'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4.5h4.5a1.5 1.5 0 011.5 1.5v12a1.5 1.5 0 01-1.5 1.5H14"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg>','key':'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.6" cy="12" r="3.8"/><circle class="f" cx="6.6" cy="11" r=".9"/><path d="M11.4 12H21M17.6 12v3.2M20.8 12v2.2"/></svg>','wallet':'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.6"/><path d="M3.4 9.6l13.2-4.8"/><path d="M15 12.4h6v3.6h-6a1.8 1.8 0 010-3.6z"/><circle class="f" cx="16.3" cy="14.2" r=".9"/></svg>','cash':'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6.2" width="19" height="11.6" rx="2.2"/><circle cx="12" cy="12" r="2.7"/><path d="M5.8 9.4v.1M18.2 14.5v.1" stroke-width="2.6"/></svg>'},ACTSAY={'TALK':'Talk','ENTER':'Get in the car','EXIT':'Get out','TAKE THE CAR':'Take the car','LIFT WALLET':'Lift the wallet','DEMAND PAYMENT':'Demand payment'};
+function actShow(want){var k=ACTICON[want]||'talk';actBtn.innerHTML=ACTSVG[k]+'<span class="vh">'+want+'</span>';actBtn.setAttribute('aria-label',ACTSAY[want]||want);actBtn.classList.toggle('crime',want==='LIFT WALLET'||want==='DEMAND PAYMENT'||want==='TAKE THE CAR');actHint(want);}
+var actSeen={};try{actSeen=JSON.parse(localStorage.getItem('gtl_acthint')||'{}')||{};}catch(e){}
+function actHint(w){var n=actSeen[w]||0;if(n>=2)return;actSeen[w]=n+1;try{localStorage.setItem('gtl_acthint',JSON.stringify(actSeen));}catch(e){}if(ACTSAY[w]&&w!=='EXIT')toast(ACTSAY[w]+' (tap the round button)');}
 var hornHeld=false,gasHeld=false,brkHeld=false,actState='',lastKmh=-1,talking=false,nearNpc=null,npcs=[];
 function holdBtn(el,set){
   function on(e){e.preventDefault();set(true);el.classList.add('on');try{el.setPointerCapture(e.pointerId);}catch(x){}}
@@ -7287,7 +7310,7 @@ function enterCar(){
   driving=true;usedCar=true;player.speed=0;car.speed=0;car.steer=0;car.lat=0;car.pit=car.rol=car.pitV=car.rolV=0;camSnap=true;
   root.visible=false;blob.visible=false;arrow.visible=false;
   setDriveUI();hint.classList.add('off');
-  toast('GAS to go, BRAKE to stop or reverse. Left thumb steers.');
+  toast('Green pedal to go, red pedal to stop or reverse. Left thumb steers.');
 }
 function exitCar(){
   if(Math.abs(car.speed)>3.5){toast('Slow down before you get out');return;}
@@ -7331,7 +7354,7 @@ function updateAct(){
       if(nd<2.4&&nd<cd)want=nearNpc.act||'TALK';else{nearNpc=null;if(cd<2.4)want='ENTER';}
     }
   }
-  if(want!==actState){actState=want;if(want){actBtn.textContent=want;actBtn.hidden=false;}else actBtn.hidden=true;}
+  if(want!==actState){actState=want;if(want){actShow(want);actBtn.hidden=false;}else actBtn.hidden=true;}
 }
 document.addEventListener('contextmenu',function(e){e.preventDefault();});
 var keys={};

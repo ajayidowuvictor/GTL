@@ -122,3 +122,34 @@ Known limits
 - Path finding sees buildings and furniture, not cars or people, so a parked car in the way is handled by the normal push-out.
 - Tap-to-move works only on the ground plane. Clicking a wall or the sky is ignored.
 - Walking through an outdoor shop door is still done through the doorman, because outdoor buildings are solid boxes.
+
+## Icon controls (b62)
+
+Every on-screen button is now a round or rounded-square icon button, in the style of GTA San Andreas. There is no visible text on any of them. The old text is kept as a visually hidden label and as the button's `aria-label`, so screen readers and the tests still find it.
+
+| Button | Icon | Notes |
+|---|---|---|
+| Run (hold) | runner | yellow, bottom right |
+| Gas (hold, in a car) | up arrow over a pedal | green |
+| Brake and reverse (hold, in a car) | stop sign with a bar | red |
+| Horn (hold, in a car) | speaker with sound waves | yellow |
+| Fire (hold, in a fight) | crosshair | red |
+| Change weapon | two arrows | small, above Fire |
+| Menu | three bars | top right |
+| Phone | phone | top right, left of Menu, keeps the unread badge |
+| Clock | time text | the only text left, because the time is data |
+
+The big round action button changes its icon by what is near you:
+
+| Action | Icon | Colour |
+|---|---|---|
+| Talk | speech bubble | cream |
+| Enter (a car) | steering wheel | cream |
+| Exit (the car) | door with an arrow | cream |
+| Take the car | key | red |
+| Lift wallet | wallet | red |
+| Demand payment | banknote | red |
+
+Red means the action is a crime. The first two times each action appears, a short toast says what the icon means. The count is kept in the browser (`gtl_acthint`). The intro screen shows the same icons next to each control.
+
+Tests (`test62a`): every button has an icon, a hidden label and an aria-label; no button shows visible text; every action state has the right icon and the red crime colour; the icons are all different; no two buttons overlap, every touch button is at least 44 px and inside the screen, on foot, in a fight and in a car, at 900x450, 800x360, 640x360 and 360x640; real pointer presses still hold gas, brake, horn and run, and the exit, phone and menu icons still work.
