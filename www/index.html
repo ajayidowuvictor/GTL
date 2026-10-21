@@ -534,7 +534,7 @@ body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--ui);ove
 <script>
 (function(){
 'use strict';
-var VERSION='GTL 0.9 b60';
+var VERSION='GTL 0.9 b61';
 function $(id){return document.getElementById(id);}
 var errBox=$('err');
 function showErr(msg){errBox.hidden=false;errBox.textContent='Problem: '+msg+'  Please screenshot this and send it to me.';}
@@ -3282,7 +3282,6 @@ var IKB={};
   for(zz=-12;zz>=-62;zz-=6)box(GRX,0.088,zz,0.18,0.012,2.4,'#e9c46a');
   [-1,1].forEach(function(sg){box(GRX+sg*4.9,0.07,-35.5,0.12,0.012,61,'#e8e4da');});
   box(GRX,0.034,-6.4,14,0.068,3,ROAD);
-  box(GRX,0.06,-65.2,10,1.2,0.3,'#c1352d');box(GRX,0.6,-65.2,10,0.3,0.3,'#f1efe6');
   [-5.6,5.6].forEach(function(px){box(GRX+px,2.8,-12.6,0.3,5.6,0.3,'#d9d2c2');solid(GRX+px,-12.6,0.4,0.4,5.6);});
   box(GRX,5.3,-12.6,11.5,0.25,0.25,'#d9d2c2');
   addSign('GRA. GOVERNMENT RESERVED AREA','#1d5c3a','#ffffff',GRX,4.5,-12.4,0,9.4,0.9);
@@ -5818,6 +5817,371 @@ var FZR={efest:[2960,-42],efmall:[2960,-14],etfair:[2960,14],etmotel:[2960,42],e
   })();
 })();
 
+var CHK_SAVE14=CHK;CHK=40;
+/* ---- b61: IKEJA GRA, NORTH. The first side road of the game. Oba Akinjobi Way carries on north from the old GRA mouth through three cross streets
+   to a chapel at the top. Walled houses, a park, tennis courts, the Speaker's lodge, a bistro, a clinic, a superstore, a law chambers and a chapel.
+   The street NAMES are real (a 2022 newspaper lists them); the plan, the plots and every building are invented. ---- */
+var GZ={x0:-1285,x1:-1065,zn:-314,zs:-65,sp:GRX,c:[-112,-190,-268],lots:[],pubs:[]};
+(function(){
+  var SHP=OJB.shopHouse,i,j,k=0,vi=0;
+  var X0=GZ.x0,X1=GZ.x1,ZN=GZ.zn,ZS=GZ.zs,SP=GZ.sp,C=GZ.c,ZT=ZN+0.5;
+  var VW=['#f1efe6','#e8d9bf','#e6dccb','#f0e4cf','#dfe6df','#efe6d6'],VR=['#7a3b2a','#3a4a5a','#5a3a2a','#2d4a3a','#6b3a2a','#4a4f55'];
+  var CARCOL=['#14161a','#c9c9c9','#2f4f8e','#8e2f2f','#e0e0e0','#3a3d40'];
+  function lawn(x,z,w,d,col){box(x,0.02,z,w,0.04,d,col||'#5b8f3e');}
+  function paveB(x,z,w,d,col){box(x,0.05,z,w,0.1,d,col||'#b7ad98');}
+  function roadZ(x,z0,z1,w,y,col){box(x,y,(z0+z1)/2,w,y*2,Math.abs(z1-z0),col||ROAD);}
+  function roadX(z,x0,x1,w,y,col){box((x0+x1)/2,y,z,Math.abs(x1-x0),y*2,w,col||ROAD);}
+  var ZE=ZN+14;                         /* the spine road ends here, at the chapel forecourt */
+  /* ---------- roads ---------- */
+  roadZ(SP,ZE,ZS-1,9,0.034);
+  for(j=ZS-8;j>ZE+4;j-=6){var onC=false;C.forEach(function(c){if(Math.abs(j-c)<7)onC=true;});if(onC)continue;box(SP,0.088,j,0.18,0.012,2.4,'#e9c46a');}
+  [-1,1].forEach(function(sg){roadZ(SP+sg*4.7,ZE,ZS-1,0.12,0.0725,'#e8e4da');});
+  C.forEach(function(cz){
+    roadX(cz,X0,X1,8,0.036);
+    for(j=X0+6;j<X1-4;j+=6){if(Math.abs(j-SP)<7)continue;box(j,0.09,cz,2.4,0.012,0.18,'#e9c46a');}
+    [-1,1].forEach(function(sg){roadX(cz+sg*3.9,X0,X1,0.12,0.0745,'#e8e4da');});
+    for(j=-3;j<=3;j++)box(SP+j*1.2,0.092,cz+6.2,0.55,0.012,3.0,'#f4f1e8');
+  });
+  /* pavements */
+  [-1,1].forEach(function(sg){
+    var a=ZS-1;
+    C.concat([ZE-6]).forEach(function(cz,ci){var b=(ci<3)?cz+8.2:ZE;if(a>b+0.5)roadZ(SP+sg*5.4,b,a,1.6,0.09,SH);a=(ci<3)?cz-8.2:a;});
+  });
+  C.forEach(function(cz){
+    [-1,1].forEach(function(sg){[[X0+0.2,SP-9],[SP+9,X1-0.2]].forEach(function(r){roadX(cz+sg*5.1,r[0],r[1],1.6,0.09,SH);});});
+  });
+  /* ---------- the boundary: a back fence for the older GRA, the two side walls and the north wall ---------- */
+  wallX(ZS,X0,SP-39);wallX(ZS,SP+39,X1);
+  wallZ(X0,ZT,ZS);wallZ(X1,ZT,ZS);wallX(ZT,X0,X1);
+  addSign('IKEJA GRA. ESTATE BOUNDARY','#1d5c3a','#ffffff',X0+0.25,3.6,C[1],Math.PI/2,10,0.9);
+  addSign('IKEJA GRA. ESTATE BOUNDARY','#1d5c3a','#ffffff',X1-0.25,3.6,C[1],-Math.PI/2,10,0.9);
+  /* a gantry over the mouth of the new stretch and the name boards at each junction */
+  [-1,1].forEach(function(sg){box(SP+sg*6.6,3.4,ZS-5,0.5,6.8,0.5,'#555');solid(SP+sg*6.6,ZS-5,0.6,0.6,6.8);});
+  box(SP,6.9,ZS-5,13.7,0.5,0.5,'#555');
+  addSign('OBA AKINJOBI WAY. IKEJA GRA','#14161a','#f2d36b',SP,6.9,ZS-4.7,0,11,0.9);
+  var CN=['SOBO AROBIODU STREET','REMI FANI-KAYODE AVENUE','JACARANDA CLOSE'];
+  C.forEach(function(cz,ci){
+    addSign(CN[ci],'#1d5c3a','#ffffff',SP+6.8,2.4,cz+7.6,0,4.6,0.6);
+    addSign('OBA AKINJOBI WAY','#1d5c3a','#ffffff',SP-6.2,2.4,cz+5.6,Math.PI/2,3.6,0.6);
+  });
+  /* ---------- houses and lots ---------- */
+  function house(x,z,w,d,face,wall,roof,grand){
+    if(grand){building({kind:'multi',face:face,x:x,z:z,w:w,d:d,h:7,floors:2,balcony:true,wall:wall,roof:roof});return;}
+    var h=6.4,fx=0,fz=0;
+    if(face==='E')fx=1;else if(face==='W')fx=-1;else if(face==='S')fz=1;else fz=-1;
+    box(x,h/2,z,w,h,d,wall);
+    curMat='roof';box(x,h+0.18,z,w+0.6,0.36,d+0.6,roof);curMat=null;
+    solid(x,z,w,d,h+0.4);
+    var px=x+fx*(w/2),pz=z+fz*(d/2);
+    if(fx){
+      box(px+fx*0.9,0.2,z,1.8,0.4,5.2,'#c9c7c0');box(px+fx*1.8,3.0,z,0.5,0.2,5.2,tint(wall,0.2));
+      box(px+fx*0.05,1.2,z,0.12,2.4,1.3,'#5a3b2a');
+      [-1,1].forEach(function(s){box(px+fx*0.05,1.9,z+s*(d*0.3),0.1,1.1,2.2,'#23364a');box(px+fx*0.05,4.7,z+s*(d*0.28),0.1,1.1,2.2,'#23364a');});
+      box(px+fx*0.05,4.7,z,0.1,1.1,1.8,'#23364a');
+    }else{
+      box(x,0.2,pz+fz*0.9,5.2,0.4,1.8,'#c9c7c0');box(x,3.0,pz+fz*1.8,5.2,0.2,0.5,tint(wall,0.2));
+      box(x,1.2,pz+fz*0.05,1.3,2.4,0.12,'#5a3b2a');
+      [-1,1].forEach(function(s){box(x+s*(w*0.3),1.9,pz+fz*0.05,2.2,1.1,0.1,'#23364a');box(x+s*(w*0.28),4.7,pz+fz*0.05,2.2,1.1,0.1,'#23364a');});
+      box(x,4.7,pz+fz*0.05,1.8,1.1,0.1,'#23364a');
+    }
+    cyl(x+w*0.2,h+1.0,z-d*0.2,1.2,1.1,1.2,'#1b1b1e');
+  }
+  function fxz(face){return {fx:face==='E'?1:(face==='W'?-1:0),fz:face==='S'?1:(face==='N'?-1:0)};}
+  function lotXY(cx,cz,w,d,face,kind){
+    var wall=VW[vi%6],roof=VR[vi%6];vi++;
+    GZ.lots.push({x:cx,z:cz,w:w,d:d,face:face,kind:kind});
+    if(kind==='h'||kind==='g'){
+      lawn(cx,cz,w-0.8,d-0.8,'#5b8f3e');
+      var f=fxz(face),fx=f.fx,fz=f.fz;
+      var hw=(fx?12:15),hd=(fx?15:12);
+      var hx=cx-fx*(w/2-hw/2-4.5),hz=cz-fz*(d/2-hd/2-4.5);
+      house(hx,hz,hw,hd,face,wall,roof,kind==='g');
+      tree(cx+(fz?w*0.34:-fx*w*0.1),cz+(fx?d*0.34:-fz*d*0.1));
+      if(k++%2===0){car(cx+fx*(w/2-3.5)+(fz?w*0.22:0),cz+fz*(d/2-3.5)+(fx?d*0.22:0),fx?0:Math.PI/2,CARCOL[k%6]);}
+    }else if(kind==='v'){
+      lawn(cx,cz,w-0.8,d-0.8,'#6b9a48');
+      tree(cx-w*0.25,cz-d*0.2);tree(cx+w*0.2,cz+d*0.15);tree(cx,cz-d*0.3);
+    }else{
+      lawn(cx,cz,w-0.8,d-0.8,'#5b8f3e');
+    }
+  }
+  /* a row of lots along x (xa<xb), fronting the street at z=zF. spec items: kind strings, one per lot */
+  function rowX(zF,zB,xa,xb,face,kinds,o){
+    o=o||{};
+    var n=kinds.length,lw=(xb-xa)/n,q,z0=Math.min(zF,zB),z1=Math.max(zF,zB);
+    for(q=0;q<n;q++){
+      var xl=xa+q*lw,xr=xl+lw,kd=kinds[q];
+      lotXY((xl+xr)/2,(z0+z1)/2,lw,z1-z0,face,kd);
+      if(kd.indexOf('pub')!==0)wallX(zF,xl,xr,(xl+xr)/2,6);   /* public places have an open frontage */
+      if(q>0)wallZ(xl,z0,z1);
+    }
+    if(!o.noBack)wallX(zB,xa,xb);
+    if(!o.noA)wallZ(xa,z0,z1);
+    if(!o.noB)wallZ(xb,z0,z1);
+  }
+  function rowZ(xF,xB,za,zb,face,kinds,o){
+    o=o||{};
+    var n=kinds.length,lh=(zb-za)/n,q,x0=Math.min(xF,xB),x1=Math.max(xF,xB);
+    for(q=0;q<n;q++){
+      var zl=za+q*lh,zr=zl+lh,kd=kinds[q];
+      lotXY((x0+x1)/2,(zl+zr)/2,x1-x0,lh,face,kd);
+      if(kd.indexOf('pub')!==0)wallZ(xF,zl,zr,(zl+zr)/2,6);
+      if(q>0)wallX(zl,x0,x1);
+    }
+    if(!o.noBack)wallZ(xB,za,zb);
+    if(!o.noA)wallX(za,x0,x1);
+    if(!o.noB)wallX(zb,x0,x1);
+  }
+  /* spine blocks, north end first: block 3 (top), 2, 1, 0 (nearest the old street) */
+  var B3=[ZT,C[2]-8],B2=[C[2]+8,C[1]-8],B1=[C[1]+8,C[0]-8],B0=[C[0]+8,ZS-0.3];
+  /* west side: houses face east */
+  rowZ(SP-9,SP-41,B3[0],B3[1],'E',['g'],{noA:true});
+  rowZ(SP-9,SP-41,B2[0],B2[1],'E',['h','g']);
+  rowZ(SP-9,SP-41,B1[0],B1[1],'E',['pub:law','h']);
+  rowZ(SP-9,SP-41,B0[0],B0[1],'E',['h'],{noB:true});
+  /* east side: houses face west */
+  rowZ(SP+9,SP+41,B3[0],B3[1],'W',['h'],{noA:true});
+  rowZ(SP+9,SP+41,B2[0],B2[1],'W',['lodge']);
+  rowZ(SP+9,SP+41,B1[0],B1[1],'W',['h','pub:store']);
+  rowZ(SP+9,SP+41,B0[0],B0[1],'W',['g'],{noB:true});
+  /* the arms: rows between the cross streets. west arm x in [X0,SP-41], east arm x in [SP+41,X1] */
+  var AW=[X0,SP-41],AE=[SP+41,X1],m1=(C[0]-8+C[1]+8)/2,m2=(C[1]-8+C[2]+8)/2;
+  /* block 0: south of Sobo Arobiodu Street */
+  rowX(C[0]+8,ZS-0.3,AW[0],AW[1],'N',['h','h'],{noA:true,noB:true,noBack:true});
+  rowX(C[0]+8,ZS-0.3,AE[0],AE[1],'N',['pub:clinic','h'],{noA:true,noB:true,noBack:true});
+  /* block 1: north of C1 and south of C2; the east arm is the park */
+  rowX(C[0]-8,m1,AW[0],AW[1],'S',['h','h'],{noA:true,noB:true,noBack:true});
+  rowX(C[1]+8,m1,AW[0],AW[1],'N',['h','v'],{noA:true,noB:true});
+  rowX(C[0]-8,m1,AE[0],AE[1],'S',['park'],{noA:true,noB:true,noBack:true});
+  rowX(C[1]+8,m1,AE[0],AE[1],'N',['park'],{noA:true,noB:true,noBack:true});
+  /* block 2: north of C2 and south of C3; the west arm is the tennis club */
+  rowX(C[1]-8,m2,AW[0],AW[1],'S',['court'],{noA:true,noB:true,noBack:true});
+  rowX(C[2]+8,m2,AW[0],AW[1],'N',['court'],{noA:true,noB:true,noBack:true});
+  rowX(C[1]-8,m2,AE[0],AE[1],'S',['pub:bistro','h'],{noA:true,noB:true,noBack:true});
+  rowX(C[2]+8,m2,AE[0],AE[1],'N',['h','h'],{noA:true,noB:true});
+  /* block 3: north of C3 */
+  rowX(C[2]-8,ZT,AW[0],AW[1],'S',['h','h'],{noA:true,noB:true,noBack:true});
+  rowX(C[2]-8,ZT,AE[0],AE[1],'S',['g','h'],{noA:true,noB:true,noBack:true});
+  /* ---------- the public places ---------- */
+  function lotOf(kd){for(var q=0;q<GZ.lots.length;q++)if(GZ.lots[q].kind===kd)return GZ.lots[q];return null;}
+  function reg(o){GZ.pubs.push(o);return o;}
+  var L;
+  /* LAW CHAMBERS: west side of Oba Akinjobi Way, face east */
+  L=lotOf('pub:law');
+  paveB(SP-10.5,L.z,7,L.d-0.8);
+  SHP({face:'E',x:SP-18,z:L.z,w:12,d:20,floors:3,name:'GRA LAW CHAMBERS',sbg:'#1f3a68',sfg:'#f2d36b',aw:'#1f3a68',wall:'#ece7da'});
+  reg({k:'gzlawd',id:'gzlaw',nm:'GRA LAW CHAMBERS',h:[8,17],x:SP-10.9,z:L.z,yaw:Math.PI/2,bx:SP-11.85,bz:L.z,br:Math.PI/2});
+  tree(SP-14,L.z-13);tree(SP-14,L.z+13);car(SP-8.6,L.z+10,Math.PI/2,'#14161a');
+  /* SUPERSTORE: east side, face west */
+  L=lotOf('pub:store');
+  paveB(SP+10.5,L.z,7,L.d-0.8);
+  SHP({face:'W',x:SP+19,z:L.z,w:14,d:22,floors:2,name:'GRA SUPERSTORE',sbg:'#e07a1f',sfg:'#ffffff',aw:'#e07a1f',wall:'#f1efe6'});
+  reg({k:'gzstored',id:'gzstore',nm:'GRA SUPERSTORE',h:[8,21],x:SP+10.9,z:L.z,yaw:-Math.PI/2,bx:SP+11.85,bz:L.z,br:-Math.PI/2});
+  car(SP+9.6,L.z-10,Math.PI/2,'#c9c9c9');car(SP+9.6,L.z+10.5,Math.PI/2,'#2f4f8e');tree(SP+14,L.z-14.5);
+  /* FAMILY CLINIC: south of Sobo Arobiodu Street, east arm, face north */
+  L=lotOf('pub:clinic');
+  paveB(L.x,C[0]+8+1.5,L.w-2,3);
+  SHP({face:'N',x:L.x,z:C[0]+8+3+5,w:24,d:10,floors:3,name:'GRA FAMILY CLINIC',sbg:'#1f8a4c',sfg:'#ffffff',aw:'#1f8a4c',wall:'#f4f1e8'});
+  reg({k:'gzclinicd',id:'gzclinic',nm:'GRA FAMILY CLINIC',h:[8,20],x:L.x,z:C[0]+8+3-1.1,yaw:Math.PI,bx:L.x,bz:C[0]+8+3-0.15,br:Math.PI});
+  box(L.x-9,3.4,C[0]+8+3-0.1,0.5,5,0.1,'#e8e4da');box(L.x-9,5.2,C[0]+8+3-0.1,2.6,0.8,0.12,'#c1352d');box(L.x-9,5.2,C[0]+8+3-0.1,0.8,2.6,0.12,'#c1352d');
+  car(L.x+8,C[0]+8+20,0,'#e0e0e0');car(L.x-6,C[0]+8+22,0,'#8e2f2f');tree(L.x+12,C[0]+8+27);tree(L.x-12,C[0]+8+27);
+  /* BISTRO: north of Remi Fani-Kayode Avenue, east arm, face south */
+  L=lotOf('pub:bistro');
+  paveB(L.x,C[1]-8-1.5,L.w-2,3);
+  SHP({face:'S',x:L.x,z:C[1]-8-3-5.5,w:24,d:11,floors:2,name:'GRA BISTRO AND LOUNGE',sbg:'#7a2e65',sfg:'#f2d36b',aw:'#7a2e65',wall:'#efe3d2'});
+  reg({k:'gzbistrod',id:'gzbistro',nm:'GRA BISTRO AND LOUNGE',h:[11,23],x:L.x,z:C[1]-8-3+1.1,yaw:0,bx:L.x,bz:C[1]-8-3+0.15,br:0});
+  [-9,-5,5,9].forEach(function(dx){cyl(L.x+dx,0.55,C[1]-8-1.4,1.1,0.08,1.1,'#d9d2c2');cyl(L.x+dx,0.28,C[1]-8-1.4,0.12,0.56,0.12,'#3a3d40');});
+  car(L.x-8,C[1]-8-23,0,'#d9a520');car(L.x+7,C[1]-8-24,0,'#14161a');tree(L.x-12,C[1]-8-28);tree(L.x+11,C[1]-8-29);
+  /* CHAPEL: at the top of Oba Akinjobi Way, face south */
+  var chz=ZT-0.2+7;                                   /* a small forecourt wall behind */
+  paveB(SP,ZE+1.5,14,3);
+  SHP({face:'S',x:SP,z:ZE-6.2,w:16,d:12,floors:2,name:'GRA COMMUNITY CHAPEL',sbg:'#d9d2c2',sfg:'#1d5c3a',aw:'#1d5c3a',wall:'#f4f1e8'});
+  box(SP,10.8,ZE-6.2,0.4,5,0.4,'#f1efe6');box(SP,11.6,ZE-6.2,2.2,0.4,0.4,'#f1efe6');
+  reg({k:'gzchapeld',id:'gzchapel',nm:'GRA COMMUNITY CHAPEL',h:[6,20],x:SP,z:ZE+1.1,yaw:0,bx:SP,bz:ZE+0.15,br:0});
+  /* ---------- the Speaker's lodge ---------- */
+  L=lotOf('lodge');
+  (function(){
+    var cx=L.x,cz=L.z,hx=cx+10;
+    lawn(cx,cz,L.w-0.8,L.d-0.8,'#4f8a3a');
+    paveB(cx-9,cz,14,L.d*0.5,'#9a9486');
+    building({kind:'multi',face:'W',x:hx,z:cz,w:14,d:24,h:11,floors:3,balcony:true,wall:'#f1efe6',roof:'#2d6a4f'});
+    box(cx-2.2,2.0,cz-6.6,0.5,4,0.5,'#e8e4da');box(cx-2.2,2.0,cz+6.6,0.5,4,0.5,'#e8e4da');box(cx-2.2,4.2,cz,0.6,0.5,14,'#e8e4da');
+    solid(cx-2.2,cz-6.6,0.6,0.6,4);solid(cx-2.2,cz+6.6,0.6,0.6,4);
+    cyl(cx-12,5.5,cz-18,0.14,11,0.14,'#dddddd');box(cx-11.4,10.2,cz-18,1.4,0.9,0.04,'#1f8a4c');box(cx-11.4,9.4,cz-18,1.4,0.5,0.04,'#ffffff');
+    box(cx-12,1.4,cz+18,2.4,2.8,2.4,'#cfd8d4');box(cx-12,2.9,cz+18,2.8,0.2,2.8,'#2d4a5a');solid(cx-12,cz+18,2.6,2.6,3);
+    car(cx-7,cz-9,0,'#14161a');car(cx-7,cz+10,0,'#14161a');
+    [[cx+4,cz-22],[cx+4,cz+22],[cx-14,cz-8],[cx-14,cz+8],[cx+20,cz-13],[cx+20,cz+13]].forEach(function(p){tree(p[0],p[1]);});
+    addSign('OFFICIAL RESIDENCE. SPEAKER, LAGOS STATE HOUSE OF ASSEMBLY','#14161a','#f2d36b',cx-15.8,3.3,cz,-Math.PI/2,12,0.9);
+    GZ.lodge={x:cx,z:cz};
+  })();
+  /* ---------- the park, east arm of block 1 ---------- */
+  (function(){
+    var x0=AE[0],x1=AE[1],z0=C[0]-8,z1=C[1]+8,cx=(x0+x1)/2,cz=(z0+z1)/2;
+    lawn(cx,cz,x1-x0-1,z1-z0-1,'#68a04a');
+    /* crossing paths, a round bed with a fountain, a pavilion, benches, a slide */
+    box(cx,0.05,cz,x1-x0-2,0.1,3,'#c9bfa8');box(cx,0.05,cz,3,0.1,z1-z0-2,'#c9bfa8');
+    cyl(cx,0.15,cz,9,0.3,9,'#9a9486');cyl(cx,0.25,cz,7.4,0.5,7.4,'#3f7fb0');cyl(cx,0.9,cz,1.4,1.8,1.4,'#d9d2c2');cyl(cx,1.9,cz,3,0.3,3,'#d9d2c2');
+    solid(cx,cz,9,9,0.6);
+    [[cx-14,cz-12],[cx+14,cz-12],[cx-14,cz+12],[cx+14,cz+12]].forEach(function(p,q){
+      box(p[0],0.55,p[1],2.6,0.12,0.7,'#8a6a45');box(p[0],0.3,p[1]-0.3,2.4,0.5,0.1,'#5a4631');solid(p[0],p[1],2.6,0.8,0.6);
+    });
+    var px=cx-25,pz=cz-18;
+    [[-2.2,-2.2],[2.2,-2.2],[-2.2,2.2],[2.2,2.2]].forEach(function(q){cyl(px+q[0],1.6,pz+q[1],0.35,3.2,0.35,'#d9d2c2');});
+    box(px,3.4,pz,6.4,0.35,6.4,'#7a3b2a');box(px,3.9,pz,3.6,0.5,3.6,'#7a3b2a');solid(px,pz,5.2,5.2,3.4);
+    box(cx+24,1.1,cz+16,0.3,2.2,2.6,'#e0584c');box(cx+24+1.6,0.9,cz+16,3,0.2,0.9,'#c9c9c9');solid(cx+24,cz+16,0.6,2.6,2.2);
+    for(i=0;i<10;i++)tree(x0+6+(i%5)*13.5,i<5?z0-5:z1+5);
+    addSign('GRA PARK','#1d5c3a','#ffffff',cx,3.6,z0+0.4,0,5,0.9);addSign('GRA PARK','#1d5c3a','#ffffff',cx,3.6,z1-0.4,Math.PI,5,0.9);
+    GZ.park={x:cx,z:cz,x0:x0,x1:x1,z0:z0,z1:z1};
+  })();
+  /* ---------- the tennis club, west arm of block 2 ---------- */
+  (function(){
+    var x0=AW[0],x1=AW[1],z0=C[1]-8,z1=C[2]+8,cx=(x0+x1)/2,cz=(z0+z1)/2;
+    lawn(cx,cz,x1-x0-1,z1-z0-1,'#68a04a');
+    [[cx-16,cz-10],[cx-16,cz+10]].forEach(function(p){
+      box(p[0],0.06,p[1],24,0.12,11,'#3b7a57');
+      box(p[0],0.13,p[1],23,0.02,0.1,'#f4f1e8');box(p[0],0.13,p[1]-5,23,0.02,0.1,'#f4f1e8');box(p[0],0.13,p[1]+5,23,0.02,0.1,'#f4f1e8');
+      box(p[0]-11.5,0.13,p[1],0.1,0.02,10,'#f4f1e8');box(p[0]+11.5,0.13,p[1],0.1,0.02,10,'#f4f1e8');
+      box(p[0],0.55,p[1],0.1,1.0,11,'#e8e4da');
+      [-1,1].forEach(function(s){box(p[0]+s*12.8,1.6,p[1],0.12,3.2,12.4,'#6b7a6a');});
+    });
+    box(cx+22,1.6,cz,10,3.2,12,'#e8e4da');curMat='roof';box(cx+22,3.4,cz,11,0.3,13,'#7a3b2a');curMat=null;solid(cx+22,cz,10,12,3.6);
+    addSign('GRA LAWN TENNIS CLUB','#1d5c3a','#ffffff',cx+16.9,2.4,cz,-Math.PI/2,6.2,0.8);
+    [[cx+6,cz-20],[cx+6,cz+20],[cx-30,cz-22],[cx-30,cz+22]].forEach(function(p){tree(p[0],p[1]);});
+    addSign('GRA LAWN TENNIS CLUB','#1d5c3a','#ffffff',cx,3.6,z0+0.4,0,6,0.9);
+    GZ.tennis={x:cx,z:cz};
+  })();
+  /* ---------- lamps, trees and the standing water ---------- */
+  var lx,lz;
+  for(lz=ZS-15;lz>ZE+6;lz-=30){
+    var o1=false;C.forEach(function(c){if(Math.abs(lz-c)<14)o1=true;});if(o1)continue;
+    lamp(SP-6.4,lz,Math.PI/2);ALAMPS.push([SP-5.2,lz]);
+    lamp(SP+6.4,lz-15,-Math.PI/2);ALAMPS.push([SP+5.2,lz-15]);
+  }
+  C.forEach(function(cz){
+    for(lx=X0+16;lx<X1-8;lx+=30){if(Math.abs(lx-SP)<20)continue;lamp(lx,cz-6.4,0);ALAMPS.push([lx,cz-5.2]);}
+    for(lx=X0+31;lx<X1-8;lx+=30){if(Math.abs(lx-SP)<20)continue;lamp(lx,cz+6.4,Math.PI);ALAMPS.push([lx,cz+5.2]);}
+  });
+  for(lz=ZS-18;lz>ZE+8;lz-=15){
+    var o2=false;C.forEach(function(c){if(Math.abs(lz-c)<13)o2=true;});if(o2)continue;
+    tree(SP-7.8,lz);tree(SP+7.8,lz-7.5);
+  }
+  /* the water: this part of the GRA floods when it rains (a 2022 report blames poor drainage). flat dark patches, cosmetic only. */
+  [[SP-1.6,-148,5.5,2.2],[SP+1.8,-246,6,2.4],[SP-2,-290,5,2.2],[-1250,C[0]+1.4,6,2.4],[-1100,C[1]-1.2,6.5,2.4],[-1230,C[2]+1.2,5.5,2.2],[SP+2,-92,4.6,2]].forEach(function(p){
+    box(p[0],0.078,p[1],p[2],0.01,p[3],'#51666b');
+  });
+  GZ.built=true;
+})();
+
+CHK=CHK_SAVE14;
+/* ---- b61: five places in Ikeja GRA you can walk into: the bistro, the family clinic, the superstore, the law chambers and the community chapel ---- */
+var GZR={gzbistro:[3025,42],gzclinic:[3090,-42],gzstore:[3090,-14],gzlaw:[3090,14],gzchapel:[3090,42]};
+(function(){
+  function table(x,z,col,w,d){w=w||1.5;d=d||0.95;box(x,0.75,z,w,0.08,d,col||'#8a6a45');[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){box(x+p[0]*(w/2-0.1),0.37,z+p[1]*(d/2-0.1),0.08,0.74,0.08,'#3a2a1c');});solid(x,z,w,d,0.8);}
+  function plant(x,z,s){s=s||1;cyl(x,0.4,z,0.7,0.8,0.7,'#8a5a3a');lump(x,1.4,z,0.9*s,1.0*s,0.9*s,'#2f6a34');}
+  function counter(x,z,w,col){box(x,0.55,z,w,1.1,0.8,col||'#2b2118');box(x,1.14,z,w+0.2,0.1,1.0,'#e9e4d6');solid(x,z,w+0.2,1.0,1.2);}
+  function bench(x,z,w,col){box(x,0.45,z,w,0.1,0.6,col||'#8a6a45');box(x-w/2+0.2,0.22,z,0.1,0.44,0.5,'#5a4631');box(x+w/2-0.2,0.22,z,0.1,0.44,0.5,'#5a4631');solid(x,z,w,0.6,0.5);}
+  function stool(x,z,col){cyl(x,0.3,z,0.4,0.6,0.4,col||'#3a2a1c');cyl(x,0.62,z,0.5,0.1,0.5,col||'#7a2e65');}
+  var WARE=['#c1352d','#e07a1f','#2f6fb1','#d9a520','#2a7a4a','#7a2e65'];
+  function shelf(x,z,w,d,seed){box(x,1.1,z,w,2.2,d,'#6e6a60');[0.5,1.1,1.7].forEach(function(h,hi){var n=Math.floor(w/0.7),q;for(q=0;q<n;q++)box(x-w/2+0.45+q*0.7,h+0.3,z,0.5,0.4,d+0.06,WARE[(q+hi*2+seed)%6]);});solid(x,z,w,d,2.2);}
+  /* ----- THE GRA BISTRO AND LOUNGE ----- */
+  (function(){
+    var cx=GZR.gzbistro[0],cz=GZR.gzbistro[1],W=30,D=22,H=5,X=function(v){return cx+v;},Z=function(v){return cz+v;},i,j;
+    ROOMFN('gzbistro',cx,cz,W,D,H,{floor:'#6b4a33',wall:'#efe3d2',trim:'#7a2e65',ceil:'#2a1f2e'},{out:'gzbistrod',nm:'GRA BISTRO AND LOUNGE',doorX:cx-10});
+    box(X(0),2.0,Z(-10.7),W-2,4.0,0.3,'#d9c8ae');
+    /* the bar along the back wall, a mirror and rows of bottles */
+    counter(X(-5),Z(-8.2),12,'#2b2118');box(X(-5),2.2,Z(-10.4),11,1.6,0.1,'#9ec3d8');
+    for(i=0;i<9;i++)box(X(-9.6+i*1.2),1.7+((i%2)*0.5),Z(-10.3),0.3,0.7+((i%3)*0.1),0.3,WARE[i%6]);
+    for(i=0;i<5;i++)stool(X(-8+i*2.2),Z(-6.6));
+    counter(X(9),Z(-8.2),6,'#7a2e65');
+    addSign('BAR','#7a2e65','#f2d36b',X(-5),3.4,Z(-10.5),0,3.4,0.7);addSign('KITCHEN. ORDER HERE','#7a2e65','#f2d36b',X(9),3.4,Z(-10.5),0,6,0.7);
+    addSign('GRA BISTRO AND LOUNGE','#14161a','#f2d36b',X(1),4.4,Z(-10.5),0,12,0.8);
+    /* tables with chairs, and a velvet sofa corner */
+    [[-9,0],[-4,0],[1,0],[6,0],[-9,5],[-4,5],[1,5],[6,5]].forEach(function(p,q){
+      table(X(p[0]),Z(p[1]),q%2?'#8a6a45':'#6b4a33',1.5,1.0);
+      CHAIRFN(X(p[0]),Z(p[1]-1.1),0,'#7a2e65');CHAIRFN(X(p[0]),Z(p[1]+1.1),Math.PI,'#7a2e65');
+    });
+    SOFAFN(X(12),Z(1),-Math.PI/2,5,'#4a1f3d','#7a2e65');SOFAFN(X(12),Z(6),-Math.PI/2,4,'#4a1f3d','#7a2e65');
+    table(X(9.5),Z(3.5),'#2b2118',1.0,1.6);
+    plant(X(-14),Z(-9.5));plant(X(14),Z(9.5));plant(X(-14),Z(9.5));
+    /* fairy lights */
+    for(i=0;i<14;i++)box(X(-13+i*2),H-0.45-(i%2)*0.12,Z(-3),0.14,0.14,0.14,'#ffd98a');
+  })();
+  /* ----- THE GRA FAMILY CLINIC ----- */
+  (function(){
+    var cx=GZR.gzclinic[0],cz=GZR.gzclinic[1],W=26,D=22,H=4.6,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('gzclinic',cx,cz,W,D,H,{floor:'#d8dfdc',wall:'#f4f8f6',trim:'#1f8a4c',ceil:'#ffffff'},{out:'gzclinicd',nm:'GRA FAMILY CLINIC',doorX:cx-9});
+    box(X(0),1.9,Z(-10.7),W-2,3.8,0.3,'#e6eeea');
+    counter(X(-6),Z(-8.2),8,'#1f8a4c');
+    addSign('RECEPTION','#1f8a4c','#ffffff',X(-6),3.0,Z(-10.4),0,4.4,0.6);
+    addSign('GRA FAMILY CLINIC','#14161a','#f2d36b',X(2),4.0,Z(-10.4),0,10,0.7);
+    /* the red cross on the wall, a height chart and a scale */
+    box(X(8),2.6,Z(-10.5),0.7,2.4,0.06,'#c1352d');box(X(8),2.6,Z(-10.5),2.4,0.7,0.06,'#c1352d');
+    box(X(11.5),1.5,Z(-10.5),0.5,2.8,0.05,'#e8e4da');for(i=0;i<8;i++)box(X(11.5),0.5+i*0.32,Z(-10.45),0.3,0.03,0.03,'#14161a');
+    box(X(12.2),0.1,Z(-6.5),0.9,0.2,0.9,'#c9c9c9');box(X(12.2),0.9,Z(-6.9),0.1,1.5,0.1,'#c9c9c9');solid(X(12.2),Z(-6.5),0.9,0.9,0.3);
+    /* two treatment beds with curtains on the right wall */
+    [1.5,7.5].forEach(function(bz){
+      box(X(10.6),0.55,Z(bz),3.0,0.14,1.5,'#eef3f1');box(X(10.6),0.3,Z(bz),3.0,0.3,1.4,'#8a929a');box(X(9.4),0.78,Z(bz),0.7,0.2,1.1,'#ffffff');solid(X(10.6),Z(bz),3.0,1.5,0.7);
+      box(X(10.6),2.0,Z(bz-1.05),3.4,2.6,0.05,'#bcd8cf');box(X(10.6),2.0,Z(bz+1.05),3.4,2.6,0.05,'#bcd8cf');
+    });
+    /* waiting benches, a water dispenser and plants */
+    [[-8,-1.5],[-8,2.5],[-3,-1.5],[-3,2.5]].forEach(function(p){bench(X(p[0]),Z(p[1]+3),3.6,'#1f8a4c');});
+    cyl(X(-12.2),0.7,Z(-3),0.5,1.4,0.5,'#e8e4da');cyl(X(-12.2),1.6,Z(-3),0.4,0.5,0.4,'#7fc4e8');solid(X(-12.2),Z(-3),0.6,0.6,1.8);
+    plant(X(-12.2),Z(9.2));plant(X(12.2),Z(-9.4));
+    addSign('PLEASE WASH YOUR HANDS','#1f8a4c','#ffffff',X(-12.9),2.6,Z(4),Math.PI/2,4,0.6);
+  })();
+  /* ----- THE GRA SUPERSTORE ----- */
+  (function(){
+    var cx=GZR.gzstore[0],cz=GZR.gzstore[1],W=32,D=22,H=5,X=function(v){return cx+v;},Z=function(v){return cz+v;},i;
+    ROOMFN('gzstore',cx,cz,W,D,H,{floor:'#d9d5ca',wall:'#f3efe4',trim:'#e07a1f',ceil:'#faf8f2'},{out:'gzstored',nm:'GRA SUPERSTORE',doorX:cx-11});
+    box(X(0),2.0,Z(-10.7),W-2,4.0,0.3,'#e6e0d2');
+    counter(X(-8),Z(-8.2),7,'#e07a1f');counter(X(2),Z(-8.2),7,'#2a7a4a');counter(X(11),Z(-8.2),6,'#c1352d');
+    addSign('TILL 1','#e07a1f','#ffffff',X(-8),3.0,Z(-10.4),0,3.6,0.6);addSign('FRESH AND FROZEN','#2a7a4a','#ffffff',X(2),3.0,Z(-10.4),0,6,0.6);addSign('BAKERY AND DRINKS','#c1352d','#ffffff',X(11),3.0,Z(-10.4),0,6,0.6);
+    addSign('GRA SUPERSTORE','#14161a','#f2d36b',X(2),4.4,Z(-10.4),0,12,0.8);
+    /* aisles */
+    for(i=0;i<3;i++){shelf(X(-9+i*0),Z(-2+i*3.6),9,0.9,i);shelf(X(5),Z(-2+i*3.6),9,0.9,i+3);}
+    box(X(-14.8),1.0,Z(3),0.9,2.0,10,'#c9d6e0');
+    for(i=0;i<4;i++)box(X(-14.8),0.5+i*0.5,Z(3),0.95,0.1,9.5,'#9ca9b3');solid(X(-14.8),Z(3),1.0,10,2.0);
+    for(i=0;i<3;i++){box(X(13),0.5,Z(2+i*2.4),1.5,1.0,1.0,'#8a6a45');lump(X(13),1.3,Z(2+i*2.4),1.2,0.6,0.8,WARE[i*2]);solid(X(13),Z(2+i*2.4),1.5,1.0,1.1);}
+    plant(X(-15),Z(9.5));plant(X(15),Z(9.5));
+  })();
+  /* ----- THE GRA LAW CHAMBERS ----- */
+  (function(){
+    var cx=GZR.gzlaw[0],cz=GZR.gzlaw[1],W=26,D=22,H=4.8,X=function(v){return cx+v;},Z=function(v){return cz+v;},i,j;
+    ROOMFN('gzlaw',cx,cz,W,D,H,{floor:'#4a3a2c',wall:'#e9e3d3',trim:'#1f3a68',ceil:'#f5f1e6'},{out:'gzlawd',nm:'GRA LAW CHAMBERS',doorX:cx-9});
+    box(X(0),1.9,Z(-10.7),W-2,3.8,0.3,'#d8d1bd');
+    counter(X(-6),Z(-8.2),8,'#1f3a68');addSign('RECEPTION','#1f3a68','#f2d36b',X(-6),3.0,Z(-10.4),0,4.4,0.6);
+    addSign('GRA LAW CHAMBERS','#14161a','#f2d36b',X(3),4.0,Z(-10.4),0,10,0.7);
+    /* a library wall of law reports and a long conference table */
+    box(X(11),1.9,Z(-10.4),8,3.8,0.5,'#4a3a2c');
+    for(j=0;j<5;j++)for(i=0;i<12;i++)box(X(7.6+i*0.6),0.7+j*0.7,Z(-10.1),0.42,0.55,0.3,['#7a2e2e','#1f3a68','#3d5a40','#5a3b2a'][(i+j)%4]);
+    solid(X(11),Z(-10.4),8,0.6,3.8);
+    box(X(2),0.8,Z(2),10,0.16,2.6,'#3a2a1c');box(X(2),0.4,Z(2),9.4,0.8,2.2,'#2b2118');solid(X(2),Z(2),10,2.6,0.9);
+    for(i=0;i<5;i++){CHAIRFN(X(-1.5+i*2),Z(0.2),0,'#1f3a68');CHAIRFN(X(-1.5+i*2),Z(3.8),Math.PI,'#1f3a68');}
+    /* a scale of justice on the reception desk and a flag */
+    box(X(-6),1.35,Z(-8.2),0.1,0.5,0.1,'#d9b24a');box(X(-6),1.62,Z(-8.2),1.2,0.06,0.06,'#d9b24a');
+    cyl(X(-12.2),1.3,Z(-9.6),0.1,2.6,0.1,'#cccccc');box(X(-11.7),2.2,Z(-9.6),1.0,0.6,0.04,'#1f8a4c');box(X(-11.7),1.7,Z(-9.6),1.0,0.4,0.04,'#ffffff');
+    bench(X(-9),Z(5),3.4,'#1f3a68');bench(X(-9),Z(8),3.4,'#1f3a68');
+    plant(X(-12.2),Z(9.2));plant(X(12.2),Z(9.2));
+  })();
+  /* ----- THE GRA COMMUNITY CHAPEL ----- */
+  (function(){
+    var cx=GZR.gzchapel[0],cz=GZR.gzchapel[1],W=24,D=22,H=6,X=function(v){return cx+v;},Z=function(v){return cz+v;},i,j;
+    ROOMFN('gzchapel',cx,cz,W,D,H,{floor:'#bfae8c',wall:'#f4f1e8',trim:'#1d5c3a',ceil:'#faf8f2'},{out:'gzchapeld',nm:'GRA COMMUNITY CHAPEL',doorX:cx-8});
+    /* the altar platform with a cross, a lectern and flowers */
+    box(X(0),0.2,Z(-8.2),12,0.4,5,'#8a6a45');box(X(0),0.5,Z(-8.2),8,0.2,3,'#a9854f');
+    box(X(0),3.4,Z(-10.7),0.5,4.4,0.2,'#f1efe6');box(X(0),4.0,Z(-10.7),2.4,0.5,0.2,'#f1efe6');
+    box(X(-4.5),1.0,Z(-8.2),1.1,1.2,0.8,'#5a3b2a');solid(X(-4.5),Z(-8.2),1.1,0.8,1.3);
+    box(X(0),0.9,Z(-7.6),2.4,0.9,1.0,'#f1efe6');solid(X(0),Z(-7.6),2.4,1.0,1.0);
+    plant(X(-6.5),Z(-9.4));plant(X(6.5),Z(-9.4));
+    addSign('GRA COMMUNITY CHAPEL','#1d5c3a','#f2d36b',X(0),5.2,Z(-10.9),0,10,0.8);
+    /* pews in two blocks with a centre aisle */
+    for(j=0;j<4;j++){bench(X(-5.5),Z(-3+j*2.6),8,'#8a6a45');bench(X(5.5),Z(-3+j*2.6),8,'#8a6a45');}
+    /* coloured windows along the side walls */
+    for(i=0;i<4;i++){box(X(-11.9),3.0,Z(-6+i*4.2),0.1,2.8,1.4,['#2f6fb1','#c1352d','#d9a520','#2a7a4a'][i]);box(X(11.9),3.0,Z(-6+i*4.2),0.1,2.8,1.4,['#2a7a4a','#d9a520','#c1352d','#2f6fb1'][i]);}
+    plant(X(-11),Z(9.3));plant(X(11),Z(9.3));
+  })();
+})();
+
 var WORLD_TRIS=0;
 Object.keys(BK).forEach(function(k){
   var B=BK[k],g=new THREE.BufferGeometry();
@@ -6488,7 +6852,7 @@ function collideCar(){
     }
   }
   var L=LIM-1.3;
-  if(car.x<-2708)car.speed*=0.4;car.x=Math.max(-2708,Math.min(XMAX-1.3,car.x));car.z=Math.max(-L,Math.min(L,car.z));
+  if(car.x<-2708)car.speed*=0.4;car.x=Math.max(-2708,Math.min(XMAX-1.3,car.x));car.z=Math.max(zlo(car.x)+1.3,Math.min(L,car.z));
   return hit;
 }
 function driveUpdate(dt,ctl){
@@ -6567,7 +6931,7 @@ function crashFx(tot){
   tone(90,0.25,'sawtooth',0.1,0);tone(60,0.3,'square',0.08,0.03);
 }
 function freeSpot(px,pz){
-  if(px<XMIN||px>XMAX||Math.abs(pz)>LIM)return false;
+  if(px<XMIN||px>XMAX||pz>LIM||pz<zlo(px))return false;
   for(var i=0;i<solids.length;i++){
     var s=solids[i],cx=Math.max(s.minX,Math.min(px,s.maxX)),cz=Math.max(s.minZ,Math.min(pz,s.maxZ));
     if((px-cx)*(px-cx)+(pz-cz)*(pz-cz)<(PR+0.05)*(PR+0.05))return false;
@@ -6576,7 +6940,8 @@ function freeSpot(px,pz){
 }
 
 /* collision: circle against axis-aligned boxes */
-var LIM=66,PR=0.38,XMIN=-7200,XMAX=3090;
+var LIM=66,PR=0.38,XMIN=-7200,XMAX=3220,ZW=[[-1285,-1065,-314]];
+function zlo(x){for(var i=0;i<ZW.length;i++){var w=ZW[i];if(x>=w[0]&&x<=w[1])return w[2];}return -LIM;}
 function collide(px,pz){
   for(var it=0;it<2;it++){
     for(var i=0;i<solids.length;i++){
@@ -6593,7 +6958,7 @@ function collide(px,pz){
     }
     if(!driving){carPush(px,pz);px=_cx;pz=_cz;trafficPush(px,pz);px=_cx;pz=_cz;}
   }
-  px=Math.max(XMIN,Math.min(XMAX,px));pz=Math.max(-LIM,Math.min(LIM,pz));
+  px=Math.max(XMIN,Math.min(XMAX,px));pz=Math.max(zlo(px),Math.min(LIM,pz));
   player.x=px;player.z=pz;
 }
 function turnToward(a,b,t){var d=((b-a+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;return a+d*Math.min(1,t);}
@@ -6669,7 +7034,7 @@ function pfBuild(cx,cz,half){
   }
   for(j=0;j<n;j++)for(i=0;i<n;i++){
     var wx=x0+(i+0.5)*c,wz=z0+(j+0.5)*c;
-    if(wx<XMIN+PR||wx>XMAX-PR||wz<-LIM+PR||wz>LIM-PR)blk[j*n+i]=1;
+    if(wx<XMIN+PR||wx>XMAX-PR||wz<zlo(wx)+PR||wz>LIM-PR)blk[j*n+i]=1;
   }
   return {n:n,x0:x0,z0:z0,blk:blk};
 }
@@ -8014,7 +8379,7 @@ var CT=(function(){
   }
   function gfree(px,pz,r){
     if(!G||GN!==solids.length)gridBuild();
-    if(px<XMIN||px>XMAX||Math.abs(pz)>LIM)return false;
+    if(px<XMIN||px>XMAX||pz>LIM||pz<zlo(px))return false;
     var c=Math.floor(px/GC),a,i,s,L,r2=r*r;
     for(a=c-1;a<=c+1;a++){
       L=G[a];if(!L)continue;
@@ -9018,8 +9383,8 @@ function dayUpdate(dt){
   sun.color.copy(a.sc).lerp(b.sc,f);sun.intensity=a.si+(b.si-a.si)*f;
   celestial(a.glow+(b.glow-a.glow)*f,rainAmt);
   var glow=a.glow+(b.glow-a.glow)*f,on=glow>0.03;
-  var lcx=driving?car.x:player.x;
-  for(var l=0;l<lampSprites.length;l++){var near=on&&Math.abs(lampSprites[l].position.x-lcx)<115;lampSprites[l].visible=near;lampPools[l].visible=near;if(near){lampSprites[l].material.opacity=glow;lampPools[l].material.opacity=glow*0.32;}}
+  var lcx=driving?car.x:player.x,lcz=driving?car.z:player.z;
+  for(var l=0;l<lampSprites.length;l++){var near=on&&Math.abs(lampSprites[l].position.x-lcx)<115&&Math.abs(lampSprites[l].position.z-lcz)<130;lampSprites[l].visible=near;lampPools[l].visible=near;if(near){lampSprites[l].material.opacity=glow;lampPools[l].material.opacity=glow*0.32;}}
   beamMat.opacity=glow*0.17;
   flareS.visible=Math.abs(706-lcx)<170;if(flareS.visible){var ft=performance.now()/1000;flareS.material.opacity=0.38+glow*0.45+0.12*Math.sin(ft*9)*Math.sin(ft*3.7);var fs=13+1.8*Math.sin(ft*7);flareS.scale.set(fs,fs,1);}
   WMAT.wglow.opacity=Math.min(1,glow*1.05);
@@ -9039,7 +9404,8 @@ var MW=480,MH=200,mapC=$('map'),mapX=mapC.getContext('2d'),mapBG=document.create
 mapBG.width=MW;mapBG.height=MH;
 var mapReg=0,MR=[[-270,250],[227,543],[462,778],[702,1018],[952,1268],[-562,-170],[-882,-558],[-1342,-878],[-1922,-1338],[-2482,-1888],[-3044,-2448],[-3430,-3040],[-3790,-3400],[-4170,-3780],[-4580,-4160],[-5000,-4570],[-5430,-4990],[-5860,-5420],[-6300,-5860],[-6740,-6300],[-7180,-6740]],mapBG2=document.createElement('canvas'),mapBG3=document.createElement('canvas'),mapBG4=document.createElement('canvas'),mapBG5=document.createElement('canvas');[mapBG2,mapBG3,mapBG4,mapBG5].forEach(function(c){c.width=MW;c.height=MH;});var MAPBGS=[null,mapBG2,mapBG3,mapBG4,mapBG5];
 function MX(x){var r=MR[mapReg];return (x-r[0])/(r[1]-r[0])*MW;}
-function MZ(z){return (z+LIM)/(2*LIM)*MH;}
+var mapGZ=false;
+function MZ(z){return mapGZ?(z-GZMZ0)/(GZMZ1-GZMZ0)*MH:(z+LIM)/(2*LIM)*MH;}
 (function(){
   var g=mapBG.getContext('2d');
   g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
@@ -9320,11 +9686,39 @@ function drawFZ(mr,cv){
   mapReg=0;
 }
 drawFZ(19,mapBG20);drawFZ(20,mapBG21);
+/* ---- b61: the minimap for the side road. When you are north of the old GRA street the map swaps to a taller view of the new streets. ---- */
+var mapBG22=document.createElement('canvas');mapBG22.width=MW;mapBG22.height=MH;
+var GZMZ0=-324,GZMZ1=4;
+(function(){
+  mapGZ=true;mapReg=7;
+  var g=mapBG22.getContext('2d'),r=MR[7],i,SP=GZ.sp,C=GZ.c;
+  function rx(x0,x1,z0,z1,col){g.fillStyle=col;g.fillRect(MX(x0),MZ(z0),MX(x1)-MX(x0),MZ(z1)-MZ(z0));}
+  g.fillStyle='#8f6542';g.fillRect(0,0,MW,MH);
+  rx(r[0],r[1],-5,5,'#4a4d52');                       /* the main road */
+  rx(SP-4.5,SP+4.5,GZ.zn+14,-5,'#4a4d52');            /* Oba Akinjobi Way */
+  C.forEach(function(cz){rx(GZ.x0,GZ.x1,cz-4,cz+4,'#4a4d52');});
+  rx(GZ.park.x0,GZ.park.x1,GZ.park.z0,GZ.park.z1,'#68a04a');
+  rx(GZ.tennis.x-34.5,GZ.tennis.x+34.5,C[1]-8,C[2]+8,'#68a04a');
+  g.strokeStyle='#1d5c3a';g.lineWidth=2;g.strokeRect(MX(GZ.x0),MZ(GZ.zn),MX(GZ.x1)-MX(GZ.x0),MZ(GZ.zs)-MZ(GZ.zn));
+  g.fillStyle='#c9b08a';
+  for(i=0;i<solids.length;i++){
+    var q=solids[i],w=q.maxX-q.minX,d=q.maxZ-q.minZ;
+    if(q.maxX<r[0]||q.minX>r[1]||q.maxZ<GZMZ0||q.minZ>GZMZ1)continue;
+    if(q.h>=2.5&&(w>2.5||d>2.5))g.fillRect(MX(q.minX),MZ(q.minZ),Math.max(2,w/(r[1]-r[0])*MW),Math.max(2,d/(GZMZ1-GZMZ0)*MH));
+  }
+  g.font='bold 12px sans-serif';g.textAlign='center';
+  mapLabel(g,'OBA AKINJOBI WAY',MX(SP)+58,MZ(-60));
+  mapLabel(g,'GRA PARK',MX(GZ.park.x),MZ(GZ.park.z));
+  mapLabel(g,'TENNIS',MX(GZ.tennis.x),MZ(GZ.tennis.z));
+  mapLabel(g,'SPEAKER\'S LODGE',MX(GZ.lodge.x),MZ(GZ.lodge.z));
+  mapGZ=false;mapReg=0;
+})();
+
 function mapLabel(g,t,x,y){g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=3;g.strokeText(t,x,y);g.fillText(t,x,y);}
 function mapUpdate(dt){
   mapT+=dt;if(mapT<0.06)return;mapT=0;
   var g=mapX,i,cj=curJob(),px=driving?car.x:player.x,pz=driving?car.z:player.z,yaw=driving?car.h:player.yaw;
-  var rg=mreg(px);mapReg=rg;g.drawImage([mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10,mapBG11,mapBG12,mapBG13,mapBG14,mapBG15,mapBG16,mapBG17,mapBG18,mapBG19,mapBG20,mapBG21][rg],0,0);
+  var rg=mreg(px);mapReg=rg;mapGZ=(rg===7&&pz<-50&&px>-1300&&px<-1050);g.drawImage(mapGZ?mapBG22:[mapBG,mapBG2,mapBG3,mapBG4,mapBG5,mapBG6,mapBG7,mapBG8,mapBG9,mapBG10,mapBG11,mapBG12,mapBG13,mapBG14,mapBG15,mapBG16,mapBG17,mapBG18,mapBG19,mapBG20,mapBG21][rg],0,0);
   if(px>1250){g.fillStyle='rgba(10,10,12,0.78)';g.fillRect(0,0,MW,MH);g.fillStyle='#fff';g.font='bold 26px sans-serif';g.textAlign='center';g.fillText('INSIDE A BUILDING',MW/2,MH/2);return;}
   g.fillStyle='#1b1b1b';
   for(i=0;i<traffic.length;i++)if(mreg(traffic[i].x)===rg)g.fillRect(MX(traffic[i].x)-3,MZ(traffic[i].z)-3,6,6);
@@ -9577,21 +9971,22 @@ var heat=0,heatCool=0,bustMeter=0,loseT=0,patrols=[],sirenO=null,sirenG=null,sir
 try{copsOn=localStorage.getItem('gtl_cops')!=='off';farePref=localStorage.getItem('gtl_fare')!=='off';}catch(e){}
 
 var heatEl=$('heat'),heatStars=$('heatStars'),heatBar=$('heatBar');
-var NAVC=2,NAVW=Math.ceil((XMAX-XMIN)/NAVC)+1,NAVH=Math.ceil(2*LIM/NAVC)+1,navBlock=null,navDist=new Int16Array(NAVW*NAVH),navQ=new Int32Array(NAVW*NAVH),navT=0;
+var NAVC=2,NAVZ=-316,NAVW=Math.ceil((XMAX-XMIN)/NAVC)+1,NAVH=Math.ceil((LIM-NAVZ)/NAVC)+1,navBlock=null,navDist=new Int16Array(NAVW*NAVH),navQ=new Int32Array(NAVW*NAVH),navT=0;
 function navBuild(){
   navBlock=new Uint8Array(NAVW*NAVH);var R=2.0;
   for(var si=0;si<solids.length;si++){
-    var s=solids[si],i0=Math.max(0,Math.floor((s.minX-R-XMIN)/NAVC)),i1=Math.min(NAVW-1,Math.ceil((s.maxX+R-XMIN)/NAVC)),j0=Math.max(0,Math.floor((s.minZ-R+LIM)/NAVC)),j1=Math.min(NAVH-1,Math.ceil((s.maxZ+R+LIM)/NAVC));
+    var s=solids[si],i0=Math.max(0,Math.floor((s.minX-R-XMIN)/NAVC)),i1=Math.min(NAVW-1,Math.ceil((s.maxX+R-XMIN)/NAVC)),j0=Math.max(0,Math.floor((s.minZ-R-NAVZ)/NAVC)),j1=Math.min(NAVH-1,Math.ceil((s.maxZ+R-NAVZ)/NAVC));
     for(var j=j0;j<=j1;j++)for(var i=i0;i<=i1;i++){
-      var cx=XMIN+i*NAVC,cz=-LIM+j*NAVC,dx=Math.max(s.minX-cx,0,cx-s.maxX),dz=Math.max(s.minZ-cz,0,cz-s.maxZ);
+      var cx=XMIN+i*NAVC,cz=NAVZ+j*NAVC,dx=Math.max(s.minX-cx,0,cx-s.maxX),dz=Math.max(s.minZ-cz,0,cz-s.maxZ);
       if(dx*dx+dz*dz<R*R)navBlock[j*NAVW+i]=1;
     }
   }
+  for(var j2=0;j2<NAVH;j2++){var cz2=NAVZ+j2*NAVC;if(cz2>-LIM)break;for(var i2=0;i2<NAVW;i2++){if(cz2<zlo(XMIN+i2*NAVC)+2||cz2<=-LIM&&zlo(XMIN+i2*NAVC)===-LIM)navBlock[j2*NAVW+i2]=1;}}
   for(var k=0;k<NAVW;k++){navBlock[k]=1;navBlock[(NAVH-1)*NAVW+k]=1;}
   for(var m=0;m<NAVH;m++){navBlock[m*NAVW]=1;navBlock[m*NAVW+NAVW-1]=1;}
 }
 function navCell(x,z){
-  var i=Math.max(0,Math.min(NAVW-1,Math.round((x-XMIN)/NAVC))),j=Math.max(0,Math.min(NAVH-1,Math.round((z+LIM)/NAVC)));return j*NAVW+i;
+  var i=Math.max(0,Math.min(NAVW-1,Math.round((x-XMIN)/NAVC))),j=Math.max(0,Math.min(NAVH-1,Math.round((z-NAVZ)/NAVC)));return j*NAVW+i;
 }
 function navFlow(tx,tz){
   if(!navBlock)navBuild();
@@ -9621,7 +10016,7 @@ function navTarget(x,z){
     if(bi===ci&&bj===cj)break;
     ci=bi;cj=bj;cur=bd;moved=true;
   }
-  return moved?[XMIN+ci*NAVC,-LIM+cj*NAVC]:null;
+  return moved?[XMIN+ci*NAVC,NAVZ+cj*NAVC]:null;
 }
 function buildPatrol(){
   var g=new THREE.Group();g.add(buildSedan('#ececec'));
@@ -9726,7 +10121,7 @@ function patrolsUpdate(dt){
         p.speed*=0.85;touching=true;if(car.speed>0)car.speed*=Math.max(0,1-1.4*dt);
       }
     }
-    p.x=Math.max(XMIN+1.5,Math.min(XMAX-1.5,nx));p.z=Math.max(-LIM+1.5,Math.min(LIM-1.5,nz));
+    p.x=Math.max(XMIN+1.5,Math.min(XMAX-1.5,nx));p.z=Math.max(zlo(p.x)+1.5,Math.min(LIM-1.5,nz));
     if(bumped){p.speed*=0.8;p.stuck+=dt;}else p.stuck=Math.max(0,p.stuck-dt*0.5);
     if(p.stuck>0.9){p.rev=1.0;p.stuck=0;p.stuckN=(p.stuckN||0)+1;}
     if(p.stuckN>=4){scene.remove(p.g);patrols.splice(i,1);i--;continue;}
@@ -16121,6 +16516,207 @@ function okBus(dest){
   IW('eagboju',[-13.5,-0.45],[13.5,-0.45],[[5,19]],0.5);IW('eagboju',[13,7],[-13,7],[[5,19]],0.5);IW('eagboju',[-0.5,-6],[-0.5,9],[[5,19]],0.4);IW('eagboju',[-14,-7.2],[14,-7.2],[[5,19]],0.45);
   IW('ealaba',[-13,-5],[13,-5],[[8,19]],0.45);IW('ealaba',[-12.5,4.5],[12.5,4.5],[[8,19]],0.45);IW('ealaba',[0.5,-4],[0.5,8],[[8,19]],0.4);
   IW('eokpark',[-13,-3.5],[12,-3.5],[[5,21]],0.45);IW('eokpark',[-9,0.8],[9,0.8],[[5,21]],0.45);IW('eokpark',[-3,8],[13,8],[[5,21]],0.45);IW('eokpark',[12.4,-4],[12.4,7],[[5,21]],0.4);
+})();
+
+/* ---- b61: Ikeja GRA people, opening hours, careers and the walkers. The layout, every person, shop, price and hour are invented.
+   The facts people tell you are from public sources (a 2022 newspaper report) and are labelled. ---- */
+var GZP=GZ.pubs;
+var GZF={
+  gra:'A GRA is a Government Reserved Area, an estate set aside for government officials and usually linked with upscale living. Ikeja GRA is in Ikeja, the capital of Lagos State, roughly a fifteen minute drive from the State House at Alausa, a 2022 newspaper report says. The street plan in this game is invented.',
+  then:'A 2022 report says that in the 1980s and 1990s Ikeja GRA was known for bungalows, a few duplexes and a quiet residential feel. Today it is a busy commercial zone, with walled apartment blocks and tall detached buildings among the homes. The houses and shops in this game are invented.',
+  speaker:'The official residence of the Speaker of the Lagos State House of Assembly is in Ikeja GRA, the same 2022 report says. The lodge in this game, its gate, its guard and its place on the map are invented.',
+  roads:'The 2022 report names GRA roads such as Oba Akinjobi Way, Adekunle Fajuyi Way, Remi Fani-Kayode Avenue, Sobo Arobiodu Street and Oduduwa Way, and calls several of them badly damaged. Flooding is blamed on poor drainage, and the state government had promised to fix it. The names Oba Akinjobi Way, Sobo Arobiodu Street and Remi Fani-Kayode Avenue are real, but the plan of the streets in this game is invented. Jacaranda Close is made up.'
+};
+var GZFARE={tennis:3000,retainer:12000};
+/* the bistro */
+function gzBsMenu(msg){
+  openDlg('MR BAYO (BARMAN)',(msg?msg+'  ':'')+'GRA Bistro and Lounge. Food from the kitchen, drinks from the bar. You have '+money(cash)+'.',[
+    {label:'LISTEN TO THE BAND (FREE, 1 HR)',fn:gzBsBand},
+    {label:'ABOUT IKEJA GRA TODAY',fn:function(){isInfo('MR BAYO (BARMAN)',GZF.then,gzBsMenu);}},
+    {label:'ABOUT THE GRA ROADS',fn:function(){isInfo('MR BAYO (BARMAN)',GZF.roads,gzBsMenu);}},
+    {label:'BYE'}]);
+}
+function gzBsBand(){applyFx({fun:20,social:8,energy:-2});advanceHours(1);saveGame();chime();gzBsMenu('A three-piece band plays highlife in the corner. You tap the table and the hour goes quickly.');}
+/* the clinic */
+function gzClMenu(msg){
+  var hp=Math.round(CT.S.hp);
+  openDlg('NURSE JOY (RECEPTION)',(msg?msg+'  ':'')+'GRA Family Clinic. Your health is '+hp+' out of 100. You have '+money(cash)+'.',[
+    {label:'DRESSING AND REST '+money(800),fn:function(){gzClHeal(800,30,0.3,'The nurse cleans and dresses your hurts, and you rest on a bed for a short while.');}},
+    {label:'FULL TREATMENT '+money(3500),fn:function(){gzClHeal(3500,100,1,'A doctor sees you, you get your drip and your pills, and you sleep an hour. You feel much better.');}},
+    {label:'ABOUT IKEJA GRA',fn:function(){isInfo('NURSE JOY (RECEPTION)',GZF.gra,gzClMenu);}},
+    {label:'BYE'}]);
+}
+function gzClHeal(price,amt,hrs,msg){
+  if(CT.S.hp>=100){gzClMenu('You are already in good health.');return;}
+  if(cash<price){buzz();gzClMenu('E no reach! That costs '+money(price)+'.');return;}
+  cash-=price;setCash();logTx('GRA Family Clinic',-price);CT.heal(amt);applyFx({energy:amt>=100?12:4,hygiene:amt>=100?10:2});advanceHours(hrs);saveGame();chime();
+  gzClMenu(msg);
+}
+/* the law chambers */
+function gzLwMenu(msg){
+  openDlg('BARR. TUNDE ADEYEMI (LAWYER)',(msg?msg+'  ':'')+'GRA Law Chambers. Contracts, land, and trouble with the police. You have '+money(cash)+'.',[
+    {label:'LEGAL RETAINER '+money(GZFARE.retainer),fn:gzLwRetain},
+    {label:'ABOUT IKEJA GRA',fn:function(){isInfo('BARR. TUNDE ADEYEMI (LAWYER)',GZF.gra,gzLwMenu);}},
+    {label:'ABOUT THE SPEAKER\'S LODGE',fn:function(){isInfo('BARR. TUNDE ADEYEMI (LAWYER)',GZF.speaker,gzLwMenu);}},
+    {label:'ABOUT THE GRA ROADS',fn:function(){isInfo('BARR. TUNDE ADEYEMI (LAWYER)',GZF.roads,gzLwMenu);}},
+    {label:'BYE'}]);
+}
+function gzLwRetain(){
+  if(heat<=0&&bustMeter<=0){gzLwMenu('Nobody is looking for you. Keep your money.');return;}
+  if(cash<GZFARE.retainer){buzz();gzLwMenu('The retainer is '+money(GZFARE.retainer)+'.');return;}
+  cash-=GZFARE.retainer;setCash();logTx('Law chambers retainer',-GZFARE.retainer);copsOff();saveGame();chime();
+  gzLwMenu('The barrister makes two calls and the file is closed. The police stop looking for you.');
+}
+/* the chapel */
+function gzChMenu(msg){
+  openDlg('MR EMEKA (VERGER)',(msg?msg+'  ':'')+'GRA Community Chapel. The doors are open to everyone.',[
+    {label:'SIT AND REST (FREE, 30 MIN)',fn:gzChSit},
+    {label:'ABOUT IKEJA GRA',fn:function(){isInfo('MR EMEKA (VERGER)',GZF.gra,gzChMenu);}},
+    {label:'ABOUT IKEJA GRA IN THE PAST',fn:function(){isInfo('MR EMEKA (VERGER)',GZF.then,gzChMenu);}},
+    {label:'BYE'}]);
+}
+function gzChSit(){applyFx({energy:4,fun:3,social:3});advanceHours(0.5);saveGame();chime();gzChMenu('You sit in the cool and quiet. The coloured windows throw patches of light on the floor. Half an hour passes.');}
+/* the tennis club */
+function gzTnMenu(msg){
+  openDlg('COACH SEGUN',(msg?msg+'  ':'')+'GRA Lawn Tennis Club. A set on the grass court is '+money(GZFARE.tennis)+'. You have '+money(cash)+'.',[
+    {label:'PLAY A SET '+money(GZFARE.tennis),fn:gzTnPlay},
+    {label:'ABOUT IKEJA GRA',fn:function(){isInfo('COACH SEGUN',GZF.gra,gzTnMenu);}},
+    {label:'BYE'}]);
+}
+function gzTnPlay(){
+  if(!isOpen(6,19)){buzz();gzTnMenu('The courts are for daylight, 6 AM to 7 PM.');return;}
+  if(cash<GZFARE.tennis){buzz();gzTnMenu('A set is '+money(GZFARE.tennis)+'.');return;}
+  if(need.energy<20){buzz();gzTnMenu('You look too tired to run about. Rest first.');return;}
+  cash-=GZFARE.tennis;setCash();logTx('Tennis set',-GZFARE.tennis);applyFx({fun:26,social:6,energy:-14,hunger:-8,hygiene:-8,bladder:-4});advanceHours(1);saveGame();chime();
+  gzTnMenu('You win the second game, lose the third, and finish the set in a sweat. An hour goes by.');
+}
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],n=0;
+  var D={
+    gzlawd:{look:{skin:sk[1],skin2:'#6a3e26',low:'#1f3a68',low2:'#14264a',top:'#e8e4da',head:'cap',hc:'#1f3a68'},name:'CHAMBERS GUARD',lbl:'LAW CHAMBERS',greet:'GRA Law Chambers. Open 8 AM to 5 PM.'},
+    gzstored:{look:{skin:sk[3],skin2:'#774a2e',low:'#e07a1f',low2:'#a85612',top:'#f1efe6',head:'cap',hc:'#e07a1f'},name:'STORE GUARD',lbl:'SUPERSTORE',greet:'GRA Superstore. Open 8 AM to 9 PM.'},
+    gzclinicd:{look:{skin:sk[2],skin2:'#4a2b1a',low:'#f0f3f2',low2:'#cfd8d4',top:'#1f8a4c',head:'cap',hc:'#ffffff'},name:'CLINIC SECURITY',lbl:'FAMILY CLINIC',greet:'GRA Family Clinic. Open 8 AM to 8 PM.'},
+    gzbistrod:{look:{skin:sk[0],skin2:'#5a3520',low:'#14161a',low2:'#0a0a0c',top:'#7a2e65',head:'cap',hc:'#7a2e65'},name:'DOORMAN',lbl:'BISTRO',greet:'GRA Bistro and Lounge. Open 11 AM to 11 PM.'},
+    gzchapeld:{look:{skin:sk[1],skin2:'#6a3e26',low:'#2a2a30',low2:'#1c1c20',top:'#f4f1e8',head:'',hs:'low'},name:'USHER',lbl:'CHAPEL',greet:'GRA Community Chapel. Open 6 AM to 8 PM.'}
+  };
+  GZP.forEach(function(p){
+    var d=D[p.k],lk=d.look;
+    addPerson(p.k,{x:p.x,z:p.z,yaw:p.yaw,skin:lk.skin,skin2:lk.skin2,low:lk.low,low2:lk.low2,top:lk.top,head:lk.head,hc:lk.hc,hc2:lk.hc2,hs:lk.hs},
+      {label:d.lbl,name:d.name,friend:false,items:[],greet:d.greet});
+    NK[p.k].npc.talk=function(){
+      if(!isOpen(p.h[0],p.h[1])){openDlg(d.name,p.nm+' is closed. It opens at '+hourText(p.h[0])+' and shuts at '+hourText(p.h[1])+'.',[{label:'OK'}]);return;}
+      openDlg(d.name,d.greet,[{label:'GO INSIDE',fn:function(){enterInt(p.id);}},{label:'BYE'}]);
+    };
+    addSign('CLOSED. OPEN '+hourText(p.h[0])+' TO '+hourText(p.h[1]),'#c1352d','#ffffff',p.bx,2.4,p.bz,p.br,3.2,0.6);
+    var m=SIGNS[SIGNS.length-1];m.hide=true;m.visible=false;OJCLOSED.push({m:m,p:p});
+    OJP.push(p);
+    DEST.push([p.nm,p.k]);
+  });
+  function inside(id,key,off,lookD,d,yaw){
+    var c=INTD[id].c;
+    addPerson(key,{x:c[0]+off[0],z:c[1]+off[1],yaw:yaw||0,skin:lookD.skin,skin2:lookD.skin2,low:lookD.low,low2:lookD.low2,top:lookD.top,head:lookD.head,hc:lookD.hc,hc2:lookD.hc2},d);
+  }
+  var CL='The place is closed. ';
+  /* the bistro */
+  inside('gzbistro','gzbistro',[-5,-6.6],{skin:sk[0],skin2:'#5a3520',low:'#14161a',low2:'#0a0a0c',top:'#f1efe6',head:'cap',hc:'#7a2e65'},
+    {label:'BAR',name:'MR BAYO (BARMAN)',svcLabel:'DRINKS',origLabel:'BAND AND FACTS',orig:function(){gzBsMenu();},friend:false,hours:[11,23],closed:'The bistro is closed. It opens at 11 AM.',greet:'What are you drinking? The band starts soon.',
+     items:[{l:'CHAPMAN',c:1500,food:1,fx:{hunger:4,energy:4,fun:4,bladder:-6},msg:'A tall, cold, fizzy chapman with a slice of cucumber.'},{l:'ZOBO',c:800,food:1,fx:{energy:4,fun:2,bladder:-6},msg:'Chilled zobo with pineapple.'},{l:'MALT',c:600,food:1,fx:{hunger:6,energy:5,fun:2,bladder:-4},msg:'A cold bottle of malt.'}]});
+  inside('gzbistro','gzbistro2',[9,-6.8],{skin:sk[2],skin2:'#4a2b1a',low:'#7a2e65',low2:'#561f46',top:'#f1efe6',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},
+    {label:'KITCHEN',name:'MISS FOLAKE (WAITRESS)',svcLabel:'ORDER FOOD',friend:false,career:'gzwaiter',hours:[11,23],closed:CL+'It opens at 11 AM.',greet:'Table for one? The kitchen is hot tonight.',
+     items:[{l:'JOLLOF AND CHICKEN',c:3500,food:1,fx:{hunger:55,fun:4,bladder:-3},msg:'Smoky jollof rice with a piece of grilled chicken and fried plantain.'},{l:'GRILLED FISH',c:4500,food:1,fx:{hunger:60,fun:5,bladder:-3},msg:'Whole grilled fish with pepper sauce and plantain.'},{l:'PEPPER SOUP',c:3000,food:1,fx:{hunger:34,energy:6,fun:4,bladder:-3},msg:'A bowl of hot goat meat pepper soup.'}]});
+  /* the clinic */
+  inside('gzclinic','gzclinic',[-6,-6.8],{skin:sk[2],skin2:'#4a2b1a',low:'#f0f3f2',low2:'#cfd8d4',top:'#1f8a4c',head:'cap',hc:'#ffffff'},
+    {label:'RECEPTION',name:'NURSE JOY (RECEPTION)',svcLabel:'',origLabel:'TREATMENT AND FACTS',orig:function(){gzClMenu();},friend:false,career:'gzreception',hours:[8,20],closed:'The clinic is closed. It opens at 8 AM.',greet:'Good day. Are you hurt? Take a seat and tell me.',items:[]});
+  inside('gzclinic','gzclinic2',[7,-6.8],{skin:sk[1],skin2:'#6a3e26',low:'#e8e4da',low2:'#c9c9c9',top:'#bcd8cf',head:'cap',hc:'#ffffff'},
+    {label:'PHARMACY HATCH',name:'PHARMACIST ODUYA',svcLabel:'BUY',friend:false,hours:[8,20],closed:CL+'It opens at 8 AM.',greet:'Water, glucose and ORS. For prescriptions, see the doctor first.',
+     items:[{l:'SACHET WATER',c:100,food:1,fx:{energy:2,bladder:-3},msg:'A sachet of cold water.'},{l:'GLUCOSE DRINK',c:700,food:1,fx:{hunger:8,energy:10,bladder:-3},msg:'A sweet glucose drink to perk you up.'},{l:'HAND SANITISER',c:600,fx:{hygiene:6,fun:1},msg:'A small bottle of sanitiser.'}]});
+  /* the superstore */
+  inside('gzstore','gzstore',[-8,-6.8],{skin:sk[3],skin2:'#774a2e',low:'#e07a1f',low2:'#a85612',top:'#f4f1e8',head:'cap',hc:'#e07a1f'},
+    {label:'TILL 1',name:'MRS EKE (CASHIER)',svcLabel:'BUY',friend:false,career:'gzcashier',hours:[8,21],closed:CL+'It opens at 8 AM.',greet:'Welcome. Scan, pay, go. No bargaining.',
+     items:[{l:'LOAF OF BREAD',c:1000,food:1,fx:{hunger:24,fun:2,bladder:-1},msg:'A fresh loaf in a nylon bag.'},{l:'NOODLES (PACK)',c:2800,food:1,fx:{hunger:22,fun:2},msg:'A pack of noodles, ready for the pot.'},{l:'BAR OF SOAP',c:300,fx:{hygiene:6,fun:1},msg:'A bar of blue soap.'},{l:'TIN OF MILK',c:1200,food:1,fx:{hunger:10,energy:6},msg:'A tin of evaporated milk.'}]});
+  inside('gzstore','gzstore2',[11,-6.8],{skin:sk[0],skin2:'#5a3520',low:'#c1352d',low2:'#8a2020',top:'#f1efe6',head:'cap',hc:'#14161a'},
+    {label:'BAKERY AND DRINKS',name:'MR BELLO (BAKERY)',svcLabel:'BUY',friend:false,hours:[8,21],closed:CL+'It opens at 8 AM.',greet:'Warm from the oven. Meat pie, doughnut, cold drink.',
+     items:[{l:'MEAT PIE',c:700,food:1,fx:{hunger:24,fun:3,bladder:-1},msg:'A warm meat pie.'},{l:'DOUGHNUT',c:400,food:1,fx:{hunger:14,fun:4},msg:'A sugary doughnut.'},{l:'COLD DRINK',c:400,food:1,fx:{hunger:4,energy:4,fun:3,bladder:-5},msg:'A cold bottled drink.'}]});
+  /* the law chambers */
+  inside('gzlaw','gzlaw',[-6,-6.8],{skin:sk[1],skin2:'#6a3e26',low:'#1f3a68',low2:'#14264a',top:'#f1efe6',head:'',hs:'low'},
+    {label:'LAWYER',name:'BARR. TUNDE ADEYEMI (LAWYER)',svcLabel:'',origLabel:'LEGAL HELP AND FACTS',orig:function(){gzLwMenu();},friend:false,career:'gzlawclerk',hours:[8,17],closed:'The chambers are closed. They open at 8 AM.',greet:'Sit down. Tell me what the trouble is.',items:[]});
+  inside('gzlaw','gzlaw2',[8,-6.8],{skin:sk[3],skin2:'#774a2e',low:'#7a2e65',low2:'#561f46',top:'#efe0bc',head:'gele',hc:'#7a2e65',hc2:'#f2b705'},
+    {label:'TEA AND BISCUITS',name:'MISS IFE (SECRETARY)',svcLabel:'BUY',friend:false,hours:[8,17],closed:CL+'It opens at 8 AM.',greet:'The barrister is busy. Some tea while you wait?',
+     items:[{l:'TEA AND BISCUITS',c:700,food:1,fx:{hunger:14,energy:6,fun:2,bladder:-3},msg:'Hot tea and two biscuits on a saucer.'},{l:'SACHET WATER',c:100,food:1,fx:{energy:2,bladder:-3},msg:'A sachet of cold water.'}]});
+  /* the chapel */
+  inside('gzchapel','gzchapel',[-4.5,-6.2],{skin:sk[1],skin2:'#6a3e26',low:'#2a2a30',low2:'#1c1c20',top:'#f4f1e8',head:'',hs:'low'},
+    {label:'VERGER',name:'MR EMEKA (VERGER)',svcLabel:'',origLabel:'REST AND FACTS',orig:function(){gzChMenu();},friend:false,career:'gzverger',hours:[6,20],closed:'The chapel is closed. It opens at 6 AM.',greet:'You are welcome. Sit anywhere.',items:[]});
+  inside('gzchapel','gzchapel2',[8,-4],{skin:sk[2],skin2:'#4a2b1a',low:'#1d5c3a',low2:'#12402a',top:'#f1efe6',head:'gele',hc:'#1d5c3a',hc2:'#f2b705'},
+    {label:'REFRESHMENTS',name:'MRS ADEBISI (CHOIR)',svcLabel:'BUY',friend:false,hours:[6,20],closed:CL+'It opens at 6 AM.',greet:'After the choir practice we sell little things for the building fund.',
+     items:[{l:'BUNS AND TEA',c:800,food:1,fx:{hunger:18,energy:5,fun:2,bladder:-3},msg:'A sweet bun and a cup of hot tea.'},{l:'SACHET WATER',c:100,food:1,fx:{energy:2,bladder:-3},msg:'A sachet of cold water.'}]});
+  /* exit doormen */
+  GZP.forEach(function(p){
+    var dd=INTD[p.id],c=dd.c;
+    addPerson(p.k+'x',{x:dd.dx+3.2,z:c[1]+dd.D/2-1.3,yaw:Math.PI,skin:sk[2],skin2:'#4a2b1a',low:'#2a2a30',low2:'#1c1c20',top:'#8a6a45',head:'',hs:'low'},
+      {label:'EXIT',name:'DOORMAN',friend:false,greet:'Leaving?'});
+    NK[p.k+'x'].npc.talk=function(){openDlg('DOORMAN','Leaving '+nice(p.nm)+'?',[{label:'LEAVE',fn:exitInt},{label:'STAY'}]);};
+  });
+  /* people in the streets */
+  var SP=GZ.sp,C=GZ.c;
+  addPerson('gzgate',{x:SP+5.2,z:GZ.zs-9,yaw:0,skin:sk[1],skin2:'#6a3e26',low:'#1c2a44',low2:'#121c30',top:'#2d4a5a',head:'cap',hc:'#14161a'},
+    {label:'GRA GATE',name:'ESTATE GUARD (INVENTED)',friend:false,greet:GZF.gra,items:[]});
+  DEST.push(['IKEJA GRA, OBA AKINJOBI WAY','gzgate']);
+  var LG=GZ.lodge;
+  addPerson('gzlodge',{x:SP+7.6,z:LG.z+4.4,yaw:-Math.PI/2,skin:sk[0],skin2:'#5a3520',low:'#14161a',low2:'#0a0a0c',top:'#2d4a5a',head:'cap',hc:'#14161a'},
+    {label:'SPEAKER\'S LODGE',name:'LODGE GUARD (INVENTED)',friend:false,greet:GZF.speaker,items:[]});
+  DEST.push(['SPEAKER\'S LODGE, IKEJA GRA','gzlodge']);
+  var PK=GZ.park;
+  addPerson('gzsuya',{x:PK.x-8,z:PK.z1+2.2,yaw:Math.PI,skin:sk[3],skin2:'#774a2e',low:'#2a5a34',low2:'#1c3a24',top:'#e07a1f',head:'cap',hc:'#14161a'},
+    {label:'SUYA',name:'MALLAM IDRIS (SUYA)',svcLabel:'BUY',friend:false,hours:[16,24],closed:'Mallam Idris sells suya from 4 PM until midnight.',greet:'Suya hot hot! Beef, kidney, with the yaji pepper.',
+     items:[{l:'BEEF SUYA',c:1500,food:1,fx:{hunger:26,fun:4,bladder:-1},msg:'Beef suya with onions and spicy yaji.'},{l:'ROASTED CORN',c:500,food:1,fx:{hunger:14,fun:2},msg:'Corn roasted on the coals.'},{l:'SACHET WATER',c:100,food:1,fx:{energy:2,bladder:-3},msg:'A sachet of cold water.'}]});
+  DEST.push(['GRA PARK SUYA STAND','gzsuya']);
+  var TN=GZ.tennis;
+  addPerson('gzcoach',{x:TN.x+17.6,z:TN.z+6,yaw:-Math.PI/2,skin:sk[2],skin2:'#4a2b1a',low:'#f4f1e8',low2:'#c9c9c9',top:'#1d5c3a',head:'cap',hc:'#ffffff'},
+    {label:'TENNIS CLUB',name:'COACH SEGUN',friend:false,items:[],greet:'GRA Lawn Tennis Club. Courts open 6 AM to 7 PM.'});
+  NK.gzcoach.npc.talk=function(){gzTnMenu();};
+  DEST.push(['GRA LAWN TENNIS CLUB','gzcoach']);
+  /* careers (pay and costs are invented) */
+  CARS.gzwaiter={name:'BISTRO WAITRESS',key:'gzbistro2',pay:4600,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-11,hunger:-4,hygiene:-4,fun:-4,bladder:-4}};
+  CARS.gzreception={name:'CLINIC RECEPTIONIST',key:'gzclinic',pay:5400,secs:30,req:'Education Level 1 (study at the school in Makoko, Ojuelegba or Yabatech)',ok:function(){return eduLevel()>=1;},cost:{energy:-9,hunger:-5,hygiene:-3,fun:-4,bladder:-4}};
+  CARS.gzcashier={name:'SUPERSTORE CASHIER',key:'gzstore',pay:4000,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-9,hunger:-5,hygiene:-3,fun:-4,bladder:-4}};
+  CARS.gzlawclerk={name:'CHAMBERS CLERK',key:'gzlaw',pay:6200,secs:30,req:'Education Level 2 (study at the school in Ojuelegba, Yabatech or the Ajegunle digital centre)',ok:function(){return eduLevel()>=2;},cost:{energy:-9,hunger:-5,hygiene:-2,fun:-5,bladder:-4}};
+  CARS.gzverger={name:'CHAPEL ASSISTANT',key:'gzchapel',pay:3200,secs:30,req:'No experience needed',ok:function(){return true;},cost:{energy:-8,hunger:-4,hygiene:-3,fun:-1,bladder:-4}};
+  ['gzwaiter','gzreception','gzcashier','gzlawclerk','gzverger'].forEach(function(k){if(CORDER.indexOf(k)<0)CORDER.push(k);});
+  /* taxi stops along the new streets */
+  [[SP+2.4,-90],[SP-2.4,-150],[SP+2.4,-218],[SP-2.4,-285],[GZ.x0+60,C[0]+2.4],[GZ.x1-60,C[0]-2.4],[GZ.x0+80,C[1]-2.4],[GZ.x1-80,C[1]+2.4],[GZ.x0+60,C[2]+2.4],[GZ.x1-60,C[2]-2.4]].forEach(function(q){FSPOTS.push(q);});
+})();
+/* people on the move */
+(function(){
+  var sk=['#6b4026','#7a4a2e','#5a3520','#8a5a38'],cl=['#f3efe2','#c1352d','#2f6fb1','#f2b705','#1f8a4c','#e7a6b3','#7a2e65','#e07a1f'],pn=['#2a2a30','#1e1e22','#26262b','#2a3a52'];
+  var n=0,SP=GZ.sp,C=GZ.c,X0=GZ.x0,X1=GZ.x1;
+  var COM=[[5,9.5],[16,21]],DAY=[[6,21]],EVE=[[17,23]],MORN=[[5.5,8.5]],ALL=[[5,23]];
+  function WK(a,b,win,sp){
+    var i=n++;
+    var w=makeWalker({fem:i%2,occ:i%2,look:i+4111,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:a,b:b,sp:sp||(0.9+(i%4)*0.2)});
+    OJW.push({w:w,win:win});w.off=true;
+  }
+  /* the pavements of Oba Akinjobi Way, in hops between the junctions */
+  [[-70,-108],[-126,-178],[-204,-256],[-282,-298]].forEach(function(r,i){
+    WK([SP-5.4,r[0]],[SP-5.4,r[1]],i%2?DAY:COM,0.8+(i%3)*0.1);
+    WK([SP+5.4,r[1]],[SP+5.4,r[0]],i%2?COM:DAY,0.9+(i%2)*0.1);
+  });
+  /* the cross streets, one hop each way */
+  C.forEach(function(cz,ci){
+    WK([X0+8,cz-5.1],[SP-12,cz-5.1],DAY,0.9+ci*0.1);WK([SP-12,cz+5.1],[X0+8,cz+5.1],ci%2?COM:DAY,1.0);
+    WK([SP+12,cz+5.1],[X1-8,cz+5.1],DAY,0.9);WK([X1-8,cz-5.1],[SP+12,cz-5.1],ci%2?DAY:EVE,1.0+ci*0.05);
+  });
+  /* the park and the tennis club */
+  var PK=GZ.park,TN=GZ.tennis;
+  WK([PK.x-30,PK.z+0.8],[PK.x+30,PK.z+0.8],MORN,1.7);WK([PK.x+30,PK.z-0.8],[PK.x-30,PK.z-0.8],MORN,1.6);
+  WK([PK.x-1,PK.z-24],[PK.x-1,PK.z+24],DAY,0.7);WK([PK.x+1,PK.z+24],[PK.x+1,PK.z-24],EVE,0.6);
+  WK([TN.x-28,TN.z-1],[TN.x+14,TN.z-1],DAY,0.5);
+  /* inside the rooms */
+  function IW(id,a,b,win,sp){var d=INTD[id].c;var i=n++;var w=makeWalker({fem:i%2,occ:1,look:i+4111,shirt:cl[i%8],pants:pn[i%4],skin:sk[i%4],hair:'#0d0d0d',shoe:'#2a2a2e',a:[d[0]+a[0],d[1]+a[1]],b:[d[0]+b[0],d[1]+b[1]],sp:sp||0.6});OJW.push({w:w,win:win});w.off=true;}
+  IW('gzbistro',[-13,-3.2],[13,-3.2],[[11,23]],0.45);IW('gzbistro',[-12,8.2],[13,8.2],[[11,23]],0.4);IW('gzbistro',[14.2,-6],[14.2,8],[[11,23]],0.4);
+  IW('gzclinic',[-11,-1],[8,-1],[[8,20]],0.4);IW('gzclinic',[-4,6],[-4,-2],[[8,20]],0.4);IW('gzclinic',[12,-7],[12,8],[[8,20]],0.35);
+  IW('gzstore',[-13,-4.5],[13,-4.5],[[8,21]],0.5);IW('gzstore',[-1,-2],[-1,9],[[8,21]],0.4);IW('gzstore',[-12,8],[10,8],[[8,21]],0.45);
+  IW('gzlaw',[-10,-3],[10,-3],[[8,17]],0.4);IW('gzlaw',[11.5,-6],[11.5,8],[[8,17]],0.35);
+  IW('gzchapel',[-10.5,-7],[-10.5,8],[[6,20]],0.35);IW('gzchapel',[0,-3.5],[0,9],[[6,20]],0.35);
 })();
 
 /* ------------------------------------------------------------------ loop */
